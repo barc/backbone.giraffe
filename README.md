@@ -4,7 +4,6 @@
 
 **Backbone.Giraffe** is a lightweight library that extends [**Backbone.js**](http://documentcloud.github.com/backbone/) to new heights.
 
-
 ## Why Giraffe?
 
 Giraffe extends the base Backbone classes with lifecycle management, event aggregation, and some features we at [Barc](https://barc.com) find useful. Giraffe's goal is to provide a layer of features and conventions that follow the Backbone philosophy of simplicity and flexibilty.
