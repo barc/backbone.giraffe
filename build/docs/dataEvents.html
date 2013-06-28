@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>View.dataEvents</h2>
+<p>This example demonstrates how to use the <code>dataEvents</code> map of <strong>Giraffe.View</strong>. Similar to how the <strong>Backbone.View</strong> <code>events</code> map binds DOM events to view methods, <strong>Giraffe.View</strong> provides the <code>dataEvents</code> hash that maps object events to view methods. Like the <code>events</code> map, the <code>dataEvents</code> bindings are also automatically cleaned up when a view&#39;s <code>dispose</code> method is called.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<p>To demonstrate <code>dataEvents</code>, we&#39;ll first need some data. In this example we&#39;ll use a regular <strong>Backbone.Collection</strong>,
+but <code>dataEvents</code> works with any object that implements <code>Backbone.Events</code>.</p>
+<pre><code class="language-js">  initialize: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.collection = <span class="keyword">new</span> Backbone.Collection();
+  },</code></pre>
+<p><code>dataEvents</code> maps events on an object to a view method. The hash&#39;s key is a space-separated list of events ending with the target object. This structure mirrors the <code>events</code> map of <strong>Backbone.View</strong>, <code>{&#39;domEventName selector&#39;: &#39;viewMethod&#39;}</code>,
+but replaces the selector with the name of any <code>Backbone.Events</code> object on this view instance, and it has the added benefit of accepting multiple events per definition.</p>
+<pre><code class="language-js">  dataEvents: {
+    <span class="string">'add remove collection'</span>: <span class="string">'render'</span>
+    <span class="comment">// 'someOtherEvent someOtherEventsObject': function() { ... }</span>
+    <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
+  },</code></pre>
+<p>This example has a button to add a new model and a button for each model that removes it.</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;'</span>;
+    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
+      html += <span class="string">'&lt;button data-gf-click="onRemoveModel" data-cid="'</span> + model.cid + <span class="string">'"&gt;'</span> +
+        <span class="string">'remove model '</span> + model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/button&gt;'</span>;
+    });
+    <span class="keyword">return</span> html;
+  },</code></pre>
+<p>Here are the functions that add and remove models. The ui updates automatically based on the events bound in <code>dataEvents</code>.</p>
+<pre><code class="language-js">  onAddModel: <span class="keyword">function</span>(e) {
+    <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
+    <span class="keyword">this</span>.modelCount += <span class="number">1</span>;
+    <span class="keyword">this</span>.collection.add({name: <span class="keyword">this</span>.modelCount});
+  },
+
+  onRemoveModel: <span class="keyword">function</span>(e) {
+    <span class="keyword">var</span> cid = $(e.target).data(<span class="string">'cid'</span>);
+    <span class="keyword">this</span>.collection.remove(<span class="keyword">this</span>.collection.get(cid));
+  }
+});</code></pre>
+<p>That&#39;s it! Let&#39;s create and attach the view.</p>
+<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2>Try It</h2>
+<div id="ex2_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex2result-tab" rel="ex2result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex2scriptjs-tab" rel="ex2scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex2stylecss-tab" rel="ex2stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex2_tabs_content" class="tabs_content">
+  <div id="ex2result-tab" class="tab_content">
+  <iframe id="ex2" src="_assets/ex2.html" class="result"></iframe>
+</div><div id="ex2scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+
+  initialize: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.collection = <span class="keyword">new</span> Backbone.Collection();
+  },
+
+  dataEvents: {
+    <span class="string">'add remove collection'</span>: <span class="string">'render'</span>
+    <span class="comment">// 'someOtherEvent someOtherEventsObject': function() { ... }</span>
+    <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
+  },
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;'</span>;
+    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
+      html += <span class="string">'&lt;button data-gf-click="onRemoveModel" data-cid="'</span> + model.cid + <span class="string">'"&gt;'</span> +
+        <span class="string">'remove model '</span> + model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/button&gt;'</span>;
+    });
+    <span class="keyword">return</span> html;
+  },
+
+  onAddModel: <span class="keyword">function</span>(e) {
+    <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
+    <span class="keyword">this</span>.modelCount += <span class="number">1</span>;
+    <span class="keyword">this</span>.collection.add({name: <span class="keyword">this</span>.modelCount});
+  },
+
+  onRemoveModel: <span class="keyword">function</span>(e) {
+    <span class="keyword">var</span> cid = $(e.target).data(<span class="string">'cid'</span>);
+    <span class="keyword">this</span>.collection.remove(<span class="keyword">this</span>.collection.get(cid));
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="ex2stylecss-tab" class="tab_content">
+  <pre><code class="language-css">// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+

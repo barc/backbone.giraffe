@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>View Flexibility</h2>
+<p>This advanced example demonstrates the flexibility of <strong>Giraffe.View</strong>.
+The design goal is to create a single view class that can nest, manage memory, and move around the DOM with ease.</p>
+<pre><code class="language-js"><span class="keyword">var</span> ParentApp, ChildView;</code></pre>
+<p><strong>Giraffe.App</strong> is a <strong>Giraffe.View</strong> that encapsulates an app.</p>
+<pre><code class="language-js">ParentApp = Giraffe.App.extend({</code></pre>
+<p><strong>Giraffe.View</strong> implements <code>render</code> for you; <code>getHTML</code> is an empty method for you to implement that returns a string of the view&#39;s HTML.</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.options.name + <span class="string">'&lt;/h2&gt;'</span>;
+    html += <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="render"&gt;Reset '</span> + <span class="keyword">this</span>.options.name + <span class="string">'&lt;/button&gt;'</span>;
+    <span class="keyword">return</span> html;
+  },</code></pre>
+<p>After a view renders, <code>afterRender</code> is called.
+This is a good place to create and attach child views.
+The attach method creates a parent-child relationship between views, allowing <strong>Giraffe.View</strong> to automatically manage memory, nest easily, and do other useful things.
+The <code>attach</code> method also renders a view if it hasn&#39;t yet been rendered - so <code>afterRender</code> gets called when the app is attached.</p>
+<pre><code class="language-js">  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView());
+  }
+});</code></pre>
+<p>In this example, we&#39;re going to create a child view that spawns recursively.</p>
+<pre><code class="language-js">ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,</code></pre>
+<p>The HTML for this child view is a bit messy. You&#39;ll probably want to use a templating library!</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView || index !== <span class="number">0</span>)
+      html += <span class="string">'&lt;button data-gf-click="onMoveUp"&gt;▲&lt;/button&gt;'</span>;
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView || index !== $parentChildren.length - <span class="number">1</span>)
+      html += <span class="string">'&lt;button data-gf-click="onMoveDown"&gt;▼&lt;/button&gt;'</span>;
+
+    html += <span class="string">'&lt;button data-gf-click="onAddChild"&gt;Add a child&lt;/button&gt;'</span>;
+
+    <span class="keyword">var</span> renderButtonText = <span class="string">'Rendered '</span> + <span class="keyword">this</span>.renderCount +
+      (<span class="keyword">this</span>.renderCount === <span class="number">1</span> ? <span class="string">' time'</span> : <span class="string">' times'</span>);
+    html += <span class="string">'&lt;button data-gf-click="render"&gt;'</span> + renderButtonText + <span class="string">'&lt;/button&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="onDispose"&gt;Dispose&lt;/button&gt;'</span>;
+
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView) {
+      html += <span class="string">'&lt;label&gt;&lt;input type="checkbox" data-gf-change="toggleCache"'</span>;
+      <span class="keyword">if</span> (!<span class="keyword">this</span>.options.disposeOnDetach)
+        html += <span class="string">' checked="checked"'</span>;
+      html += <span class="string">'&gt;Cache this view&lt;/label&gt;'</span>;
+      html += <span class="string">'&lt;button data-gf-click="onAttachUsingHTML"&gt;Reattach to parent using $.html&lt;/button&gt;'</span>;
+    }
+
+    html += <span class="string">'&lt;div class="child-views"&gt;&lt;/div&gt;'</span>;
+
+    <span class="keyword">return</span> html;
+  },</code></pre>
+<p>In this example, each child view has a button that adds another <code>ChildView</code> to its <code>children</code>.
+<strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup.
+In <code>getHTML</code>, <code>data-gf-click</code> specifies the method <code>onAddChild</code> to be called on the view when the button is clicked.
+If the method isn&#39;t found on the view, it searches up the hierarchy until it finds the method or reaches a view with no <code>parent</code>.
+By default, Giraffe binds only <code>click</code> and <code>change</code>, but you can easily set custom bindings using <code>Giraffe.View.setDocumentEvents</code>.</p>
+<pre><code class="language-js">  onAddChild: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView(), {el: <span class="keyword">this</span>.$(<span class="string">'.child-views:first'</span>)});
+  },</code></pre>
+<p><code>dispose</code> destroys a view. It calls the <strong>Backbone.View</strong> function <code>remove</code>, performs cleanup, and calls <code>dispose</code> on all <code>children</code>.</p>
+<pre><code class="language-js">  onDispose: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.dispose();
+  },</code></pre>
+<p>By default, Giraffe recreates child views every <code>render</code>, but this is often not desired.
+<code>options.disposeOnDetach</code> tells Giraffe whether or not to cache a view.
+By default, <code>disposeOnDetach</code> is true, and child views are disposed of when their <code>parent</code> detaches them before a <code>render</code>.
+If you set a view&#39;s <code>disposeOnDetach</code> option to false, it is preserved when its <code>parent</code> renders.
+In this example, the <code>ChildView</code> has a checkbox to toggle this caching behavior.</p>
+<pre><code class="language-js">  toggleCache: <span class="keyword">function</span>(e) {
+    <span class="keyword">this</span>.options.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
+  },</code></pre>
+<p>Cached child views will be in <code>children</code> after rendering the <code>parent</code>.
+Uncached child views have already been disposed of by this point.
+Giraffe does <em>not</em> automatically reattach child views, so you retain full control.</p>
+<pre><code class="language-js">  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.children.length; i++) {
+      <span class="keyword">this</span>.attach(<span class="keyword">this</span>.children[i], {el: <span class="string">'.child-views:first'</span>});
+    }
+  },</code></pre>
+<p>Like <code>afterRender</code>, <code>beforeRender</code> is an empty function for you to create when needed.</p>
+<pre><code class="language-js">  beforeRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.renderCount = <span class="keyword">this</span>.renderCount || <span class="number">0</span>;
+    <span class="keyword">this</span>.renderCount += <span class="number">1</span>;
+  },</code></pre>
+<p>Giraffe views can move freely around the DOM using jQuery methods to insert themselves and automatically update their <code>parent</code>.
+The supported insertion methods are <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;before&#39;</code>, <code>&#39;after&#39;</code>, and <code>&#39;html&#39;</code>. The function <code>attachTo</code> is an inverted way to call <code>attach</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any DOM element, selector, or view will do.
+When a view is attached, Giraffe automatically calls <code>render</code> on the view if it hasn&#39;t yet been rendered, but passing the option <code>forceRender</code> will cause attach to always render.
+The option <code>preserve</code> prevents child view disposal, even if <code>disposeOnDetach</code> is true.
+In this example, we force <code>render</code> on the relevant views so the correct movement buttons are displayed,
+and we use <code>preserve</code> to prevent the <code>render</code> from disposing of uncached child views.</p>
+<pre><code class="language-js">  onMoveUp: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> previousView = <span class="keyword">this</span>.getPreviousView();
+    <span class="keyword">this</span>.attachTo(previousView, {method: <span class="string">'before'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    previousView.render({preserve: <span class="literal">true</span>});
+  },
+
+  getPreviousView: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (index &gt; <span class="number">0</span>)
+      <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index - <span class="number">1</span>]);
+    <span class="keyword">else</span>
+      <span class="keyword">return</span> <span class="keyword">this</span>.parent;
+  },
+
+  onMoveDown: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> nextView = <span class="keyword">this</span>.getNextView();
+    <span class="keyword">this</span>.attachTo(nextView, {method: <span class="string">'after'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    nextView.render({preserve: <span class="literal">true</span>});
+  },
+
+  getNextView: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (index &lt; $parentChildren.length - <span class="number">1</span>)
+      <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index + <span class="number">1</span>]);
+    <span class="keyword">else</span>
+      <span class="keyword">return</span> <span class="keyword">this</span>.parent;
+  },</code></pre>
+<p>The <code>&#39;html&#39;</code> jQuery method replaces existing content.
+Giraffe automatically disposes of any uncached views that get in the way.</p>
+<pre><code class="language-js">  onAttachUsingHTML: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attachTo(<span class="keyword">this</span>.$el.parent(), {method: <span class="string">'html'</span>});
+  },</code></pre>
+<p>Let&#39;s use the console to see when views get disposed.</p>
+<pre><code class="language-js">  dispose: <span class="keyword">function</span>() {
+    Giraffe.View.prototype.dispose.call(<span class="keyword">this</span>);
+    console.log(<span class="string">'Disposing of '</span> + <span class="keyword">this</span>.cid);
+  }
+});</code></pre>
+<p>That&#39;s it! Let&#39;s create and attach the app.
+The <code>name</code> property is only used for display purposes.</p>
+<pre><code class="language-js"><span class="keyword">var</span> app1 = <span class="keyword">new</span> ParentApp({name: <span class="string">'app1'</span>});
+app1.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>Let&#39;s make two parent apps. Why? Because we can!</p>
+<pre><code class="language-js"><span class="keyword">var</span> app2 = <span class="keyword">new</span> ParentApp({name: <span class="string">'app2'</span>});
+app2.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2>Try It</h2>
+<div id="ex8_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex8result-tab" rel="ex8result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex8scriptjs-tab" rel="ex8scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex8markuphtml-tab" rel="ex8markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#ex8stylecss-tab" rel="ex8stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex8_tabs_content" class="tabs_content">
+  <div id="ex8result-tab" class="tab_content">
+  <iframe id="ex8" src="_assets/ex8.html" class="result"></iframe>
+</div><div id="ex8scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> ParentApp, ChildView;
+
+ParentApp = Giraffe.App.extend({
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.options.name + <span class="string">'&lt;/h2&gt;'</span>;
+    html += <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="render"&gt;Reset '</span> + <span class="keyword">this</span>.options.name + <span class="string">'&lt;/button&gt;'</span>;
+    <span class="keyword">return</span> html;
+  },
+
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView());
+  }
+});
+
+ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,
+
+  colors: [<span class="string">'#ebb'</span>, <span class="string">'#eeb'</span>, <span class="string">'#beb'</span>, <span class="string">'#bee'</span>, <span class="string">'#bbe'</span>, <span class="string">'#ebe'</span>],
+  colorIndex: -<span class="number">1</span>,
+
+  initialize: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> proto = ChildView.prototype;
+    proto.colorIndex += <span class="number">1</span>;
+    <span class="keyword">if</span> (proto.colorIndex &gt;= proto.colors.length)
+      proto.colorIndex = <span class="number">0</span>;
+    <span class="keyword">var</span> color = proto.colors[proto.colorIndex];
+    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color);
+  },
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView || index !== <span class="number">0</span>)
+      html += <span class="string">'&lt;button data-gf-click="onMoveUp"&gt;▲&lt;/button&gt;'</span>;
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView || index !== $parentChildren.length - <span class="number">1</span>)
+      html += <span class="string">'&lt;button data-gf-click="onMoveDown"&gt;▼&lt;/button&gt;'</span>;
+
+    html += <span class="string">'&lt;button data-gf-click="onAddChild"&gt;Add a child&lt;/button&gt;'</span>;
+
+    <span class="keyword">var</span> renderButtonText = <span class="string">'Rendered '</span> + <span class="keyword">this</span>.renderCount +
+      (<span class="keyword">this</span>.renderCount === <span class="number">1</span> ? <span class="string">' time'</span> : <span class="string">' times'</span>);
+    html += <span class="string">'&lt;button data-gf-click="render"&gt;'</span> + renderButtonText + <span class="string">'&lt;/button&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="onDispose"&gt;Dispose&lt;/button&gt;'</span>;
+
+    <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView) {
+      html += <span class="string">'&lt;label&gt;&lt;input type="checkbox" data-gf-change="toggleCache"'</span>;
+      <span class="keyword">if</span> (!<span class="keyword">this</span>.options.disposeOnDetach)
+        html += <span class="string">' checked="checked"'</span>;
+      html += <span class="string">'&gt;Cache this view&lt;/label&gt;'</span>;
+      html += <span class="string">'&lt;button data-gf-click="onAttachUsingHTML"&gt;Reattach to parent using $.html&lt;/button&gt;'</span>;
+    }
+
+    html += <span class="string">'&lt;div class="child-views"&gt;&lt;/div&gt;'</span>;
+
+    <span class="keyword">return</span> html;
+  },
+
+  onAddChild: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView(), {el: <span class="keyword">this</span>.$(<span class="string">'.child-views:first'</span>)});
+  },
+
+  onDispose: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.dispose();
+  },
+
+  toggleCache: <span class="keyword">function</span>(e) {
+    <span class="keyword">this</span>.options.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
+  },
+
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.children.length; i++) {
+      <span class="keyword">this</span>.attach(<span class="keyword">this</span>.children[i], {el: <span class="string">'.child-views:first'</span>});
+    }
+  },
+
+  beforeRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.renderCount = <span class="keyword">this</span>.renderCount || <span class="number">0</span>;
+    <span class="keyword">this</span>.renderCount += <span class="number">1</span>;
+  },
+
+  onMoveUp: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> previousView = <span class="keyword">this</span>.getPreviousView();
+    <span class="keyword">this</span>.attachTo(previousView, {method: <span class="string">'before'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    previousView.render({preserve: <span class="literal">true</span>});
+  },
+
+  getPreviousView: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (index &gt; <span class="number">0</span>)
+      <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index - <span class="number">1</span>]);
+    <span class="keyword">else</span>
+      <span class="keyword">return</span> <span class="keyword">this</span>.parent;
+  },
+
+  onMoveDown: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> nextView = <span class="keyword">this</span>.getNextView();
+    <span class="keyword">this</span>.attachTo(nextView, {method: <span class="string">'after'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    nextView.render({preserve: <span class="literal">true</span>});
+  },
+
+  getNextView: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
+      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">if</span> (index &lt; $parentChildren.length - <span class="number">1</span>)
+      <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index + <span class="number">1</span>]);
+    <span class="keyword">else</span>
+      <span class="keyword">return</span> <span class="keyword">this</span>.parent;
+  },
+
+  onAttachUsingHTML: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attachTo(<span class="keyword">this</span>.$el.parent(), {method: <span class="string">'html'</span>});
+  },
+
+  dispose: <span class="keyword">function</span>() {
+    Giraffe.View.prototype.dispose.call(<span class="keyword">this</span>);
+    console.log(<span class="string">'Disposing of '</span> + <span class="keyword">this</span>.cid);
+  }
+});
+
+<span class="keyword">var</span> app1 = <span class="keyword">new</span> ParentApp({name: <span class="string">'app1'</span>});
+app1.attachTo(<span class="string">'body'</span>);
+
+<span class="keyword">var</span> app2 = <span class="keyword">new</span> ParentApp({name: <span class="string">'app2'</span>});
+app2.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="ex8markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex8-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex8-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="ex8stylecss-tab" class="tab_content">
+  <pre><code class="language-css">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+.child-view {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}
+[data-gf-click="onMoveUp"] {
+  position: absolute;
+  left: -17px;
+  top: 0;
+}
+[data-gf-click="onMoveDown"] {
+  position: absolute;
+  left: -17px;
+  bottom: 0;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+

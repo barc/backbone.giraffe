@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>Document Events</h2>
+<p>This example demonstrates Giraffe&#39;s document event bindings that link DOM events to <strong>Giraffe.View</strong> methods.
+Giraffe does <em>not</em> provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method <code>Giraffe.View.removeDocumentEvents()</code>, but it shouldn&#39;t get in your way if left unused.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form <code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it searches up the hierarchy until it finds the method or fails on a view with no <code>parent</code>. <strong>Please note:</strong> by default, Giraffe binds only <code>&#39;click&#39;</code> and <code>&#39;change&#39;</code>, and not <code>&#39;keyup&#39;</code> as this example uses, but you can easily set custom bindings using the static method <code>Giraffe.View.setDocumentEvents</code>.</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;div id="hello-text"&gt;Hello world!&lt;/div&gt;'</span>;
+    html += <span class="string">'&lt;input type="text" value="world" data-gf-keyup="onChangeName"&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="onAlertHello"&gt;Say hello in a popup&lt;/button&gt;'</span>;
+    <span class="keyword">return</span> html;
+  },</code></pre>
+<p>Whenever the input changes, this method is called.</p>
+<pre><code class="language-js">  onChangeName: <span class="keyword">function</span>(e) {
+    $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
+  },</code></pre>
+<p>Whenever the button is clicked, this method is called.</p>
+<pre><code class="language-js">  onAlertHello: <span class="keyword">function</span>() {
+    alert($(<span class="string">'#hello-text'</span>).text());
+  }
+});</code></pre>
+<p>If you wanted to set your own custom DOM event bindings, this is how you&#39;d do it.</p>
+<pre><code class="language-js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown mouseup change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// the default events</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span></code></pre>
+<p>All done! Let&#39;s create and attach the view.</p>
+<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2>Try It</h2>
+<div id="ex3_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex3result-tab" rel="ex3result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex3scriptjs-tab" rel="ex3scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex3markuphtml-tab" rel="ex3markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#ex3stylecss-tab" rel="ex3stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex3_tabs_content" class="tabs_content">
+  <div id="ex3result-tab" class="tab_content">
+  <iframe id="ex3" src="_assets/ex3.html" class="result"></iframe>
+</div><div id="ex3scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> html = <span class="string">'&lt;div id="hello-text"&gt;Hello world!&lt;/div&gt;'</span>;
+    html += <span class="string">'&lt;input type="text" value="world" data-gf-keyup="onChangeName"&gt;'</span>;
+    html += <span class="string">'&lt;button data-gf-click="onAlertHello"&gt;Say hello in a popup&lt;/button&gt;'</span>;
+    <span class="keyword">return</span> html;
+  },
+
+  onChangeName: <span class="keyword">function</span>(e) {
+    $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
+  },
+
+  onAlertHello: <span class="keyword">function</span>() {
+    alert($(<span class="string">'#hello-text'</span>).text());
+  }
+});
+
+Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown mouseup change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// the default events</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span>
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="ex3markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex3-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex3-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="ex3stylecss-tab" class="tab_content">
+  <pre><code class="language-css">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+strong {
+  font-weight: bold;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+

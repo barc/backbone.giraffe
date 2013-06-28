@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>View UI</h2>
+<p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains cached jQuery objects for a view and allows you to use the names of these cached objects in your <code>events</code> hash.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<p>The <code>ui</code> hash is a simple map of names to selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>view.$button</code> available once the view has rendered at least once.</p>
+<pre><code class="language-js">  events: {
+    <span class="string">'click $someButton'</span>: <span class="keyword">function</span>() {
+      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+    }
+  },
+
+  ui: {
+    <span class="string">'$someButton'</span>: <span class="string">'button'</span>
+  },
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;button&gt;click me&lt;/button&gt;'</span>;
+  }
+});</code></pre>
+<p>Let&#39;s create and attach the view.</p>
+<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2>Try It</h2>
+<div id="ex9_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex9result-tab" rel="ex9result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex9scriptjs-tab" rel="ex9scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex9markuphtml-tab" rel="ex9markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#ex9stylecss-tab" rel="ex9stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex9_tabs_content" class="tabs_content">
+  <div id="ex9result-tab" class="tab_content">
+  <iframe id="ex9" src="_assets/ex9.html" class="result"></iframe>
+</div><div id="ex9scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+
+  events: {
+    <span class="string">'click $someButton'</span>: <span class="keyword">function</span>() {
+      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+    }
+  },
+
+  ui: {
+    <span class="string">'$someButton'</span>: <span class="string">'button'</span>
+  },
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;button&gt;click me&lt;/button&gt;'</span>;
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="ex9markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex9-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex9-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="ex9stylecss-tab" class="tab_content">
+  <pre><code class="language-css">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+.child-view {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+

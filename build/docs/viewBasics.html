@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>View Basics</h2>
+<p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<p><strong>Giraffe.View</strong> implements <code>render</code> for you. This <code>render</code> function consumes <code>getHTML</code>, which is an empty method for you to implement that returns a string of the view&#39;s HTML. One of Giraffe&#39;s goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls <code>render</code> for you. But stay with us! Giraffe is able to add quite a few features by controlling the <code>render</code> method. You can still call <code>render</code> when your models change and expect it to work like it always has. (except better!)</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h2&gt;'</span>;
+  }
+});</code></pre>
+<p>Let&#39;s create an instance of the view class we just defined.</p>
+<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();</code></pre>
+<p>With a normal <strong>Backbone.View</strong>, we&#39;d probably now do something like <code>$(&#39;body&#39;).append(view.$el)</code>. That would still work, but the <strong>Giraffe.View</strong> adds the method <code>attachTo</code>, a function that works some magic behind the scenes to simplify view management. The goal of the <strong>Giraffe.View</strong> is to have a recursively-nestable automatically-memory-managed move-it-and-render-it-anywhere-any-time view. <em>Phew.</em> In this simple case, the only things happening behind the scenes in <code>attachTo</code> are <code>$(&#39;body&#39;).append(view.$el)</code> followed by <code>view.render()</code>. The <code>render</code> happens only because Giraffe sees that the view has yet to be rendered.</p>
+<pre><code class="language-js">view.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>How does Giraffe work its promised magic? Part of the answer lies in tying a view&#39;s <code>$el</code> to the view instance via the <code>data-view-cid</code> attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.</p>
+<pre><code class="language-js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.cid: '</span> + view.cid + <span class="string">'&lt;/p&gt;'</span>);
+$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.$el.data("view-cid"): '</span> + view.$el.data(<span class="string">'view-cid'</span>) + <span class="string">'&lt;/p&gt;'</span>);</code></pre>
+<p>So let&#39;s see the magic! First we&#39;ll define a <code>ChildView</code> class.</p>
+<pre><code class="language-js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+  }
+});</code></pre>
+<p>Now let&#39;s create an instance of <code>ChildView</code> and attach it to the first view we created. The method <code>attach</code> is an inverted way to call <code>attachTo</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any selector, DOM element, or view will do.</p>
+<pre><code class="language-js"><span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView();
+view.attach(childView);</code></pre>
+<p>When one view is attached to another, Giraffe sets up a parent-child relationship. Note that we could have called <code>childView.attachTo(view.$el)</code>, and because the <code>data-view-cid</code> is set up, we still know who the parent is. The child view gets a <code>parent</code> and the parent view adds the child view to its <code>children</code> array.</p>
+<pre><code class="language-js">childView.parent === view;      <span class="comment">// =&gt; true</span>
+view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span></code></pre>
+<p>When a <strong>Giraffe.View</strong> renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call <code>delegateEvents</code> manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call <code>dispose</code> on them, the generalized Giraffe removal/destroy/cleanup method. <em>(Side note: the method name is &#39;<code>dispose&#39;</code> and not <code>&#39;remove&#39;</code> as a matter of necessity even though it essentially overrides Backbone&#39;s <code>view.remove</code>. This is because any object can be added to a view&#39;s children via <code>view.addChild</code> to take advantage of automatic memory management, and some objects like collections already have a <code>remove</code> method that means something completely different! Any child with a <code>dispose</code> method will be disposed of when its parent disposes.)</em></p>
+<pre><code class="language-uml">                    ┌────┐          ┌─────┐                
+                    │view│          │child│                
+                    └─┬──┘          └──┬──┘                
+       render()       │                │                   
+ ─────────────────────>                │                   
+                      │                │                   
+                      │                │                   
+          ╔══════╤════╪════════════════╪══════════════════╗
+          ║ ALT  │  each child         │                  ║
+          ╟──────┘    │                │                  ║
+          ║           │    detach()    │                  ║
+          ║           │ ──────────────>│                  ║
+          ║           │                │                  ║
+          ║           │                ────┐              ║
+          ║           │                    │ dispose()    ║
+          ║           │                <───┘              ║
+          ╚═══════════╪════════════════╪══════════════════╝
+                    ┌─┴──┐          ┌──┴──┐                
+                    │view│          │child│                
+                    └────┘          └─────┘                
+</code></pre>
+<pre><code class="language-js">view.render() =&gt; childView.detach() =&gt; childView.dispose()
+<span class="comment">// ...rendering the parent completely destroyed our childView!</span></code></pre>
+<p><em>My view is gone, you say? What if I want to keep it!?</em></p>
+<p>Good question! Even though it&#39;s often easy to just recreate child views after every <code>render</code>, there are many reasons you may want to cache them. To save a view even after its parent renders, simply set the view&#39;s option <code>disposeOnDetach</code> to false.</p>
+<pre><code class="language-js">childView.options.disposeOnDetach = <span class="literal">false</span>;
+<span class="comment">// or...</span>
+<span class="comment">// new ChildView({disposeOnDetach: false});</span></code></pre>
+<p>We now have a cached child view! Let&#39;s see what happens when the parent view renders.</p>
+<pre><code class="language-js">view.render() =&gt; childView.detach()
+view.children[<span class="number">0</span>] === childView <span class="comment">// =&gt; true</span>
+<span class="comment">// ...hurray! The childView is still around.</span>
+view.$el.find(childView.$el);  <span class="comment">// =&gt; not found! ...it's not in the DOM!?</span></code></pre>
+<p><em>My view is still around, but it&#39;s not in the DOM? What if I want it in the DOM!?</em></p>
+<p>Another good question! Giraffe tries its best to stay out of your way, any so there&#39;s no automatic child view reattaching. What if after <code>render</code> you wanted to show a different view? The client may ask for anything! Giraffe has an answer though, in the form of a handy convention: every time a view calls <code>render</code>, it firsts calls <code>beforeRender</code>, then renders, and then calls <code>afterRender</code>. Both of these functions are empty by default, ready for you to fill in when needed. The <code>afterRender</code> function is a great time to attach child views.</p>
+<pre><code class="language-js">view.afterRender = <span class="keyword">function</span>() {
+  <span class="keyword">this</span>.attach(childView);
+};
+view.render();                <span class="comment">// =&gt; childView.detach()</span>
+view.children.length === <span class="number">1</span>;   <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
+view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span></code></pre>
+<p>Time for a victory message.</p>
+<pre><code class="language-js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the view and saved the child! What a feat!&lt;/p&gt;'</span>)</code></pre>
+<p>Views can be attached to any selector, DOM element, or view. Note that the inverted <code>attach</code> method will make sure the calling object contains the <code>el</code> you specify, because semantically you&#39;re saying <em>&#39;attach this view to this parent&#39;</em>.</p>
+<pre><code class="language-js">view.attachTo(<span class="string">'#some-selector'</span>);
+view.attachTo(someDOMElement);
+view.attachTo($someJQueryObject);
+view.attachTo(someView);
+view.attach(childView, {el: <span class="string">'#something-inside-the-view'</span>});</code></pre>
+<p>So this <code>attachTo</code> function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method <code>&#39;append&#39;</code>, but luckily many jQuery methods are supported - <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;after&#39;</code>, <code>&#39;before&#39;</code>, and <code>&#39;html&#39;</code> can all be passed to <code>attach</code> and <code>attachTo</code> as the <code>method</code> option. That last one may raise alarm bells in your jQuery underbrain - the <code>&#39;html&#39;</code> method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the <code>&#39;html&#39;</code> method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will <code>dispose</code> of it, but the <code>preserve</code> option can override the behavior of <code>disposeOnDetach</code>.</p>
+<pre><code class="language-js">childView.attachTo(view, {method: <span class="string">'append'</span>}); <span class="comment">// the default method</span>
+childView.attachTo(view, {method: <span class="string">'prepend'</span>});
+childView.attachTo(view, {method: <span class="string">'after'</span>});  <span class="comment">// =&gt; makes `childView` a sibling of `view`</span>
+childView.attachTo(view, {method: <span class="string">'before'</span>}); <span class="comment">// =&gt; also makes them siblings</span>
+view.attach(childView, {method: <span class="string">'prepend'</span>});  <span class="comment">// inverted way to attach</span>
+
+childView.attachTo(view, {method: <span class="string">'html'</span>});
+<span class="comment">// =&gt; detaches any views that get in the way, disposing of them unless disposeOnDetach is false</span>
+
+childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: <span class="literal">true</span>});
+<span class="comment">// =&gt; detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true</span></code></pre>
+<p>Here&#39;s an abridged UML summary of all those words.</p>
+<pre><code class="language-uml">     ┌────┐                                     ┌──────┐                ┌────────────┐                       ┌──────────┐          ┌───┐          
+     │Code│                                     │MyView│                │Giraffe.View│                       │ParentView│          │DOM│          
+     └─┬──┘                                     └──┬───┘                └─────┬──────┘                       └────┬─────┘          └─┬─┘          
+       │ attachTo('#container', {method: 'append'})│                          │                                   │                  │            
+       │ ──────────────────────────────────────────>                          │                                   │                  │            
+       │                                           │                          │                                   │                  │            
+       │                                           │         attachTo         │                                   │                  │            
+       │                                           │ ─────────────────────────>                                   │                  │            
+       │                                           │                          │                                   │                  │            
+       │                                           │                          │                                   │                  │            
+       │                                           │          ╔══════╤════════╪═══════════════════════════════════╪═══════════════╗  │            
+       │                                           │          ║ ALT  │  if #container has parent view             │               ║  │            
+       │                                           │          ╟──────┘        │                                   │               ║  │            
+       │                                           │          ║               │   set MyView as child of parent   │               ║  │            
+       │                                           │          ║               │ ──────────────────────────────────>               ║  │            
+       │                                           │          ╚═══════════════╪═══════════════════════════════════╪═══════════════╝  │            
+       │                                           │                          │                                   │                  │            
+       │                                           │                          │                 detach MyView's $el                  │            
+       │                                           │                          │ ────────────────────────────────────────────────────>│            
+       │                                           │                          │                                   │                  │            
+       │                                           │                          │                                   │                  │            
+       │                                           │          ╔══════╤════════╪═══════════════════════════════════╪════╗             │            
+       │                                           │          ║ ALT  │  if method is 'html'                       │    ║             │            
+       │                                           │          ╟──────┘        │                                   │    ║             │            
+       │                                           │          ║               │────┐                                   ║             │            
+       │                                           │          ║               │    │ detach views inside #container    ║             │            
+       │                                           │          ║               │<───┘                                   ║             │            
+       │                                           │          ╚═══════════════╪═══════════════════════════════════╪════╝             │            
+       │                                           │                          │                                   │                  │            
+       │                                           │                          │     put MyView's $el in #container using method      │            
+       │                                           │                          │ ────────────────────────────────────────────────────>│            
+       │                                           │                          │                                   │                  │            
+       │                                           │                          │                                   │                  │            
+       │                    ╔══════╤═══════════════╪══════════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╗
+       │                    ║ ALT  │  if MyView not yet rendered or options.forceRender                           │                  │           ║
+       │                    ╟──────┘               │                          │                                   │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║         ╔══════╤═════╪══════════════════════════╪════════════════╗                  │                  │           ║
+       │                    ║         ║ ALT  │  if beforeRender overridden    │                ║                  │                  │           ║
+       │                    ║         ╟──────┘     │                          │                ║                  │                  │           ║
+       │                    ║         ║            │ [optional] beforeRender()│                ║                  │                  │           ║
+       │                    ║         ║            │ <─────────────────────────                ║                  │                  │           ║
+       │                    ║         ╚════════════╪══════════════════════════╪════════════════╝                  │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║                      │                          │────┐                              │                  │           ║
+       │                    ║                      │                          │    │ $el.empty()                  │                  │           ║
+       │                    ║                      │                          │<───┘                              │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║                      │         getHTML()        │                                   │                  │           ║
+       │                    ║                      │ <─────────────────────────                                   │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║                      │    return html string    │                                   │                  │           ║
+       │                    ║                      │  ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ >                                   │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║                      │                          │              append html string to $el               │           ║
+       │                    ║                      │                          │ ────────────────────────────────────────────────────>│           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║                      │                          │                                   │                  │           ║
+       │                    ║         ╔══════╤═════╪══════════════════════════╪════════════════╗                  │                  │           ║
+       │                    ║         ║ ALT  │  if afterRender overridden     │                ║                  │                  │           ║
+       │                    ║         ╟──────┘     │                          │                ║                  │                  │           ║
+       │                    ║         ║            │ [optional] afterRender() │                ║                  │                  │           ║
+       │                    ║         ║            │ <─────────────────────────                ║                  │                  │           ║
+       │                    ║         ╚════════════╪══════════════════════════╪════════════════╝                  │                  │           ║
+       │                    ╚══════════════════════╪══════════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╝
+     ┌─┴──┐                                     ┌──┴───┐                ┌─────┴──────┐                       ┌────┴─────┐          ┌─┴─┐          
+     │Code│                                     │MyView│                │Giraffe.View│                       │ParentView│          │DOM│          
+     └────┘                                     └──────┘                └────────────┘                       └──────────┘          └───┘          
+</code></pre>
+<p>That&#39;s it! Take a look at the example to see our handywork. It may not look very impressive, but we covered a lot of ground!</p>
+<h2>Try It</h2>
+<div id="ex7_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex7result-tab" rel="ex7result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex7scriptjs-tab" rel="ex7scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex7markuphtml-tab" rel="ex7markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#ex7stylecss-tab" rel="ex7stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex7_tabs_content" class="tabs_content">
+  <div id="ex7result-tab" class="tab_content">
+  <iframe id="ex7" src="_assets/ex7.html" class="result"></iframe>
+</div><div id="ex7scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h2&gt;'</span>;
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+
+view.attachTo(<span class="string">'body'</span>);
+
+$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.cid: '</span> + view.cid + <span class="string">'&lt;/p&gt;'</span>);
+$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.$el.data("view-cid"): '</span> + view.$el.data(<span class="string">'view-cid'</span>) + <span class="string">'&lt;/p&gt;'</span>);
+
+<span class="keyword">var</span> ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+  }
+});
+
+<span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView();
+view.attach(childView);
+
+childView.parent === view;      <span class="comment">// =&gt; true</span>
+view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span>
+
+childView.options.disposeOnDetach = <span class="literal">false</span>;
+<span class="comment">// or...</span>
+<span class="comment">// new ChildView({disposeOnDetach: false});</span>
+
+view.afterRender = <span class="keyword">function</span>() {
+  <span class="keyword">this</span>.attach(childView);
+};
+view.render();                <span class="comment">// =&gt; childView.detach()</span>
+view.children.length === <span class="number">1</span>;   <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
+view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span>
+
+$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the view and saved the child! What a feat!&lt;/p&gt;'</span>)</code></pre>
+</div><div id="ex7markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex7-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex7-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="ex7stylecss-tab" class="tab_content">
+  <pre><code class="language-css">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+.child-view {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,24 @@
+{
+  "name": "backbone.giraffe",
+  "version": "0.0.1",
+  "description": "A lightweight library that extends Backbone.js to new heights.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["backbone", "coffee", "mvc"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barc/backbone.giraffe.git"
+  },
+  "author": "ryan@barc.com",
+  "license": "MIT",
+  "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf",
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "funcd": "~0.1.2",
+    "dox": "~0.4.3",
+    "underscore": "~1.4.4",
+    "underscore.string": "~2.3.1"
+  }
+}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='_assets/tutdown.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <div class="row">
+      <!-- Sidebar -->
+<section id="sidebar" class="col sidebar">
+  <h2><a href="index.html">Giraffe</a></h2>
+  <h2><a href="api.html">API</a></h2>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="viewBasics.html">View Basics</a></li>
+    <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+    <li><a href="appEvents.html">App Events</a></li>
+    <li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+    <li><a href="appInitialization.html">App Initilization</a></li>
+    <li><a href="documentEvents.html">Document Events</a></li>
+    <li><a href="dataEvents.html">Data Events</a></li>
+    <li><a href="viewUI.html">View UI</a></li>
+    <li><a href="menuExample.html">Menu Example</a></li>
+    <li><a href="viewFlexibility.html">View Flexibility</a></li>
+  </ul>
+</section>
+
+<!-- Main Body -->
+<article id="content" class="col content">
+  <p><div class='section-example'><h2>App Events</h2>
+<p>This example demonstrates how <strong>Giraffe.App</strong> helps your app&#39;s components communicate.</p>
+<pre><code class="language-js"><span class="keyword">var</span> App, ChildView;</code></pre>
+<p>In this example, we&#39;re going to create an instance of <code>Giraffe.App</code> that creates three child views that talk to each other using the app as an event aggregator.</p>
+<pre><code class="language-js">App = Giraffe.App.extend({
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'Color the views red!'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'Color the views green!'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'Color the views blue!'</span>}));
+  }
+});</code></pre>
+<p>This example is going to have a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
+<pre><code class="language-js">ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,
+
+  initialize: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
+  },</code></pre>
+<p>Each <code>ChildView</code> has a button that colors all child views its color.</p>
+<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;button&gt;'</span> + <span class="keyword">this</span>.options.text + <span class="string">'&lt;/button&gt;'</span>;
+  },
+
+  events: {
+    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
+  },</code></pre>
+<p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a <strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all Giraffe objects <em>(views, apps, routers, models, and collections)</em>, and is cleaned up in <code>dispose</code>, which all Giraffe objects implement. When an instance of <strong>Giraffe.App</strong> is created, it stores its reference globally at <code>Giraffe.app</code> unless an app instance is already there, and all Giraffe objects store this reference as <code>this.app</code> unless you pass <code>{app: someApp}</code> as an option.</p>
+<pre><code class="language-js">  appEvents: {
+    <span class="string">'setColor'</span>: <span class="keyword">function</span>(color) { <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
+    <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
+  },</code></pre>
+<p>This function is called when the view&#39;s button is clicked. By triggering an event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
+<pre><code class="language-js">  colorChildViews: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
+  }
+});</code></pre>
+<p>Like all Giraffe objects, <strong>Giraffe.App</strong> can listen to its own <code>appEvents</code>. To help us see what&#39;s going on, let&#39;s log every event that passes through the app to the console.</p>
+<pre><code class="language-js">App.prototype.appEvents = {
+  <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); }
+};</code></pre>
+<p>That&#39;s it! Let&#39;s create and attach the app.</p>
+<pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
+app.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2>Try It</h2>
+<div id="ex0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#ex0result-tab" rel="ex0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#ex0scriptjs-tab" rel="ex0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#ex0markuphtml-tab" rel="ex0markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#ex0stylecss-tab" rel="ex0stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="ex0_tabs_content" class="tabs_content">
+  <div id="ex0result-tab" class="tab_content">
+  <iframe id="ex0" src="_assets/ex0.html" class="result"></iframe>
+</div><div id="ex0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> App, ChildView;
+
+App = Giraffe.App.extend({
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'Color the views red!'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'Color the views green!'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'Color the views blue!'</span>}));
+  }
+});
+
+ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,
+
+  initialize: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
+  },
+
+  getHTML: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="string">'&lt;button&gt;'</span> + <span class="keyword">this</span>.options.text + <span class="string">'&lt;/button&gt;'</span>;
+  },
+
+  events: {
+    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
+  },
+
+  appEvents: {
+    <span class="string">'setColor'</span>: <span class="keyword">function</span>(color) { <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
+    <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
+  },
+
+  colorChildViews: <span class="keyword">function</span>() {
+    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
+  }
+});
+
+App.prototype.appEvents = {
+  <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); }
+};
+
+<span class="keyword">var</span> app = <span class="keyword">new</span> App();
+app.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="ex0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex0-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="ex0stylecss-tab" class="tab_content">
+  <pre><code class="language-css">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+// Example
+body {
+  background-color: #ffffff;
+  padding: 20px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+.child-view {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}</code></pre>
+</div>
+</div></div></p>
+
+</article>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="_assets/tutdown.js"></script>
+</body>
+</html>
+
