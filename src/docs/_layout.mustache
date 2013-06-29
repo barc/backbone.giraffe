@@ -12,7 +12,18 @@
 </head>
 <body>
     <div class="row">
-      {{{asset.text}}}
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        {{{navHeader}}}
+        {{{asset.nav}}}
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        {{{asset.text}}}
+      </article>
     </div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="_assets/tutdown.js"></script>

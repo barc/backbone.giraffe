@@ -70,8 +70,13 @@ exports.project = (pm) ->
       f.tap (asset) ->
         asset.filename = asset.filename.replace(/^src/, 'build')
         asset.text = asset.text.replace('{{{COMMON}}}', COMMON)
-      f.tutdown layout: __dirname + '/src/docs/_tutdownLayout.mustache'
-      f.template delimiters: 'mustache', layout: 'src/docs/_layout.mustache'
+      f.tutdown
+      f.tap (asset) ->
+        asset.nav = fs.readFileSync('src/docs/toc.html')
+      f.template
+        delimiters: 'mustache'
+        layout: 'src/docs/_layout.mustache'
+        navHeader: ''
       f.writeFile
     ]
 
@@ -86,29 +91,36 @@ exports.project = (pm) ->
     dev: [
       # changed to be udnerscore templates (for non-Barc users)
       f.tutdown
-        navHeaderTemplate:
+        # navHeaderTemplate:
+        #   """
+        #   <a href='index.html'>
+        #     <div class='nav-title'>API Docs</div>
+        #   </a>
+        #   """
+        # contentHeaderTemplate:
+        #   """
+        #   <a href='index.html'>
+        #     <img id='logo' src='img/logo.png'/>
+        #   </a>
+        #   """
+        # contentFooterTemplate:
+        #   """
+        #   <script>
+        #     (function() {
+        #       var b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
+        #       b.src = "//barc.com/js/libs/barc/barc.js";
+        #       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s);
+        #     })();
+        #   </script>
+        #   """
+      f.template
+        delimiters: 'mustache'
+        layout: 'src/docs/_layout.mustache'
+        navHeader:
           """
-          <a href='index.html'>
-            <div class='nav-title'>API Docs</div>
-          </a>
+            <h2><a href="index.html">Giraffe</a></h2>
+            <h2><a href="api.html">API</a></h2>
           """
-        contentHeaderTemplate:
-          """
-          <a href='index.html'>
-            <img id='logo' src='img/logo.png'/>
-          </a>
-          """
-        contentFooterTemplate:
-          """
-          <script>
-            (function() {
-              var b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
-              b.src = "//barc.com/js/libs/barc/barc.js";
-              var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s);
-            })();
-          </script>
-          """
-      f.template delimiters: 'mustache', layout: 'src/docs/_layout.mustache'
       f.writeFile _filename: 'build/docs/api.html'
     ]
 
