@@ -37,23 +37,27 @@
 <p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
 <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
 <p><strong>Giraffe.View</strong> implements <code>render</code> for you. This <code>render</code> function consumes <code>getHTML</code>, which is an empty method for you to implement that returns a string of the view&#39;s HTML. One of Giraffe&#39;s goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls <code>render</code> for you. But stay with us! Giraffe is able to add quite a few features by controlling the <code>render</code> method. You can still call <code>render</code> when your models change and expect it to work like it always has. (except better!)</p>
-<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h2&gt;'</span>;
+<pre><code class="language-js">  template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'main view'</span>};
   }
 });</code></pre>
 <p>Let&#39;s create an instance of the view class we just defined.</p>
 <pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();</code></pre>
 <p>With a normal <strong>Backbone.View</strong>, we&#39;d probably now do something like <code>$(&#39;body&#39;).append(view.$el)</code>. That would still work, but the <strong>Giraffe.View</strong> adds the method <code>attachTo</code>, a function that works some magic behind the scenes to simplify view management. The goal of the <strong>Giraffe.View</strong> is to have a recursively-nestable automatically-memory-managed move-it-and-render-it-anywhere-any-time view. <em>Phew.</em> In this simple case, the only things happening behind the scenes in <code>attachTo</code> are <code>$(&#39;body&#39;).append(view.$el)</code> followed by <code>view.render()</code>. The <code>render</code> happens only because Giraffe sees that the view has yet to be rendered.</p>
 <pre><code class="language-js">view.attachTo(<span class="string">'body'</span>);</code></pre>
-<p>How does Giraffe work its promised magic? Part of the answer lies in tying a view&#39;s <code>$el</code> to the view instance via the <code>data-view-cid</code> attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.</p>
-<pre><code class="language-js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.cid: '</span> + view.cid + <span class="string">'&lt;/p&gt;'</span>);
-$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.$el.data("view-cid"): '</span> + view.$el.data(<span class="string">'view-cid'</span>) + <span class="string">'&lt;/p&gt;'</span>);</code></pre>
+<p>You may be wondering how <strong>Giraffe.View</strong> works under the hood. Part of the answer lies in tying a view&#39;s <code>$el</code> to the view instance via the <code>data-view-cid</code> attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.</p>
+<pre><code class="language-js">view.cid; <span class="comment">// =&gt; 'view1'</span>
+view.$el.data(<span class="string">"view-cid"</span>); <span class="comment">// =&gt; 'view1'</span></code></pre>
 <p>So let&#39;s see the magic! First we&#39;ll define a <code>ChildView</code> class.</p>
 <pre><code class="language-js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+  template: <span class="string">'&lt;h3&gt;&lt;%= name %&gt;&lt;/h3&gt;'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'child view'</span>};
   }
 });</code></pre>
 <p>Now let&#39;s create an instance of <code>ChildView</code> and attach it to the first view we created. The method <code>attach</code> is an inverted way to call <code>attachTo</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any selector, DOM element, or view will do.</p>
@@ -63,27 +67,6 @@ view.attach(childView);</code></pre>
 <pre><code class="language-js">childView.parent === view;      <span class="comment">// =&gt; true</span>
 view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span></code></pre>
 <p>When a <strong>Giraffe.View</strong> renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call <code>delegateEvents</code> manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call <code>dispose</code> on them, the generalized Giraffe removal/destroy/cleanup method. <em>(Side note: the method name is &#39;<code>dispose&#39;</code> and not <code>&#39;remove&#39;</code> as a matter of necessity even though it essentially overrides Backbone&#39;s <code>view.remove</code>. This is because any object can be added to a view&#39;s children via <code>view.addChild</code> to take advantage of automatic memory management, and some objects like collections already have a <code>remove</code> method that means something completely different! Any child with a <code>dispose</code> method will be disposed of when its parent disposes.)</em></p>
-<pre><code class="language-uml">                    ┌────┐          ┌─────┐                
-                    │view│          │child│                
-                    └─┬──┘          └──┬──┘                
-       render()       │                │                   
- ─────────────────────>                │                   
-                      │                │                   
-                      │                │                   
-          ╔══════╤════╪════════════════╪══════════════════╗
-          ║ ALT  │  each child         │                  ║
-          ╟──────┘    │                │                  ║
-          ║           │    detach()    │                  ║
-          ║           │ ──────────────>│                  ║
-          ║           │                │                  ║
-          ║           │                ────┐              ║
-          ║           │                    │ dispose()    ║
-          ║           │                <───┘              ║
-          ╚═══════════╪════════════════╪══════════════════╝
-                    ┌─┴──┐          ┌──┴──┐                
-                    │view│          │child│                
-                    └────┘          └─────┘                
-</code></pre>
 <pre><code class="language-js">view.render() =&gt; childView.detach() =&gt; childView.dispose()
 <span class="comment">// ...rendering the parent completely destroyed our childView!</span></code></pre>
 <p><em>My view is gone, you say? What if I want to keep it!?</em></p>
@@ -91,6 +74,31 @@ view.children[<span class="number">0</span>] === childView; <span class="comment
 <pre><code class="language-js">childView.options.disposeOnDetach = <span class="literal">false</span>;
 <span class="comment">// or...</span>
 <span class="comment">// new ChildView({disposeOnDetach: false});</span></code></pre>
+<pre><code class="language-uml">                    ┌────┐          ┌─────┐                   
+                    │view│          │child│                   
+                    └─┬──┘          └──┬──┘                   
+       render()       │                │                      
+ ─────────────────────>                │                      
+                      │                │                      
+                      │                │                      
+                      │                │                      
+                      │                │                      
+                      │                │                      
+                      │    detach()    │                      
+                      │ ──────────────>│                      
+                      │                │                      
+                      │                │                      
+                      │   ╔══════╤═════╪══════════════════╗   
+                      │   ║ ALT  │  if options.disposeOnDetach
+                      │   ╟──────┘     │                  ║   
+                      │   ║            ────┐              ║   
+                      │   ║                │ dispose()    ║   
+                      │   ║            <───┘              ║   
+                      │   ╚════════════╪══════════════════╝   
+                    ┌─┴──┐          ┌──┴──┐                   
+                    │view│          │child│                   
+                    └────┘          └─────┘                   
+</code></pre>
 <p>We now have a cached child view! Let&#39;s see what happens when the parent view renders.</p>
 <pre><code class="language-js">view.render() =&gt; childView.detach()
 view.children[<span class="number">0</span>] === childView <span class="comment">// =&gt; true</span>
@@ -105,7 +113,7 @@ view.render();                <span class="comment">// =&gt; childView.detach()<
 view.children.length === <span class="number">1</span>;   <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
 view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span></code></pre>
 <p>Time for a victory message.</p>
-<pre><code class="language-js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the view and saved the child! What a feat!&lt;/p&gt;'</span>)</code></pre>
+<pre><code class="language-js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the main view and saved the child!&lt;/p&gt;'</span>)</code></pre>
 <p>Views can be attached to any selector, DOM element, or view. Note that the inverted <code>attach</code> method will make sure the calling object contains the <code>el</code> you specify, because semantically you&#39;re saying <em>&#39;attach this view to this parent&#39;</em>.</p>
 <pre><code class="language-js">view.attachTo(<span class="string">'#some-selector'</span>);
 view.attachTo(someDOMElement);
@@ -124,7 +132,7 @@ childView.attachTo(view, {method: <span class="string">'html'</span>});
 
 childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: <span class="literal">true</span>});
 <span class="comment">// =&gt; detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true</span></code></pre>
-<p>Here&#39;s an abridged UML summary of all those words.</p>
+<p>Here&#39;s an abridged UML summary.</p>
 <pre><code class="language-uml">     ┌────┐                                     ┌──────┐                ┌────────────┐                       ┌──────────┐          ┌───┐          
      │Code│                                     │MyView│                │Giraffe.View│                       │ParentView│          │DOM│          
      └─┬──┘                                     └──┬───┘                └─────┬──────┘                       └────┬─────┘          └─┬─┘          
@@ -194,7 +202,7 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
      │Code│                                     │MyView│                │Giraffe.View│                       │ParentView│          │DOM│          
      └────┘                                     └──────┘                └────────────┘                       └──────────┘          └───┘          
 </code></pre>
-<p>That&#39;s it! Take a look at the example to see our handywork. It may not look very impressive, but we covered a lot of ground!</p>
+<p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
 <h2>Try It</h2>
 <div id="ex7_tabs" class="tabs">
   <ul>
@@ -223,8 +231,10 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
 </div><div id="ex7scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h2&gt;'</span>;
+  template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'main view'</span>};
   }
 });
 
@@ -232,14 +242,16 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
 
 view.attachTo(<span class="string">'body'</span>);
 
-$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.cid: '</span> + view.cid + <span class="string">'&lt;/p&gt;'</span>);
-$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view.$el.data("view-cid"): '</span> + view.$el.data(<span class="string">'view-cid'</span>) + <span class="string">'&lt;/p&gt;'</span>);
+view.cid; <span class="comment">// =&gt; 'view1'</span>
+view.$el.data(<span class="string">"view-cid"</span>); <span class="comment">// =&gt; 'view1'</span>
 
 <span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h3&gt;'</span> + <span class="keyword">this</span>.cid + <span class="string">'&lt;/h3&gt;'</span>;
+  template: <span class="string">'&lt;h3&gt;&lt;%= name %&gt;&lt;/h3&gt;'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'child view'</span>};
   }
 });
 
@@ -260,7 +272,7 @@ view.render();                <span class="comment">// =&gt; childView.detach()<
 view.children.length === <span class="number">1</span>;   <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
 view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span>
 
-$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the view and saved the child! What a feat!&lt;/p&gt;'</span>)</code></pre>
+$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the main view and saved the child!&lt;/p&gt;'</span>)</code></pre>
 </div><div id="ex7markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>

@@ -14,8 +14,10 @@
 
 if global?
   Backbone = require('backbone')
+  $ = require('jQuery')
 else
   Backbone = window.Backbone
+  $ = window.$
 
 
 Backbone.Giraffe = Giraffe =
@@ -180,39 +182,81 @@ class Giraffe.View extends Backbone.View
     @
 
 
+  ###
+  * This is an empty function for you to implement. Used in fewer situations than `afterRender`, but helpful in circumstances where the DOM has state that need to be preserved across renders. For example, if a view with a dropdown menu is rendering, you may want to save its open state in `beforeRender` and reapply it in `afterRender`.
+  * @caption Implement this function in your views.
+  ###
+  beforeRender: ->
+
+
   ###*
   * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. It consumes the method `getHTML`, a method your views should implement that returns a view's HTML as a string.
   * @caption Do not override unless you know what you're doing!
   ###
   render: (options) =>
-    @beforeRender? options
+    @beforeRender.apply @, arguments
     @_renderedOnce = true
     @detachChildren options?.preserve
-    @$el.empty().html @getHTML?(options) or ''
+    @$el.empty().html @getHTML.apply(@, arguments) or ''
     @_cacheUiElements()
-    @afterRender? options
+    @afterRender.apply @, arguments
     @
-
-
-  ###*
-  * This is an empty function for you to implement. Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can implement `getHTML`, returning a string of HTML from your favorite templating engine.
-  * @caption Implement this function in your views.
-  ###
-  getHTML: (options) -> ''
-
-
-  ###
-  * This is an empty function for you to implement. Used in fewer situations than `afterRender`, but helpful in circumstances where the DOM has state that need to be preserved across renders. For example, if a view with a dropdown menu is rendering, you may want to save its open state in `beforeRender` and reapply it in `afterRender`.
-  * @caption Implement this function in your views.
-  ###
-  beforeRender: (options) ->
 
 
   ###*
   * This is an empty function for you to implement. After a view renders, `afterRender` is called. Child views are normally attached to the DOM here. Views that are cached by setting `options.disposeOnDetach` to true will be in `view.children` in `afterRender`, but will not be attached to the parent's `$el`.
   * @caption Implement this function in your views.
   ###
-  afterRender: (options) ->
+  afterRender: ->
+
+
+  ###*
+  * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default, or override `getHTML`, returning a string of HTML from your favorite templating engine.
+  * @caption Override this function in your views to get full control over what goes into view.$el during `render`.
+  ###
+  getHTML: ->
+    html = ''
+    if @template
+      template = if typeof @template is 'function'
+        @template.apply @, arguments
+      else
+        @template
+      if typeof template is 'string'
+        compiledTemplate = @compileTemplate(template)
+        if typeof compiledTemplate is 'function'
+          html = compiledTemplate(@serialize.apply(@, arguments))
+          if typeof html isnt 'string'
+            error 'Expected compiled template to return a string', html
+            html = ''
+        else
+          error 'Unable to compile template to a function', template
+      else
+        error 'Invalid template - expected a string or function returning a string', @template
+    html
+
+
+  ###*
+  * Consumed by `getHTML` to get a compiled template function, pulling from the cache if it's already been compiled.
+  * @caption Override this function in your views to specify a custom template compiler/cache.
+  ###
+  compileTemplate: (template) ->
+    cache = Giraffe.View.cachedTemplates ?= {}
+    cache[template] or cache[template] = @templateFunction(template)
+
+
+  ###*
+  * Consumed by `compileTemplate` to get the template function for `render`. Defaults to `_.template`.
+  * @caption Override this function in your views to specify a custom render function that's compatible with `_.template`.
+  ###
+  templateFunction: _.template
+
+
+  ###*
+  * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.
+  * @caption Override this function to pass custom data to a view's `templateFunction`.
+  ###
+  serialize: ->
+    {@collection, @model}
 
 
   ###*

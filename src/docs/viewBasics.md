@@ -9,8 +9,10 @@ var View = Giraffe.View.extend({
 
 **Giraffe.View** implements `render` for you. This `render` function consumes `getHTML`, which is an empty method for you to implement that returns a string of the view's HTML. One of Giraffe's goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls `render` for you. But stay with us! Giraffe is able to add quite a few features by controlling the `render` method. You can still call `render` when your models change and expect it to work like it always has. (except better!)
 ```js
-  getHTML: function() {
-    return '<h2>' + this.cid + '</h2>';
+  template: '<h2><%= name %></h2>',
+
+  serialize: function() {
+    return {name: 'main view'};
   }
 });
 ```
@@ -25,19 +27,21 @@ With a normal **Backbone.View**, we'd probably now do something like `$('body').
 view.attachTo('body');
 ```
 
-How does Giraffe work its promised magic? Part of the answer lies in tying a view's `$el` to the view instance via the `data-view-cid` attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.
+You may be wondering how **Giraffe.View** works under the hood. Part of the answer lies in tying a view's `$el` to the view instance via the `data-view-cid` attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.
 ```js
-$('body').append('<p>view.cid: ' + view.cid + '</p>');
-$('body').append('<p>view.$el.data("view-cid"): ' + view.$el.data('view-cid') + '</p>');
+view.cid; // => 'view1'
+view.$el.data("view-cid"); // => 'view1'
 ```
 
 So let's see the magic! First we'll define a `ChildView` class.
 ```js
 var ChildView = Giraffe.View.extend({
   className: 'child-view',
+  
+  template: '<h3><%= name %></h3>',
 
-  getHTML: function() {
-    return '<h3>' + this.cid + '</h3>';
+  serialize: function() {
+    return {name: 'child view'};
   }
 });
 ```
@@ -55,13 +59,6 @@ view.children[0] === childView; // => true
 ```
 
 When a **Giraffe.View** renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call `delegateEvents` manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call `dispose` on them, the generalized Giraffe removal/destroy/cleanup method. *(Side note: the method name is '`dispose'` and not `'remove'` as a matter of necessity even though it essentially overrides Backbone's `view.remove`. This is because any object can be added to a view's children via `view.addChild` to take advantage of automatic memory management, and some objects like collections already have a `remove` method that means something completely different! Any child with a `dispose` method will be disposed of when its parent disposes.)*
-```uml
--> view: render()
-alt each child
-    view -> child: detach()
-    child -> child: dispose()
-end
-```
 
 ```js --no-capture
 view.render() => childView.detach() => childView.dispose()
@@ -76,6 +73,15 @@ Good question! Even though it's often easy to just recreate child views after ev
 childView.options.disposeOnDetach = false;
 // or...
 // new ChildView({disposeOnDetach: false});
+```
+
+```uml
+-> view: render()
+alt each child
+  view -> child: detach()
+  alt if options.disposeOnDetach
+    child -> child: dispose()
+end
 ```
 
 We now have a cached child view! Let's see what happens when the parent view renders.
@@ -102,7 +108,7 @@ view.$el.find(childView.$el); // => yep! good work, `afterRender`!
 
 Time for a victory message.
 ```js
-$('body').append('<p>We rendered the view and saved the child! What a feat!</p>')
+$('body').append('<p>We rendered the main view and saved the child!</p>')
 ```
 
 Views can be attached to any selector, DOM element, or view. Note that the inverted `attach` method will make sure the calling object contains the `el` you specify, because semantically you're saying *'attach this view to this parent'*.
@@ -130,7 +136,7 @@ childView.attachTo(view, {method: 'html', preserve: true});
 // => detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true
 ```
 
-Here's an abridged UML summary of all those words.
+Here's an abridged UML summary.
 ```uml
 participant Code
 participant MyView
@@ -171,7 +177,7 @@ alt if MyView not yet rendered or options.forceRender
 end
 ```
 
-That's it! Take a look at the example to see our handywork. It may not look very impressive, but we covered a lot of ground!
+That's it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!
 
 {{{COMMON}}}
 

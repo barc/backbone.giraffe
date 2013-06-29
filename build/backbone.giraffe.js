@@ -1,5 +1,5 @@
 (function() {
-  var Backbone, Giraffe, error, _setEventBindings, _setEventMapBindings,
+  var $, Backbone, Giraffe, error, _setEventBindings, _setEventMapBindings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -7,8 +7,10 @@
 
   if (typeof global !== "undefined" && global !== null) {
     Backbone = require('backbone');
+    $ = require('jQuery');
   } else {
     Backbone = window.Backbone;
+    $ = window.$;
   }
 
   Backbone.Giraffe = Giraffe = {
@@ -171,6 +173,14 @@
       return this;
     };
 
+    /*
+    * This is an empty function for you to implement. Used in fewer situations than `afterRender`, but helpful in circumstances where the DOM has state that need to be preserved across renders. For example, if a view with a dropdown menu is rendering, you may want to save its open state in `beforeRender` and reapply it in `afterRender`.
+    * @caption Implement this function in your views.
+    */
+
+
+    View.prototype.beforeRender = function() {};
+
     /**
     * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. It consumes the method `getHTML`, a method your views should implement that returns a view's HTML as a string.
     * @caption Do not override unless you know what you're doing!
@@ -178,36 +188,14 @@
 
 
     View.prototype.render = function(options) {
-      if (typeof this.beforeRender === "function") {
-        this.beforeRender(options);
-      }
+      this.beforeRender.apply(this, arguments);
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
-      this.$el.empty().html((typeof this.getHTML === "function" ? this.getHTML(options) : void 0) || '');
+      this.$el.empty().html(this.getHTML.apply(this, arguments) || '');
       this._cacheUiElements();
-      if (typeof this.afterRender === "function") {
-        this.afterRender(options);
-      }
+      this.afterRender.apply(this, arguments);
       return this;
     };
-
-    /**
-    * This is an empty function for you to implement. Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can implement `getHTML`, returning a string of HTML from your favorite templating engine.
-    * @caption Implement this function in your views.
-    */
-
-
-    View.prototype.getHTML = function(options) {
-      return '';
-    };
-
-    /*
-    * This is an empty function for you to implement. Used in fewer situations than `afterRender`, but helpful in circumstances where the DOM has state that need to be preserved across renders. For example, if a view with a dropdown menu is rendering, you may want to save its open state in `beforeRender` and reapply it in `afterRender`.
-    * @caption Implement this function in your views.
-    */
-
-
-    View.prototype.beforeRender = function(options) {};
 
     /**
     * This is an empty function for you to implement. After a view renders, `afterRender` is called. Child views are normally attached to the DOM here. Views that are cached by setting `options.disposeOnDetach` to true will be in `view.children` in `afterRender`, but will not be attached to the parent's `$el`.
@@ -215,7 +203,69 @@
     */
 
 
-    View.prototype.afterRender = function(options) {};
+    View.prototype.afterRender = function() {};
+
+    /**
+    * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default, or override `getHTML`, returning a string of HTML from your favorite templating engine.
+    * @caption Override this function in your views to get full control over what goes into view.$el during `render`.
+    */
+
+
+    View.prototype.getHTML = function() {
+      var compiledTemplate, html, template;
+      html = '';
+      if (this.template) {
+        template = typeof this.template === 'function' ? this.template.apply(this, arguments) : this.template;
+        if (typeof template === 'string') {
+          compiledTemplate = this.compileTemplate(template);
+          if (typeof compiledTemplate === 'function') {
+            html = compiledTemplate(this.serialize.apply(this, arguments));
+            if (typeof html !== 'string') {
+              error('Expected compiled template to return a string', html);
+              html = '';
+            }
+          } else {
+            error('Unable to compile template to a function', template);
+          }
+        } else {
+          error('Invalid template - expected a string or function returning a string', this.template);
+        }
+      }
+      return html;
+    };
+
+    /**
+    * Consumed by `getHTML` to get a compiled template function, pulling from the cache if it's already been compiled.
+    * @caption Override this function in your views to specify a custom template compiler/cache.
+    */
+
+
+    View.prototype.compileTemplate = function(template) {
+      var cache, _base;
+      cache = (_base = Giraffe.View).cachedTemplates != null ? (_base = Giraffe.View).cachedTemplates : _base.cachedTemplates = {};
+      return cache[template] || (cache[template] = this.templateFunction(template));
+    };
+
+    /**
+    * Consumed by `compileTemplate` to get the template function for `render`. Defaults to `_.template`.
+    * @caption Override this function in your views to specify a custom render function that's compatible with `_.template`.
+    */
+
+
+    View.prototype.templateFunction = _.template;
+
+    /**
+    * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.
+    * @caption Override this function to pass custom data to a view's `templateFunction`.
+    */
+
+
+    View.prototype.serialize = function() {
+      return {
+        collection: this.collection,
+        model: this.model
+      };
+    };
 
     /**
     * Detaches the view from the DOM. If `options.disposeOnDetach` is true, which is the default, `dispose` will be called on the view and its `children` unless `preserve` is true. `preserve` defaults to false.

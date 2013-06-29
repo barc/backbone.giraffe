@@ -21,7 +21,6 @@ exports.generate = (source, options = {}, cb) ->
     options = {}
   js = if options.coffeeScript then coffee.compile(source) else source
   json = dox.parseComments(js)
-  # fs.writeFileSync "dox.json", JSON.stringify(json)
   exports.generateFromDoxJSON json, options, cb
 
 

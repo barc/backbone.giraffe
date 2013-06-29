@@ -2,7 +2,7 @@
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com
  */
-/* line 5, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 5, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 html,
 body,
 div,
@@ -92,7 +92,7 @@ video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-/* line 26, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 26, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 article,
 aside,
 details,
@@ -106,21 +106,21 @@ nav,
 section {
   display: block;
 }
-/* line 30, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 30, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 body {
   line-height: 1;
 }
-/* line 33, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 33, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 ol,
 ul {
   list-style: none;
 }
-/* line 36, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 36, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 blockquote,
 q {
   quotes: none;
 }
-/* line 39, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 39, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 blockquote:before,
 blockquote:after,
 q:before,
@@ -128,12 +128,12 @@ q:after {
   content: '';
   content: none;
 }
-/* line 44, /Users/mgutz/barc/code/giraffe/src/docs/css/reset.less */
+/* line 44, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/mixins.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\mixins.less */
 .big-button {
   height: 50px;
   line-height: 48px;
@@ -163,7 +163,7 @@ table {
   box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
   outline: none !important;
 }
-/* line 23, /Users/mgutz/barc/code/giraffe/src/docs/css/mixins.less */
+/* line 23, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\mixins.less */
 .big-button:hover,
 .big-button:focus {
   -webkit-box-shadow: 0 1px 5px #9fc9ee inset, 0 -1px 4px #2273b9 inset, 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -179,7 +179,7 @@ table {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff4d9bdf', endColorstr='#ff3c92dc', GradientType=0);
   background-position: 0;
 }
-/* line 30, /Users/mgutz/barc/code/giraffe/src/docs/css/mixins.less */
+/* line 30, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\mixins.less */
 .big-button:active {
   border-top-color: #1a588e;
   -webkit-box-shadow: 0 1px 20px #1e65a3 inset, 0 1px 4px #1a588e inset;
@@ -194,7 +194,7 @@ table {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff2580cf', endColorstr='#ff4999de', GradientType=0);
 }
-/* line 37, /Users/mgutz/barc/code/giraffe/src/docs/css/mixins.less */
+/* line 37, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\mixins.less */
 .big-button.disabled {
   opacity: 0.85;
   background: #4999de;
@@ -205,118 +205,118 @@ table {
   border-color: #2580cf;
   text-shadow: none;
 }
-/* line 47, /Users/mgutz/barc/code/giraffe/src/docs/css/mixins.less */
+/* line 47, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\mixins.less */
 .light-text {
   color: #666666;
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
 .pln {
   color: #000000;
 }
 @media screen {
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .str {
     color: #008800;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .kwd {
     color: #000088;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .com {
     color: #880000;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .typ {
     color: #660066;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .lit {
     color: #006666;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .pun,
   .opn,
   .clo {
     color: #666600;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .tag {
     color: #000088;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .atn {
     color: #660066;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .atv {
     color: #008800;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .dec,
   .var {
     color: #660066;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .fun {
     color: #ff0000;
   }
 }
 @media print, projection {
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .str {
     color: #006600;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .kwd {
     color: #006;
     font-weight: bold;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .com {
     color: #600;
     font-style: italic;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .typ {
     color: #404;
     font-weight: bold;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .lit {
     color: #004444;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .pun,
   .opn,
   .clo {
     color: #444400;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .tag {
     color: #006;
     font-weight: bold;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .atn {
     color: #440044;
   }
-  /* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+  /* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
   .atv {
     color: #006600;
   }
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
 pre.prettyprint {
   padding: 2px;
   border: 1px solid #888888;
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
 ol.linenums {
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
 li.L0,
 li.L1,
 li.L2,
@@ -327,7 +327,7 @@ li.L7,
 li.L8 {
   list-style-type: none;
 }
-/* line 1, /Users/mgutz/barc/code/giraffe/src/docs/css/prettify.less */
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\prettify.less */
 li.L1,
 li.L3,
 li.L5,
@@ -335,7 +335,7 @@ li.L7,
 li.L9 {
   background: #eeeeee;
 }
-/* line 7, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 7, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 body {
   background-color: #ffffff;
   font-size: 14px;
@@ -344,35 +344,35 @@ body {
   background-image: url('../img/texture.png');
   color: #333333;
 }
-/* line 16, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 16, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 * {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-/* line 20, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 20, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 h1 {
   font-size: 42px;
 }
-/* line 24, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 24, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 h2 {
   font-size: 32px;
   padding: 20px 0 10px;
 }
-/* line 29, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 29, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 h3 {
   font-size: 22px;
   padding: 20px 0 10px;
 }
-/* line 34, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 34, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 p {
   margin-bottom: 10px;
 }
-/* line 38, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 38, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 section {
   margin-top: 40px;
 }
-/* line 42, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 42, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 code {
   font-size: 14px;
   font-family: monospace;
@@ -383,7 +383,7 @@ code {
   -webkit-border-radius: 3px;
   border: 1px dashed rgba(0, 0, 0, 0.1);
 }
-/* line 51, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 51, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 pre {
   padding: 20px;
   border-radius: 4px;
@@ -392,44 +392,44 @@ pre {
   font-family: monospace;
   line-height: 1;
 }
-/* line 57, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 57, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 pre.prettyprint {
   border: 0;
 }
-/* line 61, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 61, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 pre code {
   display: block;
   padding: 4px;
 }
-/* line 67, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 67, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 strong {
   font-weight: bold;
 }
-/* line 71, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 71, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 a {
   color: #333333;
 }
-/* line 75, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 75, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .caption {
   margin-left: 14px;
   font-size: 12px;
   color: #666666;
   font-family: monospace;
 }
-/* line 82, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 82, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #logo {
   width: 600px;
   height: 135px;
   margin-left: -20px;
 }
-/* line 88, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 88, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #content {
   position: relative;
   margin-left: 260px;
   padding: 20px 40px 40px 40px;
   max-width: 840px;
 }
-/* line 95, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 95, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #nav {
   position: fixed;
   left: 0;
@@ -444,20 +444,20 @@ a {
   background-color: #fff;
   padding: 6px 20px 20px 40px;
 }
-/* line 107, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 107, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #nav a {
   text-decoration: none;
 }
-/* line 110, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 110, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #nav a:hover {
   text-decoration: underline;
 }
-/* line 115, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 115, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #nav ul {
   padding-left: 20px;
   font-size: 12px;
 }
-/* line 121, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 121, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #nav-background {
   z-index: -1;
   position: absolute;
@@ -468,16 +468,16 @@ a {
   opacity: 0.6;
   background-image: url('../img/texture.png');
 }
-/* line 132, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 132, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .nav-title {
   margin-top: 30px;
   font-size: 15px;
 }
-/* line 137, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 137, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .menu {
   padding-left: 80px;
 }
-/* line 140, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 140, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .menu li {
   color: #888;
   display: inline-block;
@@ -495,17 +495,17 @@ a {
   position: relative;
   top: 1px;
 }
-/* line 156, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 156, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .menu li:active {
   color: #555;
 }
-/* line 160, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 160, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .menu li.active {
   color: #333;
   border-color: #bbbbbb;
   border-bottom-color: #ffffff;
 }
-/* line 168, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 168, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .menu-content {
   border: 1px solid #bbbbbb;
   padding: 20px;
@@ -513,29 +513,29 @@ a {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
 }
-/* line 175, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 175, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #save-scroll-position-view .content-view {
   height: 200px;
   overflow: auto;
 }
-/* line 181, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 181, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .child-view {
   padding: 20px;
   margin: 20px;
   border: 1px dashed #888;
 }
-/* line 187, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 187, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #uncached-dots-view,
 #cached-dots-view {
   word-break: break-all;
   line-height: 8px;
 }
-/* line 192, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 192, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #barc_container {
   margin-top: 20px;
   height: 600px;
 }
-/* line 197, /Users/mgutz/barc/code/giraffe/src/docs/css/style.less */
+/* line 197, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #download-section {
   margin-top: 60px;
 }
