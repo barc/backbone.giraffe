@@ -432,8 +432,9 @@ pre code {
   background-color: inherit;
   padding: 0;
   font-size: 0.8em;
+  line-height: 0.8em;
 }
-/* line 28, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 29, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre code,
 pre .subst,
 pre .tag .title,
@@ -442,7 +443,7 @@ pre .clojure .built_in,
 pre .nginx .title {
   color: black;
 }
-/* line 37, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 38, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .string,
 pre .title,
 pre .constant,
@@ -472,7 +473,7 @@ pre .markdown .header,
 pre .coffeescript .attribute {
   color: #cc5f00;
 }
-/* line 67, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 68, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .comment,
 pre .annotation,
 pre .template_comment,
@@ -482,7 +483,7 @@ pre .asciidoc .blockquote,
 pre .markdown .blockquote {
   color: #888;
 }
-/* line 77, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 78, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .number,
 pre .date,
 pre .regexp,
@@ -499,7 +500,7 @@ pre .asciidoc .link_url,
 pre .markdown .link_url {
   color: #cc1b00;
 }
-/* line 94, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 95, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .label,
 pre .javadoc,
 pre .ruby .string,
@@ -530,7 +531,7 @@ pre .lasso .attribute,
 pre .coffeescript .property {
   color: #8888ff;
 }
-/* line 125, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 126, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .keyword,
 pre .id,
 pre .title,
@@ -552,16 +553,16 @@ pre .request,
 pre .status {
   font-weight: bold;
 }
-/* line 147, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 148, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .asciidoc .emphasis,
 pre .markdown .emphasis {
   font-style: italic;
 }
-/* line 152, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 153, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .nginx .built_in {
   font-weight: normal;
 }
-/* line 156, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
+/* line 157, /Users/mgutz/Projects/tutdown/src/assets/highlight.less */
 pre .coffeescript .javascript,
 pre .javascript .xml,
 pre .lasso .markup,
