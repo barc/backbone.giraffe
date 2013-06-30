@@ -733,42 +733,43 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
 @media only screen and (min-width: 54em) {
   /* line 20, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
   .content {
-    width: 80.00%;
+    width: 70.00%;
   }
   /* line 21, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
   .sidebar {
-    width: 20.00%;
-  }
-  /* line 22, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .info {
-    width: 100%;
+    width: 30.00%;
   }
 }
 @media only screen and (min-width: 76em) {
-  /* line 26, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+  /* line 25, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
   .content {
-    width: 75.00%;
+    width: 80.00%;
   }
   /* 7/12 */
-  /* line 27, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+  /* line 26, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
   .sidebar {
-    width: 25.00%;
+    width: 20.00%;
   }
   /* 5/12 */
 }
-/* line 30, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 29, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #page-wrapper {
   width: 1280px ;
   margin-left: auto ;
   margin-right: auto ;
 }
-/* line 38, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 35, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+#sidebar {
+  margin-top: 50px;
+  border: double 3px #ececf0;
+}
+/* line 42, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 p,
 a,
 td {
   color: #444;
 }
-/* line 42, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 46, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 h1,
 h2,
 h3,
@@ -776,46 +777,45 @@ h4,
 h5 {
   color: #222;
 }
-/* line 46, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-.logo {
-  font-family: "Helvetica Neue", "Helvetica", verdana, sans;
-  color: #444;
-  font-size: 32px;
-  background-color: black;
-  margin-left: 1em;
-  border: double 3px #444;
-  padding: 0.2em;
-}
-/* line 58, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* .logo { */
+/*   font-family: "Helvetica Neue", "Helvetica", verdana, sans; */
+/*   color: #444; */
+/*   font-size: 32px; */
+/*   background-color: black; */
+/*   margin-left: 1em; */
+/*   border: double 3px #444; */
+/*   padding: 0.2em; */
+/* } */
+/* line 62, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 iframe.result {
   width: 100%;
   min-height: 200px;
   height: auto;
   border: dashed 1px #ececf0;
 }
-/* line 65, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 69, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 code {
   font-family: Consolas, Menlo, 'Ubuntu Mono', monospace;
 }
-/* line 71, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 75, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 ul {
   list-style: none;
   padding-left: 1em;
 }
-/* line 77, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 81, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 strong {
   font-weight: bold;
 }
-/* line 81, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 85, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 a {
   color: #333333;
   text-decoration: none;
 }
-/* line 85, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 89, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 a:hover {
   text-decoration: underline;
 }
-/* line 90, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 94, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .caption {
   margin-left: 14px;
   /* font-size: 12px; */
@@ -825,13 +825,13 @@ a:hover {
   font-weight: normal;
   font-size: 14px;
 }
-/* line 99, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 103, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #logo {
   width: 600px;
   height: 135px;
   margin-left: -20px;
 }
-/* line 105, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 109, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .nav-title {
   /* margin-top: 30px; */
 
