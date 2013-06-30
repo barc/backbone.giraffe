@@ -826,12 +826,20 @@ a:hover {
   font-size: 14px;
 }
 /* line 103, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.static {
+  font-style: italic;
+}
+/* line 106, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.static:before {
+  content: '.';
+}
+/* line 110, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #logo {
   width: 600px;
   height: 135px;
   margin-left: -20px;
 }
-/* line 109, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 116, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .nav-title {
   /* margin-top: 30px; */
 
