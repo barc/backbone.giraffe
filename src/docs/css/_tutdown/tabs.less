@@ -1,0 +1,70 @@
+@import "./variables.less";
+
+
+/////////// TABS
+.tabs, .tabs_content {
+	border-bottom: 1px solid #cccccc;
+}
+.tabs ul {
+	list-style: none;
+	padding: 0 0 10px 0;
+	margin: 0;
+	font-size: 0.75em;
+	//font-family: Arial, Verdana, sans-serif;
+        text-align: center;
+}
+.tabs ul li {
+	display: inline;
+        margin-left: -1px;
+}
+.tabs ul li a {
+	border: 1px solid #cccccc;
+	padding: 10px 25px 10px;
+	text-decoration: none;
+	background-color: #ffffff;
+	border-bottom: none;
+	outline: none;
+	color: @linkColor;
+}
+.tabs ul li a:hover {
+	color: @linkHoverColor;
+}
+.tabs ul li.active a {
+	border-bottom: none;
+	color: @linkActiveColor;
+	padding-bottom: 11px;
+        font-weight: bold;
+}
+.tabs ul li.active a:hover {
+	color: @linkHoverColor;
+        font-weight: bold;
+}
+
+.tabs ul li a.icon { background-image: url('products.png');
+	background-position: 13px 9px;
+	background-repeat: no-repeat;
+	padding-left: 36px;
+}
+
+.tabs_content {
+	//border: 1px solid #ccc;
+	border-top: none;
+	padding: 10px 0;
+	//width: 600px;
+}
+
+// hide tab content except first
+.tab_content:nth-child(n+2) {
+        display: none;
+}
+
+
+/*
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+*/
+
+.tab_content pre code {
+  background-color: inherit;
+  border: none;
+}
+

@@ -61,10 +61,19 @@ exports.project = (pm) ->
     dev: ->
       $.rm 'src/docs/index.md'
 
+  _toc:
+    files: 'src/docs/_toc.md'
+    dev: [
+      f.tutdown
+      f.writeFile _filename: 'dist/docs/_toc.html'
+    ]
+
   _docs:
     desc: 'Builds docs'
+    deps: ['_toc']
     files: [
       'src/docs/*.md'
+      '!src/docs/_toc.md'
     ]
     dev: [
       f.tap (asset) ->
@@ -72,7 +81,7 @@ exports.project = (pm) ->
         asset.text = asset.text.replace('{{{COMMON}}}', COMMON)
       f.tutdown
       f.tap (asset) ->
-        asset.nav = fs.readFileSync('src/docs/toc.html')
+        asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
         delimiters: 'mustache'
         layout: 'src/docs/_layout.mustache'
@@ -80,11 +89,7 @@ exports.project = (pm) ->
       f.writeFile
     ]
 
-  docs:
-    desc: 'Builds the docs'
-    deps: ['_copyReadmeAsIndex', '_docs', '_deleteTempIndex']
-
-  api:
+  _api:
     desc: 'Builds API documentation'
     deps: ['stylesheets', 'staticFiles']
     files: ['src/backbone.giraffe.coffee']
@@ -100,6 +105,10 @@ exports.project = (pm) ->
           """
       f.writeFile _filename: 'dist/docs/api.html'
     ]
+
+  docs:
+    desc: 'Builds the docs'
+    deps: ['_copyReadmeAsIndex', '_docs', '_deleteTempIndex', '_api']
 
   stylesheets:
     desc: 'Builds less files'

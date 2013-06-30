@@ -138,13 +138,10 @@ childView.attachTo(view, {method: 'html', preserve: true});
 // => detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true
 ```
 
-Here's an abridged UML summary.
+Here's an abridged UML summary of what happens inside `attachTo`
 ```uml
-participant Code
 participant MyView
 participant GView as "Giraffe.View"
-
-Code -> MyView: attachTo('#container', {method: 'append'})
 
 MyView -> GView: attachTo
 
