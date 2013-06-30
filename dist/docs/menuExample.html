@@ -137,31 +137,31 @@ app.attachTo(<span class="string">'body'</span>);
 Backbone.history.start();
 app.router.cause(<span class="string">'route:menu'</span>, <span class="string">'menu item 1'</span>);</code></pre>
 <h2>Try It</h2>
-<div id="ex5_tabs" class="tabs">
+<div id="menuexample0_tabs" class="tabs">
   <ul>
     <li class="active">
-  <a href="#ex5result-tab" rel="ex5result-tab">
+  <a href="#menuexample0result-tab" rel="menuexample0result-tab">
     result
   </a>
 </li><li>
-  <a href="#ex5scriptjs-tab" rel="ex5scriptjs-tab">
+  <a href="#menuexample0scriptjs-tab" rel="menuexample0scriptjs-tab">
     script.js
   </a>
 </li><li>
-  <a href="#ex5markuphtml-tab" rel="ex5markuphtml-tab">
+  <a href="#menuexample0markuphtml-tab" rel="menuexample0markuphtml-tab">
     markup.html
   </a>
 </li><li>
-  <a href="#ex5stylecss-tab" rel="ex5stylecss-tab">
+  <a href="#menuexample0stylecss-tab" rel="menuexample0stylecss-tab">
     style.css
   </a>
 </li>
   </ul>
 </div>
-<div id="ex5_tabs_content" class="tabs_content">
-  <div id="ex5result-tab" class="tab_content">
-  <iframe id="ex5" src="_assets/ex5.html" class="result"></iframe>
-</div><div id="ex5scriptjs-tab" class="tab_content">
+<div id="menuexample0_tabs_content" class="tabs_content">
+  <div id="menuexample0result-tab" class="tab_content">
+  <iframe id="menuexample0" src="_assets/menuexample0.html" class="result"></iframe>
+</div><div id="menuexample0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> App, MenuView, MenuItemView, ContentView, ContentItemView;
 
 App = Giraffe.App.extend({
@@ -264,22 +264,22 @@ app.router = <span class="keyword">new</span> Giraffe.Router({
 app.attachTo(<span class="string">'body'</span>);
 Backbone.history.start();
 app.router.cause(<span class="string">'route:menu'</span>, <span class="string">'menu item 1'</span>);</code></pre>
-</div><div id="ex5markuphtml-tab" class="tab_content">
+</div><div id="menuexample0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
   <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex5-style.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'menuexample0-style.css'</span> /&gt;</span>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex5-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="ex5stylecss-tab" class="tab_content">
+</div><div id="menuexample0stylecss-tab" class="tab_content">
   <pre><code class="language-css">/**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com

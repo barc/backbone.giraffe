@@ -4,6 +4,8 @@
 
 This example demonstrates the basic usage of **Giraffe.View**. It can be extended just like a **Backbone.View**.
 ```js
+Giraffe.View.setTemplateStrategy('underscore-template');
+
 var View = Giraffe.View.extend({
 ```
 
@@ -37,7 +39,7 @@ So let's see the magic! First we'll define a `ChildView` class.
 ```js
 var ChildView = Giraffe.View.extend({
   className: 'child-view',
-  
+
   template: '<h3><%= name %></h3>',
 
   serialize: function() {

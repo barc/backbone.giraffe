@@ -46,7 +46,8 @@
       disposeOnDetach: true,
       alwaysRender: false,
       saveScrollPosition: false,
-      documentTitle: null
+      documentTitle: null,
+      templateStrategy: null
     };
 
     function View(options) {
@@ -75,6 +76,9 @@
       this._isAttached = false;
       this._createEventsFromUIElements();
       this._wrapInitialize();
+      if (this.templateStrategy) {
+        Giraffe.View.setTemplateStrategy(this.templateStrategy, this);
+      }
       View.__super__.constructor.call(this, options);
     }
 
@@ -212,47 +216,8 @@
 
 
     View.prototype.getHTML = function() {
-      var compiledTemplate, html, template;
-      html = '';
-      if (this.template) {
-        template = typeof this.template === 'function' ? this.template.apply(this, arguments) : this.template;
-        if (typeof template === 'string') {
-          compiledTemplate = this.compileTemplate(template);
-          if (typeof compiledTemplate === 'function') {
-            html = compiledTemplate(this.serialize.apply(this, arguments));
-            if (typeof html !== 'string') {
-              error('Expected compiled template to return a string', html);
-              html = '';
-            }
-          } else {
-            error('Unable to compile template to a function', template);
-          }
-        } else {
-          error('Invalid template - expected a string or function returning a string', this.template);
-        }
-      }
-      return html;
+      return 'TODO - override getHTML';
     };
-
-    /**
-    * Consumed by `getHTML` to get a compiled template function, pulling from the cache if it's already been compiled.
-    * @caption Override this function in your views to specify a custom template compiler/cache.
-    */
-
-
-    View.prototype.compileTemplate = function(template) {
-      var cache, _base;
-      cache = (_base = Giraffe.View).cachedTemplates != null ? (_base = Giraffe.View).cachedTemplates : _base.cachedTemplates = {};
-      return cache[template] || (cache[template] = this.templateFunction(template));
-    };
-
-    /**
-    * Consumed by `compileTemplate` to get the template function for `render`. Defaults to `_.template`.
-    * @caption Override this function in your views to specify a custom render function that's compatible with `_.template`.
-    */
-
-
-    View.prototype.templateFunction = _.template;
 
     /**
     * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.
@@ -718,6 +683,103 @@
         })(event));
       }
       return _results;
+    };
+
+    /**
+    * Giraffe provides common strategies for templating.
+    *
+    * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'html'
+    *
+    * - underscore-template-selector
+    *
+    *     `view.template` is a string or function returning DOM selector
+    *
+    * - underscore-template
+    *
+    *     `view.template` is a string or function returning underscore template
+    *
+    * - html
+    *
+    *     `view.template` is a string or function returning html
+    */
+
+
+    View.setTemplateStrategy = function(strategy, instance) {
+      var getHTML;
+      switch (strategy) {
+        case 'underscore-template-selector':
+          getHTML = function() {
+            var selector, that;
+            that = this;
+            if (!this._templateFn) {
+              switch (typeof this.template) {
+                case 'string':
+                  selector = this.template;
+                  this._templateFn = _.template($(selector).html());
+                  break;
+                case 'function':
+                  this._templateFn = function(locals) {
+                    selector = that.template();
+                    return _.template($(selector).html(), locals);
+                  };
+                  break;
+                default:
+                  throw new Error('@template must be string or function');
+              }
+            }
+            return this._templateFn(this.serialize.apply(this, arguments));
+          };
+          break;
+        case 'underscore-template':
+          getHTML = function() {
+            var that;
+            that = this;
+            if (!this._templateFn) {
+              switch (typeof this.template) {
+                case 'string':
+                  this._templateFn = _.template(this.template);
+                  break;
+                case 'function':
+                  this._templateFn = function(locals) {
+                    return _.template(that.template(), locals);
+                  };
+                  break;
+                default:
+                  throw new Error('@template must be string or function');
+              }
+            }
+            return this._templateFn(this.serialize.apply(this, arguments));
+          };
+          break;
+        case 'jst':
+          getHTML = function() {
+            var html;
+            if (!this._templateFn) {
+              switch (typeof this.template) {
+                case 'string':
+                  html = this.template;
+                  this._templateFn = function() {
+                    return html;
+                  };
+                  break;
+                case 'function':
+                  this._templateFn = this.template;
+                  break;
+                default:
+                  throw new Error('@template must be string or function');
+              }
+            }
+            return this._templateFn(this.serialize.apply(this, arguments));
+          };
+          break;
+        default:
+          throw new Error('Unrecognized template strategy: ' + strategy);
+      }
+      if (instance) {
+        return instance.getHTML = getHTML;
+      } else {
+        return Giraffe.View.prototype.getHTML = getHTML;
+      }
     };
 
     View.setDocumentEvents(['click', 'change']);

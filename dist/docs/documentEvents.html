@@ -66,31 +66,31 @@ Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span
 <pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2>Try It</h2>
-<div id="ex3_tabs" class="tabs">
+<div id="documentevents0_tabs" class="tabs">
   <ul>
     <li class="active">
-  <a href="#ex3result-tab" rel="ex3result-tab">
+  <a href="#documentevents0result-tab" rel="documentevents0result-tab">
     result
   </a>
 </li><li>
-  <a href="#ex3scriptjs-tab" rel="ex3scriptjs-tab">
+  <a href="#documentevents0scriptjs-tab" rel="documentevents0scriptjs-tab">
     script.js
   </a>
 </li><li>
-  <a href="#ex3markuphtml-tab" rel="ex3markuphtml-tab">
+  <a href="#documentevents0markuphtml-tab" rel="documentevents0markuphtml-tab">
     markup.html
   </a>
 </li><li>
-  <a href="#ex3stylecss-tab" rel="ex3stylecss-tab">
+  <a href="#documentevents0stylecss-tab" rel="documentevents0stylecss-tab">
     style.css
   </a>
 </li>
   </ul>
 </div>
-<div id="ex3_tabs_content" class="tabs_content">
-  <div id="ex3result-tab" class="tab_content">
-  <iframe id="ex3" src="_assets/ex3.html" class="result"></iframe>
-</div><div id="ex3scriptjs-tab" class="tab_content">
+<div id="documentevents0_tabs_content" class="tabs_content">
+  <div id="documentevents0result-tab" class="tab_content">
+  <iframe id="documentevents0" src="_assets/documentevents0.html" class="result"></iframe>
+</div><div id="documentevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
 
   getHTML: <span class="keyword">function</span>() {
@@ -116,22 +116,22 @@ Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-</div><div id="ex3markuphtml-tab" class="tab_content">
+</div><div id="documentevents0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
   <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex3-style.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'documentevents0-style.css'</span> /&gt;</span>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex3-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'documentevents0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="ex3stylecss-tab" class="tab_content">
+</div><div id="documentevents0stylecss-tab" class="tab_content">
   <pre><code class="language-css">/**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com

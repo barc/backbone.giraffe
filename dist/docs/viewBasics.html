@@ -39,7 +39,9 @@
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2>View Basics</h2>
 <p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
 <p><strong>Giraffe.View</strong> implements <code>render</code> for you. This <code>render</code> function consumes <code>getHTML</code>, which is an empty method for you to implement that returns a string of the view&#39;s HTML. One of Giraffe&#39;s goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls <code>render</code> for you. But stay with us! Giraffe is able to add quite a few features by controlling the <code>render</code> method. You can still call <code>render</code> when your models change and expect it to work like it always has. (except better!)</p>
 <pre><code class="language-js">  template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
 
@@ -208,32 +210,34 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
 </code></pre>
 <p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
 <h2>Try It</h2>
-<div id="ex7_tabs" class="tabs">
+<div id="viewbasics0_tabs" class="tabs">
   <ul>
     <li class="active">
-  <a href="#ex7result-tab" rel="ex7result-tab">
+  <a href="#viewbasics0result-tab" rel="viewbasics0result-tab">
     result
   </a>
 </li><li>
-  <a href="#ex7scriptjs-tab" rel="ex7scriptjs-tab">
+  <a href="#viewbasics0scriptjs-tab" rel="viewbasics0scriptjs-tab">
     script.js
   </a>
 </li><li>
-  <a href="#ex7markuphtml-tab" rel="ex7markuphtml-tab">
+  <a href="#viewbasics0markuphtml-tab" rel="viewbasics0markuphtml-tab">
     markup.html
   </a>
 </li><li>
-  <a href="#ex7stylecss-tab" rel="ex7stylecss-tab">
+  <a href="#viewbasics0stylecss-tab" rel="viewbasics0stylecss-tab">
     style.css
   </a>
 </li>
   </ul>
 </div>
-<div id="ex7_tabs_content" class="tabs_content">
-  <div id="ex7result-tab" class="tab_content">
-  <iframe id="ex7" src="_assets/ex7.html" class="result"></iframe>
-</div><div id="ex7scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<div id="viewbasics0_tabs_content" class="tabs_content">
+  <div id="viewbasics0result-tab" class="tab_content">
+  <iframe id="viewbasics0" src="_assets/viewbasics0.html" class="result"></iframe>
+</div><div id="viewbasics0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
 
   template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
 
@@ -277,22 +281,22 @@ view.children.length === <span class="number">1</span>;   <span class="comment">
 view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span>
 
 $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the main view and saved the child!&lt;/p&gt;'</span>)</code></pre>
-</div><div id="ex7markuphtml-tab" class="tab_content">
+</div><div id="viewbasics0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
   <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex7-style.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewbasics0-style.css'</span> /&gt;</span>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex7-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'viewbasics0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="ex7stylecss-tab" class="tab_content">
+</div><div id="viewbasics0stylecss-tab" class="tab_content">
   <pre><code class="language-css">/**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com

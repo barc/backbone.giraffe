@@ -18,14 +18,14 @@ COMMON = """
 """
 
 exports.server =
-  dirname: 'build/'
+  dirname: 'dist/'
 
 
 exports.project = (pm) ->
   {f, $, Utils} = pm
 
-  changeToBuild = f.tap (asset) ->
-    asset.filename = asset.filename.replace(/^src/, 'build')
+  changeToDist = f.tap (asset) ->
+    asset.filename = asset.filename.replace(/^src/, 'dist')
 
   changeExtname = (extname) ->
     return f.tap (asset) ->
@@ -38,7 +38,7 @@ exports.project = (pm) ->
     files: 'src/backbone.giraffe.coffee'
     dev: [
       f.coffee
-      changeToBuild
+      changeToDist
       f.writeFile
     ]
 
@@ -48,7 +48,7 @@ exports.project = (pm) ->
     dev: [
       f.coffee
       f.uglify
-      f.writeFile _filename: 'build/backbone.giraffe.min.js'
+      f.writeFile _filename: 'dist/backbone.giraffe.min.js'
     ]
 
   _copyReadmeAsIndex:
@@ -68,7 +68,7 @@ exports.project = (pm) ->
     ]
     dev: [
       f.tap (asset) ->
-        asset.filename = asset.filename.replace(/^src/, 'build')
+        asset.filename = asset.filename.replace(/^src/, 'dist')
         asset.text = asset.text.replace('{{{COMMON}}}', COMMON)
       f.tutdown
       f.tap (asset) ->
@@ -98,7 +98,7 @@ exports.project = (pm) ->
           <h2><a href="index.html">Giraffe</a></h2>
           <h2><a href="api.html">API</a></h2>
           """
-      f.writeFile _filename: 'build/docs/api.html'
+      f.writeFile _filename: 'dist/docs/api.html'
     ]
 
   stylesheets:
@@ -106,14 +106,14 @@ exports.project = (pm) ->
     files: ['src/docs/css/style.less']
     dev: [
       f.less
-      changeToBuild
+      changeToDist
       f.writeFile
     ]
 
   staticFiles:
     desc: 'Copies static files'
     dev: ->
-      $.cp '-rf', 'src/docs/img', 'build/docs'
+      $.cp '-rf', 'src/docs/img', 'dist/docs'
 
   clean: ->
-    $.rm '-rf', 'build'
+    $.rm '-rf', 'dist'

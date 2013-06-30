@@ -1,3 +1,5 @@
+Giraffe.View.setTemplateStrategy('underscore-template');
+
 var View = Giraffe.View.extend({
 
   template: '<h2><%= name %></h2>',

@@ -80,31 +80,31 @@ childView.once(<span class="string">'disposed'</span>, <span class="keyword">fun
 <p>Let&#39;s call <code>dispose</code> on the app and see what happens!</p>
 <pre><code class="language-js">app.dispose();</code></pre>
 <h2>Try It</h2>
-<div id="ex4_tabs" class="tabs">
+<div id="lifecyclemanagement0_tabs" class="tabs">
   <ul>
     <li class="active">
-  <a href="#ex4result-tab" rel="ex4result-tab">
+  <a href="#lifecyclemanagement0result-tab" rel="lifecyclemanagement0result-tab">
     result
   </a>
 </li><li>
-  <a href="#ex4scriptjs-tab" rel="ex4scriptjs-tab">
+  <a href="#lifecyclemanagement0scriptjs-tab" rel="lifecyclemanagement0scriptjs-tab">
     script.js
   </a>
 </li><li>
-  <a href="#ex4markuphtml-tab" rel="ex4markuphtml-tab">
+  <a href="#lifecyclemanagement0markuphtml-tab" rel="lifecyclemanagement0markuphtml-tab">
     markup.html
   </a>
 </li><li>
-  <a href="#ex4stylecss-tab" rel="ex4stylecss-tab">
+  <a href="#lifecyclemanagement0stylecss-tab" rel="lifecyclemanagement0stylecss-tab">
     style.css
   </a>
 </li>
   </ul>
 </div>
-<div id="ex4_tabs_content" class="tabs_content">
-  <div id="ex4result-tab" class="tab_content">
-  <iframe id="ex4" src="_assets/ex4.html" class="result"></iframe>
-</div><div id="ex4scriptjs-tab" class="tab_content">
+<div id="lifecyclemanagement0_tabs_content" class="tabs_content">
+  <div id="lifecyclemanagement0result-tab" class="tab_content">
+  <iframe id="lifecyclemanagement0" src="_assets/lifecyclemanagement0.html" class="result"></iframe>
+</div><div id="lifecyclemanagement0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
 app.attachTo(<span class="string">'body'</span>);
 
@@ -142,22 +142,22 @@ childView.once(<span class="string">'disposed'</span>, <span class="keyword">fun
 });
 
 app.dispose();</code></pre>
-</div><div id="ex4markuphtml-tab" class="tab_content">
+</div><div id="lifecyclemanagement0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
   <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'ex4-style.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'lifecyclemanagement0-style.css'</span> /&gt;</span>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'ex4-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'lifecyclemanagement0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="ex4stylecss-tab" class="tab_content">
+</div><div id="lifecyclemanagement0stylecss-tab" class="tab_content">
   <pre><code class="language-css">/**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com
