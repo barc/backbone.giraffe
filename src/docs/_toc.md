@@ -12,3 +12,4 @@
 - [Menu Examples](menuExample.html)
 - [View Flexibility](viewFlexibility.html)
 - [Router and App Events](routersAndAppEvents.html)
+- [Template Strategies](templateStrategies.html)

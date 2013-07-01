@@ -78,7 +78,7 @@ exports.project = (pm) ->
     dev: [
       f.tap (asset) ->
         asset.filename = asset.filename.replace(/^src/, 'dist')
-        asset.text = asset.text.replace('{{{COMMON}}}', COMMON)
+        asset.text = asset.text.replace(/{{{COMMON}}}/g, COMMON)
       f.tutdown
       f.tap (asset) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')

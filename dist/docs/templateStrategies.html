@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        
+        <h2><a href="index.html">Giraffe</a></h2>
+<h2><a href="api.html">API</a></h2>
+<h2>Examples</h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="documentEvents.html">Document Events</a></li>
+<li><a href="dataEvents.html">Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Examples</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+</ul>
+
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        <h2>Template Strategies</h2>
+<p><strong>Giraffe</strong> provides a few common templating strategies.</p>
+<ul>
+<li>underscore templates</li>
+<li>underscore templates in the DOM</li>
+<li>JavaScript template functions (JST)</li>
+<li>user defined</li>
+</ul>
+<h3>Strategy Scope</h3>
+<p>Choosing a strategy tells <strong>Giraffe</strong> how to treat a view&#39;s <code>template</code>
+property.</p>
+<p>First decide whether a strategy applies globally or to a specific view.
+The global case is the one most used as it enforces consistent templating
+in a project. To enable a global strategy use <code>setTemplateStrategy</code> class
+method</p>
+<pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);</code></pre>
+<p>To enable for a specific view, set the <code>templateStrategy</code> option.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'underscore-template'</span>,
+  template: <span class="string">'&lt;p&gt;Hello &lt;%= name %&gt;&lt;/p&gt;'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'giraffe'</span>};
+  }
+  ...
+});</code></pre>
+<p><strong>NOTE:</strong> The <code>template</code> property works in concert with <code>serialize</code>
+to transform a view&#39;s model and/or collection into HTML markup.</p>
+<p><div class='section-example'><h3>Underscore Template (underscore-template)</h3>
+<p>This is the simplest and works well with CoffeeScript&#39;s multi-line
+strings.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'underscore-template'</span>,
+  template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'underscore-template'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h4>Result</h4>
+<div id="templatestrategies0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#templatestrategies0result-tab" rel="templatestrategies0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#templatestrategies0scriptjs-tab" rel="templatestrategies0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#templatestrategies0markuphtml-tab" rel="templatestrategies0markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#templatestrategies0stylecss-tab" rel="templatestrategies0stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="templatestrategies0_tabs_content" class="tabs_content">
+  <div id="templatestrategies0result-tab" class="tab_content">
+  <iframe id="templatestrategies0" src="_assets/templatestrategies0.html" class="result"></iframe>
+</div><div id="templatestrategies0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'underscore-template'</span>,
+  template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'underscore-template'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="templatestrategies0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'templatestrategies0-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="templatestrategies0stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="comment">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */</span>
+<span class="tag">html</span>,<span class="tag">body</span>,<span class="tag">div</span>,<span class="tag">span</span>,<span class="tag">applet</span>,<span class="tag">object</span>,<span class="tag">iframe</span>,<span class="tag">h1</span>,<span class="tag">h2</span>,<span class="tag">h3</span>,<span class="tag">h4</span>,<span class="tag">h5</span>,<span class="tag">h6</span>,<span class="tag">p</span>,<span class="tag">blockquote</span>,<span class="tag">pre</span>,<span class="tag">a</span>,<span class="tag">abbr</span>,<span class="tag">acronym</span>,<span class="tag">address</span>,<span class="tag">big</span>,<span class="tag">cite</span>,<span class="tag">code</span>,<span class="tag">del</span>,<span class="tag">dfn</span>,<span class="tag">em</span>,<span class="tag">img</span>,<span class="tag">ins</span>,<span class="tag">kbd</span>,<span class="tag">q</span>,<span class="tag">s</span>,<span class="tag">samp</span>,<span class="tag">small</span>,<span class="tag">strike</span>,<span class="tag">strong</span>,<span class="tag">sub</span>,<span class="tag">sup</span>,<span class="tag">tt</span>,<span class="tag">var</span>,<span class="tag">b</span>,<span class="tag">u</span>,<span class="tag">i</span>,<span class="tag">center</span>,<span class="tag">dl</span>,<span class="tag">dt</span>,<span class="tag">dd</span>,<span class="tag">ol</span>,<span class="tag">ul</span>,<span class="tag">li</span>,<span class="tag">fieldset</span>,<span class="tag">form</span>,<span class="tag">label</span>,<span class="tag">legend</span>,<span class="tag">table</span>,<span class="tag">caption</span>,<span class="tag">tbody</span>,<span class="tag">tfoot</span>,<span class="tag">thead</span>,<span class="tag">tr</span>,<span class="tag">th</span>,<span class="tag">td</span>,<span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">canvas</span>,<span class="tag">details</span>,<span class="tag">embed</span>,<span class="tag">figure</span>,<span class="tag">figcaption</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">output</span>,<span class="tag">ruby</span>,<span class="tag">section</span>,<span class="tag">summary</span>,<span class="tag">time</span>,<span class="tag">mark</span>,<span class="tag">audio</span>,<span class="tag">video</span><span class="rules">{<span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">padding</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">font-size</span>:<span class="value"><span class="number">100</span>%;</span></span><span class="rule"><span class="attribute">font</span>:<span class="value">inherit;</span></span><span class="rule"><span class="attribute">vertical-align</span>:<span class="value">baseline}</span></span></span><span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">details</span>,<span class="tag">figcaption</span>,<span class="tag">figure</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">section</span><span class="rules">{<span class="rule"><span class="attribute">display</span>:<span class="value">block}</span></span></span><span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">line-height</span>:<span class="value"><span class="number">1</span>}</span></span></span><span class="tag">ol</span>,<span class="tag">ul</span><span class="rules">{<span class="rule"><span class="attribute">list-style</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span>,<span class="tag">q</span><span class="rules">{<span class="rule"><span class="attribute">quotes</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span><span class="pseudo">:before</span>,<span class="tag">blockquote</span><span class="pseudo">:after</span>,<span class="tag">q</span><span class="pseudo">:before</span>,<span class="tag">q</span><span class="pseudo">:after</span><span class="rules">{<span class="rule"><span class="attribute">content</span>:<span class="value"><span class="string">''</span>;</span></span><span class="rule"><span class="attribute">content</span>:<span class="value">none}</span></span></span><span class="tag">table</span><span class="rules">{<span class="rule"><span class="attribute">border-collapse</span>:<span class="value">collapse;</span></span><span class="rule"><span class="attribute">border-spacing</span>:<span class="value"><span class="number">0</span>}</span></span></span>
+
+<span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+<span class="rule">}</span></span></code></pre>
+</div>
+</div></div>
+<div class='section-example'><h3>Underscore Template Selector (underscore-template-selector)</h3>
+<p>This strategy expects a selector to a DOM element containing the template.</p>
+<p>In HTML page</p>
+<pre><code class="language-html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
+  &lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>In script</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'underscore-template-selector'</span>,
+  template: <span class="string">'#hello-template'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'underscore-template-selector'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h4>Result</h4>
+<div id="templatestrategies1_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#templatestrategies1result-tab" rel="templatestrategies1result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#templatestrategies1markuphtml-tab" rel="templatestrategies1markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#templatestrategies1scriptjs-tab" rel="templatestrategies1scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#templatestrategies1stylecss-tab" rel="templatestrategies1stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="templatestrategies1_tabs_content" class="tabs_content">
+  <div id="templatestrategies1result-tab" class="tab_content">
+  <iframe id="templatestrategies1" src="_assets/templatestrategies1.html" class="result"></iframe>
+</div><div id="templatestrategies1markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'templatestrategies1-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
+  &lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies1-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="templatestrategies1scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'underscore-template-selector'</span>,
+  template: <span class="string">'#hello-template'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'underscore-template-selector'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="templatestrategies1stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="comment">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */</span>
+<span class="tag">html</span>,<span class="tag">body</span>,<span class="tag">div</span>,<span class="tag">span</span>,<span class="tag">applet</span>,<span class="tag">object</span>,<span class="tag">iframe</span>,<span class="tag">h1</span>,<span class="tag">h2</span>,<span class="tag">h3</span>,<span class="tag">h4</span>,<span class="tag">h5</span>,<span class="tag">h6</span>,<span class="tag">p</span>,<span class="tag">blockquote</span>,<span class="tag">pre</span>,<span class="tag">a</span>,<span class="tag">abbr</span>,<span class="tag">acronym</span>,<span class="tag">address</span>,<span class="tag">big</span>,<span class="tag">cite</span>,<span class="tag">code</span>,<span class="tag">del</span>,<span class="tag">dfn</span>,<span class="tag">em</span>,<span class="tag">img</span>,<span class="tag">ins</span>,<span class="tag">kbd</span>,<span class="tag">q</span>,<span class="tag">s</span>,<span class="tag">samp</span>,<span class="tag">small</span>,<span class="tag">strike</span>,<span class="tag">strong</span>,<span class="tag">sub</span>,<span class="tag">sup</span>,<span class="tag">tt</span>,<span class="tag">var</span>,<span class="tag">b</span>,<span class="tag">u</span>,<span class="tag">i</span>,<span class="tag">center</span>,<span class="tag">dl</span>,<span class="tag">dt</span>,<span class="tag">dd</span>,<span class="tag">ol</span>,<span class="tag">ul</span>,<span class="tag">li</span>,<span class="tag">fieldset</span>,<span class="tag">form</span>,<span class="tag">label</span>,<span class="tag">legend</span>,<span class="tag">table</span>,<span class="tag">caption</span>,<span class="tag">tbody</span>,<span class="tag">tfoot</span>,<span class="tag">thead</span>,<span class="tag">tr</span>,<span class="tag">th</span>,<span class="tag">td</span>,<span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">canvas</span>,<span class="tag">details</span>,<span class="tag">embed</span>,<span class="tag">figure</span>,<span class="tag">figcaption</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">output</span>,<span class="tag">ruby</span>,<span class="tag">section</span>,<span class="tag">summary</span>,<span class="tag">time</span>,<span class="tag">mark</span>,<span class="tag">audio</span>,<span class="tag">video</span><span class="rules">{<span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">padding</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">font-size</span>:<span class="value"><span class="number">100</span>%;</span></span><span class="rule"><span class="attribute">font</span>:<span class="value">inherit;</span></span><span class="rule"><span class="attribute">vertical-align</span>:<span class="value">baseline}</span></span></span><span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">details</span>,<span class="tag">figcaption</span>,<span class="tag">figure</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">section</span><span class="rules">{<span class="rule"><span class="attribute">display</span>:<span class="value">block}</span></span></span><span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">line-height</span>:<span class="value"><span class="number">1</span>}</span></span></span><span class="tag">ol</span>,<span class="tag">ul</span><span class="rules">{<span class="rule"><span class="attribute">list-style</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span>,<span class="tag">q</span><span class="rules">{<span class="rule"><span class="attribute">quotes</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span><span class="pseudo">:before</span>,<span class="tag">blockquote</span><span class="pseudo">:after</span>,<span class="tag">q</span><span class="pseudo">:before</span>,<span class="tag">q</span><span class="pseudo">:after</span><span class="rules">{<span class="rule"><span class="attribute">content</span>:<span class="value"><span class="string">''</span>;</span></span><span class="rule"><span class="attribute">content</span>:<span class="value">none}</span></span></span><span class="tag">table</span><span class="rules">{<span class="rule"><span class="attribute">border-collapse</span>:<span class="value">collapse;</span></span><span class="rule"><span class="attribute">border-spacing</span>:<span class="value"><span class="number">0</span>}</span></span></span>
+
+<span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+<span class="rule">}</span></span></code></pre>
+</div>
+</div></div>
+<div class='section-example'><h3>Javascript Template Function</h3>
+<p>This strategy expects a function.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'jst'</span>,
+  template: <span class="keyword">function</span>(data) {
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+  },
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'jst'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h4>Result</h4>
+<div id="templatestrategies2_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#templatestrategies2result-tab" rel="templatestrategies2result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#templatestrategies2scriptjs-tab" rel="templatestrategies2scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#templatestrategies2markuphtml-tab" rel="templatestrategies2markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#templatestrategies2stylecss-tab" rel="templatestrategies2stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="templatestrategies2_tabs_content" class="tabs_content">
+  <div id="templatestrategies2result-tab" class="tab_content">
+  <iframe id="templatestrategies2" src="_assets/templatestrategies2.html" class="result"></iframe>
+</div><div id="templatestrategies2scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="string">'jst'</span>,
+  template: <span class="keyword">function</span>(data) {
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+  },
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'jst'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="templatestrategies2markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'templatestrategies2-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies2-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="templatestrategies2stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="comment">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */</span>
+<span class="tag">html</span>,<span class="tag">body</span>,<span class="tag">div</span>,<span class="tag">span</span>,<span class="tag">applet</span>,<span class="tag">object</span>,<span class="tag">iframe</span>,<span class="tag">h1</span>,<span class="tag">h2</span>,<span class="tag">h3</span>,<span class="tag">h4</span>,<span class="tag">h5</span>,<span class="tag">h6</span>,<span class="tag">p</span>,<span class="tag">blockquote</span>,<span class="tag">pre</span>,<span class="tag">a</span>,<span class="tag">abbr</span>,<span class="tag">acronym</span>,<span class="tag">address</span>,<span class="tag">big</span>,<span class="tag">cite</span>,<span class="tag">code</span>,<span class="tag">del</span>,<span class="tag">dfn</span>,<span class="tag">em</span>,<span class="tag">img</span>,<span class="tag">ins</span>,<span class="tag">kbd</span>,<span class="tag">q</span>,<span class="tag">s</span>,<span class="tag">samp</span>,<span class="tag">small</span>,<span class="tag">strike</span>,<span class="tag">strong</span>,<span class="tag">sub</span>,<span class="tag">sup</span>,<span class="tag">tt</span>,<span class="tag">var</span>,<span class="tag">b</span>,<span class="tag">u</span>,<span class="tag">i</span>,<span class="tag">center</span>,<span class="tag">dl</span>,<span class="tag">dt</span>,<span class="tag">dd</span>,<span class="tag">ol</span>,<span class="tag">ul</span>,<span class="tag">li</span>,<span class="tag">fieldset</span>,<span class="tag">form</span>,<span class="tag">label</span>,<span class="tag">legend</span>,<span class="tag">table</span>,<span class="tag">caption</span>,<span class="tag">tbody</span>,<span class="tag">tfoot</span>,<span class="tag">thead</span>,<span class="tag">tr</span>,<span class="tag">th</span>,<span class="tag">td</span>,<span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">canvas</span>,<span class="tag">details</span>,<span class="tag">embed</span>,<span class="tag">figure</span>,<span class="tag">figcaption</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">output</span>,<span class="tag">ruby</span>,<span class="tag">section</span>,<span class="tag">summary</span>,<span class="tag">time</span>,<span class="tag">mark</span>,<span class="tag">audio</span>,<span class="tag">video</span><span class="rules">{<span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">padding</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">font-size</span>:<span class="value"><span class="number">100</span>%;</span></span><span class="rule"><span class="attribute">font</span>:<span class="value">inherit;</span></span><span class="rule"><span class="attribute">vertical-align</span>:<span class="value">baseline}</span></span></span><span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">details</span>,<span class="tag">figcaption</span>,<span class="tag">figure</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">section</span><span class="rules">{<span class="rule"><span class="attribute">display</span>:<span class="value">block}</span></span></span><span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">line-height</span>:<span class="value"><span class="number">1</span>}</span></span></span><span class="tag">ol</span>,<span class="tag">ul</span><span class="rules">{<span class="rule"><span class="attribute">list-style</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span>,<span class="tag">q</span><span class="rules">{<span class="rule"><span class="attribute">quotes</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span><span class="pseudo">:before</span>,<span class="tag">blockquote</span><span class="pseudo">:after</span>,<span class="tag">q</span><span class="pseudo">:before</span>,<span class="tag">q</span><span class="pseudo">:after</span><span class="rules">{<span class="rule"><span class="attribute">content</span>:<span class="value"><span class="string">''</span>;</span></span><span class="rule"><span class="attribute">content</span>:<span class="value">none}</span></span></span><span class="tag">table</span><span class="rules">{<span class="rule"><span class="attribute">border-collapse</span>:<span class="value">collapse;</span></span><span class="rule"><span class="attribute">border-spacing</span>:<span class="value"><span class="number">0</span>}</span></span></span>
+
+<span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+<span class="rule">}</span></span></code></pre>
+</div>
+</div></div>
+<div class='section-example'><h3>User Defined</h3>
+<p>To completely override <strong>Giraffe</strong> assign a function.</p>
+<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+  },
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h4>Result</h4>
+<div id="templatestrategies3_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#templatestrategies3result-tab" rel="templatestrategies3result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#templatestrategies3scriptjs-tab" rel="templatestrategies3scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#templatestrategies3markuphtml-tab" rel="templatestrategies3markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#templatestrategies3stylecss-tab" rel="templatestrategies3stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="templatestrategies3_tabs_content" class="tabs_content">
+  <div id="templatestrategies3result-tab" class="tab_content">
+  <iframe id="templatestrategies3" src="_assets/templatestrategies3.html" class="result"></iframe>
+</div><div id="templatestrategies3scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  templateStrategy: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+  },
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="templatestrategies3markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'templatestrategies3-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies3-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="templatestrategies3stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="comment">/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */</span>
+<span class="tag">html</span>,<span class="tag">body</span>,<span class="tag">div</span>,<span class="tag">span</span>,<span class="tag">applet</span>,<span class="tag">object</span>,<span class="tag">iframe</span>,<span class="tag">h1</span>,<span class="tag">h2</span>,<span class="tag">h3</span>,<span class="tag">h4</span>,<span class="tag">h5</span>,<span class="tag">h6</span>,<span class="tag">p</span>,<span class="tag">blockquote</span>,<span class="tag">pre</span>,<span class="tag">a</span>,<span class="tag">abbr</span>,<span class="tag">acronym</span>,<span class="tag">address</span>,<span class="tag">big</span>,<span class="tag">cite</span>,<span class="tag">code</span>,<span class="tag">del</span>,<span class="tag">dfn</span>,<span class="tag">em</span>,<span class="tag">img</span>,<span class="tag">ins</span>,<span class="tag">kbd</span>,<span class="tag">q</span>,<span class="tag">s</span>,<span class="tag">samp</span>,<span class="tag">small</span>,<span class="tag">strike</span>,<span class="tag">strong</span>,<span class="tag">sub</span>,<span class="tag">sup</span>,<span class="tag">tt</span>,<span class="tag">var</span>,<span class="tag">b</span>,<span class="tag">u</span>,<span class="tag">i</span>,<span class="tag">center</span>,<span class="tag">dl</span>,<span class="tag">dt</span>,<span class="tag">dd</span>,<span class="tag">ol</span>,<span class="tag">ul</span>,<span class="tag">li</span>,<span class="tag">fieldset</span>,<span class="tag">form</span>,<span class="tag">label</span>,<span class="tag">legend</span>,<span class="tag">table</span>,<span class="tag">caption</span>,<span class="tag">tbody</span>,<span class="tag">tfoot</span>,<span class="tag">thead</span>,<span class="tag">tr</span>,<span class="tag">th</span>,<span class="tag">td</span>,<span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">canvas</span>,<span class="tag">details</span>,<span class="tag">embed</span>,<span class="tag">figure</span>,<span class="tag">figcaption</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">output</span>,<span class="tag">ruby</span>,<span class="tag">section</span>,<span class="tag">summary</span>,<span class="tag">time</span>,<span class="tag">mark</span>,<span class="tag">audio</span>,<span class="tag">video</span><span class="rules">{<span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">padding</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">0</span>;</span></span><span class="rule"><span class="attribute">font-size</span>:<span class="value"><span class="number">100</span>%;</span></span><span class="rule"><span class="attribute">font</span>:<span class="value">inherit;</span></span><span class="rule"><span class="attribute">vertical-align</span>:<span class="value">baseline}</span></span></span><span class="tag">article</span>,<span class="tag">aside</span>,<span class="tag">details</span>,<span class="tag">figcaption</span>,<span class="tag">figure</span>,<span class="tag">footer</span>,<span class="tag">header</span>,<span class="tag">hgroup</span>,<span class="tag">menu</span>,<span class="tag">nav</span>,<span class="tag">section</span><span class="rules">{<span class="rule"><span class="attribute">display</span>:<span class="value">block}</span></span></span><span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">line-height</span>:<span class="value"><span class="number">1</span>}</span></span></span><span class="tag">ol</span>,<span class="tag">ul</span><span class="rules">{<span class="rule"><span class="attribute">list-style</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span>,<span class="tag">q</span><span class="rules">{<span class="rule"><span class="attribute">quotes</span>:<span class="value">none}</span></span></span><span class="tag">blockquote</span><span class="pseudo">:before</span>,<span class="tag">blockquote</span><span class="pseudo">:after</span>,<span class="tag">q</span><span class="pseudo">:before</span>,<span class="tag">q</span><span class="pseudo">:after</span><span class="rules">{<span class="rule"><span class="attribute">content</span>:<span class="value"><span class="string">''</span>;</span></span><span class="rule"><span class="attribute">content</span>:<span class="value">none}</span></span></span><span class="tag">table</span><span class="rules">{<span class="rule"><span class="attribute">border-collapse</span>:<span class="value">collapse;</span></span><span class="rule"><span class="attribute">border-spacing</span>:<span class="value"><span class="number">0</span>}</span></span></span>
+
+<span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F00</span>;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+<span class="rule">}</span></span></code></pre>
+</div>
+</div></div></p>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+</body>
+</html>
+

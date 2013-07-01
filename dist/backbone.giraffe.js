@@ -706,74 +706,81 @@
 
     View.setTemplateStrategy = function(strategy, instance) {
       var getHTML;
-      switch (strategy) {
-        case 'underscore-template-selector':
-          getHTML = function() {
-            var selector, that;
-            that = this;
-            if (!this._templateFn) {
-              switch (typeof this.template) {
-                case 'string':
-                  selector = this.template;
-                  this._templateFn = _.template($(selector).html());
-                  break;
-                case 'function':
-                  this._templateFn = function(locals) {
-                    selector = that.template();
-                    return _.template($(selector).html(), locals);
-                  };
-                  break;
-                default:
-                  throw new Error('@template must be string or function');
+      if (typeof strategy === 'function') {
+        getHTML = strategy;
+      } else {
+        switch (strategy) {
+          case 'underscore-template-selector':
+            getHTML = function() {
+              var selector, that;
+              that = this;
+              if (!this._templateFn) {
+                switch (typeof this.template) {
+                  case 'string':
+                    selector = this.template;
+                    this._templateFn = _.template($(selector).html());
+                    console.log(this._templateFn({
+                      name: 'FOO'
+                    }));
+                    break;
+                  case 'function':
+                    this._templateFn = function(locals) {
+                      selector = that.template();
+                      return _.template($(selector).html(), locals);
+                    };
+                    break;
+                  default:
+                    throw new Error('@template must be string or function');
+                }
               }
-            }
-            return this._templateFn(this.serialize.apply(this, arguments));
-          };
-          break;
-        case 'underscore-template':
-          getHTML = function() {
-            var that;
-            that = this;
-            if (!this._templateFn) {
-              switch (typeof this.template) {
-                case 'string':
-                  this._templateFn = _.template(this.template);
-                  break;
-                case 'function':
-                  this._templateFn = function(locals) {
-                    return _.template(that.template(), locals);
-                  };
-                  break;
-                default:
-                  throw new Error('@template must be string or function');
+              return this._templateFn(this.serialize.apply(this, arguments));
+            };
+            break;
+          case 'underscore-template':
+            getHTML = function() {
+              var that;
+              that = this;
+              if (!this._templateFn) {
+                switch (typeof this.template) {
+                  case 'string':
+                    this._templateFn = _.template(this.template);
+                    break;
+                  case 'function':
+                    this._templateFn = function(locals) {
+                      return _.template(that.template(), locals);
+                    };
+                    break;
+                  default:
+                    throw new Error('@template must be string or function');
+                }
               }
-            }
-            return this._templateFn(this.serialize.apply(this, arguments));
-          };
-          break;
-        case 'jst':
-          getHTML = function() {
-            var html;
-            if (!this._templateFn) {
-              switch (typeof this.template) {
-                case 'string':
-                  html = this.template;
-                  this._templateFn = function() {
-                    return html;
-                  };
-                  break;
-                case 'function':
-                  this._templateFn = this.template;
-                  break;
-                default:
-                  throw new Error('@template must be string or function');
+              return this._templateFn(this.serialize.apply(this, arguments));
+            };
+            break;
+          case 'jst':
+            getHTML = function() {
+              var html;
+              if (!this._templateFn) {
+                switch (typeof this.template) {
+                  case 'string':
+                    html = this.template;
+                    this._templateFn = function() {
+                      return html;
+                    };
+                    break;
+                  case 'function':
+                    this._templateFn = this.template;
+                    break;
+                  default:
+                    throw new Error('@template must be string or function');
+                }
               }
-            }
-            return this._templateFn(this.serialize.apply(this, arguments));
-          };
-          break;
-        default:
-          throw new Error('Unrecognized template strategy: ' + strategy);
+              return this._templateFn(this.serialize.apply(this, arguments));
+            };
+            break;
+          default:
+            throw new Error('Unrecognized template strategy: ' + strategy);
+        }
       }
       if (instance) {
         return instance.getHTML = getHTML;

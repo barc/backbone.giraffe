@@ -751,8 +751,7 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
 html,
 body,
 #page-wrapper,
-.row,
-.section-example {
+.row {
   height: 100%;
 }
 /* line 32, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
@@ -899,12 +898,13 @@ a:hover {
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
+  cursor: pointer;
 }
-/* line 172, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 173, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .collapsed:before {
   content: "learn more...";
 }
-/* line 176, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 177, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .uncollapsed:before {
   content: "hide...";
 }

@@ -572,59 +572,64 @@ class Giraffe.View extends Backbone.View
   *     `view.template` is a string or function returning html
   ###
   @setTemplateStrategy: (strategy, instance) ->
-    switch strategy
 
-      # @template is a string DOM selector or a function returning DOM selector
-      when 'underscore-template-selector'
-        getHTML = ->
-          that = @
-          if !@_templateFn
-            switch typeof @template
-              when 'string'
-                selector = @template
-                @_templateFn = _.template($(selector).html())
-              when 'function'
-                # user likely made it a function because it depends on
-                # run time info, ensure it is called EACH time
-                @_templateFn = (locals) ->
-                  selector = that.template()
-                  _.template $(selector).html(), locals
-              else
-                throw new Error('@template must be string or function')
+    if typeof strategy is 'function'
+      getHTML = strategy
+    else
+      switch strategy
 
-          @_templateFn @serialize.apply(@, arguments)
+        # @template is a string DOM selector or a function returning DOM selector
+        when 'underscore-template-selector'
+          getHTML = ->
+            that = @
+            if !@_templateFn
+              switch typeof @template
+                when 'string'
+                  selector = @template
+                  @_templateFn = _.template($(selector).html())
+                  console.log @_templateFn name: 'FOO'
+                when 'function'
+                  # user likely made it a function because it depends on
+                  # run time info, ensure it is called EACH time
+                  @_templateFn = (locals) ->
+                    selector = that.template()
+                    _.template $(selector).html(), locals
+                else
+                  throw new Error('@template must be string or function')
 
-      # @template is a string or a function returning a string template
-      when 'underscore-template'
-        getHTML = ->
-          that = @
-          if !@_templateFn
-            switch typeof @template
-              when 'string'
-                @_templateFn = _.template(@template)
-              when 'function'
-                @_templateFn = (locals) ->
-                  _.template that.template(), locals
-              else
-                throw new Error('@template must be string or function')
-          @_templateFn @serialize.apply(@, arguments)
+            @_templateFn @serialize.apply(@, arguments)
 
-      # @template is the markup or a JST function
-      when 'jst'
-        getHTML = ->
-          if !@_templateFn
-            switch typeof @template
-              when 'string'
-                html = @template
-                @_templateFn = -> html
-              when 'function'
-                @_templateFn = @template
-              else
-                throw new Error('@template must be string or function')
-          @_templateFn @serialize.apply(@, arguments)
+        # @template is a string or a function returning a string template
+        when 'underscore-template'
+          getHTML = ->
+            that = @
+            if !@_templateFn
+              switch typeof @template
+                when 'string'
+                  @_templateFn = _.template(@template)
+                when 'function'
+                  @_templateFn = (locals) ->
+                    _.template that.template(), locals
+                else
+                  throw new Error('@template must be string or function')
+            @_templateFn @serialize.apply(@, arguments)
 
-      else
-        throw new Error('Unrecognized template strategy: ' + strategy)
+        # @template is the markup or a JST function
+        when 'jst'
+          getHTML = ->
+            if !@_templateFn
+              switch typeof @template
+                when 'string'
+                  html = @template
+                  @_templateFn = -> html
+                when 'function'
+                  @_templateFn = @template
+                else
+                  throw new Error('@template must be string or function')
+            @_templateFn @serialize.apply(@, arguments)
+
+        else
+          throw new Error('Unrecognized template strategy: ' + strategy)
 
     if instance
       instance.getHTML = getHTML
