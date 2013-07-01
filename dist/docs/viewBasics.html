@@ -124,7 +124,7 @@ view.attachTo(someDOMElement);
 view.attachTo($someJQueryObject);
 view.attachTo(someView);
 view.attach(childView, {el: <span class="string">'#something-inside-the-view'</span>});</code></pre>
-<p>So this <code>attachTo</code> function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method <code>&#39;append&#39;</code>, but luckily many jQuery methods are supported - <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;after&#39;</code>, <code>&#39;before&#39;</code>, and <code>&#39;html&#39;</code> can all be passed to <code>attach</code> and <code>attachTo</code> as the <code>method</code> option. That last one may raise alarm bells in your jQuery underbrain - the <code>&#39;html&#39;</code> method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the <code>&#39;html&#39;</code> method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will <code>dispose</code> of it, but the <code>preserve</code> option can override the behavior of <code>disposeOnDetach</code>.</p>
+<div class='more-details collapsed'><p>So this <code>attachTo</code> function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method <code>&#39;append&#39;</code>, but luckily many jQuery methods are supported - <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;after&#39;</code>, <code>&#39;before&#39;</code>, and <code>&#39;html&#39;</code> can all be passed to <code>attach</code> and <code>attachTo</code> as the <code>method</code> option. That last one may raise alarm bells in your jQuery underbrain - the <code>&#39;html&#39;</code> method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the <code>&#39;html&#39;</code> method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will <code>dispose</code> of it, but the <code>preserve</code> option can override the behavior of <code>disposeOnDetach</code>.</p>
 <pre><code class="language-js">childView.attachTo(view, {method: <span class="string">'append'</span>}); <span class="comment">// the default method</span>
 childView.attachTo(view, {method: <span class="string">'prepend'</span>});
 childView.attachTo(view, {method: <span class="string">'after'</span>});  <span class="comment">// =&gt; makes `childView` a sibling of `view`</span>
@@ -203,7 +203,7 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
                               │MyView│                │Giraffe.View│                       │ParentView│          │DOM│          
                               └──────┘                └────────────┘                       └──────────┘          └───┘          
 </code></pre>
-<p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
+</div><p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
 <h2>Try It</h2>
 <div id="viewbasics0_tabs" class="tabs">
   <ul>
@@ -339,6 +339,20 @@ h3 {
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
 </body>
 </html>
 

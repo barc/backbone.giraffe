@@ -417,7 +417,7 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
 code {
   font-family: consolas, menlo, "ubuntu mono", monospaced;
   font-size: 0.9em;
-  color: #111;
+  color: #222;
 }
 /* line 13, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
 pre code {
@@ -498,7 +498,7 @@ pre .asciidoc .bullet,
 pre .markdown .bullet,
 pre .asciidoc .link_url,
 pre .markdown .link_url {
-  color: #cc1b00;
+  color: #b40038;
 }
 /* line 95, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
 pre .label,
@@ -552,17 +552,18 @@ pre .markdown .strong,
 pre .request,
 pre .status {
   font-weight: bold;
+  color: #111;
 }
-/* line 148, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
+/* line 149, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
 pre .asciidoc .emphasis,
 pre .markdown .emphasis {
   font-style: italic;
 }
-/* line 153, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
+/* line 154, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
 pre .nginx .built_in {
   font-weight: normal;
 }
-/* line 157, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
+/* line 158, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/_tutdown/highlight.less */
 pre .coffeescript .javascript,
 pre .javascript .xml,
 pre .lasso .markup,
@@ -723,55 +724,67 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-@media only screen and (min-width: 34em) {
-  /* line 16, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .feature,
-  .info {
-    width: 50%;
-  }
-}
-@media only screen and (min-width: 54em) {
+/* @media only screen and (min-width: 34em) { */
+/*         .feature, .info { width: 50%; } */
+/* } */
+@media only screen and (min-width: 480px) {
   /* line 20, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .content {
+  #content {
     width: 70.00%;
   }
   /* line 21, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .sidebar {
+  #sidebar {
     width: 30.00%;
   }
 }
-@media only screen and (min-width: 76em) {
+@media only screen and (min-width: 960px) {
   /* line 25, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .content {
+  #content {
     width: 80.00%;
   }
-  /* 7/12 */
   /* line 26, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
-  .sidebar {
+  #sidebar {
     width: 20.00%;
   }
-  /* 5/12 */
 }
 /* line 29, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+html,
+body,
+#page-wrapper,
+.row,
+.section-example {
+  height: 100%;
+}
+/* line 32, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #page-wrapper {
   width: 1280px ;
   margin-left: auto ;
   margin-right: auto ;
+  height: 100%;
 }
-/* line 35, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 39, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar {
-  margin-top: 160px;
-  border-right: solid 1px #cfdae5;
-  border-bottom: solid 1px #cfdae5;
-  background-color: #dae6f2;
+  height: 100%;
+  padding-top: 148px;
+  /* border-right: solid 1px #cfdae5; */
+
+  /* border-bottom: solid 1px #cfdae5; */
+
+  /* background-color: #dae6f2; */
+
 }
-/* line 44, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 47, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+#content {
+  height: 100%;
+  border-left: solid 1px #eee;
+}
+/* line 54, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 p,
 a,
 td {
   color: #444;
 }
-/* line 48, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 58, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 h1,
 h2,
 h3,
@@ -788,36 +801,36 @@ h5 {
 /*   border: double 3px #444; */
 /*   padding: 0.2em; */
 /* } */
-/* line 64, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 74, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 iframe.result {
   width: 100%;
   min-height: 200px;
   height: auto;
   border: dashed 1px #ececf0;
 }
-/* line 71, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 81, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 code {
   font-family: Consolas, Menlo, 'Ubuntu Mono', monospace;
 }
-/* line 77, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 87, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 ul {
   list-style: none;
   padding-left: 1em;
 }
-/* line 83, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 93, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 strong {
   font-weight: bold;
 }
-/* line 87, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 97, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 a {
   color: #333333;
   text-decoration: none;
 }
-/* line 91, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 101, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 a:hover {
   text-decoration: underline;
 }
-/* line 96, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 106, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .caption {
   margin-left: 14px;
   /* font-size: 12px; */
@@ -827,23 +840,72 @@ a:hover {
   font-weight: normal;
   font-size: 14px;
 }
-/* line 105, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 115, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .static {
   font-style: italic;
 }
-/* line 108, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 118, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .static:before {
   content: '.';
 }
-/* line 112, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 122, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 #logo {
   width: 600px;
   height: 135px;
   margin-left: -20px;
 }
-/* line 118, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 128, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .nav-title {
   /* margin-top: 30px; */
 
   font-size: 15px;
+}
+/* line 134, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.paper-edge:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+/* line 149, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.paper-edge:after {
+  right: 10px;
+  left: auto;
+  -webkit-transform: skew(8deg) rotate(3deg);
+  -moz-transform: skew(8deg) rotate(3deg);
+  -ms-transform: skew(8deg) rotate(3deg);
+  -o-transform: skew(8deg) rotate(3deg);
+  transform: skew(8deg) rotate(3deg);
+}
+/* line 160, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.collapsed > * {
+  display: none;
+}
+/* line 164, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.collapsed:before,
+.uncollapsed:before {
+  background-color: #d8f3f8;
+  border: solid 1px #a6ebf8;
+  font-size: 0.8em;
+  padding: 0.5em;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  color: #197080;
+}
+/* line 173, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.collapsed:before {
+  content: "learn more...";
+}
+/* line 177, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.uncollapsed:before {
+  content: "hide...";
 }

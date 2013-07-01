@@ -12,31 +12,41 @@
 //////////
 
 
-@media only screen and (min-width: 34em) {
-        .feature, .info { width: 50%; }
+/* @media only screen and (min-width: 34em) { */
+/*         .feature, .info { width: 50%; } */
+/* } */
+
+@media only screen and (min-width: 480px) {
+        #content { width: 70.00%; }
+        #sidebar { width: 30.00%; }
 }
 
-@media only screen and (min-width: 54em) {
-        .content { width: 70.00%; }
-        .sidebar { width: 30.00%; }
+@media only screen and (min-width: 960px) {
+        #content { width: 80.00%; }
+        #sidebar { width: 20.00%; }
 }
 
-@media only screen and (min-width: 76em) {
-        .content { width: 80.00%; } /* 7/12 */
-        .sidebar { width: 20.00%; } /* 5/12 */
+html, body, #page-wrapper, .row, .section-example {
+  height: 100%;
 }
-
 #page-wrapper {
   width: 1280px ;
   margin-left: auto ;
   margin-right: auto ;
+  height: 100%;
 }
 
 #sidebar {
-  margin-top: 160px;
-  border-right: solid 1px #cfdae5;
-  border-bottom: solid 1px #cfdae5;
-  background-color: #dae6f2;
+  height: 100%;
+  padding-top: 148px;
+  /* border-right: solid 1px #cfdae5; */
+  /* border-bottom: solid 1px #cfdae5; */
+  /* background-color: #dae6f2; */
+}
+
+#content {
+  height: 100%;
+  border-left: solid 1px #eee;
 }
 
 /////////// GENERAL
@@ -119,4 +129,54 @@ a {
   /* margin-top: 30px; */
   font-size: 15px;
 }
+
+
+.paper-edge:after
+{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    box-shadow:0 0 20px rgba(0,0,0,0.8);
+    top:10px;
+    bottom:10px;
+    left:0;
+    right:0;
+    -moz-border-radius:100px / 10px;
+    border-radius:100px / 10px;
+}
+.paper-edge:after
+{
+    right:10px;
+    left:auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+       -moz-transform:skew(8deg) rotate(3deg);
+        -ms-transform:skew(8deg) rotate(3deg);
+         -o-transform:skew(8deg) rotate(3deg);
+            transform:skew(8deg) rotate(3deg);
+}
+
+.collapsed > * {
+  display: none;
+}
+
+.collapsed:before, .uncollapsed:before {
+  background-color: #d8f3f8;
+  border: solid 1px #a6ebf8;
+  font-size: 0.8em;
+  padding: 0.5em;
+  .border-radius(4px);
+  color: #197080;
+}
+
+.collapsed:before {
+  content: "learn more...";
+
+}
+.uncollapsed:before {
+  content: "hide...";
+}
+
+
 

@@ -122,6 +122,8 @@ view.attachTo(someView);
 view.attach(childView, {el: '#something-inside-the-view'});
 ```
 
+:::BEGIN more-details collapsed
+
 So this `attachTo` function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method `'append'`, but luckily many jQuery methods are supported - `'append'`, `'prepend'`, `'after'`, `'before'`, and `'html'` can all be passed to `attach` and `attachTo` as the `method` option. That last one may raise alarm bells in your jQuery underbrain - the `'html'` method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the `'html'` method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will `dispose` of it, but the `preserve` option can override the behavior of `disposeOnDetach`.
 
 ```js --no-capture
@@ -175,6 +177,8 @@ alt if MyView not yet rendered or options.forceRender
   end
 end
 ```
+
+:::END more-details
 
 That's it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!
 
