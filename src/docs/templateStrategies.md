@@ -1,14 +1,24 @@
 ## Template Strategies
 
-Choosing a strategy tells __Giraffe__ how to utilize `Giraffe.View#template`
-property when rendering a view. The predefined strategies are
+Creating HTML markup is a lot of what we do as front end developers.
+There are many solutios as evident by the ever increasing number of templating
+libraries found on the web. __Giraffe__ provides templating strategies
+based on the built-in dependecies of Backbone, namely underscore `template`
+function. The predefined strategies are
 
 * underscore templates
 * underscore templates in the DOM
 * JavaScript template functions (JST)
 
-You can forego all templating and define exactly how you want a view
-rendered which is explained in the User Defined section below.
+Selecting a strategy tells __Giraffe__ how to utilize `Giraffe.View#template`
+property when rendering a view. Of course templating is user
+customizable as detailed in the [User Defined](#h-user-defined)
+section below.
+
+<div class='aside'>
+At [Barc](http://barc.com) we love CoffeeScript and use [funcd](https://github.com/mgutz/funcd),
+a function based template engine.
+</div>
 
 ### Strategy Scope
 
@@ -34,14 +44,14 @@ var View = Giraffe.View.extend({
 });
 ```
 
-<div class='note' markdown='1'>
+<div class='note'>
 The `template` property works in concert with `serialize`
 to transform a view's model and/or collection into HTML when
 using one of the predefined strategies.
 </div>
 
 :::BEGIN Example
-### Underscore Template (underscore-template)
+### Underscore Template
 
 This is the simplest and works well with CoffeeScript's multi-line
 strings.
@@ -77,7 +87,7 @@ p {
 
 
 :::BEGIN Example
-### Underscore Template Selector (underscore-template-selector)
+### Underscore Template Selector
 
 This strategy expects a selector to a DOM element containing the template.
 
@@ -159,7 +169,7 @@ p {
 :::BEGIN Example
 ### User Defined
 
-To completely override __Giraffe__ assign a function.
+To completely override __Giraffe__ templating assign a function to `templateStrategy`.
 
 ```js
 var View = Giraffe.View.extend({

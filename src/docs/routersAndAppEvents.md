@@ -99,7 +99,7 @@ router.isCaused('route:childView');    // => false
 router.getRoute('route:childView', 1); // => '#childView/1'
 ```
 
-<div class='note' markdown='1'>
+<div class='note'>
 You will not see hash changes in your address bar because the example is in an iframe, but your browser's back and forward buttons should work!
 </div>
 

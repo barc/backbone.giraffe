@@ -17,8 +17,8 @@
       <!-- Sidebar -->
       <section id="sidebar" class="col sidebar">
         
-        <h2><a href="api.html">API</a></h2>
-<h2>Examples</h2>
+        <h2 id="h-apiapihtml"><a href="api.html">API</a></h2>
+<h2 id="h-examplesindexhtml"><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
@@ -39,7 +39,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <p><div class='section-example'><h2>Lifecycle Management</h2>
+        <p><div class='section-example'><h2 id="h-lifecycle-management">Lifecycle Management</h2>
 <p>This example demonstrates the lifecycle management features in Giraffe.</p>
 <p>All Giraffe objects implement a <code>dispose</code> method. When a <strong>Giraffe.View</strong> is disposed, it calls <code>dispose</code> on all of its <code>children</code> that have the method. In this example we&#39;ll create a <strong>Giraffe.App</strong>, give it some children, <code>dispose</code> of it, and see the results. <strong>Giraffe.App</strong>, which is a special <strong>Giraffe.View</strong>, is designed to encapsulate an entire application, but for the purposes of this example we&#39;re using no features specific to it - a <strong>Giraffe.View</strong> would have worked too.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
@@ -52,7 +52,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 app.once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;app is disposed&lt;/p&gt;'</span>);
 });</code></pre>
-<div class='note' markdown='1'>
+<div class='note'>
 The <code>Giraffe.View#dispose</code> method overrides the behavior of <code>Backbone.View#remove</code> function, but because we want Giraffe to manage the lifecycle of all objects, and <code>remove</code> means something different for collections, we opted to use the method name <code>dispose</code>.
 </div>
 
@@ -81,13 +81,13 @@ childCollection.models[<span class="number">0</span>].once(<span class="string">
 childView.once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view is disposed&lt;/p&gt;'</span>);
 });</code></pre>
-<div class='note' markdown='1'>
+<div class='note'>
 <strong>Giraffe.Collection</strong> and <strong>Giraffe.Model</strong> are very thin wrappers over their Backbone counterparts, adding only <code>dispose</code> and <code>appEvents</code> support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a <code>dispose</code> method. If you want to reuse the same <code>dispose</code> method Giraffe&#39;s classes use, it&#39;s available at <code>Giraffe.dispose</code>. It calls <code>stopListening</code>, triggers the <code>disposing</code> and <code>disposed</code> events, and sets <code>this.app</code> to <code>null</code>. It also accepts a function argument to do additional work.
 </div>
 
 <p>Let&#39;s call <code>dispose</code> on the app and see what happens!</p>
 <pre><code class="js">app.dispose();</code></pre>
-<h2>Try It</h2>
+<h2 id="h-try-it">Try It</h2>
 <div id="lifecyclemanagement0_tabs" class="tabs">
   <ul>
     <li class="active">

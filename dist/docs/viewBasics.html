@@ -17,8 +17,8 @@
       <!-- Sidebar -->
       <section id="sidebar" class="col sidebar">
         
-        <h2><a href="api.html">API</a></h2>
-<h2>Examples</h2>
+        <h2 id="h-apiapihtml"><a href="api.html">API</a></h2>
+<h2 id="h-examplesindexhtml"><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
@@ -39,7 +39,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <p><div class='section-example'><h2>View Basics</h2>
+        <p><div class='section-example'><h2 id="h-view-basics">View Basics</h2>
 <p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
 <pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
 
@@ -75,7 +75,7 @@ view.attach(childView);</code></pre>
 <pre><code class="js">childView.parent === view;      <span class="comment">// =&gt; true</span>
 view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span></code></pre>
 <p>When a <strong>Giraffe.View</strong> renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call <code>delegateEvents</code> manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call <code>dispose</code> on them, the generalized Giraffe removal/destroy/cleanup method.</p>
-<div class='note' markdown='1'>
+<div class='note'>
 The method name is <code>dispose</code> and not <code>remove</code> as a matter of necessity even though it essentially overrides Backbone&#39;s <code>view.remove</code>. This is because any object can be added to a view&#39;s children via <code>view.addChild</code> to take advantage of automatic memory management, and some objects like collections already have a <code>remove</code> method that means something completely different! Any child with a <code>dispose</code> method will be disposed of when its parent disposes.
 </div>
 
@@ -212,7 +212,7 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
                               └──────┘          └────────────┘                       └──────────┘          └───┘          
 </code></pre>
 </div><p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
-<h2>Try It</h2>
+<h2 id="h-try-it">Try It</h2>
 <div id="viewbasics0_tabs" class="tabs">
   <ul>
     <li class="active">

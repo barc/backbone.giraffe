@@ -62,7 +62,7 @@ view.children[0] === childView; // => true
 
 When a **Giraffe.View** renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call `delegateEvents` manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call `dispose` on them, the generalized Giraffe removal/destroy/cleanup method.
 
-<div class='note' markdown='1'>
+<div class='note'>
 The method name is `dispose` and not `remove` as a matter of necessity even though it essentially overrides Backbone's `view.remove`. This is because any object can be added to a view's children via `view.addChild` to take advantage of automatic memory management, and some objects like collections already have a `remove` method that means something completely different! Any child with a `dispose` method will be disposed of when its parent disposes.
 </div>
 

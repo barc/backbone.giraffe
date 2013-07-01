@@ -17,13 +17,12 @@
 /* } */
 
 @media only screen and (min-width: 480px) {
-        #content { width: 70.00%; }
-        #sidebar { width: 30.00%; }
+        #content { width: 78.00%; }
+        #sidebar { width: 22.00%; }
 }
 
 @media only screen and (min-width: 960px) {
-        #content { width: 80.00%; }
-        #sidebar { width: 20.00%; }
+        #sidebar { width: 220px; }
 }
 
 html, body, #page-wrapper, .row {
@@ -31,17 +30,32 @@ html, body, #page-wrapper, .row {
 }
 
 #page-wrapper {
-  width: 1280px ;
   margin-left: auto ;
   margin-right: auto ;
   height: 100%;
+  max-width: 1280px;
 }
 
 #sidebar {
   height: 100%;
   padding-top: 140px;
+  li a {
+    font-size: 14px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  h3 {
+    font-size: 16px;
+  }
   h2, h3, a {
     color: #888;
+  }
+  a {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -83,11 +97,7 @@ strong {
 
 a {
   color: @linkColor;
-   text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 }
 
 .caption {
@@ -150,4 +160,12 @@ a {
   border-bottom: solid 1px #ebebda;
 }
 
+.aside {
+  background-color: #f4f4f4;
+  color: #666;
+  margin: 1.5em;
+  padding: 0.5em;
+  border-right: solid 1px #ececec;
+  border-bottom: solid 1px #ececec;
+}
 

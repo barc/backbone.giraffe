@@ -97,7 +97,7 @@ exports.project = (pm) ->
         navHeader:
           """
           <h2><a href="index.html">Examples</a></h2>
-          <h2>API</h2>
+          <h2><a href="api.html">API</a></h2>
           """
       f.writeFile _filename: 'dist/docs/api.html'
     ]
