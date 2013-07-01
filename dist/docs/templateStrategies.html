@@ -51,9 +51,9 @@ property.</p>
 The global case is the one most used as it enforces consistent templating
 in a project. To enable a global strategy use <code>setTemplateStrategy</code> class
 method</p>
-<pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);</code></pre>
+<pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);</code></pre>
 <p>To enable for a specific view, set the <code>templateStrategy</code> option.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
   template: <span class="string">'&lt;p&gt;Hello &lt;%= name %&gt;&lt;/p&gt;'</span>,
   serialize: <span class="keyword">function</span>() {
@@ -66,7 +66,7 @@ to transform a view&#39;s model and/or collection into HTML markup.</p>
 <p><div class='section-example'><h3>Underscore Template (underscore-template)</h3>
 <p>This is the simplest and works well with CoffeeScript&#39;s multi-line
 strings.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
   template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
   serialize: <span class="keyword">function</span>() {
@@ -143,11 +143,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <div class='section-example'><h3>Underscore Template Selector (underscore-template-selector)</h3>
 <p>This strategy expects a selector to a DOM element containing the template.</p>
 <p>In HTML page</p>
-<pre><code class="language-html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
   &lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>In script</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template-selector'</span>,
   template: <span class="string">'#hello-template'</span>,
   serialize: <span class="keyword">function</span>() {
@@ -227,7 +227,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div></div>
 <div class='section-example'><h3>Javascript Template Function</h3>
 <p>This strategy expects a function.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'jst'</span>,
   template: <span class="keyword">function</span>(data) {
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
@@ -307,7 +307,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div></div>
 <div class='section-example'><h3>User Defined</h3>
 <p>To completely override <strong>Giraffe</strong> assign a function.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="keyword">function</span>() {
     <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;

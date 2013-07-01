@@ -38,9 +38,9 @@
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2>View UI</h2>
 <p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains cached jQuery objects for a view and allows you to use the names of these cached objects in your <code>events</code> hash.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
 <p>The <code>ui</code> hash is a simple map of names to selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>view.$button</code> available once the view has rendered at least once.</p>
-<pre><code class="language-js">  events: {
+<pre><code class="js">  events: {
     <span class="string">'click $someButton'</span>: <span class="keyword">function</span>() {
       alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
     }
@@ -55,7 +55,7 @@
   }
 });</code></pre>
 <p>Let&#39;s create and attach the view.</p>
-<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+<pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2>Try It</h2>
 <div id="viewui0_tabs" class="tabs">

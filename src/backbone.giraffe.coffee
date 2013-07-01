@@ -587,7 +587,6 @@ class Giraffe.View extends Backbone.View
                 when 'string'
                   selector = @template
                   @_templateFn = _.template($(selector).html())
-                  console.log @_templateFn name: 'FOO'
                 when 'function'
                   # user likely made it a function because it depends on
                   # run time info, ensure it is called EACH time

@@ -38,11 +38,11 @@
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2>Routers and appEvents</h2>
 <p>This example demonstrates how <strong>Giraffe.Router</strong> ties into the <code>appEvents</code> described in the <em>App Events</em> example.</p>
-<pre><code class="language-js"><span class="keyword">var</span> App, ChildView;</code></pre>
+<pre><code class="js"><span class="keyword">var</span> App, ChildView;</code></pre>
 <p><strong>Giraffe.App</strong> is a <strong>Giraffe.View</strong> that encapsulates an app. <strong>Giraffe.Router</strong> requires an app because it uses <code>appEvents</code> to communicate with your objects.</p>
-<pre><code class="language-js">App = Giraffe.App.extend({</code></pre>
+<pre><code class="js">App = Giraffe.App.extend({</code></pre>
 <p>In this example, clicking some links will change the window location hash, triggering an <code>appEvent</code> which shows a child view with a specific name. Here we make three links to the three child views and a container for the active child view.</p>
-<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
     <span class="keyword">var</span> html = <span class="string">''</span>;
     html += <span class="string">'&lt;p&gt;&lt;a href="#childView/1"&gt;show child view 1&lt;/a&gt;&lt;/p&gt;'</span>;
     html += <span class="string">'&lt;p&gt;&lt;a href="#childView/2"&gt;show child view 2&lt;/a&gt;&lt;/p&gt;'</span>;
@@ -51,7 +51,7 @@
     <span class="keyword">return</span> html;
   },</code></pre>
 <p>Any Giraffe object, including the app, can listen for <code>appEvents</code>. When a route is triggered, its corresponding <code>appEvent</code> is called. Note that the <code>route:</code> prefix is just a naming convention and is not required. This route event is defined in <code>Router.triggers</code> below.</p>
-<pre><code class="language-js">  appEvents: {
+<pre><code class="js">  appEvents: {
     <span class="string">'route:childView'</span>: <span class="string">'showChildView'</span>,
     <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); } <span class="comment">// log to see what's happening</span>
     <span class="comment">// 'some:otherRoute': 'someFunctionName'</span>
@@ -63,7 +63,7 @@
   }
 });</code></pre>
 <p>In this example, we&#39;re going to create a child view that simply displays its name and a color.</p>
-<pre><code class="language-js">ChildView = Giraffe.View.extend({
+<pre><code class="js">ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
 
   initialize: <span class="keyword">function</span>(options) {
@@ -83,10 +83,10 @@
   }
 });</code></pre>
 <p>It&#39;s time to create and attach the app.</p>
-<pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
+<pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
 app.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>Here&#39;s our router. The <code>triggers</code> option maps routes to appEvents. The router will bind to the global app reference at <code>Giraffe.app</code>, the first one created, unless an option <code>{app: someApp}</code> is passed to the router.</p>
-<pre><code class="language-js"><span class="keyword">var</span> router = <span class="keyword">new</span> Giraffe.Router({
+<pre><code class="js"><span class="keyword">var</span> router = <span class="keyword">new</span> Giraffe.Router({
   triggers: {
     <span class="string">'childView/:name'</span>: <span class="string">'route:childView'</span>
     <span class="comment">// 'someHashLocation/:andItsParams': 'some:appEvent'</span>
@@ -100,9 +100,9 @@ router.app === Giraffe.app; <span class="comment">// =&gt; true</span>
 <span class="comment">// var Router = Giraffe.Router.extend({triggers: {...}});</span>
 <span class="comment">// var router = new Router();</span></code></pre>
 <p>Almost finished! Let&#39;s start the Backbone history to get things rolling.</p>
-<pre><code class="language-js">Backbone.history.start();</code></pre>
+<pre><code class="js">Backbone.history.start();</code></pre>
 <p>The <strong>Giraffe.Router</strong> has one more trick up its sleeve: it gives you programmatic control over your routes. The function <code>router.cause</code> takes an <code>appEvent</code> and optional parameters, navigates to the corresponding route defined in the router, and then triggers the <code>appEvent</code>. No longer must you manually build route links! Here we show <em>child view 1</em> as the default view by causing its <code>appEvent</code>. <strong>Giraffe.Router</strong> also provides two utility functions to help you manage routes, <code>isCaused</code> and <code>getRoute</code>. We could have used <code>getRoute</code> to build our anchor links in <code>App.getHTML</code> above, but didn&#39;t for the sake of familiarity.</p>
-<pre><code class="language-js">router.cause(<span class="string">'route:childView'</span>, <span class="number">1</span>);
+<pre><code class="js">router.cause(<span class="string">'route:childView'</span>, <span class="number">1</span>);
 router.isCaused(<span class="string">'route:childView'</span>, <span class="number">1</span>); <span class="comment">// =&gt; true</span>
 router.isCaused(<span class="string">'route:childView'</span>, <span class="number">2</span>); <span class="comment">// =&gt; false</span>
 router.isCaused(<span class="string">'route:childView'</span>);    <span class="comment">// =&gt; false</span>

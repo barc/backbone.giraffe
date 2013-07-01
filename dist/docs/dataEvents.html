@@ -38,21 +38,21 @@
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2>View.dataEvents</h2>
 <p>This example demonstrates how to use the <code>dataEvents</code> map of <strong>Giraffe.View</strong>. Similar to how the <strong>Backbone.View</strong> <code>events</code> map binds DOM events to view methods, <strong>Giraffe.View</strong> provides the <code>dataEvents</code> hash that maps object events to view methods. Like the <code>events</code> map, the <code>dataEvents</code> bindings are also automatically cleaned up when a view&#39;s <code>dispose</code> method is called.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
 <p>To demonstrate <code>dataEvents</code>, we&#39;ll first need some data. In this example we&#39;ll use a regular <strong>Backbone.Collection</strong>,
 but <code>dataEvents</code> works with any object that implements <code>Backbone.Events</code>.</p>
-<pre><code class="language-js">  initialize: <span class="keyword">function</span>() {
+<pre><code class="js">  initialize: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.collection = <span class="keyword">new</span> Backbone.Collection();
   },</code></pre>
 <p><code>dataEvents</code> maps events on an object to a view method. The hash&#39;s key is a space-separated list of events ending with the target object. This structure mirrors the <code>events</code> map of <strong>Backbone.View</strong>, <code>{&#39;domEventName selector&#39;: &#39;viewMethod&#39;}</code>,
 but replaces the selector with the name of any <code>Backbone.Events</code> object on this view instance, and it has the added benefit of accepting multiple events per definition.</p>
-<pre><code class="language-js">  dataEvents: {
+<pre><code class="js">  dataEvents: {
     <span class="string">'add remove collection'</span>: <span class="string">'render'</span>
     <span class="comment">// 'someOtherEvent someOtherEventsObject': function() { ... }</span>
     <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
   },</code></pre>
 <p>This example has a button to add a new model and a button for each model that removes it.</p>
-<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
     <span class="keyword">var</span> html = <span class="string">'&lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;'</span>;
     <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
       html += <span class="string">'&lt;button data-gf-click="onRemoveModel" data-cid="'</span> + model.cid + <span class="string">'"&gt;'</span> +
@@ -61,7 +61,7 @@ but replaces the selector with the name of any <code>Backbone.Events</code> obje
     <span class="keyword">return</span> html;
   },</code></pre>
 <p>Here are the functions that add and remove models. The ui updates automatically based on the events bound in <code>dataEvents</code>.</p>
-<pre><code class="language-js">  onAddModel: <span class="keyword">function</span>(e) {
+<pre><code class="js">  onAddModel: <span class="keyword">function</span>(e) {
     <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
     <span class="keyword">this</span>.modelCount += <span class="number">1</span>;
     <span class="keyword">this</span>.collection.add({name: <span class="keyword">this</span>.modelCount});
@@ -73,7 +73,7 @@ but replaces the selector with the name of any <code>Backbone.Events</code> obje
   }
 });</code></pre>
 <p>That&#39;s it! Let&#39;s create and attach the view.</p>
-<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+<pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2>Try It</h2>
 <div id="dataevents0_tabs" class="tabs">

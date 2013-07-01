@@ -719,9 +719,6 @@
                   case 'string':
                     selector = this.template;
                     this._templateFn = _.template($(selector).html());
-                    console.log(this._templateFn({
-                      name: 'FOO'
-                    }));
                     break;
                   case 'function':
                     this._templateFn = function(locals) {

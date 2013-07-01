@@ -39,30 +39,30 @@
         <p><div class='section-example'><h2>Document Events</h2>
 <p>This example demonstrates Giraffe&#39;s document event bindings that link DOM events to <strong>Giraffe.View</strong> methods.
 Giraffe does <em>not</em> provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method <code>Giraffe.View.removeDocumentEvents()</code>, but it shouldn&#39;t get in your way if left unused.</p>
-<pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
 <p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form <code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it searches up the hierarchy until it finds the method or fails on a view with no <code>parent</code>. <strong>Please note:</strong> by default, Giraffe binds only <code>&#39;click&#39;</code> and <code>&#39;change&#39;</code>, and not <code>&#39;keyup&#39;</code> as this example uses, but you can easily set custom bindings using the static method <code>Giraffe.View.setDocumentEvents</code>.</p>
-<pre><code class="language-js">  getHTML: <span class="keyword">function</span>() {
+<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
     <span class="keyword">var</span> html = <span class="string">'&lt;div id="hello-text"&gt;Hello world!&lt;/div&gt;'</span>;
     html += <span class="string">'&lt;input type="text" value="world" data-gf-keyup="onChangeName"&gt;'</span>;
     html += <span class="string">'&lt;button data-gf-click="onAlertHello"&gt;Say hello in a popup&lt;/button&gt;'</span>;
     <span class="keyword">return</span> html;
   },</code></pre>
 <p>Whenever the input changes, this method is called.</p>
-<pre><code class="language-js">  onChangeName: <span class="keyword">function</span>(e) {
+<pre><code class="js">  onChangeName: <span class="keyword">function</span>(e) {
     $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
   },</code></pre>
 <p>Whenever the button is clicked, this method is called.</p>
-<pre><code class="language-js">  onAlertHello: <span class="keyword">function</span>() {
+<pre><code class="js">  onAlertHello: <span class="keyword">function</span>() {
     alert($(<span class="string">'#hello-text'</span>).text());
   }
 });</code></pre>
 <p>If you wanted to set your own custom DOM event bindings, this is how you&#39;d do it.</p>
-<pre><code class="language-js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+<pre><code class="js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
 Giraffe.View.setDocumentEvents(<span class="string">'mousedown mouseup change keyup'</span>); <span class="comment">// or as a single string</span>
 Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// the default events</span>
 Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span></code></pre>
 <p>All done! Let&#39;s create and attach the view.</p>
-<pre><code class="language-js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+<pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2>Try It</h2>
 <div id="documentevents0_tabs" class="tabs">
