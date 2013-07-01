@@ -7,14 +7,6 @@ COMMON = """
   <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
   <script src="../../backbone.giraffe.js" type="text/javascript"></script>
   ```
-
-  ```css --hide
-  /**
-   * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
-   * http://cssreset.com
-   */
-  html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
-  ```
 """
 
 exports.server =
@@ -80,6 +72,8 @@ exports.project = (pm) ->
         asset.filename = asset.filename.replace(/^src/, 'dist')
         asset.text = asset.text.replace(/{{{COMMON}}}/g, COMMON)
       f.tutdown
+        exampleLayoutFile: 'src/docs/_example.mustache'
+
       f.tap (asset) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
@@ -112,7 +106,7 @@ exports.project = (pm) ->
 
   stylesheets:
     desc: 'Builds less files'
-    files: ['src/docs/css/style.less']
+    files: ['src/docs/css/*.less']
     dev: [
       f.less
       changeToDist
