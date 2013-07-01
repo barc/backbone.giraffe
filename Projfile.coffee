@@ -31,7 +31,7 @@ exports.project = (pm) ->
     return f.tap (asset) ->
       asset.filename = Utils.changeExtname(asset.filename, extname)
 
-  all: ['clean', 'giraffe', 'miniGiraffe', 'api', 'docs', 'stylesheets', 'staticFiles']
+  all: ['clean', 'giraffe', 'miniGiraffe', 'docs', 'stylesheets', 'staticFiles']
 
   giraffe:
     desc: 'Builds Giraffe'

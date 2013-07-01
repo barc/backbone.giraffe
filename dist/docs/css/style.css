@@ -899,13 +899,12 @@ a:hover {
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  color: #197080;
 }
-/* line 173, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 172, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .collapsed:before {
   content: "learn more...";
 }
-/* line 177, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 176, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
 .uncollapsed:before {
   content: "hide...";
 }
