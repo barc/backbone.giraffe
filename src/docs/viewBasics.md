@@ -161,7 +161,7 @@ GView -> DOM: put MyView's $el in #container using method
 
 alt if MyView not yet rendered or options.forceRender
   alt if beforeRender overridden
-      GView -> MyView: [optional] beforeRender()
+      GView -> MyView: beforeRender()
   end
 
   GView -> GView: $el.empty()
@@ -173,7 +173,7 @@ alt if MyView not yet rendered or options.forceRender
   GView -> DOM: append html string to $el
 
   alt if afterRender overridden
-      GView -> MyView: [optional] afterRender()
+      GView -> MyView: afterRender()
   end
 end
 ```
