@@ -866,3 +866,11 @@ a:hover {
 .uncollapsed:before {
   content: "hide...";
 }
+/* line 141, /Users/mgutz/barc/code/backbone.giraffe/src/docs/css/style.less */
+.note {
+  background-color: #ffffed;
+  color: #54544a;
+  margin: 1.5em;
+  padding: 0.5em;
+  border: solid 1px #ebebda;
+}

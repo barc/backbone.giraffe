@@ -22,7 +22,9 @@ app.once('disposed', function() {
 });
 ```
 
-*Please note: the **Giraffe.View** `dispose` method overrides the behavior of the **Backbone.View** `remove` function, but because we want Giraffe to manage the lifecycle of all objects, and `remove` means something different for collections, we opted to use the method name `dispose`.*
+<div class='note' markdown='1'>
+The `Giraffe.View#dispose` method overrides the behavior of `Backbone.View#remove` function, but because we want Giraffe to manage the lifecycle of all objects, and `remove` means something different for collections, we opted to use the method name `dispose`.
+</div>
 
 Now that the app is ready, let's give it some children.
 ```js
@@ -55,7 +57,9 @@ childView.once('disposed', function() {
 });
 ```
 
-*Please note: **Giraffe.Collection** and **Giraffe.Model** are very thin wrappers over their Backbone counterparts, adding only `dispose` and `appEvents` support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a `dispose` method. If you want to reuse the same `dispose` method Giraffe's classes use, it's available at `Giraffe.dispose`. It calls `stopListening`, triggers the `'disposing'` and `'disposed'` events, and sets `this.app` to `null`. It also accepts a function argument to do additional work.*
+<div class='note' markdown='1'>
+__Giraffe.Collection__ and __Giraffe.Model__ are very thin wrappers over their Backbone counterparts, adding only `dispose` and `appEvents` support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a `dispose` method. If you want to reuse the same `dispose` method Giraffe's classes use, it's available at `Giraffe.dispose`. It calls `stopListening`, triggers the `disposing` and `disposed` events, and sets `this.app` to `null`. It also accepts a function argument to do additional work.
+</div>
 
 Let's call `dispose` on the app and see what happens!
 ```js

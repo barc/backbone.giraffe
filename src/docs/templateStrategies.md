@@ -34,8 +34,10 @@ var View = Giraffe.View.extend({
 });
 ```
 
-__NOTE:__ The `template` property works in concert with `serialize`
+<div class='note' markdown='1'>
+The `template` property works in concert with `serialize`
 to transform a view's model and/or collection into HTML markup.
+</div>
 
 :::BEGIN Example
 ### Underscore Template (underscore-template)

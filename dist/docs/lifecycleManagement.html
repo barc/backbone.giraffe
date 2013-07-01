@@ -52,7 +52,10 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 app.once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;app is disposed&lt;/p&gt;'</span>);
 });</code></pre>
-<p><em>Please note: the <strong>Giraffe.View</strong> <code>dispose</code> method overrides the behavior of the <strong>Backbone.View</strong> <code>remove</code> function, but because we want Giraffe to manage the lifecycle of all objects, and <code>remove</code> means something different for collections, we opted to use the method name <code>dispose</code>.</em></p>
+<div class='note' markdown='1'>
+The <code>Giraffe.View#dispose</code> method overrides the behavior of <code>Backbone.View#remove</code> function, but because we want Giraffe to manage the lifecycle of all objects, and <code>remove</code> means something different for collections, we opted to use the method name <code>dispose</code>.
+</div>
+
 <p>Now that the app is ready, let&#39;s give it some children.</p>
 <pre><code class="js"><span class="keyword">var</span> childModel = <span class="keyword">new</span> Giraffe.Model();
 app.addChild(childModel);
@@ -78,7 +81,10 @@ childCollection.models[<span class="number">0</span>].once(<span class="string">
 childView.once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view is disposed&lt;/p&gt;'</span>);
 });</code></pre>
-<p><em>Please note: <strong>Giraffe.Collection</strong> and <strong>Giraffe.Model</strong> are very thin wrappers over their Backbone counterparts, adding only <code>dispose</code> and <code>appEvents</code> support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a <code>dispose</code> method. If you want to reuse the same <code>dispose</code> method Giraffe&#39;s classes use, it&#39;s available at <code>Giraffe.dispose</code>. It calls <code>stopListening</code>, triggers the <code>&#39;disposing&#39;</code> and <code>&#39;disposed&#39;</code> events, and sets <code>this.app</code> to <code>null</code>. It also accepts a function argument to do additional work.</em></p>
+<div class='note' markdown='1'>
+<strong>Giraffe.Collection</strong> and <strong>Giraffe.Model</strong> are very thin wrappers over their Backbone counterparts, adding only <code>dispose</code> and <code>appEvents</code> support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a <code>dispose</code> method. If you want to reuse the same <code>dispose</code> method Giraffe&#39;s classes use, it&#39;s available at <code>Giraffe.dispose</code>. It calls <code>stopListening</code>, triggers the <code>disposing</code> and <code>disposed</code> events, and sets <code>this.app</code> to <code>null</code>. It also accepts a function argument to do additional work.
+</div>
+
 <p>Let&#39;s call <code>dispose</code> on the app and see what happens!</p>
 <pre><code class="js">app.dispose();</code></pre>
 <h2>Try It</h2>

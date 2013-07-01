@@ -3,14 +3,12 @@
 
 ## App Events
 
-This example demonstrates how **Giraffe.App** helps your app's components communicate.
-```js
-var App, ChildView;
-```
+This example demonstrates how **Giraffe.App** helps components communicate.
 
-In this example, we're going to create an instance of `Giraffe.App` that creates three child views that talk to each other using the app as an event aggregator.
+Let's create an instance of `Giraffe.App` with three child views that talk to
+each other using the app as an event aggregator.
 ```js
-App = Giraffe.App.extend({
+var App = Giraffe.App.extend({
   afterRender: function() {
     this.attach(new ChildView({color: '#e99', text: 'Color the views red!'}));
     this.attach(new ChildView({color: '#9e9', text: 'Color the views green!'}));
@@ -21,7 +19,7 @@ App = Giraffe.App.extend({
 
 This example is going to have a `ChildView` class with a button that paints all child views its color, and they'll send this coloring message via `appEvents`. Each child view starts out its own color.
 ```js
-ChildView = Giraffe.View.extend({
+var ChildView = Giraffe.View.extend({
   className: 'child-view',
 
   initialize: function() {

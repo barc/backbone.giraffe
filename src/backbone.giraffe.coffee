@@ -218,7 +218,7 @@ class Giraffe.View extends Backbone.View
   * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default, or override `getHTML`, returning a string of HTML from your favorite templating engine.
   * @caption Override this function in your views to get full control over what goes into view.$el during `render`.
   ###
-  getHTML: -> 'TODO - override getHTML'
+  getHTML: ->
 
 
   ###*

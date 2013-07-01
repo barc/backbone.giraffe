@@ -40,10 +40,10 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2>App Events</h2>
-<p>This example demonstrates how <strong>Giraffe.App</strong> helps your app&#39;s components communicate.</p>
-<pre><code class="js"><span class="keyword">var</span> App, ChildView;</code></pre>
-<p>In this example, we&#39;re going to create an instance of <code>Giraffe.App</code> that creates three child views that talk to each other using the app as an event aggregator.</p>
-<pre><code class="js">App = Giraffe.App.extend({
+<p>This example demonstrates how <strong>Giraffe.App</strong> helps components communicate.</p>
+<p>Let&#39;s create an instance of <code>Giraffe.App</code> with three child views that talk to
+each other using the app as an event aggregator.</p>
+<pre><code class="js"><span class="keyword">var</span> App = Giraffe.App.extend({
   afterRender: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'Color the views red!'</span>}));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'Color the views green!'</span>}));
@@ -51,7 +51,7 @@
   }
 });</code></pre>
 <p>This example is going to have a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
-<pre><code class="js">ChildView = Giraffe.View.extend({
+<pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
 
   initialize: <span class="keyword">function</span>() {
@@ -108,9 +108,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
   <div id="appevents0result-tab" class="tab_content">
   <iframe id="appevents0" src="_assets/appevents0.html" class="result"></iframe>
 </div><div id="appevents0scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> App, ChildView;
-
-App = Giraffe.App.extend({
+  <pre><code class="language-js"><span class="keyword">var</span> App = Giraffe.App.extend({
   afterRender: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({
       color: <span class="string">'#e99'</span>,
@@ -127,7 +125,7 @@ App = Giraffe.App.extend({
   }
 });
 
-ChildView = Giraffe.View.extend({
+<span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
 
   initialize: <span class="keyword">function</span>() {

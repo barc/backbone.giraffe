@@ -215,9 +215,7 @@
     */
 
 
-    View.prototype.getHTML = function() {
-      return 'TODO - override getHTML';
-    };
+    View.prototype.getHTML = function() {};
 
     /**
     * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.

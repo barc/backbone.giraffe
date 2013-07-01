@@ -9,7 +9,15 @@ Giraffe does *not* provide two-way data binding, but given its goal as a lightwe
 var View = Giraffe.View.extend({
 ```
 
-**Giraffe.View** provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form `data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it searches up the hierarchy until it finds the method or fails on a view with no `parent`. **Please note:** by default, Giraffe binds only `'click'` and `'change'`, and not `'keyup'` as this example uses, but you can easily set custom bindings using the static method `Giraffe.View.setDocumentEvents`.
+**Giraffe.View** provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form `data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it searches up the hierarchy until it finds the method or fails on a view with no `parent`.
+
+<div class='note' markdown='1'>
+By default, Giraffe binds only `click` and `change`, and not `keyup` as
+this example uses, but you can easily set custom bindings using the static
+method `Giraffe.View.setDocumentEvents`.
+</div>
+
+
 ```js
   getHTML: function() {
     var html = '<div id="hello-text">Hello world!</div>';
