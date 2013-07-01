@@ -17,8 +17,8 @@
       <!-- Sidebar -->
       <section id="sidebar" class="col sidebar">
         
-        <h2 id="h-apiapihtml"><a href="api.html">API</a></h2>
-<h2 id="h-examplesindexhtml"><a href="index.html">Examples</a></h2>
+        <h2><a href="api.html">API</a></h2>
+<h2><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
@@ -39,7 +39,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <p><div class='section-example'><h2 id="h-document-events">Document Events</h2>
+        <p><div class='section-example'><h2>Document Events</h2>
 <p>This example demonstrates Giraffe&#39;s document event bindings that link DOM events to <strong>Giraffe.View</strong> methods.
 Giraffe does <em>not</em> provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method <code>Giraffe.View.removeDocumentEvents()</code>, but it shouldn&#39;t get in your way if left unused.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
@@ -74,7 +74,7 @@ Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span
 <p>All done! Let&#39;s create and attach the view.</p>
 <pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-<h2 id="h-try-it">Try It</h2>
+<h2>Try It</h2>
 <div id="documentevents0_tabs" class="tabs">
   <ul>
     <li class="active">
@@ -98,7 +98,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="documentevents0_tabs_content" class="tabs_content">
   <div id="documentevents0result-tab" class="tab_content">
-  <iframe id="documentevents0" src="_assets/documentevents0.html" class="result"></iframe>
+  <iframe id="documentevents0" src="_assets/documentevents0.html" class="result" ></iframe>
 </div><div id="documentevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
 

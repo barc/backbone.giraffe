@@ -225,6 +225,6 @@ h3 {
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 180px;'}}}
 
 :::END

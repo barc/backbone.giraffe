@@ -81,7 +81,7 @@ p {
 
 #### Result
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 40px'}}}
 
 :::END
 
@@ -126,7 +126,7 @@ p {
 
 #### Result
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 40px'}}}
 
 :::END
 
@@ -161,7 +161,7 @@ p {
 
 #### Result
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 40px'}}}
 
 :::END
 
@@ -197,7 +197,7 @@ p {
 
 #### Result
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 40px'}}}
 
 :::END
 
