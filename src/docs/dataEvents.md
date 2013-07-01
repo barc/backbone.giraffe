@@ -60,6 +60,8 @@ var view = new View();
 view.attachTo('body');
 ```
 
+{{{COMMON}}}
+
 ```css --hide
 // Example
 body {
@@ -88,6 +90,7 @@ h3 {
   margin-right: 10px;
 }
 ```
+
 
 ## Try It
 
