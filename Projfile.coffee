@@ -48,11 +48,13 @@ exports.project = (pm) ->
     desc: 'Copies README.md as the source for index.html'
     dev: ->
       $.cp 'README.md', 'src/docs/index.md'
+      $.cp 'LICENSE', 'src/docs/license.md'
 
   _deleteTempIndex:
     desc: 'Deletes copied README.md'
     dev: ->
       $.rm 'src/docs/index.md'
+      $.rm 'src/docs/license.md'
 
   _toc:
     files: 'src/docs/_toc.md'
@@ -94,8 +96,8 @@ exports.project = (pm) ->
         layout: 'src/docs/_layout.mustache'
         navHeader:
           """
-          <h2><a href="index.html">Giraffe</a></h2>
-          <h2><a href="api.html">API</a></h2>
+          <h2><a href="index.html">Examples</a></h2>
+          <h2>API</h2>
           """
       f.writeFile _filename: 'dist/docs/api.html'
     ]

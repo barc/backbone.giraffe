@@ -27,4 +27,4 @@ Giraffe extends the base Backbone classes with lifecycle management, event aggre
 
 Copyright (c) 2013 Barc Inc.
 
-See the file LICENSE for copying permission.
+See the file [LICENSE](license.html) for copying permission.

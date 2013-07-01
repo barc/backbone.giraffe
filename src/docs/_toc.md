@@ -1,5 +1,3 @@
-## [Giraffe](index.html)
-
 ## [API](api.html)
 
 ## Examples
@@ -15,3 +13,4 @@
 - [App Events](appEvents.html)
 - [Router and appEvents](routersAndAppEvents.html)
 - [Template Strategies](templateStrategies.html)
+
