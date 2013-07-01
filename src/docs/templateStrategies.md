@@ -1,21 +1,21 @@
 ## Template Strategies
 
-__Giraffe__ provides a few common templating strategies.
+Choosing a strategy tells __Giraffe__ how to utilize `Giraffe.View#template`
+property when rendering a view. The predefined strategies are
 
 * underscore templates
 * underscore templates in the DOM
 * JavaScript template functions (JST)
-* user defined
+
+You can forego all templating and define exactly how you want a view
+rendered which is explained in the User Defined section below.
 
 ### Strategy Scope
 
-Choosing a strategy tells __Giraffe__ how to treat a view's `template`
-property.
-
-First decide whether a strategy applies globally or to a specific view.
+First decide whether to set the strategy globally or to a specific view.
 The global case is the one most used as it enforces consistent templating
-in a project. To enable a global strategy use `setTemplateStrategy` class
-method
+across a project. To enable a global strategy use `Giraffe.View.setTemplateStrategy`
+class method
 
 ```js
 Giraffe.View.setTemplateStrategy('underscore-template');
@@ -36,7 +36,8 @@ var View = Giraffe.View.extend({
 
 <div class='note' markdown='1'>
 The `template` property works in concert with `serialize`
-to transform a view's model and/or collection into HTML markup.
+to transform a view's model and/or collection into HTML when
+using one of the predefined strategies.
 </div>
 
 :::BEGIN Example
