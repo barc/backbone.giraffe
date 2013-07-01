@@ -27,7 +27,9 @@
 <li><a href="viewUI.html">View UI</a></li>
 <li><a href="menuExample.html">Menu Examples</a></li>
 <li><a href="viewFlexibility.html">View Flexibility</a></li>
-<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Router and appEvents</a></li>
 <li><a href="templateStrategies.html">Template Strategies</a></li>
 </ul>
 
@@ -118,7 +120,9 @@ app.once(<span class="string">'disposed'</span>, <span class="keyword">function<
 <span class="keyword">var</span> childModel = <span class="keyword">new</span> Giraffe.Model();
 app.addChild(childModel);
 
-<span class="keyword">var</span> childCollection = <span class="keyword">new</span> Giraffe.Collection([{<span class="string">'name'</span>: <span class="string">'a model!'</span>}]);
+<span class="keyword">var</span> childCollection = <span class="keyword">new</span> Giraffe.Collection([{
+  <span class="string">'name'</span>: <span class="string">'a model!'</span>
+}]);
 app.addChild(childCollection);
 
 <span class="keyword">var</span> childView = <span class="keyword">new</span> Giraffe.View();
@@ -133,7 +137,7 @@ childCollection.once(<span class="string">'disposed'</span>, <span class="keywor
 });
 
 childCollection.models[<span class="number">0</span>].once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
- $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection\'s model is disposed&lt;/p&gt;'</span>);
+  $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection\'s model is disposed&lt;/p&gt;'</span>);
 });
 
 childView.once(<span class="string">'disposed'</span>, <span class="keyword">function</span>() {
@@ -144,52 +148,54 @@ app.dispose();</code></pre>
 </div><div id="lifecyclemanagement0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'lifecyclemanagement0-style.css'</span> /&gt;</span>
-  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'lifecyclemanagement0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'lifecyclemanagement0-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'lifecyclemanagement0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="lifecyclemanagement0stylecss-tab" class="tab_content">
-  <pre><code class="language-css">// Example
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
-.child-view {
-  position: relative;
-  padding: 20px;
-  margin: 20px;
-  border: 1px dashed #999;
-}</code></pre>
+  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+<span class="rule">}</span></span>
+* <span class="rules">{
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h1</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h2</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h3</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.child-view</span> <span class="rules">{
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+<span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
 

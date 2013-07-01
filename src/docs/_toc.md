@@ -11,5 +11,7 @@
 - [View UI](viewUI.html)
 - [Menu Examples](menuExample.html)
 - [View Flexibility](viewFlexibility.html)
-- [Router and App Events](routersAndAppEvents.html)
+- [App Initialization](appInitialization.html)
+- [App Events](appEvents.html)
+- [Router and appEvents](routersAndAppEvents.html)
 - [Template Strategies](templateStrategies.html)

@@ -65,7 +65,6 @@ app.dispose();
 {{{COMMON}}}
 
 ```css --hide
-// Example
 body {
   background-color: #ffffff;
   padding: 20px;

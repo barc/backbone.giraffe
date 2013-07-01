@@ -27,7 +27,9 @@
 <li><a href="viewUI.html">View UI</a></li>
 <li><a href="menuExample.html">Menu Examples</a></li>
 <li><a href="viewFlexibility.html">View Flexibility</a></li>
-<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Router and appEvents</a></li>
 <li><a href="templateStrategies.html">Template Strategies</a></li>
 </ul>
 
@@ -165,16 +167,22 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
 
 App = Giraffe.App.extend({
   initialize: <span class="keyword">function</span>() {
-    <span class="keyword">this</span>.menuItems = <span class="keyword">new</span> Giraffe.Collection([
-      {name: <span class="string">'menu item 1'</span>},
-      {name: <span class="string">'menu item 2'</span>},
-      {name: <span class="string">'menu item 3'</span>}
-    ]);
+    <span class="keyword">this</span>.menuItems = <span class="keyword">new</span> Giraffe.Collection([{
+      name: <span class="string">'menu item 1'</span>
+    }, {
+      name: <span class="string">'menu item 2'</span>
+    }, {
+      name: <span class="string">'menu item 3'</span>
+    }]);
   },
 
   afterRender: <span class="keyword">function</span>() {
-    <span class="keyword">this</span>.attach(<span class="keyword">new</span> MenuView({collection: <span class="keyword">this</span>.menuItems}));
-    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ContentView({collection: <span class="keyword">this</span>.menuItems}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> MenuView({
+      collection: <span class="keyword">this</span>.menuItems
+    }));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ContentView({
+      collection: <span class="keyword">this</span>.menuItems
+    }));
   }
 });
 
@@ -188,19 +196,27 @@ MenuView = Giraffe.View.extend({
   },
 
   onRouteMenu: <span class="keyword">function</span>(menuItemName) {
-    <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({active: <span class="literal">true</span>});
+    <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({
+      active: <span class="literal">true</span>
+    });
     <span class="keyword">if</span> (activeMenuItem) activeMenuItem.set(<span class="string">'active'</span>, <span class="literal">false</span>);
-    <span class="keyword">this</span>.collection.findWhere({name: menuItemName}).set(<span class="string">'active'</span>, <span class="literal">true</span>);
+    <span class="keyword">this</span>.collection.findWhere({
+      name: menuItemName
+    }).set(<span class="string">'active'</span>, <span class="literal">true</span>);
   },
 
   dataEvents: {
-    <span class="string">'change:active collection'</span>: <span class="keyword">function</span>(model, active) { <span class="keyword">if</span> (active) <span class="keyword">this</span>.render(); }
+    <span class="string">'change:active collection'</span>: <span class="keyword">function</span>(model, active) {
+      <span class="keyword">if</span> (active) <span class="keyword">this</span>.render();
+    }
   },
 
   afterRender: <span class="keyword">function</span>() {
     <span class="keyword">var</span> self = <span class="keyword">this</span>;
     <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
-      self.attach(<span class="keyword">new</span> MenuItemView({model: model}));
+      self.attach(<span class="keyword">new</span> MenuItemView({
+        model: model
+      }));
     });
   }
 });
@@ -208,10 +224,10 @@ MenuView = Giraffe.View.extend({
 MenuItemView = Giraffe.View.extend({
   getHTML: <span class="keyword">function</span>() {
     <span class="keyword">var</span>
-      name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>),
+    name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>),
       href = <span class="keyword">this</span>.app.router.getRoute(<span class="string">'route:menu'</span>, name),
       className = <span class="keyword">this</span>.model.get(<span class="string">'active'</span>) ? <span class="string">'active'</span> : <span class="string">''</span>;
-    <span class="keyword">return</span> <span class="string">'&lt;a href="'</span> + href + <span class="string">'" class="'</span> + className + <span class="string">'"&gt;'</span> + name+ <span class="string">'&lt;/a&gt;'</span>;
+    <span class="keyword">return</span> <span class="string">'&lt;a href="'</span> + href + <span class="string">'" class="'</span> + className + <span class="string">'"&gt;'</span> + name + <span class="string">'&lt;/a&gt;'</span>;
   }
 });
 
@@ -225,13 +241,19 @@ ContentView = Giraffe.View.extend({
   },
 
   afterRender: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({active: <span class="literal">true</span>});
+    <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({
+      active: <span class="literal">true</span>
+    });
     <span class="keyword">if</span> (activeMenuItem)
-      <span class="keyword">this</span>.getItemView(activeMenuItem).attachTo(<span class="keyword">this</span>, {method: <span class="string">'html'</span>});
+      <span class="keyword">this</span>.getItemView(activeMenuItem).attachTo(<span class="keyword">this</span>, {
+        method: <span class="string">'html'</span>
+      });
   },
 
   getItemView: <span class="keyword">function</span>(menuItem) {
-    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="keyword">function</span>(child) { <span class="keyword">return</span> child.model === menuItem; });
+    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="keyword">function</span>(child) {
+      <span class="keyword">return</span> child.model === menuItem;
+    });
     <span class="keyword">if</span> (!view) {
       view = <span class="keyword">new</span> ContentItemView({
         model: menuItem,
@@ -266,94 +288,96 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
 </div><div id="menuexample0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
-    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'menuexample0-style.css'</span> /&gt;</span>
-  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'menuexample0-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="menuexample0stylecss-tab" class="tab_content">
-  <pre><code class="language-css">// Example
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
-.child-view {
-  position: relative;
-  padding: 20px;
-  margin: 20px;
-  border: 1px dashed #999;
-}
-.menu {
-  padding-left: 80px;
-}
-.menu li {
-  color: #888;
-  display: inline-block;
-  min-width: 80px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-align: center;
-  border-top-left-radius: 4px;
-  -moz-border-top-left-radius: 4px;
-  -webkit-border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  -moz-border-top-right-radius: 4px;
-  -webkit-border-top-right-radius: 4px;
-  padding: 4px;
-  position: relative;
-  top: 1px;
-}
-.menu li:active {
-  color: #555;
-}
-.menu li.active {
-  color: #333;
-  border-color: #bbbbbb;
-  border-bottom-color: #ffffff;
-}
-.menu-content {
-  border: 1px solid #bbbbbb;
-  padding: 20px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-}
-.active {
-  font-weight: bold;
-}
-.content-item-view {
-  height: 200px;
-  overflow: auto;
-}</code></pre>
+  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+<span class="rule">}</span></span>
+* <span class="rules">{
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h1</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h2</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h3</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.child-view</span> <span class="rules">{
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.menu</span> <span class="rules">{
+  <span class="rule"><span class="attribute">padding-left</span>:<span class="value"> <span class="number">80</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.menu</span> <span class="tag">li</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#888</span>;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline-block;</span></span>
+  <span class="rule"><span class="attribute">min-width</span>:<span class="value"> <span class="number">80</span>px;</span></span>
+  <span class="rule"><span class="attribute">cursor</span>:<span class="value"> pointer;</span></span>
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid transparent;</span></span>
+  <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center;</span></span>
+  <span class="rule"><span class="attribute">border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-moz-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-webkit-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-moz-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-webkit-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
+  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">1</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.menu</span> <span class="tag">li</span><span class="pseudo">:active</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#555</span>;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.menu</span> <span class="tag">li</span><span class="class">.active</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#333</span>;</span></span>
+  <span class="rule"><span class="attribute">border-color</span>:<span class="value"> <span class="hexcolor">#bbbbbb</span>;</span></span>
+  <span class="rule"><span class="attribute">border-bottom-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.menu-content</span> <span class="rules">{
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid <span class="hexcolor">#bbbbbb</span>;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-moz-border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">-webkit-border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.active</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold;</span></span>
+<span class="rule">}</span></span>
+<span class="class">.content-item-view</span> <span class="rules">{
+  <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">200</span>px;</span></span>
+  <span class="rule"><span class="attribute">overflow</span>:<span class="value"> auto;</span></span>
+<span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
 

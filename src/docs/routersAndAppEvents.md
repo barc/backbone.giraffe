@@ -104,7 +104,6 @@ router.getRoute('route:childView', 1); // => '#childView/1'
 {{{COMMON}}}
 
 ```css --hide
-// Example
 body {
   background-color: #ffffff;
   padding: 20px;

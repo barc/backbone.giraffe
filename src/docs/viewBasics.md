@@ -185,7 +185,6 @@ That's it! Take a look at the result below. It may not look very impressive, but
 {{{COMMON}}}
 
 ```css --hide
-/* Example */
 body {
   background-color: #ffffff;
   padding: 20px;

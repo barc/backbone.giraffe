@@ -127,7 +127,6 @@ app.router.cause('route:menu', 'menu item 1');
 {{{COMMON}}}
 
 ```css --hide
-// Example
 body {
   background-color: #ffffff;
   padding: 20px;
