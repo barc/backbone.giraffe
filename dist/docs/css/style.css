@@ -764,47 +764,45 @@ body,
 }
 /* line 39, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar {
-  height: 100%;
   padding-top: 140px;
 }
-/* line 42, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 41, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar li a {
   font-size: 14px;
 }
-/* line 45, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 44, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar h2 {
   font-size: 18px;
 }
-/* line 48, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 47, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar h3 {
   font-size: 16px;
 }
-/* line 51, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 50, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar h2,
 #sidebar h3,
 #sidebar a {
   color: #888;
 }
-/* line 54, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 53, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar a {
   text-decoration: none;
 }
-/* line 56, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 55, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #sidebar a:hover {
   text-decoration: underline;
 }
-/* line 62, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 61, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #content {
-  height: 100%;
-  border-left: solid 1px #ddd;
+  border-left: solid 1px #eee;
 }
-/* line 69, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 67, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 p,
 a,
 td {
   color: #444;
 }
-/* line 73, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 71, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 h1,
 h2,
 h3,
@@ -812,31 +810,31 @@ h4,
 h5 {
   color: #222;
 }
-/* line 77, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 75, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 iframe.result {
   width: 100%;
   height: auto;
   border: dashed 1px #ececf0;
 }
-/* line 83, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 81, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 code {
   font-family: Consolas, Menlo, 'Ubuntu Mono', monospace;
 }
-/* line 88, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 86, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 ul {
   list-style: none;
   padding-left: 1em;
 }
-/* line 93, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 91, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 strong {
   font-weight: bold;
 }
-/* line 97, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 95, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 a {
   color: #333333;
   text-decoration: underline;
 }
-/* line 102, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 100, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .caption {
   margin-left: 14px;
   /* font-size: 12px; */
@@ -846,29 +844,29 @@ a {
   font-weight: normal;
   font-size: 14px;
 }
-/* line 111, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 109, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .static {
   font-style: italic;
 }
-/* line 114, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 112, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .static:before {
   content: '.';
 }
-/* line 118, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 116, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 #logo {
   width: 600px;
   height: 135px;
   margin-left: -20px;
 }
-/* line 124, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 122, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .nav-title {
   font-size: 15px;
 }
-/* line 128, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 126, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .collapsed > * {
   display: none;
 }
-/* line 132, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 130, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .collapsed:before,
 .uncollapsed:before {
   background-color: #d8f3f8;
@@ -880,15 +878,15 @@ a {
   -webkit-border-radius: 4px;
   cursor: pointer;
 }
-/* line 141, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 139, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .collapsed:before {
   content: "learn more...";
 }
-/* line 145, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 143, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .uncollapsed:before {
   content: "hide...";
 }
-/* line 153, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 151, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .note {
   background-color: #ffffed;
   color: #54544a;
@@ -897,7 +895,7 @@ a {
   border-right: solid 1px #ebebda;
   border-bottom: solid 1px #ebebda;
 }
-/* line 162, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
+/* line 160, /home/coder/barc/code/backbone.giraffe/src/docs/css/style.less */
 .aside {
   background-color: #f4f4f4;
   color: #666;
