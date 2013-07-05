@@ -59,7 +59,7 @@ exports.project = (pm) ->
   _toc:
     files: 'src/docs/_toc.md'
     dev: [
-      f.tutdown
+      f.tutdown assetsDirname: 'dist/docs/_assets'
       f.writeFile _filename: 'dist/docs/_toc.html'
     ]
 
@@ -76,6 +76,7 @@ exports.project = (pm) ->
         asset.text = asset.text.replace(/{{{COMMON}}}/g, COMMON)
       f.tutdown
         exampleLayoutFile: 'src/docs/_example.mustache'
+        assetsDirname: 'dist/docs/_assets'
       f.tap (asset) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
@@ -90,7 +91,7 @@ exports.project = (pm) ->
     deps: ['stylesheets', 'staticFiles']
     files: ['src/backbone.giraffe.coffee']
     dev: [
-      f.tutdown
+      f.tutdown commentFiller: '* '
       f.template
         delimiters: 'mustache'
         layout: 'src/docs/_layout.mustache'
@@ -104,7 +105,7 @@ exports.project = (pm) ->
 
   docs:
     desc: 'Builds the docs'
-    deps: ['_copyReadmeAsIndex', '_docs', '_deleteTempIndex', '_api']
+    deps: ['prep', '_copyReadmeAsIndex', '_docs', '_deleteTempIndex', '_api']
 
   stylesheets:
     desc: 'Builds less files'
@@ -119,6 +120,9 @@ exports.project = (pm) ->
     desc: 'Copies static files'
     dev: ->
       $.cp '-rf', 'src/docs/img', 'dist/docs'
+
+  prep: ->
+    $.mkdir '-p', 'dist/docs/_assets'
 
   clean: ->
     $.rm '-rf', 'dist'

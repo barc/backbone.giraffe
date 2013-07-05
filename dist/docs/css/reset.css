@@ -2,7 +2,7 @@
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com
  */
-/* line 5, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 5, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 html,
 body,
 div,
@@ -92,7 +92,7 @@ video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-/* line 26, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 26, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 article,
 aside,
 details,
@@ -106,21 +106,21 @@ nav,
 section {
   display: block;
 }
-/* line 30, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 30, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 body {
   line-height: 1;
 }
-/* line 33, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 33, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 ol,
 ul {
   list-style: none;
 }
-/* line 36, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 36, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 blockquote,
 q {
   quotes: none;
 }
-/* line 39, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 39, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 blockquote:before,
 blockquote:after,
 q:before,
@@ -128,7 +128,7 @@ q:after {
   content: '';
   content: none;
 }
-/* line 44, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 44, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 table {
   border-collapse: collapse;
   border-spacing: 0;
