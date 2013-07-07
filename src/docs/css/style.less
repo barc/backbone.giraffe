@@ -4,6 +4,7 @@
 
 * {
   .box-sizing(border-box);
+  line-height: 1.3;
 }
 
 
@@ -16,28 +17,30 @@
 /*         .feature, .info { width: 50%; } */
 /* } */
 
-@media only screen and (min-width: 480px) {
-        #content { width: 78.00%; }
-        #sidebar { width: 22.00%; }
-}
+// @media only screen and (min-width: 480px) {
+//         #content { width: 78.00%; }
+//         #sidebar { width: 22.00%; }
+// }
 
-@media only screen and (min-width: 960px) {
-        #sidebar { width: 220px; }
-}
-
-html, body, #page-wrapper, .row {
-  height: 100%;
-}
+// @media only screen and (min-width: 960px) {
+//         #sidebar { width: 220px; }
+// }
 
 #page-wrapper {
-  margin-left: auto ;
-  margin-right: auto ;
-  height: 100%;
-  max-width: 1280px;
+  padding-left: @sidebarWidth;
 }
 
+@sidebarWidth: 230px;
+
 #sidebar {
-  padding-top: 140px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 8px 24px 24px 24px;
+  width: @sidebarWidth;
+  height: 100%;
+  overflow: auto;
+
   li a {
     font-size: 14px;
   }
@@ -59,12 +62,13 @@ html, body, #page-wrapper, .row {
 }
 
 #content {
-  border-left: solid 1px #eee;
+  max-width: 800px;
+  min-width: 400px;
   min-height: 100%;
-  padding-bottom: 20px;
+  border-left: solid 1px #eee;
+  padding: 24px;
 
-  h2 {
-    margin-top: 30px;
+  h1, h2, h3 {
     padding-top: 20px;
   }
 }
@@ -85,10 +89,11 @@ iframe.result {
   border: dashed 1px @codeBorderColor;
 }
 
-code {
-  font-family: @monospaceFontFamily;
+article {
+  section {
+    margin-bottom: 60px;
+  }
 }
-
 
 ul {
   list-style: none;
@@ -123,9 +128,6 @@ a {
 #logo {
   width: 600px;
   height: 135px;
-  margin-left: -@padding;
-  position: relative;
-  top: 20px;
 }
 
 .nav-title {

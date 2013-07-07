@@ -21,8 +21,8 @@ else
 
 
 Backbone.Giraffe = Giraffe =
-  app: null # stores the most recently created instance of App, so for simple cases with 1 app Giraffe views/routers don't need an app reference
-  apps: {} # caches all app views by `options.name`, defaulting to `cid`
+  app: null # stores the most recently created instance of App, so for simple cases with 1 app Giraffe objects don't need an app reference
+  apps: {} # cache for all app views by `options.name`, defaulting to `cid`
   views: {} # cache for all views by `cid`
 window?.Giraffe = Giraffe
 
@@ -33,11 +33,11 @@ error = ->
 
 
 ###
-* **Giraffe.View** is optimized for simplicity and flexibility. It provides lifecycle management for all `children`, which can be any object that implements a `dispose` method. The `attachTo` method automatically sets up parent-child relationships between views to allow nesting with no extra work, and any other object can have its lifecycle managed via `addChild`. When a view is disposed, it disposes of all of its `children`, allowing us to destroy anything from a single view to an entire application with a single method call. When a view renders, it first calls `detach` on all of its children, and when a view is detached, the default behavior is to dispose of that view. To overried this behavior and keep a view cached even when its parent renders, you can set the cached view's `options.disposeOnDetach` to `false`.
+* **Giraffe.View** is optimized for simplicity and flexibility. Views can move around the DOM safely and freely with the `attachTo` method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`. The `attachTo` method automatically sets up parent-child relationships between views via the references `children` and `parent` to allow nesting with no extra work. Views automatically manage the lifecycle of all `children`, and any object with a `dispose` method can be added to `children` via `addChild`. When a view is disposed, it disposes of all of its `children`, allowing the disposal of an entire application with a single method call.
 *
-* Views can move around the DOM safely and freely with the `attachTo` method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`.
+* When a view renders, it first calls `detach` on all of its `children`, and when a view is detached, the default behavior is call `dispose` on it. To overried this behavior and cache a view even when its `parent` renders, you can set the cached view's `options.disposeOnDetach` to `false`.
 *
-* The **Giraffe.View** gets much of its smarts by way of the `data-view-cid` attribute attached to `view.$el`. This attribute allows us to find a view's parent when attached to a selector or DOM element and safely detach views when they would otherwise be clobbered. Currently, Giraffe has only one class that extends **Giraffe.View**, **Giraffe.App**, which encapsulates app-wide messenging and routing.
+* **Giraffe.View** gets much of its smarts by way of the `data-view-cid` attribute attached to `view.$el`. This attribute allows us to find a view's parent when attached to a DOM element and safely detach views when they would otherwise be clobbered. Currently, Giraffe has only one class that extends **Giraffe.View**, **Giraffe.App**, which encapsulates app-wide messenging and routing.
 *
 * @param {Object} [options]
 ###
@@ -60,7 +60,7 @@ class Giraffe.View extends Backbone.View
     ###
     * Similar to the `events` hash of **Backbone.View**, the `appEvents` hash maps events on `this.app` to methods on the view. App events can be triggered from routes or by any object in your application. If a **Giraffe.App** has been created, every view has a reference to the global **Giraffe.app** instance at `this.app`, and a specific app instance can be set by passing `options.app` to the view. The instance of `this.app` is used to bind `appEvents`, and these bindings are automatically cleaned up when a view is disposed. See **Giraffe.App** and **Giraffe.Router** for more.
     ###
-    Giraffe.bindEventMap @app, @appEvents, @
+    Giraffe.bindEventMap @, @app, @appEvents
 
     ###
     * When one view is attached to another, the child view is added to the parent's `children` array. When a view renders, it first calls `detach` on its `children`. By default, `dispose` is called on a view when it is detached if `options.disposeOnDetach` is `true`, which is the default setting. After a view renders, any child views with `options.disposeOnDetach` set to `false` will be in `children`, ready to be attached. When `dispose` is called on a view, it disposes of all of its `children`. Any object with a `dispose` method can be added to a view's `children` via `addChild` to take advantage of lifecycle management.
@@ -194,14 +194,14 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. It consumes the method `getHTML`, a method your views should implement that returns a view's HTML as a string.
+  * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `getHTML` for more.
   * @caption Do not override unless you know what you're doing!
   ###
   render: (options) =>
     @beforeRender.apply @, arguments
     @_renderedOnce = true
     @detachChildren options?.preserve
-    @$el.empty().html @getHTML.apply(@, arguments) or ''
+    @$el.empty().html @getHTML() or ''
     @_cacheUiElements()
     @afterRender.apply @, arguments
     @
@@ -215,18 +215,23 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default, or override `getHTML`, returning a string of HTML from your favorite templating engine.
-  * @caption Override this function in your views to get full control over what goes into view.$el during `render`.
+  * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `getHTML` with a function returning a string of HTML from your favorite templating engine.
   ###
   getHTML: ->
 
 
   ###
-  * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.
-  * @caption Override this function to pass custom data to a view's `templateFunction`.
+  * Consumed by the `getHTML` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
+  ###
+  template: null
+
+
+  ###
+  * Gets the data passed to the `template`. By default, returns an object with direct references to the view and its `model` and `collection`.
+  * @caption Override this function to pass custom data to a view's `template`.
   ###
   serialize: ->
-    {@collection, @model}
+    {@collection, @model, view: @}
 
 
   ###
@@ -424,7 +429,7 @@ class Giraffe.View extends Backbone.View
         error "Unknown taget object #{targetObj} for data event", eventKey
         continue
       eventName = pieces.join(' ')
-      Giraffe.bindEvent targetObj, eventName, cb, @
+      Giraffe.bindEvent @, targetObj, eventName, cb
     @
 
 
@@ -477,7 +482,7 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to correlate DOM nodes to view instances.
+  * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
   *
   * @param {Element/jQuery/Giraffe.View} el
   * @param {Boolean} [preserve]
@@ -492,7 +497,7 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Uses the `data-view-cid` attribute to correlate DOM nodes to view instances.
+  * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
   *
   * @param {Element/jQuery/Giraffe.View} el
   ###
@@ -514,16 +519,6 @@ class Giraffe.View extends Backbone.View
   # Gets a jQuery object from a selector, element, jQuery object, or Giraffe.View.
   @to$El: (el) ->
     el?.$el or if el instanceof $ then el else $(el)
-
-
-  ###
-  * Using the form `data-gf-event`, DOM elements can be configured to call view methods on DOM events. By default, Giraffe only binds the most common events to keep things lean. To configure your own set of events, use Giraffe.View.setDocumentEvents to reset the bindings to the events of your choosing. For example, if you want only the click and mousedown events, call Giraffe.View.setDocumentEvents(['click', 'mousedown']). If you wish to remove Giraffe's document event features completely, call `removeDocumentEvents`. It is not necessary to call this method before setting new ones. Setting document events removes the current ones.
-  ###
-  @removeDocumentEvents: ->
-    return unless View._currentDocumentEvents?.length
-    for event in View._currentDocumentEvents
-      $(document).off event, "[data-gf-#{event}]"
-    View._currentDocumentEvents = null
 
 
   ###
@@ -555,21 +550,34 @@ class Giraffe.View extends Backbone.View
 
 
   ###
+  * Using the form `data-gf-event`, DOM elements can be configured to call view methods on DOM events. By default, Giraffe only binds the most common events to keep things lean. To configure your own set of events, use Giraffe.View.setDocumentEvents to reset the bindings to the events of your choosing. For example, if you want only the click and mousedown events, call Giraffe.View.setDocumentEvents(['click', 'mousedown']). If you wish to remove Giraffe's document event features completely, call `removeDocumentEvents`. It is not necessary to call this method before setting new ones. Setting document events removes the current ones.
+  ###
+  @removeDocumentEvents: ->
+    return unless View._currentDocumentEvents?.length
+    for event in View._currentDocumentEvents
+      $(document).off event, "[data-gf-#{event}]"
+    View._currentDocumentEvents = null
+
+
+  ###
   * Giraffe provides common strategies for templating.
   *
-  * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'html'
+  * The `strategy` argument can be a function returning an HTML string or one of the following:
   *
-  * - underscore-template-selector
+  * - `'underscore-template-selector'`
   *
-  *     `view.template` is a string or function returning DOM selector
+  *     - `view.template` is a string or function returning DOM selector
   *
-  * - underscore-template
+  * - `'underscore-template'`
   *
-  *     `view.template` is a string or function returning underscore template
+  *     - `view.template` is a string or function returning underscore template
   *
-  * - html
+  * - `'jst'`
   *
-  *     `view.template` is a string or function returning html
+  *     - `view.template` is an html string or a JST function
+  *
+  * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'jst'
+  *
   ###
   @setTemplateStrategy: (strategy, instance) ->
 
@@ -581,7 +589,7 @@ class Giraffe.View extends Backbone.View
         # @template is a string DOM selector or a function returning DOM selector
         when 'underscore-template-selector'
           getHTML = ->
-            that = @
+            return '' unless @template
             if !@_templateFn
               switch typeof @template
                 when 'string'
@@ -590,32 +598,33 @@ class Giraffe.View extends Backbone.View
                 when 'function'
                   # user likely made it a function because it depends on
                   # run time info, ensure it is called EACH time
-                  @_templateFn = (locals) ->
-                    selector = that.template()
+                  @_templateFn = (locals) =>
+                    selector = @template()
                     _.template $(selector).html(), locals
                 else
-                  throw new Error('@template must be string or function')
+                  throw new Error('this.template must be string or function')
 
             @_templateFn @serialize.apply(@, arguments)
 
         # @template is a string or a function returning a string template
         when 'underscore-template'
           getHTML = ->
-            that = @
+            return '' unless @template
             if !@_templateFn
               switch typeof @template
                 when 'string'
                   @_templateFn = _.template(@template)
                 when 'function'
-                  @_templateFn = (locals) ->
-                    _.template that.template(), locals
+                  @_templateFn = (locals) =>
+                    _.template @template(), locals
                 else
-                  throw new Error('@template must be string or function')
+                  throw new Error('this.template must be string or function')
             @_templateFn @serialize.apply(@, arguments)
 
         # @template is the markup or a JST function
         when 'jst'
           getHTML = ->
+            return '' unless @template
             if !@_templateFn
               switch typeof @template
                 when 'string'
@@ -624,7 +633,7 @@ class Giraffe.View extends Backbone.View
                 when 'function'
                   @_templateFn = @template
                 else
-                  throw new Error('@template must be string or function')
+                  throw new Error('this.template must be string or function')
             @_templateFn @serialize.apply(@, arguments)
 
         else
@@ -634,6 +643,10 @@ class Giraffe.View extends Backbone.View
       instance.getHTML = getHTML
     else
       Giraffe.View::getHTML = getHTML
+
+
+  # Set the default template strategy
+  @setTemplateStrategy 'underscore-template-selector'
 
 
   @setDocumentEvents ['click', 'change']
@@ -743,7 +756,7 @@ class Giraffe.Router extends Backbone.Router
     if !@app
       return error 'Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.'
     @app.addChild @ # disposes of the router when its app is removed
-    Giraffe.bindEventMap @app, @appEvents, @
+    Giraffe.bindEventMap @, @app, @appEvents
 
     if options.triggers
       @triggers = options.triggers
@@ -952,7 +965,7 @@ class Giraffe.Model extends Backbone.Model
 
   constructor: (attributes, options) ->
     @app or= options?.app or Giraffe.app
-    Giraffe.bindEventMap @app, @appEvents, @
+    Giraffe.bindEventMap @, @app, @appEvents
     super
 
 
@@ -985,7 +998,7 @@ class Giraffe.Collection extends Backbone.Collection
 
   constructor: (models, options) ->
     @app or= options?.app or Giraffe.app
-    Giraffe.bindEventMap @app, @appEvents, @
+    Giraffe.bindEventMap @, @app, @appEvents
     super
 
 
@@ -1022,12 +1035,12 @@ Giraffe.dispose = (obj, fn, args...) ->
 
 
 ###
-* Makes `contextObj` listen for `eventName` on `targetObj` with the callback `cb`.
+* Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on `targetObj` with the callback `cb`, which can be a function or the string name of a method on `contextObj`.
 *
+* @param {Backbone.Events} contextObj The object doing the listening.
 * @param {Backbone.Events} targetObj The object to listen to.
 * @param {String/Function} eventName The name of the event to listen to.
 * @param {Function} cb The event's callback.
-* @param {Backbone.Events} contextObj The object doing the listening.
 ###
 Giraffe.bindEvent = (args...) ->
   _setEventBindings.apply null, args.concat('listenTo')
@@ -1037,22 +1050,22 @@ Giraffe.bindEvent = (args...) ->
 ###
 * The `stopListening` equivalent of `bindEvent`.
 *
+* @param {Backbone.Events} contextObj The object doing the listening.
 * @param {Backbone.Events} targetObj The object to listen to.
 * @param {String/Function} eventName The name of the event to listen to.
 * @param {Function} cb The event's callback.
-* @param {Backbone.Events} contextObj The object doing the listening.
 ###
 Giraffe.unbindEvent = (args...) ->
   _setEventBindings.apply null, args.concat('stopListening')
 
 
 ###
-* Binds an event map of the form `{eventName: methodName}` to `targetObj` with `contextObj` being the listening object.
+* Uses `bindEvent` to bind an event map of the form `{eventName: methodName}`.
 *
+* @param {Backbone.Events} contextObj The object doing the listening.
 * @param {Backbone.Events} targetObj The object to listen to.
 * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
 * @param {Function} cb The event's callback.
-* @param {Backbone.Events} contextObj The object doing the listening.
 ###
 Giraffe.bindEventMap = (args...) ->
   _setEventMapBindings.apply null, args.concat('listenTo')
@@ -1062,30 +1075,30 @@ Giraffe.bindEventMap = (args...) ->
 ###
 * The `stopListening` equivalent of `bindEventMap`.
 *
+* @param {Backbone.Events} contextObj The object doing the listening.
 * @param {Backbone.Events} targetObj The object to listen to.
 * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
 * @param {Function} cb The event's callback.
-* @param {Backbone.Events} contextObj The object doing the listening.
 ###
 Giraffe.unbindEventMap = (args...) ->
   _setEventMapBindings.apply null, args.concat('stopListening')
 
 
 # Event binding helpers
-_setEventBindings = (targetObj, eventName, cb, contextObj, bindOrUnbindFnName) ->
+_setEventBindings = (contextObj, targetObj, eventName, cb, bindOrUnbindFnName) ->
   return unless targetObj and contextObj and eventName and bindOrUnbindFnName
   if typeof cb is 'string'
     cb = contextObj[cb]
-  if !cb
-    error "callback for `#{eventName}` not found: #{cb}", contextObj, targetObj
+  if typeof cb isnt 'function'
+    error "callback for `'#{eventName}'` not found", contextObj, targetObj, cb
     return
   contextObj[bindOrUnbindFnName] targetObj, eventName, cb
 
 
-_setEventMapBindings = (targetObj, eventMap, contextObj, bindOrUnbindFnName) ->
+_setEventMapBindings = (contextObj, targetObj, eventMap, bindOrUnbindFnName) ->
   if typeof eventMap is 'function'
     eventMap = eventMap()
   return unless eventMap
   for eventName, cb of eventMap
-    _setEventBindings targetObj, eventName, cb, contextObj, bindOrUnbindFnName
+    _setEventBindings contextObj, targetObj, eventName, cb, bindOrUnbindFnName
   null

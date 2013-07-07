@@ -11,6 +11,6 @@
 - [View Flexibility](viewFlexibility.html)
 - [App Initialization](appInitialization.html)
 - [App Events](appEvents.html)
-- [Router and appEvents](routersAndAppEvents.html)
+- [Router and App Events](routersAndAppEvents.html)
 - [Template Strategies](templateStrategies.html)
 

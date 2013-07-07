@@ -29,7 +29,7 @@
 <li><a href="viewFlexibility.html">View Flexibility</a></li>
 <li><a href="appInitialization.html">App Initialization</a></li>
 <li><a href="appEvents.html">App Events</a></li>
-<li><a href="routersAndAppEvents.html">Router and appEvents</a></li>
+<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
 <li><a href="templateStrategies.html">Template Strategies</a></li>
 </ul>
 
@@ -41,17 +41,22 @@
         <img id="logo" src="img/logo.png" />
         <h1 id='h-backbonegiraffe'>Backbone.Giraffe</h1>
 <h2 id='h-introduction'>Introduction</h2>
-<p><strong>Backbone.Giraffe</strong> is a lightweight library that extends <a href="http://documentcloud.github.com/backbone/"><strong>Backbone.js</strong></a> to new heights.</p>
-<h2 id='h-why-giraffe'>Why Giraffe?</h2>
-<p>Giraffe extends the base Backbone classes with lifecycle management, event aggregation, and some features we at <a href="https://barc.com">Barc</a> find useful. Giraffe&#39;s goal is to provide a layer of features and conventions that follow the Backbone philosophy of simplicity and flexibilty.</p>
+<p><strong>Backbone.Giraffe</strong> is a lightweight library that extends <a href="http://documentcloud.github.com/backbone/"><strong>Backbone.js</strong></a> to new heights. Giraffe&#39;s goal is to follow the Backbone philosophy of simplicity and flexibilty to provide commonly needed features with few assumptions. It differs from other Backbone libraries like Marionette and Chaplin in its reduced scope and size, and it takes a different approach to the problems of route handling, object lifecycles, event aggregation, and view management.</p>
+<h2 id='h-overview'>Overview</h2>
+<p>Giraffe extends the base Backbone classes with lifecycle management, event aggregation for app-wide communication and route handling, and some features we at <a href="https://barc.com">Barc</a> find useful.</p>
 <ul>
-<li><strong>Giraffe.View</strong> is a nestable, disposable, and flexible class that provides lifecycle management and some useful features.</li>
-<li><strong>Giraffe.App</strong> is a special view that helps your views, models, collections, and routers communicate.</li>
-<li><strong>Giraffe.Router</strong> leverages an app&#39;s events to provide programmatic control over your routes and routing events that any object can listen for.</li>
-<li><strong>Giraffe.Model</strong> and <strong>Giraffe.Collection</strong> are thin wrappers that add Giraffe&#39;s lifecycle management and app events.</li>
+<li><p><strong>Giraffe.View</strong> is a nestable, disposable, and flexible class that provides lifecycle management and some useful features.</p>
+</li>
+<li><p><strong>Giraffe.App</strong> is a special view that helps your views, models, collections, and routers communicate.</p>
+</li>
+<li><p><strong>Giraffe.Router</strong> leverages an app&#39;s events to provide routing events that any object can listen for and programmatic route encapsulation.</p>
+</li>
+<li><p><strong>Giraffe.Model</strong> and <strong>Giraffe.Collection</strong> are thin wrappers that add Giraffe&#39;s lifecycle management and app events.</p>
+</li>
 </ul>
 <h2 id='h-download'>Download</h2>
-<p><a href="...">Giraffe 0.1</a></p>
+<p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js">backbone.giraffe.js</a> <em>48.8k</em>, v0.1</p>
+<p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js">backbone.giraffe.min.js</a> <em>14.6k</em>, v0.1</p>
 <h2 id='h-building'>Building</h2>
 <pre><code>npm install projmate-cli@0.1.0-dev -g
 npm install -d

@@ -29,11 +29,11 @@
   };
 
   /*
-  * **Giraffe.View** is optimized for simplicity and flexibility. It provides lifecycle management for all `children`, which can be any object that implements a `dispose` method. The `attachTo` method automatically sets up parent-child relationships between views to allow nesting with no extra work, and any other object can have its lifecycle managed via `addChild`. When a view is disposed, it disposes of all of its `children`, allowing us to destroy anything from a single view to an entire application with a single method call. When a view renders, it first calls `detach` on all of its children, and when a view is detached, the default behavior is to dispose of that view. To overried this behavior and keep a view cached even when its parent renders, you can set the cached view's `options.disposeOnDetach` to `false`.
+  * **Giraffe.View** is optimized for simplicity and flexibility. Views can move around the DOM safely and freely with the `attachTo` method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`. The `attachTo` method automatically sets up parent-child relationships between views via the references `children` and `parent` to allow nesting with no extra work. Views automatically manage the lifecycle of all `children`, and any object with a `dispose` method can be added to `children` via `addChild`. When a view is disposed, it disposes of all of its `children`, allowing the disposal of an entire application with a single method call.
   *
-  * Views can move around the DOM safely and freely with the `attachTo` method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`.
+  * When a view renders, it first calls `detach` on all of its `children`, and when a view is detached, the default behavior is call `dispose` on it. To overried this behavior and cache a view even when its `parent` renders, you can set the cached view's `options.disposeOnDetach` to `false`.
   *
-  * The **Giraffe.View** gets much of its smarts by way of the `data-view-cid` attribute attached to `view.$el`. This attribute allows us to find a view's parent when attached to a selector or DOM element and safely detach views when they would otherwise be clobbered. Currently, Giraffe has only one class that extends **Giraffe.View**, **Giraffe.App**, which encapsulates app-wide messenging and routing.
+  * **Giraffe.View** gets much of its smarts by way of the `data-view-cid` attribute attached to `view.$el`. This attribute allows us to find a view's parent when attached to a DOM element and safely detach views when they would otherwise be clobbered. Currently, Giraffe has only one class that extends **Giraffe.View**, **Giraffe.App**, which encapsulates app-wide messenging and routing.
   *
   * @param {Object} [options]
   */
@@ -61,7 +61,7 @@
       * Similar to the `events` hash of **Backbone.View**, the `appEvents` hash maps events on `this.app` to methods on the view. App events can be triggered from routes or by any object in your application. If a **Giraffe.App** has been created, every view has a reference to the global **Giraffe.app** instance at `this.app`, and a specific app instance can be set by passing `options.app` to the view. The instance of `this.app` is used to bind `appEvents`, and these bindings are automatically cleaned up when a view is disposed. See **Giraffe.App** and **Giraffe.Router** for more.
       */
 
-      Giraffe.bindEventMap(this.app, this.appEvents, this);
+      Giraffe.bindEventMap(this, this.app, this.appEvents);
       /*
       * When one view is attached to another, the child view is added to the parent's `children` array. When a view renders, it first calls `detach` on its `children`. By default, `dispose` is called on a view when it is detached if `options.disposeOnDetach` is `true`, which is the default setting. After a view renders, any child views with `options.disposeOnDetach` set to `false` will be in `children`, ready to be attached. When `dispose` is called on a view, it disposes of all of its `children`. Any object with a `dispose` method can be added to a view's `children` via `addChild` to take advantage of lifecycle management.
       */
@@ -186,7 +186,7 @@
     View.prototype.beforeRender = function() {};
 
     /*
-    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. It consumes the method `getHTML`, a method your views should implement that returns a view's HTML as a string.
+    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `getHTML` for more.
     * @caption Do not override unless you know what you're doing!
     */
 
@@ -195,7 +195,7 @@
       this.beforeRender.apply(this, arguments);
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
-      this.$el.empty().html(this.getHTML.apply(this, arguments) || '');
+      this.$el.empty().html(this.getHTML() || '');
       this._cacheUiElements();
       this.afterRender.apply(this, arguments);
       return this;
@@ -210,23 +210,30 @@
     View.prototype.afterRender = function() {};
 
     /*
-    * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default, or override `getHTML`, returning a string of HTML from your favorite templating engine.
-    * @caption Override this function in your views to get full control over what goes into view.$el during `render`.
+    * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `getHTML` with a function returning a string of HTML from your favorite templating engine.
     */
 
 
     View.prototype.getHTML = function() {};
 
     /*
-    * Gets the data passed to the `templateFunction`. By default, returns an object with direct references to the view's `model` and `collection`.
-    * @caption Override this function to pass custom data to a view's `templateFunction`.
+    * Consumed by the `getHTML` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
+    */
+
+
+    View.prototype.template = null;
+
+    /*
+    * Gets the data passed to the `template`. By default, returns an object with direct references to the view and its `model` and `collection`.
+    * @caption Override this function to pass custom data to a view's `template`.
     */
 
 
     View.prototype.serialize = function() {
       return {
         collection: this.collection,
-        model: this.model
+        model: this.model,
+        view: this
       };
     };
 
@@ -515,7 +522,7 @@
           continue;
         }
         eventName = pieces.join(' ');
-        Giraffe.bindEvent(targetObj, eventName, cb, this);
+        Giraffe.bindEvent(this, targetObj, eventName, cb);
       }
       return this;
     };
@@ -577,7 +584,7 @@
     };
 
     /*
-    * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to correlate DOM nodes to view instances.
+    * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
     *
     * @param {Element/jQuery/Giraffe.View} el
     * @param {Boolean} [preserve]
@@ -599,7 +606,7 @@
     };
 
     /*
-    * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Uses the `data-view-cid` attribute to correlate DOM nodes to view instances.
+    * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
     *
     * @param {Element/jQuery/Giraffe.View} el
     */
@@ -625,24 +632,6 @@
 
     View.to$El = function(el) {
       return (el != null ? el.$el : void 0) || (el instanceof $ ? el : $(el));
-    };
-
-    /*
-    * Using the form `data-gf-event`, DOM elements can be configured to call view methods on DOM events. By default, Giraffe only binds the most common events to keep things lean. To configure your own set of events, use Giraffe.View.setDocumentEvents to reset the bindings to the events of your choosing. For example, if you want only the click and mousedown events, call Giraffe.View.setDocumentEvents(['click', 'mousedown']). If you wish to remove Giraffe's document event features completely, call `removeDocumentEvents`. It is not necessary to call this method before setting new ones. Setting document events removes the current ones.
-    */
-
-
-    View.removeDocumentEvents = function() {
-      var event, _i, _len, _ref, _ref1;
-      if (!((_ref = View._currentDocumentEvents) != null ? _ref.length : void 0)) {
-        return;
-      }
-      _ref1 = View._currentDocumentEvents;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        event = _ref1[_i];
-        $(document).off(event, "[data-gf-" + event + "]");
-      }
-      return View._currentDocumentEvents = null;
     };
 
     /*
@@ -684,21 +673,42 @@
     };
 
     /*
+    * Using the form `data-gf-event`, DOM elements can be configured to call view methods on DOM events. By default, Giraffe only binds the most common events to keep things lean. To configure your own set of events, use Giraffe.View.setDocumentEvents to reset the bindings to the events of your choosing. For example, if you want only the click and mousedown events, call Giraffe.View.setDocumentEvents(['click', 'mousedown']). If you wish to remove Giraffe's document event features completely, call `removeDocumentEvents`. It is not necessary to call this method before setting new ones. Setting document events removes the current ones.
+    */
+
+
+    View.removeDocumentEvents = function() {
+      var event, _i, _len, _ref, _ref1;
+      if (!((_ref = View._currentDocumentEvents) != null ? _ref.length : void 0)) {
+        return;
+      }
+      _ref1 = View._currentDocumentEvents;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        event = _ref1[_i];
+        $(document).off(event, "[data-gf-" + event + "]");
+      }
+      return View._currentDocumentEvents = null;
+    };
+
+    /*
     * Giraffe provides common strategies for templating.
     *
-    * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'html'
+    * The `strategy` argument can be a function returning an HTML string or one of the following:
     *
-    * - underscore-template-selector
+    * - `'underscore-template-selector'`
     *
-    *     `view.template` is a string or function returning DOM selector
+    *     - `view.template` is a string or function returning DOM selector
     *
-    * - underscore-template
+    * - `'underscore-template'`
     *
-    *     `view.template` is a string or function returning underscore template
+    *     - `view.template` is a string or function returning underscore template
     *
-    * - html
+    * - `'jst'`
     *
-    *     `view.template` is a string or function returning html
+    *     - `view.template` is an html string or a JST function
+    *
+    * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'jst'
+    *
     */
 
 
@@ -710,8 +720,11 @@
         switch (strategy) {
           case 'underscore-template-selector':
             getHTML = function() {
-              var selector, that;
-              that = this;
+              var selector,
+                _this = this;
+              if (!this.template) {
+                return '';
+              }
               if (!this._templateFn) {
                 switch (typeof this.template) {
                   case 'string':
@@ -720,12 +733,12 @@
                     break;
                   case 'function':
                     this._templateFn = function(locals) {
-                      selector = that.template();
+                      selector = _this.template();
                       return _.template($(selector).html(), locals);
                     };
                     break;
                   default:
-                    throw new Error('@template must be string or function');
+                    throw new Error('this.template must be string or function');
                 }
               }
               return this._templateFn(this.serialize.apply(this, arguments));
@@ -733,8 +746,10 @@
             break;
           case 'underscore-template':
             getHTML = function() {
-              var that;
-              that = this;
+              var _this = this;
+              if (!this.template) {
+                return '';
+              }
               if (!this._templateFn) {
                 switch (typeof this.template) {
                   case 'string':
@@ -742,11 +757,11 @@
                     break;
                   case 'function':
                     this._templateFn = function(locals) {
-                      return _.template(that.template(), locals);
+                      return _.template(_this.template(), locals);
                     };
                     break;
                   default:
-                    throw new Error('@template must be string or function');
+                    throw new Error('this.template must be string or function');
                 }
               }
               return this._templateFn(this.serialize.apply(this, arguments));
@@ -755,6 +770,9 @@
           case 'jst':
             getHTML = function() {
               var html;
+              if (!this.template) {
+                return '';
+              }
               if (!this._templateFn) {
                 switch (typeof this.template) {
                   case 'string':
@@ -767,7 +785,7 @@
                     this._templateFn = this.template;
                     break;
                   default:
-                    throw new Error('@template must be string or function');
+                    throw new Error('this.template must be string or function');
                 }
               }
               return this._templateFn(this.serialize.apply(this, arguments));
@@ -783,6 +801,8 @@
         return Giraffe.View.prototype.getHTML = getHTML;
       }
     };
+
+    View.setTemplateStrategy('underscore-template-selector');
 
     View.setDocumentEvents(['click', 'change']);
 
@@ -912,7 +932,7 @@
         return error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.');
       }
       this.app.addChild(this);
-      Giraffe.bindEventMap(this.app, this.appEvents, this);
+      Giraffe.bindEventMap(this, this.app, this.appEvents);
       if (options.triggers) {
         this.triggers = options.triggers;
       }
@@ -1152,7 +1172,7 @@
 
     function Model(attributes, options) {
       this.app || (this.app = (options != null ? options.app : void 0) || Giraffe.app);
-      Giraffe.bindEventMap(this.app, this.appEvents, this);
+      Giraffe.bindEventMap(this, this.app, this.appEvents);
       Model.__super__.constructor.apply(this, arguments);
     }
 
@@ -1194,7 +1214,7 @@
 
     function Collection(models, options) {
       this.app || (this.app = (options != null ? options.app : void 0) || Giraffe.app);
-      Giraffe.bindEventMap(this.app, this.appEvents, this);
+      Giraffe.bindEventMap(this, this.app, this.appEvents);
       Collection.__super__.constructor.apply(this, arguments);
     }
 
@@ -1256,12 +1276,12 @@
   };
 
   /*
-  * Makes `contextObj` listen for `eventName` on `targetObj` with the callback `cb`.
+  * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on `targetObj` with the callback `cb`, which can be a function or the string name of a method on `contextObj`.
   *
+  * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {String/Function} eventName The name of the event to listen to.
   * @param {Function} cb The event's callback.
-  * @param {Backbone.Events} contextObj The object doing the listening.
   */
 
 
@@ -1274,10 +1294,10 @@
   /*
   * The `stopListening` equivalent of `bindEvent`.
   *
+  * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {String/Function} eventName The name of the event to listen to.
   * @param {Function} cb The event's callback.
-  * @param {Backbone.Events} contextObj The object doing the listening.
   */
 
 
@@ -1288,12 +1308,12 @@
   };
 
   /*
-  * Binds an event map of the form `{eventName: methodName}` to `targetObj` with `contextObj` being the listening object.
+  * Uses `bindEvent` to bind an event map of the form `{eventName: methodName}`.
   *
+  * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
   * @param {Function} cb The event's callback.
-  * @param {Backbone.Events} contextObj The object doing the listening.
   */
 
 
@@ -1306,10 +1326,10 @@
   /*
   * The `stopListening` equivalent of `bindEventMap`.
   *
+  * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
   * @param {Function} cb The event's callback.
-  * @param {Backbone.Events} contextObj The object doing the listening.
   */
 
 
@@ -1319,21 +1339,21 @@
     return _setEventMapBindings.apply(null, args.concat('stopListening'));
   };
 
-  _setEventBindings = function(targetObj, eventName, cb, contextObj, bindOrUnbindFnName) {
+  _setEventBindings = function(contextObj, targetObj, eventName, cb, bindOrUnbindFnName) {
     if (!(targetObj && contextObj && eventName && bindOrUnbindFnName)) {
       return;
     }
     if (typeof cb === 'string') {
       cb = contextObj[cb];
     }
-    if (!cb) {
-      error("callback for `" + eventName + "` not found: " + cb, contextObj, targetObj);
+    if (typeof cb !== 'function') {
+      error("callback for `'" + eventName + "'` not found", contextObj, targetObj, cb);
       return;
     }
     return contextObj[bindOrUnbindFnName](targetObj, eventName, cb);
   };
 
-  _setEventMapBindings = function(targetObj, eventMap, contextObj, bindOrUnbindFnName) {
+  _setEventMapBindings = function(contextObj, targetObj, eventMap, bindOrUnbindFnName) {
     var cb, eventName;
     if (typeof eventMap === 'function') {
       eventMap = eventMap();
@@ -1343,7 +1363,7 @@
     }
     for (eventName in eventMap) {
       cb = eventMap[eventName];
-      _setEventBindings(targetObj, eventName, cb, contextObj, bindOrUnbindFnName);
+      _setEventBindings(contextObj, targetObj, eventName, cb, bindOrUnbindFnName);
     }
     return null;
   };

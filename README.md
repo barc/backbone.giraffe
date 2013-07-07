@@ -2,20 +2,25 @@
 
 ## Introduction
 
-**Backbone.Giraffe** is a lightweight library that extends [**Backbone.js**](http://documentcloud.github.com/backbone/) to new heights.
+**Backbone.Giraffe** is a lightweight library that extends [**Backbone.js**](http://documentcloud.github.com/backbone/) to new heights. Giraffe's goal is to follow the Backbone philosophy of simplicity and flexibilty to provide commonly needed features with few assumptions. It differs from other Backbone libraries like Marionette and Chaplin in its reduced scope and size, and it takes a different approach to the problems of route handling, object lifecycles, event aggregation, and view management.
 
-## Why Giraffe?
+## Overview
 
-Giraffe extends the base Backbone classes with lifecycle management, event aggregation, and some features we at [Barc](https://barc.com) find useful. Giraffe's goal is to provide a layer of features and conventions that follow the Backbone philosophy of simplicity and flexibilty.
+Giraffe extends the base Backbone classes with lifecycle management, event aggregation for app-wide communication and route handling, and some features we at [Barc](https://barc.com) find useful.
 
 - **Giraffe.View** is a nestable, disposable, and flexible class that provides lifecycle management and some useful features.
+
 - **Giraffe.App** is a special view that helps your views, models, collections, and routers communicate.
-- **Giraffe.Router** leverages an app's events to provide programmatic control over your routes and routing events that any object can listen for.
+
+- **Giraffe.Router** leverages an app's events to provide routing events that any object can listen for and programmatic route encapsulation.
+
 - **Giraffe.Model** and **Giraffe.Collection** are thin wrappers that add Giraffe's lifecycle management and app events.
 
 ## Download
 
-[Giraffe 0.1](...)
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) *48.8k*, v0.1
+
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) *14.6k*, v0.1
 
 ## Building
 
