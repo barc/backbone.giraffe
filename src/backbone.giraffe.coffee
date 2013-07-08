@@ -645,11 +645,11 @@ class Giraffe.View extends Backbone.View
       Giraffe.View::getHTML = getHTML
 
 
-  # Set the default template strategy
-  @setTemplateStrategy 'underscore-template-selector'
+# Set the default template strategy
+Giraffe.View.setTemplateStrategy 'underscore-template-selector'
 
-
-  @setDocumentEvents ['click', 'change']
+# Set documents
+Giraffe.View.setDocumentEvents ['click', 'change']
 
 
 

@@ -802,13 +802,13 @@
       }
     };
 
-    View.setTemplateStrategy('underscore-template-selector');
-
-    View.setDocumentEvents(['click', 'change']);
-
     return View;
 
   })(Backbone.View);
+
+  Giraffe.View.setTemplateStrategy('underscore-template-selector');
+
+  Giraffe.View.setDocumentEvents(['click', 'change']);
 
   /*
   * **Giraffe.App** is a special **Giraffe.View** that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will destroy all views, models, collections, and routers that have been added as `children` of the app or its descendents. The first **Giraffe.App** created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing. The app also provides synchronous and asynchronous initializers with `addInitializer` and `start`.
