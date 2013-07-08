@@ -10,9 +10,9 @@ each other using the app as an event aggregator.
 ```js
 var App = Giraffe.App.extend({
   afterRender: function() {
-    this.attach(new ChildView({color: '#e99', text: 'Color the views red!'}));
-    this.attach(new ChildView({color: '#9e9', text: 'Color the views green!'}));
-    this.attach(new ChildView({color: '#99e', text: 'Color the views blue!'}));
+    this.attach(new ChildView({color: '#e99', text: 'red'}));
+    this.attach(new ChildView({color: '#9e9', text: 'green'}));
+    this.attach(new ChildView({color: '#99e', text: 'blue'}));
   }
 });
 ```
@@ -21,24 +21,20 @@ This example is going to have a `ChildView` class with a button that paints all 
 ```js
 var ChildView = Giraffe.View.extend({
   className: 'child-view',
-
+  template: '#child-template',
   initialize: function() {
     this.$el.css('background-color', this.options.color);
   },
 ```
 
 Each `ChildView` has a button that colors all child views its color.
-```js
-  getHTML: function() {
-    return '<button>' + this.options.text + '</button>';
-  },
-
-  events: {
-    'click button': 'colorChildViews'
-  },
+```html
+<script id="child-template" type="text/template">
+  <button>Color the views <%= this.options.text %>!</button>
+</script>
 ```
 
-The `appEvents` hash is a convenient feature that helps your app's objects communicate. It's similar to the **Backbone.View** `events` hash, but instead of mapping DOM events it maps events on an instance of **Giraffe.App**.  If a **Giraffe.App** has been created, `appEvents` is automatically bound for all Giraffe objects *(views, apps, routers, models, and collections)*, and is cleaned up in `dispose`, which all Giraffe objects implement. When an instance of **Giraffe.App** is created, it stores its reference globally at `Giraffe.app` unless an app instance is already there, and all Giraffe objects store this reference as `this.app` unless you pass `{app: someApp}` as an option.
+The `appEvents` hash is a convenient feature that helps your app's objects communicate. It's similar to the **Backbone.View** `events` hash, but instead of mapping DOM events it maps events on an instance of **Giraffe.App**.  If a **Giraffe.App** has been created, `appEvents` is automatically bound for all Giraffe objects *(views, apps, routers, models, and collections)*, and is cleaned up via `Backbone.Events.stopListening` in `dispose`, which all Giraffe objects implement. When an instance of **Giraffe.App** is created, it stores its reference globally at `Giraffe.app` unless an app instance is already there, and all Giraffe objects store this reference as `this.app` unless you pass `{app: someApp}` as an option.
 ```js
   appEvents: {
     'setColor': function(color) { this.$el.css('background-color', color); }
@@ -46,8 +42,11 @@ The `appEvents` hash is a convenient feature that helps your app's objects commu
   },
 ```
 
-This function is called when the view's button is clicked. By triggering an event on `this.app`, all views listening to `appEvents` will hear it.
+Clicking the view's button calls the `colorChildViews` method. By triggering an event on `this.app`, all views listening to `appEvents` will hear it.
 ```js
+  events: {
+    'click button': 'colorChildViews'
+  },
   colorChildViews: function() {
     this.app.trigger('setColor', this.options.color);
   }
@@ -106,6 +105,6 @@ h3 {
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 324px;'}}}
 
 :::END

@@ -45,33 +45,32 @@
 each other using the app as an event aggregator.</p>
 <pre><code class="js"><span class="keyword">var</span> App = Giraffe.App.extend({
   afterRender: <span class="keyword">function</span>() {
-    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'Color the views red!'</span>}));
-    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'Color the views green!'</span>}));
-    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'Color the views blue!'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'red'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'green'</span>}));
+    <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'blue'</span>}));
   }
 });</code></pre>
 <p>This example is going to have a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
 <pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
-
+  template: <span class="string">'#child-template'</span>,
   initialize: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
   },</code></pre>
 <p>Each <code>ChildView</code> has a button that colors all child views its color.</p>
-<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;button&gt;'</span> + <span class="keyword">this</span>.options.text + <span class="string">'&lt;/button&gt;'</span>;
-  },
-
-  events: {
-    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
-  },</code></pre>
-<p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a <strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all Giraffe objects <em>(views, apps, routers, models, and collections)</em>, and is cleaned up in <code>dispose</code>, which all Giraffe objects implement. When an instance of <strong>Giraffe.App</strong> is created, it stores its reference globally at <code>Giraffe.app</code> unless an app instance is already there, and all Giraffe objects store this reference as <code>this.app</code> unless you pass <code>{app: someApp}</code> as an option.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;button&gt;Color the views &lt;%= <span class="keyword">this</span>.options.text %&gt;!<span class="xml"><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a <strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all Giraffe objects <em>(views, apps, routers, models, and collections)</em>, and is cleaned up via <code>Backbone.Events.stopListening</code> in <code>dispose</code>, which all Giraffe objects implement. When an instance of <strong>Giraffe.App</strong> is created, it stores its reference globally at <code>Giraffe.app</code> unless an app instance is already there, and all Giraffe objects store this reference as <code>this.app</code> unless you pass <code>{app: someApp}</code> as an option.</p>
 <pre><code class="js">  appEvents: {
     <span class="string">'setColor'</span>: <span class="keyword">function</span>(color) { <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
     <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
   },</code></pre>
-<p>This function is called when the view&#39;s button is clicked. By triggering an event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
-<pre><code class="js">  colorChildViews: <span class="keyword">function</span>() {
+<p>Clicking the view&#39;s button calls the <code>colorChildViews</code> method. By triggering an event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
+<pre><code class="js">  events: {
+    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
+  },
+  colorChildViews: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
   }
 });</code></pre>
@@ -106,38 +105,30 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="appevents0_tabs_content" class="tabs_content">
   <div id="appevents0result-tab" class="tab_content">
-  <iframe id="appevents0" src="_assets/appEvents0.html" class="result" ></iframe>
+  <iframe id="appevents0" src="_assets/appEvents0.html" class="result"  style='height: 324px;'></iframe>
 </div><div id="appevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> App = Giraffe.App.extend({
   afterRender: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({
       color: <span class="string">'#e99'</span>,
-      text: <span class="string">'Color the views red!'</span>
+      text: <span class="string">'red'</span>
     }));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({
       color: <span class="string">'#9e9'</span>,
-      text: <span class="string">'Color the views green!'</span>
+      text: <span class="string">'green'</span>
     }));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({
       color: <span class="string">'#99e'</span>,
-      text: <span class="string">'Color the views blue!'</span>
+      text: <span class="string">'blue'</span>
     }));
   }
 });
 
 <span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
-
+  template: <span class="string">'#child-template'</span>,
   initialize: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
-  },
-
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;button&gt;'</span> + <span class="keyword">this</span>.options.text + <span class="string">'&lt;/button&gt;'</span>;
-  },
-
-  events: {
-    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
 
   appEvents: {
@@ -147,6 +138,9 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
   },
 
+  events: {
+    <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
+  },
   colorChildViews: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
   }
@@ -170,6 +164,10 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt; button &gt; Color the views &lt;%= <span class="keyword">this</span>.options.text %&gt; ! <span class="xml"><span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
