@@ -140,7 +140,7 @@ parentView.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>Now we&#39;ll inspect things to see what the child-parent relationship looks like. The parent has an array of <code>children</code> and the children have a reference to their <code>parent</code>.</p>
 <pre><code class="js"><span class="keyword">var</span> childView = parentView.children[<span class="number">0</span>];
 console.log(parentView === childView.parent); <span class="comment">// =&gt; true</span></code></pre>
-<p>Let&#39;s create a second child view. The <code>method</code> option of <code>attachTo</code> determines the jQuery method used to insert the view. In this case we&#39;ll use <code>&#39;before&#39;</code> to put it before the first child view we created. See <code>attachTo</code> in the <a href="api.html#View-attachTo">API docs</a> for more.</p>
+<p>Let&#39;s create a second child view. The <code>method</code> option of <code>attachTo</code> determines the jQuery method used to insert the view. The default is <code>&#39;append&#39;</code>. In this case we&#39;ll use <code>&#39;before&#39;</code> to put it before the first child view we created. See <code>attachTo</code> in the <a href="api.html#View-attachTo">API docs</a> for more.</p>
 <pre><code class="js"><span class="keyword">var</span> childView2 = <span class="keyword">new</span> ChildView({name: <span class="string">'child view attached with {method: "before"}'</span>});
 childView2.attachTo(childView, {method: <span class="string">'before'</span>});</code></pre>
 <p>The <code>parent</code> of <code>childView2</code> is the <code>parentView</code>.</p>

@@ -90,7 +90,7 @@ var childView = parentView.children[0];
 console.log(parentView === childView.parent); // => true
 ```
 
-Let's create a second child view. The `method` option of `attachTo` determines the jQuery method used to insert the view. In this case we'll use `'before'` to put it before the first child view we created. See `attachTo` in the [API docs](api.html#View-attachTo) for more.
+Let's create a second child view. The `method` option of `attachTo` determines the jQuery method used to insert the view. The default is `'append'`. In this case we'll use `'before'` to put it before the first child view we created. See `attachTo` in the [API docs](api.html#View-attachTo) for more.
 ```js
 var childView2 = new ChildView({name: 'child view attached with {method: "before"}'});
 childView2.attachTo(childView, {method: 'before'});
