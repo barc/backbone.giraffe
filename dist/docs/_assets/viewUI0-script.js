@@ -1,18 +1,13 @@
 var View = Giraffe.View.extend({
-
+  ui: {
+    '$someButton': 'button'
+  },
   events: {
     'click $someButton': function() {
       alert('clicked `this.$someButton` which has a length of ' + this.$someButton.length);
     }
   },
-
-  ui: {
-    '$someButton': 'button'
-  },
-
-  getHTML: function() {
-    return '<button>click me</button>';
-  }
+  template: '#view-template'
 });
 
 var view = new View();
