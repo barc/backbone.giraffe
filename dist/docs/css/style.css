@@ -760,26 +760,31 @@ body {
 /* line 50, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar h2 {
   font-size: 18px;
+  margin-bottom: 2px;
 }
-/* line 53, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 54, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar h3 {
   font-size: 16px;
 }
-/* line 56, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 57, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar h2,
 #sidebar h3,
 #sidebar a {
   color: #888;
 }
-/* line 59, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 60, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar a {
   text-decoration: none;
 }
-/* line 61, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 62, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar a:hover {
   text-decoration: underline;
 }
-/* line 67, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 66, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar ul {
+  margin-top: 2px;
+}
+/* line 71, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #content {
   max-width: 910px;
   min-width: 500px;
@@ -787,19 +792,19 @@ body {
   border-left: solid 1px #eee;
   padding: 24px;
 }
-/* line 74, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 78, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #content h1,
 #content h2,
 #content h3 {
   padding-top: 20px;
 }
-/* line 81, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 85, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 p,
 a,
 td {
   color: #444;
 }
-/* line 85, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 89, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 h1,
 h2,
 h3,
@@ -807,31 +812,31 @@ h4,
 h5 {
   color: #222;
 }
-/* line 89, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 93, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 iframe.result {
   width: 100%;
   height: auto;
   border: 0;
 }
-/* line 96, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 100, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 article section {
   margin-bottom: 60px;
 }
-/* line 101, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 105, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 ul {
   list-style: none;
   padding-left: 1em;
 }
-/* line 106, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 110, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 strong {
   font-weight: bold;
 }
-/* line 110, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 114, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 a {
   color: #333333;
   text-decoration: underline;
 }
-/* line 115, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 119, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .caption {
   margin-left: 14px;
   /* font-size: 12px; */
@@ -841,28 +846,28 @@ a {
   font-weight: normal;
   font-size: 14px;
 }
-/* line 124, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 128, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .static {
   font-style: italic;
 }
-/* line 127, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 131, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .static:before {
   content: '.';
 }
-/* line 131, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 135, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #logo {
   width: 600px;
   height: 135px;
 }
-/* line 136, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 140, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .nav-title {
   font-size: 15px;
 }
-/* line 140, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 144, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .collapsed > * {
   display: none;
 }
-/* line 144, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 148, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .collapsed:before,
 .uncollapsed:before {
   background-color: #d8f3f8;
@@ -874,15 +879,15 @@ a {
   -webkit-border-radius: 4px;
   cursor: pointer;
 }
-/* line 153, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 157, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .collapsed:before {
   content: "learn more...";
 }
-/* line 157, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 161, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .uncollapsed:before {
   content: "hide...";
 }
-/* line 165, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 169, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .note {
   background-color: #ffffed;
   color: #54544a;
@@ -890,12 +895,12 @@ a {
   padding: 0.5em;
   border: solid 1px #ededba;
 }
-/* line 172, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 176, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .note code {
   border: solid 1px #ebebba;
   background-color: #fff;
 }
-/* line 178, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 182, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .aside {
   background-color: #f4f4f4;
   color: #666;
