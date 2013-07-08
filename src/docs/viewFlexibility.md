@@ -27,7 +27,41 @@ Here's the app's template.
 </script>
 ```
 
-Now let's build the child view that spawns recursively.
+Now let's build the child view that spawns recursively. Let's start with its template.
+
+<div class='note'>
+The attribute `data-gf-click` is an intuitive way to assign a view method as the event handler for a DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. 
+</div>
+
+```html
+<script id="child-template" type="text/template">
+  <h3><% this.cid %></h3>
+
+  <% if (showMoveUpButton) { %>
+    <button data-gf-click="onMoveUp">&#9650;</button>
+  <% } %>
+
+  <% if (showMoveDownButton) { %>
+    <button data-gf-click="onMoveDown">&#9660;</button>
+  <% } %>
+
+  <button data-gf-click="onAddChild">Add a child</button>
+  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
+  <button data-gf-click="onDispose">Dispose</button>
+
+  <% if (this.parent instanceof ChildView) { %>
+    <label>
+      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
+      Cache this view
+    </label>
+    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
+  <% } %>
+
+  <div class="child-views"></div>
+</script>
+```
+
+Define the child view
 
 ```js
 var ChildView = Giraffe.View.extend({
@@ -62,33 +96,6 @@ var ChildView = Giraffe.View.extend({
   },
 ```
 
-```html
-<script id="child-template" type="text/template">
-  <h3><% this.cid %></h3>
-
-  <% if (showMoveUpButton) { %>
-    <button data-gf-click="onMoveUp">&#9650;</button>
-  <% } %>
-
-  <% if (showMoveDownButton) { %>
-    <button data-gf-click="onMoveDown">&#9660;</button>
-  <% } %>
-
-  <button data-gf-click="onAddChild">Add a child</button>
-  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
-  <button data-gf-click="onDispose">Dispose</button>
-
-  <% if (this.parent instanceof ChildView) { %>
-    <label>
-      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
-      Cache this view
-    </label>
-    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
-  <% } %>
-
-  <div class="child-views"></div>
-</script>
-```
 
 In this example, each child view has a button that adds another `ChildView` to its `children`.
 
@@ -140,7 +147,7 @@ Like `afterRender`, `beforeRender` is an empty function for you to create when n
 ```
 
 Giraffe views can move freely around the DOM using jQuery methods to insert themselves and automatically update their `parent`.
-The supported insertion methods are `'append'`, `'prepend'`, `'before'`, `'after'`, and `'html'`. The function `attachTo` is an inverted way to call `attach`, the difference being `attachTo` doesn't require a parent view - any DOM element, selector, or view will do.
+The supported insertion methods are `append`, `prepend`, `before`, `after`, and `html`. The function `attachTo` is an inverted way to call `attach`, the difference being `attachTo` doesn't require a parent view - any DOM element, selector, or view will do.
 When a view is attached, Giraffe automatically calls `render` on the view if it hasn't yet been rendered, but passing the option `forceRender` will cause attach to always render.
 The option `preserve` prevents child view disposal, even if `disposeOnDetach` is true.
 In this example, we force `render` on the relevant views so the correct movement buttons are displayed,
@@ -186,7 +193,7 @@ and we use `preserve` to prevent the `render` from disposing of uncached child v
   },
 ```
 
-The `'html'` jQuery method replaces existing content.
+The `html` jQuery method replaces existing content.
 Giraffe automatically disposes of any uncached views that get in the way.
 
 ```js

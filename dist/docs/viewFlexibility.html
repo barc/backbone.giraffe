@@ -61,9 +61,11 @@ The design goal is to create a single view class that nests, manages memory, and
   <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="vbscript">&lt;%= this.cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="vbscript">&lt;%= this.options.name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Now let&#39;s build the child view that spawns recursively.</p>
-<pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
-  className: <span class="string">'child-view'</span>,</code></pre>
+<p>Now let&#39;s build the child view that spawns recursively. Let&#39;s start with its template.</p>
+<div class='note'>
+The attribute <code>data-gf-click</code> is an intuitive way to assign a view method as the event handler for a DOM element. We recommend prefixing the name of the handler with <code>on</code> to make it clear an event triggers the method. 
+</div>
+
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
   &lt;h3&gt;<span class="xml"><span class="vbscript">&lt;% this.cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
 
@@ -89,6 +91,9 @@ The design goal is to create a single view class that nests, manages memory, and
 
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
 </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Define the child view</p>
+<pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
+  className: <span class="string">'child-view'</span>,</code></pre>
 <p>In this example, each child view has a button that adds another <code>ChildView</code> to its <code>children</code>.</p>
 <pre><code class="js">  onAddChild: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView(), {el: <span class="keyword">this</span>.$(<span class="string">'.child-views:first'</span>)});
@@ -119,7 +124,7 @@ Giraffe does <em>not</em> automatically reattach child views, so you retain full
     <span class="keyword">this</span>.renderCount += <span class="number">1</span>;
   },</code></pre>
 <p>Giraffe views can move freely around the DOM using jQuery methods to insert themselves and automatically update their <code>parent</code>.
-The supported insertion methods are <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;before&#39;</code>, <code>&#39;after&#39;</code>, and <code>&#39;html&#39;</code>. The function <code>attachTo</code> is an inverted way to call <code>attach</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any DOM element, selector, or view will do.
+The supported insertion methods are <code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code>, and <code>html</code>. The function <code>attachTo</code> is an inverted way to call <code>attach</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any DOM element, selector, or view will do.
 When a view is attached, Giraffe automatically calls <code>render</code> on the view if it hasn&#39;t yet been rendered, but passing the option <code>forceRender</code> will cause attach to always render.
 The option <code>preserve</code> prevents child view disposal, even if <code>disposeOnDetach</code> is true.
 In this example, we force <code>render</code> on the relevant views so the correct movement buttons are displayed,
@@ -161,7 +166,7 @@ and we use <code>preserve</code> to prevent the <code>render</code> from disposi
     <span class="keyword">else</span>
       <span class="keyword">return</span> <span class="keyword">this</span>.parent;
   },</code></pre>
-<p>The <code>&#39;html&#39;</code> jQuery method replaces existing content.
+<p>The <code>html</code> jQuery method replaces existing content.
 Giraffe automatically disposes of any uncached views that get in the way.</p>
 <pre><code class="js">  onAttachUsingHTML: <span class="keyword">function</span>() {
     <span class="keyword">this</span>.attachTo(<span class="keyword">this</span>.$el.parent(), {method: <span class="string">'html'</span>});
