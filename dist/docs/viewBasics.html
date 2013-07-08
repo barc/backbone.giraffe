@@ -22,8 +22,8 @@
           <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
         </ul>
         
-        <h2><a href="api.html">API</a></h2>
-<h2><a href="index.html">Examples</a></h2>
+        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
@@ -44,7 +44,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <p><div class='section-example'><h2>View Basics</h2>
+        <p><div class='section-example'><h2 id='h-view-basics'>View Basics</h2>
 <p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
 <pre><code class="js"><span class="keyword">var</span> MyView = Giraffe.View.extend({
   template: <span class="string">'#my-template'</span>,
@@ -117,7 +117,7 @@ myView.attachTo(<span class="string">'body'</span>);</code></pre>
 </code></pre>
 </div>
 </div></div>
-<div class='section-example'><h2>Creating Child Views</h2>
+<div class='section-example'><h2 id='h-creating-child-views'>Creating Child Views</h2>
 <p>This example demonstrates how the <code>attachTo</code> function automatically sets up parent-child relationships between views.</p>
 <pre><code class="js"><span class="keyword">var</span> ParentView, ChildView;</code></pre>
 <p>Giraffe calls the functions <code>beforeRender</code> and <code>afterRender</code> every time a view renders. These are empty functions for your views to fill in. <code>afterRender</code> is a good place to create and attach child views.</p>
@@ -261,72 +261,40 @@ console.log(childView2.parent === parentView); <span class="comment">// =&gt; tr
 <span class="rule">}</span></span></code></pre>
 </div>
 </div><p>Here&#39;s an abridged UML summary of what happens inside <code>attachTo</code>:</p>
-<pre><code class="uml">                              ┌──────┐          ┌────────────┐                       ┌──────────┐          ┌───┐          
-                              │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
-                              └──┬───┘          └─────┬──────┘                       └────┬─────┘          └─┬─┘          
-                                 │      attachTo      │                                   │                  │            
-                                 │ ───────────────────>                                   │                  │            
-                                 │                    │                                   │                  │            
-                                 │                    │                                   │                  │            
-                                 │    ╔══════╤════════╪═══════════════════════════════════╪═══════════════╗  │            
-                                 │    ║ ALT  │  if #container has parent view             │               ║  │            
-                                 │    ╟──────┘        │                                   │               ║  │            
-                                 │    ║               │   set MyView as child of parent   │               ║  │            
-                                 │    ║               │ ──────────────────────────────────>               ║  │            
-                                 │    ╚═══════════════╪═══════════════════════════════════╪═══════════════╝  │            
-                                 │                    │                                   │                  │            
-                                 │                    │                 detach MyView's $el                  │            
-                                 │                    │ ────────────────────────────────────────────────────>│            
-                                 │                    │                                   │                  │            
-                                 │                    │                                   │                  │            
-                                 │    ╔══════╤════════╪═══════════════════════════════════╪════╗             │            
-                                 │    ║ ALT  │  if method is 'html'                       │    ║             │            
-                                 │    ╟──────┘        │                                   │    ║             │            
-                                 │    ║               │────┐                                   ║             │            
-                                 │    ║               │    │ detach views inside #container    ║             │            
-                                 │    ║               │<───┘                                   ║             │            
-                                 │    ╚═══════════════╪═══════════════════════════════════╪════╝             │            
-                                 │                    │                                   │                  │            
-                                 │                    │     put MyView's $el in #container using method      │            
-                                 │                    │ ────────────────────────────────────────────────────>│            
-                                 │                    │                                   │                  │            
-                                 │                    │                                   │                  │            
-          ╔══════╤═══════════════╪════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╗
-          ║ ALT  │  if MyView not yet rendered or options.forceRender                     │                  │           ║
-          ╟──────┘               │                    │                                   │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║         ╔══════╤═════╪════════════════════╪════════════════╗                  │                  │           ║
-          ║         ║ ALT  │  if beforeRender overridden               ║                  │                  │           ║
-          ║         ╟──────┘     │                    │                ║                  │                  │           ║
-          ║         ║            │   beforeRender()   │                ║                  │                  │           ║
-          ║         ║            │ <───────────────────                ║                  │                  │           ║
-          ║         ╚════════════╪════════════════════╪════════════════╝                  │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║                      │                    │────┐                              │                  │           ║
-          ║                      │                    │    │ $el.empty()                  │                  │           ║
-          ║                      │                    │<───┘                              │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║                      │      getHTML()     │                                   │                  │           ║
-          ║                      │ <───────────────────                                   │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║                      │ return html string │                                   │                  │           ║
-          ║                      │  ─ ─ ─ ─ ─ ─ ─ ─ ─ >                                   │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║                      │                    │              append html string to $el               │           ║
-          ║                      │                    │ ────────────────────────────────────────────────────>│           ║
-          ║                      │                    │                                   │                  │           ║
-          ║                      │                    │                                   │                  │           ║
-          ║         ╔══════╤═════╪════════════════════╪════════════════╗                  │                  │           ║
-          ║         ║ ALT  │  if afterRender overridden                ║                  │                  │           ║
-          ║         ╟──────┘     │                    │                ║                  │                  │           ║
-          ║         ║            │    afterRender()   │                ║                  │                  │           ║
-          ║         ║            │ <───────────────────                ║                  │                  │           ║
-          ║         ╚════════════╪════════════════════╪════════════════╝                  │                  │           ║
-          ╚══════════════════════╪════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╝
-                              ┌──┴───┐          ┌─────┴──────┐                       ┌────┴─────┐          ┌─┴─┐          
-                              │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
-                              └──────┘          └────────────┘                       └──────────┘          └───┘          
-</code></pre>
+<pre><code class="uml">participant MyView
+participant GView as "Giraffe.View"
+
+MyView -> GView: attachTo
+
+alt if #container has parent view
+    GView -> ParentView: set MyView as child of parent
+end
+
+GView -> DOM: detach MyView's $el
+
+alt if method is 'html'
+  GView -> GView: detach views inside #container
+end
+
+GView -> DOM: put MyView's $el in #container using method
+
+alt if MyView not yet rendered or options.forceRender
+  alt if beforeRender overridden
+      GView -> MyView: beforeRender()
+  end
+
+  GView -> GView: $el.empty()
+
+  GView -> MyView: getHTML()
+
+  MyView --> GView: return html string
+
+  GView -> DOM: append html string to $el
+
+  alt if afterRender overridden
+      GView -> MyView: afterRender()
+  end
+end</code></pre>
 </div></p>
 
       </article>

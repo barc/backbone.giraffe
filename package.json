@@ -13,12 +13,5 @@
   },
   "author": "ryan@barc.com",
   "license": "MIT",
-  "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf",
-  "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "funcd": "~0.1.2",
-    "dox": "~0.4.3",
-    "underscore": "~1.4.4",
-    "underscore.string": "~2.3.1"
-  }
+  "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf"
 }

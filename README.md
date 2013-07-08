@@ -25,7 +25,6 @@ Giraffe extends the base Backbone classes with lifecycle management, event aggre
 ## Building
 
     npm install projmate-cli@0.1.0-dev -g
-    npm install -d
     pm run all
 
 ## License
