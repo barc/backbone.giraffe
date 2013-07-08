@@ -6,13 +6,13 @@ app.addInitializer(function(options) {
 });
 
 app.addInitializer(function(options, cb) {
-  setTimeout(cb, 100); // initialization will not proceed until `cb` is called.
+  setTimeout(cb, 100); // initialization will not proceed until `cb` is called
 });
 
 app.on('app:initializing', function(options) {
   this.$el.append('<p>app is initializing</p>');
   options.startTime = Date.now();
-  app.started; // => false
+  console.log('started', app.started); // => false
 });
 
 app.on('app:initialized', function(options) {
@@ -20,7 +20,7 @@ app.on('app:initialized', function(options) {
   var elapsedTime = (Date.now() - options.startTime) + 'ms';
   this.$el.append('<p>elapsed initialization time: ' + elapsedTime + '</p>'); // => ~100ms
   this.options.thisWillBeAddedToOptions === options.thisWillBeAddedToOptions; // => true
-  app.started; // => true
+  console.log('started', app.started); // => true
 });
 
 app.attachTo('body').start();
