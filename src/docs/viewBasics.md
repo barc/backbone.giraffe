@@ -13,14 +13,14 @@ var MyView = Giraffe.View.extend({
 });
 ```
 
-Giraffe implements `render` for you so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `getHTML` in the [API docs](api.html#View-template).
+Giraffe implements `render` so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `getHTML` in the [API docs](api.html#View-template).
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!
 </script>
 ```
 
-Giraffe uses the function `attachTo` to put views into the DOM or inside one another. `attachTo` calls `render` the first time the view is attached, and sets up a parent-child relationship if a parent view is found. In this case there is no parent view.
+Giraffe uses the function `attachTo` to put views into the DOM or inside one another. If a view has not yet been rendered, `attachTo` will call render on it.
 ```js
 var myView = new MyView();
 myView.attachTo('body');
@@ -38,13 +38,13 @@ Here's the result:
 :::BEGIN Example
 ## Creating Child Views
 
-This example demonstrates how **Giraffe.View** supports nested views.
+This example demonstrates how the `attachTo` function automatically sets up parent-child relationships between views.
 
 ```js
 var ParentView, ChildView;
 ```
 
-Giraffe calls the functions `beforeRender` and `afterRender` every time a view renders. These are empty functions for your views to fill in. `afterRender` is a place to create and attach child views.
+Giraffe calls the functions `beforeRender` and `afterRender` every time a view renders. These are empty functions for your views to fill in. `afterRender` is a good place to create and attach child views.
 
 ```js
 ParentView = Giraffe.View.extend({
@@ -62,21 +62,21 @@ ParentView = Giraffe.View.extend({
 </script>
 ```
 
-The `ChildView` simply displays the `name` given in its `options`.
+The `ChildView` will be put inside the `ParentView`.
 ```js
 ChildView = Giraffe.View.extend({
   template: '#child-template'
 });
 ```
 
-By default, `serialize` passes the view to the template function.
+The `ChildView` simply displays the `name` provided in its `options`. We aren't defining a `serialize` method on the `ChildView`, and by default, `serialize` passes the view to the template function.
 ```html
 <script id="child-template" type="text/template">
   <%= this.options.name %>
 </script>
 ```
 
-Let's create and attach a parent view.
+Let's create and attach the parent view.
 
 ```js
 var parentView = new ParentView();

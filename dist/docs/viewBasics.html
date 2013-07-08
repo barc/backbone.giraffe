@@ -47,11 +47,11 @@
     <span class="keyword">return</span> {name: <span class="string">'my view'</span>};
   }
 });</code></pre>
-<p>Giraffe implements <code>render</code> for you so it can do some useful things, and by default <code>render</code> expects <code>template</code> to be the DOM selector of an <strong>Underscore</strong> template. This can be easily configured to support any form of string templating. For more information, see <code>template</code>, <code>setTemplateStrategy</code>, and <code>getHTML</code> in the <a href="api.html#View-template">API docs</a>.</p>
+<p>Giraffe implements <code>render</code> so it can do some useful things, and by default <code>render</code> expects <code>template</code> to be the DOM selector of an <strong>Underscore</strong> template. This can be easily configured to support any form of string templating. For more information, see <code>template</code>, <code>setTemplateStrategy</code>, and <code>getHTML</code> in the <a href="api.html#View-template">API docs</a>.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"my-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
   Hello &lt;%= name %&gt;!
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Giraffe uses the function <code>attachTo</code> to put views into the DOM or inside one another. <code>attachTo</code> calls <code>render</code> the first time the view is attached, and sets up a parent-child relationship if a parent view is found. In this case there is no parent view.</p>
+<p>Giraffe uses the function <code>attachTo</code> to put views into the DOM or inside one another. If a view has not yet been rendered, <code>attachTo</code> will call render on it.</p>
 <pre><code class="js"><span class="keyword">var</span> myView = <span class="keyword">new</span> MyView();
 myView.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>Here&#39;s the result:</p>
@@ -113,9 +113,9 @@ myView.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 </div></div>
 <div class='section-example'><h2 id='h-creating-child-views'>Creating Child Views</h2>
-<p>This example demonstrates how <strong>Giraffe.View</strong> supports nested views.</p>
+<p>This example demonstrates how the <code>attachTo</code> function automatically sets up parent-child relationships between views.</p>
 <pre><code class="js"><span class="keyword">var</span> ParentView, ChildView;</code></pre>
-<p>Giraffe calls the functions <code>beforeRender</code> and <code>afterRender</code> every time a view renders. These are empty functions for your views to fill in. <code>afterRender</code> is a place to create and attach child views.</p>
+<p>Giraffe calls the functions <code>beforeRender</code> and <code>afterRender</code> every time a view renders. These are empty functions for your views to fill in. <code>afterRender</code> is a good place to create and attach child views.</p>
 <pre><code class="js">ParentView = Giraffe.View.extend({
   template: <span class="string">'#parent-template'</span>,
   afterRender: <span class="keyword">function</span>() {
@@ -126,15 +126,15 @@ myView.attachTo(<span class="string">'body'</span>);</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
   parent view
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>The <code>ChildView</code> simply displays the <code>name</code> given in its <code>options</code>.</p>
+<p>The <code>ChildView</code> will be put inside the <code>ParentView</code>.</p>
 <pre><code class="js">ChildView = Giraffe.View.extend({
   template: <span class="string">'#child-template'</span>
 });</code></pre>
-<p>By default, <code>serialize</code> passes the view to the template function.</p>
+<p>The <code>ChildView</code> simply displays the <code>name</code> provided in its <code>options</code>. We aren&#39;t defining a <code>serialize</code> method on the <code>ChildView</code>, and by default, <code>serialize</code> passes the view to the template function.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
   &lt;%= <span class="keyword">this</span>.options.name %&gt;
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Let&#39;s create and attach a parent view.</p>
+<p>Let&#39;s create and attach the parent view.</p>
 <pre><code class="js"><span class="keyword">var</span> parentView = <span class="keyword">new</span> ParentView();
 parentView.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>Now we&#39;ll inspect things to see what the child-parent relationship looks like. The parent has an array of <code>children</code> and the children have a reference to their <code>parent</code>.</p>
