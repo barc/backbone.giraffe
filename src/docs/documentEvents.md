@@ -4,28 +4,32 @@
 ## View Document Events
 
 This example demonstrates Giraffe's document event bindings that link DOM events to **Giraffe.View** methods.
-Giraffe does *not* provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method `Giraffe.View.removeDocumentEvents()`, but it shouldn't get in your way if left unused.
+Giraffe does *not* provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method `Giraffe.View.removeDocumentEvents()`.
 ```js
 var View = Giraffe.View.extend({
 ```
 
 **Giraffe.View** provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form `data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it searches up the hierarchy until it finds the method or fails on a view with no `parent`.
 
+```js
+  template: '#view-template',
+```
+
+Here's the template:
+
+```html
+<script id="view-template" type="text/template">
+  <div id="hello-text">Hello world!</div>
+  <input type="text" value="world" data-gf-keyup="onChangeName">
+  <button data-gf-click="onAlertHello">Say hello in a popup</button>
+</script>
+```
+
 <div class='note'>
 By default, Giraffe binds only `click` and `change`, and not `keyup` as
 this example uses, but you can easily set custom bindings using the static
 method `Giraffe.View.setDocumentEvents`.
 </div>
-
-
-```js
-  getHTML: function() {
-    var html = '<div id="hello-text">Hello world!</div>';
-    html += '<input type="text" value="world" data-gf-keyup="onChangeName">';
-    html += '<button data-gf-click="onAlertHello">Say hello in a popup</button>';
-    return html;
-  },
-```
 
 Whenever the input changes, this method is called.
 ```js
@@ -91,6 +95,6 @@ strong {
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 80px;'}}}
 
 :::END
