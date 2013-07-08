@@ -645,8 +645,10 @@ class Giraffe.View extends Backbone.View
 
 
 
-# Set default view configuration
+# Set the default template strategy
 Giraffe.View.setTemplateStrategy 'underscore-template-selector'
+
+# Set the default document events
 Giraffe.View.setDocumentEvents ['click', 'change']
 
 
