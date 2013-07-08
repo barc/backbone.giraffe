@@ -4,6 +4,9 @@
 
 * {
   .box-sizing(border-box);
+}
+
+body {
   line-height: 1.3;
 }
 
@@ -62,8 +65,8 @@
 }
 
 #content {
-  max-width: 800px;
-  min-width: 400px;
+  max-width: 910px; // sized for View UML diagram
+  min-width: 500px;
   min-height: 100%;
   border-left: solid 1px #eee;
   padding: 24px;
@@ -86,7 +89,7 @@ h1, h2, h3, h4, h5 {
 iframe.result {
   width: 100%;
   height: auto;
-  border: dashed 1px @codeBorderColor;
+  border: 0;
 }
 
 article {
@@ -164,8 +167,7 @@ a {
   color: #54544a;
   margin: 1.5em;
   padding: 0.5em;
-  border-right: solid 1px #ebebda;
-  border-bottom: solid 1px #ebebda;
+  border: solid 1px #ededba;
 }
 
 .aside {

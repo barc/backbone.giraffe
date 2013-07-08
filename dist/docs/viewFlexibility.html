@@ -22,15 +22,15 @@
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
-<li><a href="documentEvents.html">Document Events</a></li>
-<li><a href="dataEvents.html">Data Events</a></li>
-<li><a href="viewUI.html">View UI</a></li>
-<li><a href="menuExample.html">Menu Examples</a></li>
-<li><a href="viewFlexibility.html">View Flexibility</a></li>
-<li><a href="appInitialization.html">App Initialization</a></li>
 <li><a href="appEvents.html">App Events</a></li>
-<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
 <li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
 </ul>
 
         <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
@@ -134,7 +134,11 @@ In this example, we force <code>render</code> on the relevant views so the corre
 and we use <code>preserve</code> to prevent the <code>render</code> from disposing of uncached child views.</p>
 <pre><code class="js">  onMoveUp: <span class="keyword">function</span>() {
     <span class="keyword">var</span> previousView = <span class="keyword">this</span>.getPreviousView();
-    <span class="keyword">this</span>.attachTo(previousView, {method: <span class="string">'before'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    <span class="keyword">this</span>.attachTo(previousView, {
+      method: <span class="string">'before'</span>,
+      forceRender: <span class="literal">true</span>,
+      preserve: <span class="literal">true</span>
+    });
     previousView.render({preserve: <span class="literal">true</span>});
   },
 
@@ -149,7 +153,11 @@ and we use <code>preserve</code> to prevent the <code>render</code> from disposi
 
   onMoveDown: <span class="keyword">function</span>() {
     <span class="keyword">var</span> nextView = <span class="keyword">this</span>.getNextView();
-    <span class="keyword">this</span>.attachTo(nextView, {method: <span class="string">'after'</span>, forceRender: <span class="literal">true</span>, preserve: <span class="literal">true</span>});
+    <span class="keyword">this</span>.attachTo(nextView, {
+      method: <span class="string">'after'</span>,
+      forceRender: <span class="literal">true</span>,
+      preserve: <span class="literal">true</span>
+    });
     nextView.render({preserve: <span class="literal">true</span>});
   },
 
@@ -203,7 +211,7 @@ app2.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="viewflexibility0_tabs_content" class="tabs_content">
   <div id="viewflexibility0result-tab" class="tab_content">
-  <iframe id="viewflexibility0" src="_assets/viewFlexibility0.html" class="result" ></iframe>
+  <iframe id="viewflexibility0" src="_assets/viewFlexibility0.html" class="result"  style='height: 600px;'></iframe>
 </div><div id="viewflexibility0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> ParentApp, ChildView;
 

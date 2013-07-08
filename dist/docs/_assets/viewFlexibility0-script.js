@@ -84,7 +84,11 @@ ChildView = Giraffe.View.extend({
 
   onMoveUp: function() {
     var previousView = this.getPreviousView();
-    this.attachTo(previousView, {method: 'before', forceRender: true, preserve: true});
+    this.attachTo(previousView, {
+      method: 'before',
+      forceRender: true,
+      preserve: true
+    });
     previousView.render({preserve: true});
   },
 
@@ -99,7 +103,11 @@ ChildView = Giraffe.View.extend({
 
   onMoveDown: function() {
     var nextView = this.getNextView();
-    this.attachTo(nextView, {method: 'after', forceRender: true, preserve: true});
+    this.attachTo(nextView, {
+      method: 'after',
+      forceRender: true,
+      preserve: true
+    });
     nextView.render({preserve: true});
   },
 

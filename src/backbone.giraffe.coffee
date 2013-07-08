@@ -217,7 +217,7 @@ class Giraffe.View extends Backbone.View
   ###
   * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `getHTML` with a function returning a string of HTML from your favorite templating engine.
   ###
-  getHTML: ->
+  getHTML: -> ''
 
 
   ###
@@ -227,11 +227,10 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Gets the data passed to the `template`. By default, returns an object with direct references to the view and its `model` and `collection`.
+  * Gets the data passed to the `template`. Returns the view by default.
   * @caption Override this function to pass custom data to a view's `template`.
   ###
-  serialize: ->
-    {@collection, @model, view: @}
+  serialize: -> @
 
 
   ###
@@ -537,15 +536,15 @@ class Giraffe.View extends Backbone.View
       events = [events]
     events = _.compact(events)
 
-    View.removeDocumentEvents()
-    View._currentDocumentEvents = events
+    Giraffe.View.removeDocumentEvents()
+    Giraffe.View._currentDocumentEvents = events
 
     for event in events
       do (event) ->
         $(document).on event, "[data-gf-#{event}]", (e) ->
           $target = $(e.target).closest("[data-gf-#{event}]")
           method = $target.attr("data-gf-#{event}")
-          view = View.getClosestView($target)
+          view = Giraffe.View.getClosestView($target)
           view.invoke method, e
 
 
@@ -553,10 +552,10 @@ class Giraffe.View extends Backbone.View
   * Using the form `data-gf-event`, DOM elements can be configured to call view methods on DOM events. By default, Giraffe only binds the most common events to keep things lean. To configure your own set of events, use Giraffe.View.setDocumentEvents to reset the bindings to the events of your choosing. For example, if you want only the click and mousedown events, call Giraffe.View.setDocumentEvents(['click', 'mousedown']). If you wish to remove Giraffe's document event features completely, call `removeDocumentEvents`. It is not necessary to call this method before setting new ones. Setting document events removes the current ones.
   ###
   @removeDocumentEvents: ->
-    return unless View._currentDocumentEvents?.length
-    for event in View._currentDocumentEvents
+    return unless Giraffe.View._currentDocumentEvents?.length
+    for event in Giraffe.View._currentDocumentEvents
       $(document).off event, "[data-gf-#{event}]"
-    View._currentDocumentEvents = null
+    Giraffe.View._currentDocumentEvents = null
 
 
   ###
@@ -594,13 +593,13 @@ class Giraffe.View extends Backbone.View
               switch typeof @template
                 when 'string'
                   selector = @template
-                  @_templateFn = _.template($(selector).html())
+                  @_templateFn = _.template($(selector).html() or '')
                 when 'function'
                   # user likely made it a function because it depends on
                   # run time info, ensure it is called EACH time
                   @_templateFn = (locals) =>
                     selector = @template()
-                    _.template $(selector).html(), locals
+                    _.template $(selector).html() or '', locals
                 else
                   throw new Error('this.template must be string or function')
 
@@ -645,11 +644,10 @@ class Giraffe.View extends Backbone.View
       Giraffe.View::getHTML = getHTML
 
 
-  # Set the default template strategy
-  @setTemplateStrategy 'underscore-template-selector'
 
-
-  @setDocumentEvents ['click', 'change']
+# Set default view configuration
+Giraffe.View.setTemplateStrategy 'underscore-template-selector'
+Giraffe.View.setDocumentEvents ['click', 'change']
 
 
 

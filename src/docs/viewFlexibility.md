@@ -145,7 +145,11 @@ and we use `preserve` to prevent the `render` from disposing of uncached child v
 ```js
   onMoveUp: function() {
     var previousView = this.getPreviousView();
-    this.attachTo(previousView, {method: 'before', forceRender: true, preserve: true});
+    this.attachTo(previousView, {
+      method: 'before',
+      forceRender: true,
+      preserve: true
+    });
     previousView.render({preserve: true});
   },
 
@@ -160,7 +164,11 @@ and we use `preserve` to prevent the `render` from disposing of uncached child v
 
   onMoveDown: function() {
     var nextView = this.getNextView();
-    this.attachTo(nextView, {method: 'after', forceRender: true, preserve: true});
+    this.attachTo(nextView, {
+      method: 'after',
+      forceRender: true,
+      preserve: true
+    });
     nextView.render({preserve: true});
   },
 
@@ -254,7 +262,7 @@ h3 {
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 600px;'}}}
 
 
 :::END

@@ -1,5 +1,9 @@
-<script id="my-template" type="text/template">
-  Hello <%= name %>!
+<script id="parent-template" type="text/template">
+  parent view
+</script>
+
+<script id="child-template" type="text/template">
+  <%= this.options.name %>
 </script>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>

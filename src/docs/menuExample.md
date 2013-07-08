@@ -8,6 +8,7 @@ This advanced example demonstrates how you can use Giraffe's features to build a
 var App, MenuView, MenuItemView, ContentView, ContentItemView;
 ```
 
+The `App` view creates a collection representing the menu's items along with the menu and content views.
 ```js
 App = Giraffe.App.extend({
   initialize: function() {
@@ -25,12 +26,9 @@ App = Giraffe.App.extend({
 });
 ```
 
+The `MenuView` listens for the `'route:menu'` app event and activates the `collection` item whose `name` matches the route parameter.
 ```js
 MenuView = Giraffe.View.extend({
-  initialize: function() {
-
-  },
-
   appEvents: {
     'route:menu': 'onRouteMenu'
   },
@@ -42,7 +40,11 @@ MenuView = Giraffe.View.extend({
   },
 
   dataEvents: {
-    'change:active collection': function(model, active) { if (active) this.render(); }
+    'change:active collection': 'onChangeActiveItem'
+  },
+
+  onChangeActiveItem: function(model, active) {
+    if (active) this.render();
   },
 
   afterRender: function() {
@@ -54,6 +56,7 @@ MenuView = Giraffe.View.extend({
 });
 ```
 
+The `MenuItemView` takes a `model` and displays its `name` and `active` status.
 ```js
 MenuItemView = Giraffe.View.extend({
   getHTML: function() {
@@ -66,6 +69,7 @@ MenuItemView = Giraffe.View.extend({
 });
 ```
 
+The `ContentView` listens for changes to the `active` property on its `collection` and displays the appropriate `ContentItemView`.
 ```js
 ContentView = Giraffe.View.extend({
   dataEvents: {
@@ -83,7 +87,9 @@ ContentView = Giraffe.View.extend({
   },
 
   getItemView: function(menuItem) {
-    var view = _.find(this.children, function(child) { return child.model === menuItem; });
+    var view = _.find(this.children, function(child) {
+      return child.model === menuItem;
+    });
     if (!view) {
       view = new ContentItemView({
         model: menuItem,
@@ -96,7 +102,7 @@ ContentView = Giraffe.View.extend({
 });
 ```
 
-
+The `ContentItemView` displays the name of the content. Because these are created with `options.saveScrollPosition` set to `true`, they save their scroll position when detached and apply it when attached.
 ```js
 ContentItemView = Giraffe.View.extend({
   className: 'content-item-view',
@@ -110,18 +116,19 @@ ContentItemView = Giraffe.View.extend({
 });
 ```
 
-All done!
+We'll now create and attach the app, create the router, start `Backbone.history`, and then route to the first menu item.
 
 ```js
 var app = new App();
-app.router = new Giraffe.Router({
+var router = new Giraffe.Router({
   triggers: {
     'menu/:name': 'route:menu'
   }
 });
+app.router = router; // set the router reference so the views can use it
 app.attachTo('body');
 Backbone.history.start();
-app.router.cause('route:menu', 'menu item 1');
+router.cause('route:menu', 'menu item 1');
 ```
 
 {{{COMMON}}}
@@ -199,12 +206,14 @@ h3 {
 .content-item-view {
   height: 200px;
   overflow: auto;
+  margin-top: 20px;
+  border: 1px solid #bbb;
 }
 ```
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 304px;'}}}
 
 
 :::END

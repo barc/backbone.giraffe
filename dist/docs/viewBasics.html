@@ -22,15 +22,15 @@
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
-<li><a href="documentEvents.html">Document Events</a></li>
-<li><a href="dataEvents.html">Data Events</a></li>
-<li><a href="viewUI.html">View UI</a></li>
-<li><a href="menuExample.html">Menu Examples</a></li>
-<li><a href="viewFlexibility.html">View Flexibility</a></li>
-<li><a href="appInitialization.html">App Initialization</a></li>
 <li><a href="appEvents.html">App Events</a></li>
-<li><a href="routersAndAppEvents.html">Router and App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
 <li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
 </ul>
 
         <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
@@ -41,110 +41,221 @@
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2 id='h-view-basics'>View Basics</h2>
 <p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be extended just like a <strong>Backbone.View</strong>.</p>
-<pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
-
-<span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
-<p><strong>Giraffe.View</strong> implements <code>render</code> for you. This <code>render</code> function consumes <code>getHTML</code>, which is an empty method for you to implement that returns a string of the view&#39;s HTML. One of Giraffe&#39;s goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls <code>render</code> for you. But stay with us! Giraffe is able to add quite a few features by controlling the <code>render</code> method. You can still call <code>render</code> when your models change and expect it to work like it always has. (except better!)</p>
-<pre><code class="js">  template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
-
+<pre><code class="js"><span class="keyword">var</span> MyView = Giraffe.View.extend({
+  template: <span class="string">'#my-template'</span>,
   serialize: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> {name: <span class="string">'main view'</span>};
+    <span class="keyword">return</span> {name: <span class="string">'my view'</span>};
   }
 });</code></pre>
-<p>Let&#39;s create an instance of the view class we just defined.</p>
-<pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();</code></pre>
-<p>With a normal <strong>Backbone.View</strong>, we&#39;d probably now do something like <code>$(&#39;body&#39;).append(view.$el)</code>. That would still work, but the <strong>Giraffe.View</strong> adds the method <code>attachTo</code>, a function that works some magic behind the scenes to simplify view management. The goal of the <strong>Giraffe.View</strong> is to have a recursively-nestable automatically-memory-managed move-it-and-render-it-anywhere-any-time view. <em>Phew.</em> In this simple case, the only things happening behind the scenes in <code>attachTo</code> are <code>$(&#39;body&#39;).append(view.$el)</code> followed by <code>view.render()</code>. The <code>render</code> happens only because Giraffe sees that the view has yet to be rendered.</p>
-<pre><code class="js">view.attachTo(<span class="string">'body'</span>);</code></pre>
-<p>You may be wondering how <strong>Giraffe.View</strong> works under the hood. Part of the answer lies in tying a view&#39;s <code>$el</code> to the view instance via the <code>data-view-cid</code> attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.</p>
-<pre><code class="js">view.cid; <span class="comment">// =&gt; 'view1'</span>
-view.$el.data(<span class="string">"view-cid"</span>); <span class="comment">// =&gt; 'view1'</span></code></pre>
-<p>So let&#39;s see the magic! First we&#39;ll define a <code>ChildView</code> class.</p>
-<pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
-  className: <span class="string">'child-view'</span>,
-
-  template: <span class="string">'&lt;h3&gt;&lt;%= name %&gt;&lt;/h3&gt;'</span>,
-
-  serialize: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> {name: <span class="string">'child view'</span>};
-  }
-});</code></pre>
-<p>Now let&#39;s create an instance of <code>ChildView</code> and attach it to the first view we created. The method <code>attach</code> is an inverted way to call <code>attachTo</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any selector, DOM element, or view will do.</p>
-<pre><code class="js"><span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView();
-view.attach(childView);</code></pre>
-<p>When one view is attached to another, Giraffe sets up a parent-child relationship. Note that we could have called <code>childView.attachTo(view.$el)</code>, and because the <code>data-view-cid</code> is set up, we still know who the parent is. The child view gets a <code>parent</code> and the parent view adds the child view to its <code>children</code> array.</p>
-<pre><code class="js">childView.parent === view;      <span class="comment">// =&gt; true</span>
-view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span></code></pre>
-<p>When a <strong>Giraffe.View</strong> renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call <code>delegateEvents</code> manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call <code>dispose</code> on them, the generalized Giraffe removal/destroy/cleanup method.</p>
-<div class='note'>
-The method name is <code>dispose</code> and not <code>remove</code> as a matter of necessity even though it essentially overrides Backbone&#39;s <code>view.remove</code>. This is because any object can be added to a view&#39;s children via <code>view.addChild</code> to take advantage of automatic memory management, and some objects like collections already have a <code>remove</code> method that means something completely different! Any child with a <code>dispose</code> method will be disposed of when its parent disposes.
+<p>Giraffe implements <code>render</code> for you so it can do some useful things, and by default <code>render</code> expects <code>template</code> to be the DOM selector of an <strong>Underscore</strong> template. This can be easily configured to support any form of string templating. For more information, see <code>template</code>, <code>setTemplateStrategy</code>, and <code>getHTML</code> in the <a href="api.html#View-template">API docs</a>.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"my-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  Hello &lt;%= name %&gt;!
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Giraffe uses the function <code>attachTo</code> to put views into the DOM or inside one another. <code>attachTo</code> calls <code>render</code> the first time the view is attached, and sets up a parent-child relationship if a parent view is found. In this case there is no parent view.</p>
+<pre><code class="js"><span class="keyword">var</span> myView = <span class="keyword">new</span> MyView();
+myView.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>Here&#39;s the result:</p>
+<div id="viewbasics0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#viewbasics0result-tab" rel="viewbasics0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#viewbasics0scriptjs-tab" rel="viewbasics0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#viewbasics0markuphtml-tab" rel="viewbasics0markuphtml-tab">
+    markup.html
+  </a>
+</li>
+  </ul>
 </div>
+<div id="viewbasics0_tabs_content" class="tabs_content">
+  <div id="viewbasics0result-tab" class="tab_content">
+  <iframe id="viewbasics0" src="_assets/viewBasics0.html" class="result"  style='height: 30px;'></iframe>
+</div><div id="viewbasics0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> MyView = Giraffe.View.extend({
+  template: <span class="string">'#my-template'</span>,
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">return</span> {
+      name: <span class="string">'my view'</span>
+    };
+  }
+});
 
-<pre><code class="js">view.render() =&gt; childView.detach() =&gt; childView.dispose()
-<span class="comment">// ...rendering the parent completely destroyed our childView!</span></code></pre>
-<p><em>My view is gone, you say? What if I want to keep it!?</em></p>
-<p>Good question! Even though it&#39;s often easy to just recreate child views after every <code>render</code>, there are many reasons you may want to cache them. To save a view even after its parent renders, simply set the view&#39;s option <code>disposeOnDetach</code> to false.</p>
-<pre><code class="js">childView.options.disposeOnDetach = <span class="literal">false</span>;
-<span class="comment">// or...</span>
-<span class="comment">// new ChildView({disposeOnDetach: false});</span></code></pre>
-<pre><code class="uml">                    ┌────┐          ┌─────┐                   
-                    │view│          │child│                   
-                    └─┬──┘          └──┬──┘                   
-       render()       │                │                      
- ─────────────────────>                │                      
-                      │                │                      
-                      │                │                      
-                      │                │                      
-                      │                │                      
-                      │                │                      
-                      │    detach()    │                      
-                      │ ──────────────>│                      
-                      │                │                      
-                      │                │                      
-                      │   ╔══════╤═════╪══════════════════╗   
-                      │   ║ ALT  │  if options.disposeOnDetach
-                      │   ╟──────┘     │                  ║   
-                      │   ║            ────┐              ║   
-                      │   ║                │ dispose()    ║   
-                      │   ║            <───┘              ║   
-                      │   ╚════════════╪══════════════════╝   
-                    ┌─┴──┐          ┌──┴──┐                   
-                    │view│          │child│                   
-                    └────┘          └─────┘                   
+<span class="keyword">var</span> myView = <span class="keyword">new</span> MyView();
+myView.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="viewbasics0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewbasics0-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"my-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    Hello &lt;%= name %&gt; !
+  </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'viewbasics0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-<p>We now have a cached child view! Let&#39;s see what happens when the parent view renders.</p>
-<pre><code class="js">view.render() =&gt; childView.detach()
-view.children[<span class="number">0</span>] === childView <span class="comment">// =&gt; true</span>
-<span class="comment">// ...hurray! The childView is still around.</span>
-view.$el.find(childView.$el);  <span class="comment">// =&gt; not found! ...it's not in the DOM!?</span></code></pre>
-<p><em>My view is still around, but it&#39;s not in the DOM? What if I want it in the DOM!?</em></p>
-<p>Another good question! Giraffe tries its best to stay out of your way, any so there&#39;s no automatic child view reattaching. What if after <code>render</code> you wanted to show a different view? The client may ask for anything! Giraffe has an answer though, in the form of a handy convention: every time a view calls <code>render</code>, it firsts calls <code>beforeRender</code>, then renders, and then calls <code>afterRender</code>. Both of these functions are empty by default, ready for you to fill in when needed. The <code>afterRender</code> function is a great time to attach child views.</p>
-<pre><code class="js">view.afterRender = <span class="keyword">function</span>() {
-  <span class="keyword">this</span>.attach(childView);
-};
-view.render();                <span class="comment">// =&gt; childView.detach()</span>
-view.children.length === <span class="number">1</span>;   <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
-view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span></code></pre>
-<p>Time for a victory message.</p>
-<pre><code class="js">$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the main view and saved the child!&lt;/p&gt;'</span>)</code></pre>
-<p>Views can be attached to any selector, DOM element, or view. Note that the inverted <code>attach</code> method will make sure the calling object contains the <code>el</code> you specify, because semantically you&#39;re saying <em>&#39;attach this view to this parent&#39;</em>.</p>
-<pre><code class="js">view.attachTo(<span class="string">'#some-selector'</span>);
-view.attachTo(someDOMElement);
-view.attachTo($someJQueryObject);
-view.attachTo(someView);
-view.attach(childView, {el: <span class="string">'#something-inside-the-view'</span>});</code></pre>
-<div class='more-details collapsed'><p>So this <code>attachTo</code> function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method <code>&#39;append&#39;</code>, but luckily many jQuery methods are supported - <code>&#39;append&#39;</code>, <code>&#39;prepend&#39;</code>, <code>&#39;after&#39;</code>, <code>&#39;before&#39;</code>, and <code>&#39;html&#39;</code> can all be passed to <code>attach</code> and <code>attachTo</code> as the <code>method</code> option. That last one may raise alarm bells in your jQuery underbrain - the <code>&#39;html&#39;</code> method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the <code>&#39;html&#39;</code> method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will <code>dispose</code> of it, but the <code>preserve</code> option can override the behavior of <code>disposeOnDetach</code>.</p>
-<pre><code class="js">childView.attachTo(view, {method: <span class="string">'append'</span>}); <span class="comment">// the default method</span>
-childView.attachTo(view, {method: <span class="string">'prepend'</span>});
-childView.attachTo(view, {method: <span class="string">'after'</span>});  <span class="comment">// =&gt; makes `childView` a sibling of `view`</span>
-childView.attachTo(view, {method: <span class="string">'before'</span>}); <span class="comment">// =&gt; also makes them siblings</span>
-view.attach(childView, {method: <span class="string">'prepend'</span>});  <span class="comment">// inverted way to attach</span>
+</div>
+</div></div>
+<div class='section-example'><h2 id='h-creating-child-views'>Creating Child Views</h2>
+<p>This example demonstrates how <strong>Giraffe.View</strong> supports nested views.</p>
+<pre><code class="js"><span class="keyword">var</span> ParentView, ChildView;</code></pre>
+<p>Giraffe calls the functions <code>beforeRender</code> and <code>afterRender</code> every time a view renders. These are empty functions for your views to fill in. <code>afterRender</code> is a place to create and attach child views.</p>
+<pre><code class="js">ParentView = Giraffe.View.extend({
+  template: <span class="string">'#parent-template'</span>,
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({name: <span class="string">'child view'</span>});
+    childView.attachTo(<span class="keyword">this</span>);
+  }
+});</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  parent view
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>The <code>ChildView</code> simply displays the <code>name</code> given in its <code>options</code>.</p>
+<pre><code class="js">ChildView = Giraffe.View.extend({
+  template: <span class="string">'#child-template'</span>
+});</code></pre>
+<p>By default, <code>serialize</code> passes the view to the template function.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;%= <span class="keyword">this</span>.options.name %&gt;
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Let&#39;s create and attach a parent view.</p>
+<pre><code class="js"><span class="keyword">var</span> parentView = <span class="keyword">new</span> ParentView();
+parentView.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>Now we&#39;ll inspect things to see what the child-parent relationship looks like. The parent has an array of <code>children</code> and the children have a reference to their <code>parent</code>.</p>
+<pre><code class="js"><span class="keyword">var</span> childView = parentView.children[<span class="number">0</span>];
+console.log(parentView === childView.parent); <span class="comment">// =&gt; true</span></code></pre>
+<p>Let&#39;s create a second child view. The <code>method</code> option of <code>attachTo</code> determines the jQuery method used to insert the view. In this case we&#39;ll use <code>&#39;before&#39;</code> to put it before the first child view we created. See <code>attachTo</code> in the <a href="api.html#View-attachTo">API docs</a> for more.</p>
+<pre><code class="js"><span class="keyword">var</span> childView2 = <span class="keyword">new</span> ChildView({name: <span class="string">'child view attached with {method: "before"}'</span>});
+childView2.attachTo(childView, {method: <span class="string">'before'</span>});</code></pre>
+<p>The <code>parent</code> of <code>childView2</code> is the <code>parentView</code>.</p>
+<pre><code class="js">console.log(childView2.parent === parentView); <span class="comment">// =&gt; true</span></code></pre>
+<p>Here&#39;s the result:</p>
+<div id="viewbasics1_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#viewbasics1result-tab" rel="viewbasics1result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#viewbasics1scriptjs-tab" rel="viewbasics1scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#viewbasics1markuphtml-tab" rel="viewbasics1markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#viewbasics1stylecss-tab" rel="viewbasics1stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="viewbasics1_tabs_content" class="tabs_content">
+  <div id="viewbasics1result-tab" class="tab_content">
+  <iframe id="viewbasics1" src="_assets/viewBasics1.html" class="result"  style='height: 274px;'></iframe>
+</div><div id="viewbasics1scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> ParentView, ChildView;
 
-childView.attachTo(view, {method: <span class="string">'html'</span>});
-<span class="comment">// =&gt; detaches any views that get in the way, disposing of them unless disposeOnDetach is false</span>
+ParentView = Giraffe.View.extend({
+  template: <span class="string">'#parent-template'</span>,
+  afterRender: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({
+      name: <span class="string">'child view'</span>
+    });
+    childView.attachTo(<span class="keyword">this</span>);
+  }
+});
 
-childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: <span class="literal">true</span>});
-<span class="comment">// =&gt; detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true</span></code></pre>
-<p>Here&#39;s an abridged UML summary of what happens inside <code>attachTo</code></p>
+ChildView = Giraffe.View.extend({
+  template: <span class="string">'#child-template'</span>
+});
+
+<span class="keyword">var</span> parentView = <span class="keyword">new</span> ParentView();
+parentView.attachTo(<span class="string">'body'</span>);
+
+<span class="keyword">var</span> childView = parentView.children[<span class="number">0</span>];
+console.log(parentView === childView.parent); <span class="comment">// =&gt; true</span>
+
+<span class="keyword">var</span> childView2 = <span class="keyword">new</span> ChildView({
+  name: <span class="string">'child view attached with {method: "before"}'</span>
+});
+childView2.attachTo(childView, {
+  method: <span class="string">'before'</span>
+});
+
+console.log(childView2.parent === parentView); <span class="comment">// =&gt; true</span></code></pre>
+</div><div id="viewbasics1markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewbasics1-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    parent view
+  </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt;%= <span class="keyword">this</span>.options.name %&gt;
+  </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'viewbasics1-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="viewbasics1stylecss-tab" class="tab_content">
+  <pre><code class="language-css">* <span class="rules">{
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h1</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h2</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="tag">h3</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+<span class="rule">}</span></span>
+<span class="attr_selector">[data-view-cid]</span> <span class="rules">{
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+<span class="rule">}</span></span></code></pre>
+</div>
+</div><p>Here&#39;s an abridged UML summary of what happens inside <code>attachTo</code>:</p>
 <pre><code class="uml">                              ┌──────┐          ┌────────────┐                       ┌──────────┐          ┌───┐          
                               │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
                               └──┬───┘          └─────┬──────┘                       └────┬─────┘          └─┬─┘          
@@ -211,136 +322,7 @@ childView.attachTo(view, {method: <span class="string">'html'</span>, preserve: 
                               │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
                               └──────┘          └────────────┘                       └──────────┘          └───┘          
 </code></pre>
-</div><p>That&#39;s it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!</p>
-<h2 id='h-try-it'>Try It</h2>
-<div id="viewbasics0_tabs" class="tabs">
-  <ul>
-    <li class="active">
-  <a href="#viewbasics0result-tab" rel="viewbasics0result-tab">
-    result
-  </a>
-</li><li>
-  <a href="#viewbasics0scriptjs-tab" rel="viewbasics0scriptjs-tab">
-    script.js
-  </a>
-</li><li>
-  <a href="#viewbasics0markuphtml-tab" rel="viewbasics0markuphtml-tab">
-    markup.html
-  </a>
-</li><li>
-  <a href="#viewbasics0stylecss-tab" rel="viewbasics0stylecss-tab">
-    style.css
-  </a>
-</li>
-  </ul>
-</div>
-<div id="viewbasics0_tabs_content" class="tabs_content">
-  <div id="viewbasics0result-tab" class="tab_content">
-  <iframe id="viewbasics0" src="_assets/viewBasics0.html" class="result"  style='height: 180px;'></iframe>
-</div><div id="viewbasics0scriptjs-tab" class="tab_content">
-  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
-
-<span class="keyword">var</span> View = Giraffe.View.extend({
-
-  template: <span class="string">'&lt;h2&gt;&lt;%= name %&gt;&lt;/h2&gt;'</span>,
-
-  serialize: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> {
-      name: <span class="string">'main view'</span>
-    };
-  }
-});
-
-<span class="keyword">var</span> view = <span class="keyword">new</span> View();
-
-view.attachTo(<span class="string">'body'</span>);
-
-view.cid; <span class="comment">// =&gt; 'view1'</span>
-view.$el.data(<span class="string">"view-cid"</span>); <span class="comment">// =&gt; 'view1'</span>
-
-<span class="keyword">var</span> ChildView = Giraffe.View.extend({
-  className: <span class="string">'child-view'</span>,
-
-  template: <span class="string">'&lt;h3&gt;&lt;%= name %&gt;&lt;/h3&gt;'</span>,
-
-  serialize: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> {
-      name: <span class="string">'child view'</span>
-    };
-  }
-});
-
-<span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView();
-view.attach(childView);
-
-childView.parent === view; <span class="comment">// =&gt; true</span>
-view.children[<span class="number">0</span>] === childView; <span class="comment">// =&gt; true</span>
-
-childView.options.disposeOnDetach = <span class="literal">false</span>;
-<span class="comment">// or...</span>
-<span class="comment">// new ChildView({disposeOnDetach: false});</span>
-
-view.afterRender = <span class="keyword">function</span>() {
-  <span class="keyword">this</span>.attach(childView);
-};
-view.render(); <span class="comment">// =&gt; childView.detach()</span>
-view.children.length === <span class="number">1</span>; <span class="comment">// =&gt; true, because childView.options.disposeOnDetach === false</span>
-view.$el.find(childView.$el); <span class="comment">// =&gt; yep! good work, `afterRender`!</span>
-
-$(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;We rendered the main view and saved the child!&lt;/p&gt;'</span>)</code></pre>
-</div><div id="viewbasics0markuphtml-tab" class="tab_content">
-  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
-<span class="tag">&lt;<span class="title">html</span>&gt;</span>
-
-<span class="tag">&lt;<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewbasics0-style.css'</span> /&gt;</span>
-<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-
-<span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'viewbasics0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-
-<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
-</code></pre>
-</div><div id="viewbasics0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
-<span class="rule">}</span></span>
-* <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
-<span class="rule">}</span></span>
-<span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
-<span class="rule">}</span></span>
-<span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
-<span class="rule">}</span></span>
-<span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
-<span class="rule">}</span></span>
-<span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
-<span class="rule">}</span></span></code></pre>
-</div>
-</div></div></p>
+</div></p>
 
       </article>
     </div>

@@ -214,7 +214,9 @@
     */
 
 
-    View.prototype.getHTML = function() {};
+    View.prototype.getHTML = function() {
+      return '';
+    };
 
     /*
     * Consumed by the `getHTML` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
@@ -224,17 +226,13 @@
     View.prototype.template = null;
 
     /*
-    * Gets the data passed to the `template`. By default, returns an object with direct references to the view and its `model` and `collection`.
+    * Gets the data passed to the `template`. Returns the view by default.
     * @caption Override this function to pass custom data to a view's `template`.
     */
 
 
     View.prototype.serialize = function() {
-      return {
-        collection: this.collection,
-        model: this.model,
-        view: this
-      };
+      return this;
     };
 
     /*
@@ -654,8 +652,8 @@
         events = [events];
       }
       events = _.compact(events);
-      View.removeDocumentEvents();
-      View._currentDocumentEvents = events;
+      Giraffe.View.removeDocumentEvents();
+      Giraffe.View._currentDocumentEvents = events;
       _results = [];
       for (_i = 0, _len = events.length; _i < _len; _i++) {
         event = events[_i];
@@ -664,7 +662,7 @@
             var $target, method, view;
             $target = $(e.target).closest("[data-gf-" + event + "]");
             method = $target.attr("data-gf-" + event);
-            view = View.getClosestView($target);
+            view = Giraffe.View.getClosestView($target);
             return view.invoke(method, e);
           });
         })(event));
@@ -679,15 +677,15 @@
 
     View.removeDocumentEvents = function() {
       var event, _i, _len, _ref, _ref1;
-      if (!((_ref = View._currentDocumentEvents) != null ? _ref.length : void 0)) {
+      if (!((_ref = Giraffe.View._currentDocumentEvents) != null ? _ref.length : void 0)) {
         return;
       }
-      _ref1 = View._currentDocumentEvents;
+      _ref1 = Giraffe.View._currentDocumentEvents;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         event = _ref1[_i];
         $(document).off(event, "[data-gf-" + event + "]");
       }
-      return View._currentDocumentEvents = null;
+      return Giraffe.View._currentDocumentEvents = null;
     };
 
     /*
@@ -729,12 +727,12 @@
                 switch (typeof this.template) {
                   case 'string':
                     selector = this.template;
-                    this._templateFn = _.template($(selector).html());
+                    this._templateFn = _.template($(selector).html() || '');
                     break;
                   case 'function':
                     this._templateFn = function(locals) {
                       selector = _this.template();
-                      return _.template($(selector).html(), locals);
+                      return _.template($(selector).html() || '', locals);
                     };
                     break;
                   default:
@@ -802,13 +800,13 @@
       }
     };
 
-    View.setTemplateStrategy('underscore-template-selector');
-
-    View.setDocumentEvents(['click', 'change']);
-
     return View;
 
   })(Backbone.View);
+
+  Giraffe.View.setTemplateStrategy('underscore-template-selector');
+
+  Giraffe.View.setDocumentEvents(['click', 'change']);
 
   /*
   * **Giraffe.App** is a special **Giraffe.View** that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will destroy all views, models, collections, and routers that have been added as `children` of the app or its descendents. The first **Giraffe.App** created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing. The app also provides synchronous and asynchronous initializers with `addInitializer` and `start`.

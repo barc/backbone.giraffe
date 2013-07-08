@@ -1,6 +1,6 @@
 :::BEGIN Example
 
-## Routers and appEvents
+## Routers and App Events
 
 This example demonstrates how **Giraffe.Router** ties into the `appEvents` described in the *App Events* example.
 ```js

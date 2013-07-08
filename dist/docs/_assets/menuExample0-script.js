@@ -16,10 +16,6 @@ App = Giraffe.App.extend({
 });
 
 MenuView = Giraffe.View.extend({
-  initialize: function() {
-
-  },
-
   appEvents: {
     'route:menu': 'onRouteMenu'
   },
@@ -31,7 +27,11 @@ MenuView = Giraffe.View.extend({
   },
 
   dataEvents: {
-    'change:active collection': function(model, active) { if (active) this.render(); }
+    'change:active collection': 'onChangeActiveItem'
+  },
+
+  onChangeActiveItem: function(model, active) {
+    if (active) this.render();
   },
 
   afterRender: function() {
@@ -68,7 +68,9 @@ ContentView = Giraffe.View.extend({
   },
 
   getItemView: function(menuItem) {
-    var view = _.find(this.children, function(child) { return child.model === menuItem; });
+    var view = _.find(this.children, function(child) {
+      return child.model === menuItem;
+    });
     if (!view) {
       view = new ContentItemView({
         model: menuItem,
@@ -92,11 +94,12 @@ ContentItemView = Giraffe.View.extend({
 });
 
 var app = new App();
-app.router = new Giraffe.Router({
+var router = new Giraffe.Router({
   triggers: {
     'menu/:name': 'route:menu'
   }
 });
+app.router = router; // set the router reference so the views can use it
 app.attachTo('body');
 Backbone.history.start();
-app.router.cause('route:menu', 'menu item 1');
+router.cause('route:menu', 'menu item 1');

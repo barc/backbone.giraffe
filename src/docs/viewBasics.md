@@ -3,148 +3,139 @@
 ## View Basics
 
 This example demonstrates the basic usage of **Giraffe.View**. It can be extended just like a **Backbone.View**.
+
 ```js
-Giraffe.View.setTemplateStrategy('underscore-template');
-
-var View = Giraffe.View.extend({
-```
-
-**Giraffe.View** implements `render` for you. This `render` function consumes `getHTML`, which is an empty method for you to implement that returns a string of the view's HTML. One of Giraffe's goals is to be as unintrusive to Backbone apps as possible, and so it may appear counterintuitive that it calls `render` for you. But stay with us! Giraffe is able to add quite a few features by controlling the `render` method. You can still call `render` when your models change and expect it to work like it always has. (except better!)
-```js
-  template: '<h2><%= name %></h2>',
-
+var MyView = Giraffe.View.extend({
+  template: '#my-template',
   serialize: function() {
-    return {name: 'main view'};
+    return {name: 'my view'};
   }
 });
 ```
 
-Let's create an instance of the view class we just defined.
-```js
-var view = new View();
+Giraffe implements `render` for you so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `getHTML` in the [API docs](api.html#View-template).
+```html
+<script id="my-template" type="text/template">
+  Hello <%= name %>!
+</script>
 ```
 
-With a normal **Backbone.View**, we'd probably now do something like `$('body').append(view.$el)`. That would still work, but the **Giraffe.View** adds the method `attachTo`, a function that works some magic behind the scenes to simplify view management. The goal of the **Giraffe.View** is to have a recursively-nestable automatically-memory-managed move-it-and-render-it-anywhere-any-time view. *Phew.* In this simple case, the only things happening behind the scenes in `attachTo` are `$('body').append(view.$el)` followed by `view.render()`. The `render` happens only because Giraffe sees that the view has yet to be rendered.
+Giraffe uses the function `attachTo` to put views into the DOM or inside one another. `attachTo` calls `render` the first time the view is attached, and sets up a parent-child relationship if a parent view is found. In this case there is no parent view.
 ```js
-view.attachTo('body');
+var myView = new MyView();
+myView.attachTo('body');
 ```
 
-You may be wondering how **Giraffe.View** works under the hood. Part of the answer lies in tying a view's `$el` to the view instance via the `data-view-cid` attribute. This lets us query both our view objets and the DOM (along with off-DOM detached HTML fragments) to safely and automagically handle nested views.
+Here's the result:
+
+{{{COMMON}}}
+
+{{{EXAMPLE style='height: 30px;'}}}
+
+:::END
+
+
+:::BEGIN Example
+## Creating Child Views
+
+This example demonstrates how **Giraffe.View** supports nested views.
+
 ```js
-view.cid; // => 'view1'
-view.$el.data("view-cid"); // => 'view1'
+var ParentView, ChildView;
 ```
 
-So let's see the magic! First we'll define a `ChildView` class.
+Giraffe calls the functions `beforeRender` and `afterRender` every time a view renders. These are empty functions for your views to fill in. `afterRender` is a place to create and attach child views.
+
 ```js
-var ChildView = Giraffe.View.extend({
-  className: 'child-view',
-
-  template: '<h3><%= name %></h3>',
-
-  serialize: function() {
-    return {name: 'child view'};
+ParentView = Giraffe.View.extend({
+  template: '#parent-template',
+  afterRender: function() {
+    var childView = new ChildView({name: 'child view'});
+    childView.attachTo(this);
   }
 });
 ```
 
-Now let's create an instance of `ChildView` and attach it to the first view we created. The method `attach` is an inverted way to call `attachTo`, the difference being `attachTo` doesn't require a parent view - any selector, DOM element, or view will do.
+```html
+<script id="parent-template" type="text/template">
+  parent view
+</script>
+```
+
+The `ChildView` simply displays the `name` given in its `options`.
 ```js
-var childView = new ChildView();
-view.attach(childView);
+ChildView = Giraffe.View.extend({
+  template: '#child-template'
+});
 ```
 
-When one view is attached to another, Giraffe sets up a parent-child relationship. Note that we could have called `childView.attachTo(view.$el)`, and because the `data-view-cid` is set up, we still know who the parent is. The child view gets a `parent` and the parent view adds the child view to its `children` array.
-```js
-childView.parent === view;      // => true
-view.children[0] === childView; // => true
+By default, `serialize` passes the view to the template function.
+```html
+<script id="child-template" type="text/template">
+  <%= this.options.name %>
+</script>
 ```
 
-When a **Giraffe.View** renders, its child views are detached. This preserves their DOM event bindings, so you should never again need to call `delegateEvents` manually. When a view renders and its child views are detached, one of many things can happen. The default behavior is to call `dispose` on them, the generalized Giraffe removal/destroy/cleanup method.
-
-<div class='note'>
-The method name is `dispose` and not `remove` as a matter of necessity even though it essentially overrides Backbone's `view.remove`. This is because any object can be added to a view's children via `view.addChild` to take advantage of automatic memory management, and some objects like collections already have a `remove` method that means something completely different! Any child with a `dispose` method will be disposed of when its parent disposes.
-</div>
-
-```js --no-capture
-view.render() => childView.detach() => childView.dispose()
-// ...rendering the parent completely destroyed our childView!
-```
-
-*My view is gone, you say? What if I want to keep it!?*
-
-Good question! Even though it's often easy to just recreate child views after every `render`, there are many reasons you may want to cache them. To save a view even after its parent renders, simply set the view's option `disposeOnDetach` to false.
+Let's create and attach a parent view.
 
 ```js
-childView.options.disposeOnDetach = false;
-// or...
-// new ChildView({disposeOnDetach: false});
+var parentView = new ParentView();
+parentView.attachTo('body');
 ```
 
-```uml
--> view: render()
-alt each child
-  view -> child: detach()
-  alt if options.disposeOnDetach
-    child -> child: dispose()
-end
-```
-
-We now have a cached child view! Let's see what happens when the parent view renders.
-
-```js --no-capture
-view.render() => childView.detach()
-view.children[0] === childView // => true
-// ...hurray! The childView is still around.
-view.$el.find(childView.$el);  // => not found! ...it's not in the DOM!?
-```
-
-*My view is still around, but it's not in the DOM? What if I want it in the DOM!?*
-
-Another good question! Giraffe tries its best to stay out of your way, any so there's no automatic child view reattaching. What if after `render` you wanted to show a different view? The client may ask for anything! Giraffe has an answer though, in the form of a handy convention: every time a view calls `render`, it firsts calls `beforeRender`, then renders, and then calls `afterRender`. Both of these functions are empty by default, ready for you to fill in when needed. The `afterRender` function is a great time to attach child views.
+Now we'll inspect things to see what the child-parent relationship looks like. The parent has an array of `children` and the children have a reference to their `parent`.
 
 ```js
-view.afterRender = function() {
-  this.attach(childView);
-};
-view.render();                // => childView.detach()
-view.children.length === 1;   // => true, because childView.options.disposeOnDetach === false
-view.$el.find(childView.$el); // => yep! good work, `afterRender`!
+var childView = parentView.children[0];
+console.log(parentView === childView.parent); // => true
 ```
 
-Time for a victory message.
+Let's create a second child view. The `method` option of `attachTo` determines the jQuery method used to insert the view. In this case we'll use `'before'` to put it before the first child view we created. See `attachTo` in the [API docs](api.html#View-attachTo) for more.
 ```js
-$('body').append('<p>We rendered the main view and saved the child!</p>')
+var childView2 = new ChildView({name: 'child view attached with {method: "before"}'});
+childView2.attachTo(childView, {method: 'before'});
 ```
 
-Views can be attached to any selector, DOM element, or view. Note that the inverted `attach` method will make sure the calling object contains the `el` you specify, because semantically you're saying *'attach this view to this parent'*.
-```js --no-capture
-view.attachTo('#some-selector');
-view.attachTo(someDOMElement);
-view.attachTo($someJQueryObject);
-view.attachTo(someView);
-view.attach(childView, {el: '#something-inside-the-view'});
+The `parent` of `childView2` is the `parentView`.
+```js
+console.log(childView2.parent === parentView); // => true
 ```
 
-:::BEGIN more-details collapsed
+{{{COMMON}}}
 
-So this `attachTo` function, you may be wondering - how is it putting one $el inside another, and how can that be controlled? By default it uses the jQuery method `'append'`, but luckily many jQuery methods are supported - `'append'`, `'prepend'`, `'after'`, `'before'`, and `'html'` can all be passed to `attach` and `attachTo` as the `method` option. That last one may raise alarm bells in your jQuery underbrain - the `'html'` method can be quite destructive! Worry not - Giraffe has you covered. Any time you insert a view with the `'html'` method, any otherwise-clobbered views will be safely detached first. Note that by default, detaching a view will `dispose` of it, but the `preserve` option can override the behavior of `disposeOnDetach`.
+Here's the result:
 
-```js --no-capture
-childView.attachTo(view, {method: 'append'}); // the default method
-childView.attachTo(view, {method: 'prepend'});
-childView.attachTo(view, {method: 'after'});  // => makes `childView` a sibling of `view`
-childView.attachTo(view, {method: 'before'}); // => also makes them siblings
-view.attach(childView, {method: 'prepend'});  // inverted way to attach
+{{{EXAMPLE style='height: 274px;'}}}
 
-childView.attachTo(view, {method: 'html'});
-// => detaches any views that get in the way, disposing of them unless disposeOnDetach is false
-
-childView.attachTo(view, {method: 'html', preserve: true});
-// => detaches any views that get in the way, but does not dispose of them, even if disposeOnDetach is true
+```css --hide
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1 {
+  font-size: 42px;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: inline;
+  margin-right: 10px;
+}
+h3 {
+  font-size: 18px;
+  display: inline;
+  margin-right: 10px;
+}
+[data-view-cid] {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}
 ```
 
-Here's an abridged UML summary of what happens inside `attachTo`
+Here's an abridged UML summary of what happens inside `attachTo`:
 ```uml
 participant MyView
 participant GView as "Giraffe.View"
@@ -181,50 +172,5 @@ alt if MyView not yet rendered or options.forceRender
   end
 end
 ```
-
-:::END more-details
-
-That's it! Take a look at the result below. It may not look very impressive, but we covered a lot of ground!
-
-{{{COMMON}}}
-
-```css --hide
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
-.child-view {
-  position: relative;
-  padding: 20px;
-  margin: 20px;
-  border: 1px dashed #999;
-}
-```
-
-
-## Try It
-
-{{{EXAMPLE style='height: 180px;'}}}
 
 :::END

@@ -1,7 +1,7 @@
 :::BEGIN Example
 
 
-## Document Events
+## View Document Events
 
 This example demonstrates Giraffe's document event bindings that link DOM events to **Giraffe.View** methods.
 Giraffe does *not* provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method `Giraffe.View.removeDocumentEvents()`, but it shouldn't get in your way if left unused.
