@@ -63,7 +63,7 @@ The design goal is to create a single view class that nests, manages memory, and
 </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>Now let&#39;s build the child view that spawns recursively. Let&#39;s start with its template.</p>
 <div class='note'>
-The attribute <code>data-gf-click</code> is an intuitive way to assign a view method as the event handler for a DOM element. We recommend prefixing the name of the handler with <code>on</code> to make it clear an event triggers the method. 
+The attribute <code>data-gf-click</code> is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with <code>on</code> to make it clear an event triggers the method. 
 </div>
 
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">

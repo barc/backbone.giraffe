@@ -30,7 +30,7 @@ Here's the app's template.
 Now let's build the child view that spawns recursively. Let's start with its template.
 
 <div class='note'>
-The attribute `data-gf-click` is an intuitive way to assign a view method as the event handler for a DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. 
+The attribute `data-gf-click` is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. 
 </div>
 
 ```html
