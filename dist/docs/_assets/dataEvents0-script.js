@@ -10,14 +10,7 @@ var View = Giraffe.View.extend({
     // 'anEventTriggeredOnThisView this': 'someMethodName'
   },
 
-  getHTML: function() {
-    var html = '<button data-gf-click="onAddModel">add model</button>';
-    this.collection.each(function(model) {
-      html += '<button data-gf-click="onRemoveModel" data-cid="' + model.cid + '">' +
-        'remove model ' + model.get('name') + '</button>';
-    });
-    return html;
-  },
+  template: '#view-template',
 
   onAddModel: function(e) {
     this.modelCount = this.modelCount || 0;

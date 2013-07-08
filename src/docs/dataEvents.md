@@ -28,14 +28,18 @@ but replaces the selector with the name of any `Backbone.Events` object on this 
 
 This example has a button to add a new model and a button for each model that removes it.
 ```js
-  getHTML: function() {
-    var html = '<button data-gf-click="onAddModel">add model</button>';
-    this.collection.each(function(model) {
-      html += '<button data-gf-click="onRemoveModel" data-cid="' + model.cid + '">' +
-        'remove model ' + model.get('name') + '</button>';
-    });
-    return html;
-  },
+  template: '#view-template',
+```
+
+```html
+<script id="view-template" type="text/template">
+  <button data-gf-click="onAddModel">add model</button>
+  <% _.each(this.collection.models, function(model) { %>
+    <button data-gf-click="onRemoveModel" data-cid="<%= model.cid %>">
+      remove model <%= model.get("name") %>
+    </button>
+  <% }); %>
+</script>
 ```
 
 Here are the functions that add and remove models. The ui updates automatically based on the events bound in `dataEvents`.

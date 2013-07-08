@@ -55,14 +55,15 @@ but replaces the selector with the name of any <code>Backbone.Events</code> obje
     <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
   },</code></pre>
 <p>This example has a button to add a new model and a button for each model that removes it.</p>
-<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">'&lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;'</span>;
-    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
-      html += <span class="string">'&lt;button data-gf-click="onRemoveModel" data-cid="'</span> + model.cid + <span class="string">'"&gt;'</span> +
-        <span class="string">'remove model '</span> + model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/button&gt;'</span>;
-    });
-    <span class="keyword">return</span> html;
-  },</code></pre>
+<pre><code class="js">  template: <span class="string">'#view-template'</span>,</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="undefined">
+  &lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;
+  &lt;% _.each(this.collection.models, function(model) { %&gt;
+    &lt;button data-gf-click="onRemoveModel" data-cid="&lt;%= model.cid %&gt;"&gt;
+      remove model &lt;%= model.get("name") %&gt;
+    &lt;/button&gt;
+  &lt;% }); %&gt;
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>Here are the functions that add and remove models. The ui updates automatically based on the events bound in <code>dataEvents</code>.</p>
 <pre><code class="js">  onAddModel: <span class="keyword">function</span>(e) {
     <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
@@ -116,14 +117,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
   },
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">'&lt;button data-gf-click="onAddModel"&gt;add model&lt;/button&gt;'</span>;
-    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
-      html += <span class="string">'&lt;button data-gf-click="onRemoveModel" data-cid="'</span> + model.cid + <span class="string">'"&gt;'</span> +
-        <span class="string">'remove model '</span> + model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/button&gt;'</span>;
-    });
-    <span class="keyword">return</span> html;
-  },
+  template: <span class="string">'#view-template'</span>,
 
   onAddModel: <span class="keyword">function</span>(e) {
     <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
@@ -151,6 +145,15 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="undefined">
+    &lt; button data - gf - click = "onAddModel" &gt; add model &lt; /button&gt;
+  &lt;% _.each(this.collection.models, function(model) { %&gt;
+    &lt;button data-gf-click="onRemoveModel" data-cid="&lt;%= model.cid %&gt;"&gt;
+      remove model &lt;%= model.get("name") %&gt;
+    &lt;/button &gt; &lt;%
+    }); %&gt;
+  </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
