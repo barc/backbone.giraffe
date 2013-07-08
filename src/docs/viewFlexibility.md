@@ -1,17 +1,14 @@
 :::BEGIN Example
 
-
 ## View Flexibility
 
 This advanced example demonstrates the flexibility of **Giraffe.View**.
-The design goal is to create a single view class that can nest, manage memory, and move around the DOM with ease.
-```js
-var ParentApp, ChildView;
-```
+The design goal is to create a single view class that nests, manages memory, and moves around the DOM with ease.
 
 **Giraffe.App** is a **Giraffe.View** that encapsulates an app.
+
 ```js
-ParentApp = Giraffe.App.extend({
+var ParentApp = Giraffe.App.extend({
   template: '#parent-app-template',
 
   afterRender: function() {
@@ -21,6 +18,7 @@ ParentApp = Giraffe.App.extend({
 ```
 
 Here's the app's template.
+
 ```html
 <script id="parent-app-template" type="text/template">
   <h2><%= this.options.name %></h2>
@@ -29,13 +27,16 @@ Here's the app's template.
 </script>
 ```
 
-In this example, we're going to create a child view that spawns recursively.
+Now let's build the child view that spawns recursively.
+
 ```js
-ChildView = Giraffe.View.extend({
+var ChildView = Giraffe.View.extend({
   className: 'child-view',
 ```
 
-```js --hide
+:::@ --hide
+
+```js
   colors: ['#ebb', '#eeb', '#beb', '#bee', '#bbe', '#ebe'],
   colorIndex: -1,
 
@@ -90,6 +91,7 @@ ChildView = Giraffe.View.extend({
 ```
 
 In this example, each child view has a button that adds another `ChildView` to its `children`.
+
 ```js
   onAddChild: function() {
     this.attach(new ChildView(), {el: this.$('.child-views:first')});
@@ -97,6 +99,7 @@ In this example, each child view has a button that adds another `ChildView` to i
 ```
 
 Each child view also has a button that calls `dispose`, which cleans up all resources and event bindings on the view and its `children`.
+
 ```js
   onDispose: function() {
     this.dispose();
@@ -108,6 +111,7 @@ By default, Giraffe recreates child views every `render`, but this is often not 
 By default, `disposeOnDetach` is true, and child views are disposed of when their `parent` detaches them before a `render`.
 If you set a view's `disposeOnDetach` option to false, it is preserved when its `parent` renders.
 In this example, the `ChildView` has a checkbox to toggle this caching behavior.
+
 ```js
   toggleCache: function(e) {
     this.options.disposeOnDetach = !$(e.target).is(':checked');
@@ -117,6 +121,7 @@ In this example, the `ChildView` has a checkbox to toggle this caching behavior.
 Cached child views will be in `children` after rendering the `parent`.
 Uncached child views have already been disposed of by this point.
 Giraffe does *not* automatically reattach child views, so you retain full control.
+
 ```js
   afterRender: function() {
     for (var i = 0; i < this.children.length; i++) {
@@ -126,6 +131,7 @@ Giraffe does *not* automatically reattach child views, so you retain full contro
 ```
 
 Like `afterRender`, `beforeRender` is an empty function for you to create when needed.
+
 ```js
   beforeRender: function() {
     this.renderCount = this.renderCount || 0;
@@ -139,6 +145,7 @@ When a view is attached, Giraffe automatically calls `render` on the view if it 
 The option `preserve` prevents child view disposal, even if `disposeOnDetach` is true.
 In this example, we force `render` on the relevant views so the correct movement buttons are displayed,
 and we use `preserve` to prevent the `render` from disposing of uncached child views.
+
 ```js
   onMoveUp: function() {
     var previousView = this.getPreviousView();
@@ -181,6 +188,7 @@ and we use `preserve` to prevent the `render` from disposing of uncached child v
 
 The `'html'` jQuery method replaces existing content.
 Giraffe automatically disposes of any uncached views that get in the way.
+
 ```js
   onAttachUsingHTML: function() {
     this.attachTo(this.$el.parent(), {method: 'html'});
@@ -188,6 +196,7 @@ Giraffe automatically disposes of any uncached views that get in the way.
 ```
 
 Let's use the console to see when views get disposed.
+
 ```js
   dispose: function() {
     Giraffe.View.prototype.dispose.call(this);
@@ -213,7 +222,9 @@ app2.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;
@@ -257,7 +268,7 @@ h3 {
 }
 ```
 
-## Try It
+### Result
 
 {{{EXAMPLE style='height: 600px;'}}}
 

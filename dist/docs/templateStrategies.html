@@ -22,8 +22,8 @@
           <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
         </ul>
         
-        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
-<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+        <h2><a href="api.html">API</a></h2>
+<h2><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
 <li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
@@ -44,7 +44,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <h2 id='h-template-strategies'>Template Strategies</h2>
+        <h2>Template Strategies</h2>
 <p>Creating HTML markup is a lot of what we do as front end developers.
 There are many solutions as evident by the ever increasing number of templating
 libraries found on the web. <strong>Giraffe</strong> provides templating strategies
@@ -52,17 +52,17 @@ based on the built-in dependecies of <strong>Backbone</strong>, namely the <stro
 function. Selecting a strategy tells <strong>Giraffe</strong> how to utilize the <code>Giraffe.View#template</code>
 property when rendering a view. The predefined strategies are:</p>
 <ul>
-<li><h4 id='h-underscore-templates'>Underscore templates</h4>
+<li><h4>Underscore templates</h4>
 <ul>
 <li><code>Giraffe.View#template</code> is an <strong>Underscore</strong> template string.</li>
 </ul>
 </li>
-<li><h4 id='h-underscore-template-selector-default-'>Underscore template selector <em>[default]</em></h4>
+<li><h4>Underscore template selector <em>[default]</em></h4>
 <ul>
 <li><code>Giraffe.View#template</code> is a CSS selector of an <strong>Underscore</strong> template. This is the default.</li>
 </ul>
 </li>
-<li><h4 id='h-javascript-template-functions-jst'>JavaScript template functions (JST)</h4>
+<li><h4>JavaScript template functions (JST)</h4>
 <ul>
 <li><code>Giraffe.View#template</code> is a function that returns an HTML string.</li>
 </ul>
@@ -75,7 +75,7 @@ At <a href="http://barc.com">Barc</a> we love CoffeeScript and use <a href="http
 a function based template engine.
 </div>
 
-<h3 id='h-strategy-scope'>Strategy Scope</h3>
+<h3>Strategy Scope</h3>
 <p>First decide whether to set the strategy globally or to a specific view.
 The global case is the one most used as it enforces consistent templating
 across a project. To set a global strategy use <code>Giraffe.View.setTemplateStrategy</code>
@@ -96,7 +96,7 @@ to transform a view&#39;s data into HTML when
 using one of the predefined strategies.
 </div>
 
-<p><div class='section-example'><h3 id='h-underscore-template'>Underscore Template</h3>
+<p><div class='section-example'><h3>Underscore Template</h3>
 <p>This is the simplest and works well with CoffeeScript&#39;s multi-line
 strings.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
@@ -112,7 +112,7 @@ strings.</p>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-<h4 id='h-result'>Result</h4>
+<h4>Result</h4>
 <div id="templatestrategies0_tabs" class="tabs">
   <ul>
     <li class="active">
@@ -179,7 +179,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h3 id='h-underscore-template-selector'>Underscore Template Selector</h3>
+<div class='section-example'><h3>Underscore Template Selector</h3>
 <p>This strategy expects a selector to a DOM element containing the template.</p>
 <p>In HTML page</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
@@ -199,7 +199,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-<h4 id='h-result'>Result</h4>
+<h4>Result</h4>
 <div id="templatestrategies1_tabs" class="tabs">
   <ul>
     <li class="active">
@@ -270,7 +270,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h3 id='h-javascript-template-function'>JavaScript Template Function</h3>
+<div class='section-example'><h3>JavaScript Template Function</h3>
 <p>This strategy expects a function.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'jst'</span>,
@@ -287,7 +287,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-<h4 id='h-result'>Result</h4>
+<h4>Result</h4>
 <div id="templatestrategies2_tabs" class="tabs">
   <ul>
     <li class="active">
@@ -356,7 +356,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h3 id='h-user-defined'>User Defined</h3>
+<div class='section-example'><h3>User Defined</h3>
 <p>To completely override <strong>Giraffe</strong> templating, assign a function to <code>templateStrategy</code>
 that returns an HTML string.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
@@ -374,7 +374,7 @@ that returns an HTML string.</p>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
-<h4 id='h-result'>Result</h4>
+<h4>Result</h4>
 <div id="templatestrategies3_tabs" class="tabs">
   <ul>
     <li class="active">

@@ -1,6 +1,4 @@
-var ParentApp, ChildView;
-
-ParentApp = Giraffe.App.extend({
+var ParentApp = Giraffe.App.extend({
   template: '#parent-app-template',
 
   afterRender: function() {
@@ -8,7 +6,7 @@ ParentApp = Giraffe.App.extend({
   }
 });
 
-ChildView = Giraffe.View.extend({
+var ChildView = Giraffe.View.extend({
   className: 'child-view',
 
   colors: ['#ebb', '#eeb', '#beb', '#bee', '#bbe', '#ebe'],
