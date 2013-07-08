@@ -91,14 +91,20 @@
 });</code></pre>
 <p>The <code>MenuItemView</code> takes a <code>model</code> and displays its <code>name</code> and <code>active</code> status.</p>
 <pre><code class="js">MenuItemView = Giraffe.View.extend({
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span>
-      name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>),
-      href = <span class="keyword">this</span>.app.router.getRoute(<span class="string">'route:menu'</span>, name),
-      className = <span class="keyword">this</span>.model.get(<span class="string">'active'</span>) ? <span class="string">'active'</span> : <span class="string">''</span>;
-    <span class="keyword">return</span> <span class="string">'&lt;a href="'</span> + href + <span class="string">'" class="'</span> + className + <span class="string">'"&gt;'</span> + name+ <span class="string">'&lt;/a&gt;'</span>;
+  template: <span class="string">'#menu-item-template'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>);
+    <span class="keyword">return</span> {
+      name: name,
+      href: <span class="keyword">this</span>.app.router.getRoute(<span class="string">'route:menu'</span>, name),
+      className: <span class="keyword">this</span>.model.get(<span class="string">'active'</span>) ? <span class="string">'active'</span> : <span class="string">''</span>
+    };
   }
 });</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;a href=<span class="string">"&lt;%= href %&gt;"</span> class=<span class="string">"&lt;%= className %&gt;"</span>&gt;<span class="xml"><span class="vbscript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>The <code>ContentView</code> listens for changes to the <code>active</code> property on its <code>collection</code> and displays the appropriate <code>ContentItemView</code>.</p>
 <pre><code class="js">ContentView = Giraffe.View.extend({
   dataEvents: {
@@ -133,13 +139,20 @@
 <pre><code class="js">ContentItemView = Giraffe.View.extend({
   className: <span class="string">'content-item-view'</span>,
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">''</span>;
+  template: <span class="string">'#content-item-template'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> lines = [];
     <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)
-      html += <span class="string">'&lt;p&gt;content for '</span> + <span class="keyword">this</span>.model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/p&gt;'</span>;
-    <span class="keyword">return</span> html;
+      lines.push(<span class="keyword">this</span>.model.get(<span class="string">'name'</span>));
+    <span class="keyword">return</span> {lines: lines};
   }
 });</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;% _.each(lines, <span class="keyword">function</span>(line) { %&gt;
+    <span class="xml"><span class="tag">&lt;<span class="title">p</span>&gt;</span>content for <span class="vbscript">&lt;%= line %&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+  <span class="vbscript">&lt;% }); %&gt;</span>
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>We&#39;ll now create and attach the app, create the router, start <code>Backbone.history</code>, and then route to the first menu item.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
 <span class="keyword">var</span> router = <span class="keyword">new</span> Giraffe.Router({
@@ -234,12 +247,15 @@ MenuView = Giraffe.View.extend({
 });
 
 MenuItemView = Giraffe.View.extend({
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span>
-    name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>),
-      href = <span class="keyword">this</span>.app.router.getRoute(<span class="string">'route:menu'</span>, name),
-      className = <span class="keyword">this</span>.model.get(<span class="string">'active'</span>) ? <span class="string">'active'</span> : <span class="string">''</span>;
-    <span class="keyword">return</span> <span class="string">'&lt;a href="'</span> + href + <span class="string">'" class="'</span> + className + <span class="string">'"&gt;'</span> + name + <span class="string">'&lt;/a&gt;'</span>;
+  template: <span class="string">'#menu-item-template'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>);
+    <span class="keyword">return</span> {
+      name: name,
+      href: <span class="keyword">this</span>.app.router.getRoute(<span class="string">'route:menu'</span>, name),
+      className: <span class="keyword">this</span>.model.get(<span class="string">'active'</span>) ? <span class="string">'active'</span> : <span class="string">''</span>
+    };
   }
 });
 
@@ -280,11 +296,15 @@ ContentView = Giraffe.View.extend({
 ContentItemView = Giraffe.View.extend({
   className: <span class="string">'content-item-view'</span>,
 
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">''</span>;
+  template: <span class="string">'#content-item-template'</span>,
+
+  serialize: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> lines = [];
     <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)
-      html += <span class="string">'&lt;p&gt;content for '</span> + <span class="keyword">this</span>.model.get(<span class="string">'name'</span>) + <span class="string">'&lt;/p&gt;'</span>;
-    <span class="keyword">return</span> html;
+      lines.push(<span class="keyword">this</span>.model.get(<span class="string">'name'</span>));
+    <span class="keyword">return</span> {
+      lines: lines
+    };
   }
 });
 
@@ -308,6 +328,17 @@ router.cause(<span class="string">'route:menu'</span>, <span class="string">'men
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt; a href = <span class="string">"&lt;%= href %&gt;"</span>
+    class = <span class="string">"&lt;%= className %&gt;"</span> &gt; <span class="xml"><span class="vbscript">&lt;%= name %&gt;</span> <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span>
+  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt;% _.each(lines, <span class="keyword">function</span>(line) { %&gt; <span class="xml"><span class="tag">&lt; <span class="attribute">p</span> &gt;</span> content
+        for <span class="vbscript">&lt;%= line %&gt;</span> <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
+  <span class="vbscript">&lt;% }); %&gt;</span>
+  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>

@@ -59,14 +59,23 @@ MenuView = Giraffe.View.extend({
 The `MenuItemView` takes a `model` and displays its `name` and `active` status.
 ```js
 MenuItemView = Giraffe.View.extend({
-  getHTML: function() {
-    var
-      name = this.model.get('name'),
-      href = this.app.router.getRoute('route:menu', name),
-      className = this.model.get('active') ? 'active' : '';
-    return '<a href="' + href + '" class="' + className + '">' + name+ '</a>';
+  template: '#menu-item-template',
+
+  serialize: function() {
+    var name = this.model.get('name');
+    return {
+      name: name,
+      href: this.app.router.getRoute('route:menu', name),
+      className: this.model.get('active') ? 'active' : ''
+    };
   }
 });
+```
+
+```html
+<script id="menu-item-template" type="text/template">
+  <a href="<%= href %>" class="<%= className %>"><%= name %></a>
+</script>
 ```
 
 The `ContentView` listens for changes to the `active` property on its `collection` and displays the appropriate `ContentItemView`.
@@ -107,13 +116,23 @@ The `ContentItemView` displays the name of the content. Because these are create
 ContentItemView = Giraffe.View.extend({
   className: 'content-item-view',
 
-  getHTML: function() {
-    var html = '';
+  template: '#content-item-template',
+
+  serialize: function() {
+    var lines = [];
     for (var i = 0; i < 50; i++)
-      html += '<p>content for ' + this.model.get('name') + '</p>';
-    return html;
+      lines.push(this.model.get('name'));
+    return {lines: lines};
   }
 });
+```
+
+```html
+<script id="content-item-template" type="text/template">
+  <% _.each(lines, function(line) { %>
+    <p>content for <%= line %></p>
+  <% }); %>
+</script>
 ```
 
 We'll now create and attach the app, create the router, start `Backbone.history`, and then route to the first menu item.

@@ -43,12 +43,15 @@ MenuView = Giraffe.View.extend({
 });
 
 MenuItemView = Giraffe.View.extend({
-  getHTML: function() {
-    var
-      name = this.model.get('name'),
-      href = this.app.router.getRoute('route:menu', name),
-      className = this.model.get('active') ? 'active' : '';
-    return '<a href="' + href + '" class="' + className + '">' + name+ '</a>';
+  template: '#menu-item-template',
+
+  serialize: function() {
+    var name = this.model.get('name');
+    return {
+      name: name,
+      href: this.app.router.getRoute('route:menu', name),
+      className: this.model.get('active') ? 'active' : ''
+    };
   }
 });
 
@@ -85,11 +88,13 @@ ContentView = Giraffe.View.extend({
 ContentItemView = Giraffe.View.extend({
   className: 'content-item-view',
 
-  getHTML: function() {
-    var html = '';
+  template: '#content-item-template',
+
+  serialize: function() {
+    var lines = [];
     for (var i = 0; i < 50; i++)
-      html += '<p>content for ' + this.model.get('name') + '</p>';
-    return html;
+      lines.push(this.model.get('name'));
+    return {lines: lines};
   }
 });
 
