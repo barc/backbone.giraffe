@@ -102,9 +102,9 @@ h3 {
 }
 ```
 
-## Try It
+Here's what happened:
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 125px;'}}}
 
 
 :::END

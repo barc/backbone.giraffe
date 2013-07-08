@@ -890,7 +890,12 @@ a {
   padding: 0.5em;
   border: solid 1px #ededba;
 }
-/* line 173, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+/* line 172, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.note code {
+  border: solid 1px #ebebba;
+  background-color: #fff;
+}
+/* line 178, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 .aside {
   background-color: #f4f4f4;
   color: #666;
