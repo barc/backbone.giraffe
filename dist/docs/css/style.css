@@ -1,0 +1,901 @@
+/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+/**
+ * Correct `block` display not defined in IE 8/9.
+ */
+/* line 11, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+/**
+ * Correct `inline-block` display not defined in IE 8/9.
+ */
+/* line 30, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+/* line 41, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+/**
+ * Address styling not present in IE 8/9.
+ */
+/* line 50, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+[hidden] {
+  display: none;
+}
+/* ==========================================================================
+   Base
+   ========================================================================== */
+/**
+ * 1. Set default font family to sans-serif.
+ * 2. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+/* line 64, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+html {
+  font-family: sans-serif;
+  /* 1 */
+
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+
+}
+/**
+ * Remove default margin.
+ */
+/* line 74, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+body {
+  margin: 0;
+}
+/* ==========================================================================
+   Links
+   ========================================================================== */
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+/* line 86, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+a:focus {
+  outline: thin dotted;
+}
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+/* line 94, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+a:active,
+a:hover {
+  outline: 0;
+}
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+/**
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 108, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+/**
+ * Address styling not present in IE 8/9, Safari 5, and Chrome.
+ */
+/* line 117, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+/**
+ * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 125, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+b,
+strong {
+  font-weight: bold;
+}
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+/* line 134, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+dfn {
+  font-style: italic;
+}
+/**
+ * Address differences between Firefox and other browsers.
+ */
+/* line 142, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+/**
+ * Address styling not present in IE 8/9.
+ */
+/* line 152, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+mark {
+  background: #ff0;
+  color: #000;
+}
+/**
+ * Correct font family set oddly in Safari 5 and Chrome.
+ */
+/* line 161, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+/* line 173, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+pre {
+  white-space: pre-wrap;
+}
+/**
+ * Set consistent quote types.
+ */
+/* line 181, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+/* line 189, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+small {
+  font-size: 80%;
+}
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+/* line 197, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+/* line 205, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+sup {
+  top: -0.5em;
+}
+/* line 209, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+sub {
+  bottom: -0.25em;
+}
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+/**
+ * Remove border when inside `a` element in IE 8/9.
+ */
+/* line 221, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+img {
+  border: 0;
+}
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+/* line 229, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+svg:not(:root) {
+  overflow: hidden;
+}
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+/**
+ * Address margin not present in IE 8/9 and Safari 5.
+ */
+/* line 241, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+figure {
+  margin: 0;
+}
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+/**
+ * Define consistent border, margin, and padding.
+ */
+/* line 253, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+/**
+ * 1. Correct `color` not being inherited in IE 8/9.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+/* line 264, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+legend {
+  border: 0;
+  /* 1 */
+
+  padding: 0;
+  /* 2 */
+
+}
+/**
+ * 1. Correct font family not being inherited in all browsers.
+ * 2. Correct font size not being inherited in all browsers.
+ * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 275, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+
+  font-size: 100%;
+  /* 2 */
+
+  margin: 0;
+  /* 3 */
+
+}
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+/* line 289, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button,
+input {
+  line-height: normal;
+}
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+/* line 301, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button,
+select {
+  text-transform: none;
+}
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+/* line 314, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+
+  cursor: pointer;
+  /* 3 */
+
+}
+/**
+ * Re-set default cursor for disabled elements.
+ */
+/* line 326, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+/**
+ * 1. Address box sizing set to `content-box` in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ */
+/* line 336, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+
+  padding: 0;
+  /* 2 */
+
+}
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+/* line 348, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  /* 2 */
+
+  box-sizing: content-box;
+}
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+/* line 360, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+/* line 369, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+/**
+ * 1. Remove default vertical scrollbar in IE 8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+/* line 380, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+textarea {
+  overflow: auto;
+  /* 1 */
+
+  vertical-align: top;
+  /* 2 */
+
+}
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+/**
+ * Remove most spacing between table cells.
+ */
+/* line 393, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\normalize.less */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* Dead Simple Grid (c) 2012 Vladimir Agafonkin */
+/* line 3, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\grid.less */
+.col {
+  padding: 0 1.5em;
+}
+/* line 6, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\grid.less */
+.row .row {
+  margin: 0 -1.5em;
+}
+/* line 10, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\grid.less */
+.row:before,
+.row:after {
+  content: "";
+  display: table;
+}
+/* line 14, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\grid.less */
+.row:after {
+  clear: both;
+}
+@media only screen {
+  /* line 19, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\grid.less */
+  .col {
+    float: left;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
+/*
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+*/
+/* line 7, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+code {
+  font-family: consolas, menlo, "ubuntu mono", monospace;
+  font-size: 0.9em;
+  color: #222;
+  padding: 0 0.2em;
+  background-color: #fafafc;
+  border: solid 1px #ececf0;
+}
+/* line 16, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre code {
+  display: block;
+  padding: 0.5em;
+  background-color: #fafafc;
+  border: solid 1px #ececf0;
+}
+/* line 23, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+.uml {
+  border: none;
+  background-color: inherit;
+  padding: 0;
+  font-size: 0.8em;
+  line-height: 0.8em;
+}
+/* line 32, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre code,
+pre .subst,
+pre .tag .title,
+pre .lisp .title,
+pre .clojure .built_in,
+pre .nginx .title {
+  color: black;
+}
+/* line 41, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .string,
+pre .title,
+pre .constant,
+pre .parent,
+pre .tag .value,
+pre .rules .value,
+pre .rules .value .number,
+pre .preprocessor,
+pre .haml .symbol,
+pre .ruby .symbol,
+pre .ruby .symbol .string,
+pre .aggregate,
+pre .template_tag,
+pre .django .variable,
+pre .smalltalk .class,
+pre .addition,
+pre .flow,
+pre .stream,
+pre .bash .variable,
+pre .apache .tag,
+pre .apache .cbracket,
+pre .tex .command,
+pre .tex .special,
+pre .erlang_repl .function_or_atom,
+pre .asciidoc .header,
+pre .markdown .header,
+pre .coffeescript .attribute {
+  color: #cc5f00;
+}
+/* line 71, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .comment,
+pre .annotation,
+pre .template_comment,
+pre .diff .header,
+pre .chunk,
+pre .asciidoc .blockquote,
+pre .markdown .blockquote {
+  color: #888;
+}
+/* line 81, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .number,
+pre .date,
+pre .regexp,
+pre .literal,
+pre .hexcolor,
+pre .smalltalk .symbol,
+pre .smalltalk .char,
+pre .go .constant,
+pre .change,
+pre .lasso .variable,
+pre .asciidoc .bullet,
+pre .markdown .bullet,
+pre .asciidoc .link_url,
+pre .markdown .link_url {
+  color: #b40038;
+}
+/* line 98, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .label,
+pre .javadoc,
+pre .ruby .string,
+pre .decorator,
+pre .filter .argument,
+pre .localvars,
+pre .array,
+pre .attr_selector,
+pre .important,
+pre .pseudo,
+pre .pi,
+pre .haml .bullet,
+pre .doctype,
+pre .deletion,
+pre .envvar,
+pre .shebang,
+pre .apache .sqbracket,
+pre .nginx .built_in,
+pre .tex .formula,
+pre .erlang_repl .reserved,
+pre .prompt,
+pre .asciidoc .link_label,
+pre .markdown .link_label,
+pre .vhdl .attribute,
+pre .clojure .attribute,
+pre .asciidoc .attribute,
+pre .lasso .attribute,
+pre .coffeescript .property {
+  color: #8888ff;
+}
+/* line 129, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .keyword,
+pre .id,
+pre .title,
+pre .built_in,
+pre .aggregate,
+pre .css .tag,
+pre .javadoctag,
+pre .phpdoc,
+pre .yardoctag,
+pre .smalltalk .class,
+pre .winutils,
+pre .bash .variable,
+pre .apache .tag,
+pre .go .typename,
+pre .tex .command,
+pre .asciidoc .strong,
+pre .markdown .strong,
+pre .request,
+pre .status {
+  font-weight: bold;
+  color: #111;
+}
+/* line 152, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .asciidoc .emphasis,
+pre .markdown .emphasis {
+  font-style: italic;
+}
+/* line 157, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .nginx .built_in {
+  font-weight: normal;
+}
+/* line 161, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\highlight.less */
+pre .coffeescript .javascript,
+pre .javascript .xml,
+pre .lasso .markup,
+pre .tex .formula,
+pre .xml .javascript,
+pre .xml .vbscript,
+pre .xml .css,
+pre .xml .cdata {
+  opacity: 0.5;
+}
+/* line 5, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs {
+  border-bottom: 1px solid #cccccc;
+}
+/* line 9, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs_content {
+  border-left: 1px solid #cccccc;
+  border-right: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+}
+/* line 15, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul {
+  list-style: none;
+  padding: 0 0 10px 0;
+  margin: 0;
+  font-size: 0.75em;
+  text-align: center;
+}
+/* line 23, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li {
+  display: inline;
+  margin-left: -1px;
+}
+/* line 27, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li a {
+  border: 1px solid #cccccc;
+  padding: 10px 25px 10px;
+  text-decoration: none;
+  background-color: #ffffff;
+  border-bottom: none;
+  outline: none;
+  color: #333333;
+}
+/* line 36, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li a:hover {
+  color: #111111;
+}
+/* line 39, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li.active a {
+  border-bottom: none;
+  color: #111111;
+  padding-bottom: 11px;
+  font-weight: bold;
+}
+/* line 45, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li.active a:hover {
+  color: #111111;
+  font-weight: bold;
+}
+/* line 50, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs ul li a.icon {
+  background-image: url('products.png');
+  background-position: 13px 9px;
+  background-repeat: no-repeat;
+  padding-left: 36px;
+}
+/* line 56, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tabs_content {
+  border-top: none;
+  padding: 10px;
+}
+/* line 64, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tab_content:nth-child(n+2) {
+  display: none;
+}
+/*
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+*/
+/* line 73, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
+.tab_content pre code {
+  background-color: inherit;
+  border: none;
+}
+/* line 1, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_giraffe\mixins.less */
+.big-button {
+  height: 50px;
+  line-height: 48px;
+  padding: 0 20px;
+  border-radius: 5px;
+  text-align: center;
+  text-shadow: 0 -1px 1px #1e65a3;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: top;
+  background-color: #3b8fd8;
+  background-image: -moz-linear-gradient(top, #4999de, #2580cf);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#4999de), to(#2580cf));
+  background-image: -webkit-linear-gradient(top, #4999de, #2580cf);
+  background-image: -o-linear-gradient(top, #4999de, #2580cf);
+  background-image: linear-gradient(to bottom, #4999de, #2580cf);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff4999de', endColorstr='#ff2580cf', GradientType=0);
+  border: 1px solid #1a588e;
+  border-top-color: #2580cf;
+  color: #fff;
+  -webkit-box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
+  -moz-box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
+  box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
+  outline: none !important;
+}
+/* line 23, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_giraffe\mixins.less */
+.big-button:hover,
+.big-button:focus {
+  -webkit-box-shadow: 0 1px 5px #9fc9ee inset, 0 -1px 4px #2273b9 inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 5px #9fc9ee inset, 0 -1px 4px #2273b9 inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 5px #9fc9ee inset, 0 -1px 4px #2273b9 inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+  background-color: #4698de;
+  background-image: -moz-linear-gradient(top, #4d9bdf, #3c92dc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#4d9bdf), to(#3c92dc));
+  background-image: -webkit-linear-gradient(top, #4d9bdf, #3c92dc);
+  background-image: -o-linear-gradient(top, #4d9bdf, #3c92dc);
+  background-image: linear-gradient(to bottom, #4d9bdf, #3c92dc);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff4d9bdf', endColorstr='#ff3c92dc', GradientType=0);
+  background-position: 0;
+}
+/* line 30, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_giraffe\mixins.less */
+.big-button:active {
+  border-top-color: #1a588e;
+  -webkit-box-shadow: 0 1px 20px #1e65a3 inset, 0 1px 4px #1a588e inset;
+  -moz-box-shadow: 0 1px 20px #1e65a3 inset, 0 1px 4px #1a588e inset;
+  box-shadow: 0 1px 20px #1e65a3 inset, 0 1px 4px #1a588e inset;
+  background-color: #348ad5;
+  background-image: -moz-linear-gradient(top, #2580cf, #4999de);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2580cf), to(#4999de));
+  background-image: -webkit-linear-gradient(top, #2580cf, #4999de);
+  background-image: -o-linear-gradient(top, #2580cf, #4999de);
+  background-image: linear-gradient(to bottom, #2580cf, #4999de);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff2580cf', endColorstr='#ff4999de', GradientType=0);
+}
+/* line 37, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_giraffe\mixins.less */
+.big-button.disabled {
+  opacity: 0.85;
+  background: #4999de;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border-color: #2580cf;
+  text-shadow: none;
+}
+/* line 47, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_giraffe\mixins.less */
+.light-text {
+  color: #666666;
+}
+/* line 5, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+/* line 9, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+body {
+  line-height: 1.3;
+}
+/* @media only screen and (min-width: 34em) { */
+/*         .feature, .info { width: 50%; } */
+/* } */
+/* line 32, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#page-wrapper {
+  padding-left: 230px;
+}
+/* line 38, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 8px 24px 24px 24px;
+  width: 230px;
+  height: 100%;
+  overflow: auto;
+}
+/* line 47, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar li a {
+  font-size: 14px;
+}
+/* line 50, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar h2 {
+  font-size: 18px;
+}
+/* line 53, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar h3 {
+  font-size: 16px;
+}
+/* line 56, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar h2,
+#sidebar h3,
+#sidebar a {
+  color: #888;
+}
+/* line 59, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar a {
+  text-decoration: none;
+}
+/* line 61, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#sidebar a:hover {
+  text-decoration: underline;
+}
+/* line 67, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#content {
+  max-width: 910px;
+  min-width: 500px;
+  min-height: 100%;
+  border-left: solid 1px #eee;
+  padding: 24px;
+}
+/* line 74, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#content h1,
+#content h2,
+#content h3 {
+  padding-top: 20px;
+}
+/* line 81, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+p,
+a,
+td {
+  color: #444;
+}
+/* line 85, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #222;
+}
+/* line 89, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+iframe.result {
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+/* line 96, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+article section {
+  margin-bottom: 60px;
+}
+/* line 101, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+ul {
+  list-style: none;
+  padding-left: 1em;
+}
+/* line 106, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+strong {
+  font-weight: bold;
+}
+/* line 110, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+a {
+  color: #333333;
+  text-decoration: underline;
+}
+/* line 115, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.caption {
+  margin-left: 14px;
+  /* font-size: 12px; */
+
+  color: #666666;
+  font-family: consolas, menlo, "ubuntu mono", monospace;
+  font-weight: normal;
+  font-size: 14px;
+}
+/* line 124, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.static {
+  font-style: italic;
+}
+/* line 127, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.static:before {
+  content: '.';
+}
+/* line 131, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+#logo {
+  width: 600px;
+  height: 135px;
+}
+/* line 136, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.nav-title {
+  font-size: 15px;
+}
+/* line 140, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.collapsed > * {
+  display: none;
+}
+/* line 144, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.collapsed:before,
+.uncollapsed:before {
+  background-color: #d8f3f8;
+  border: solid 1px #a6ebf8;
+  font-size: 0.8em;
+  padding: 0.5em;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  cursor: pointer;
+}
+/* line 153, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.collapsed:before {
+  content: "learn more...";
+}
+/* line 157, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.uncollapsed:before {
+  content: "hide...";
+}
+/* line 165, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.note {
+  background-color: #ffffed;
+  color: #54544a;
+  margin: 1.5em;
+  padding: 0.5em;
+  border: solid 1px #ededba;
+}
+/* line 173, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
+.aside {
+  background-color: #f4f4f4;
+  color: #666;
+  margin: 1.5em;
+  padding: 0.5em;
+  border-right: solid 1px #ececec;
+  border-bottom: solid 1px #ececec;
+}
