@@ -18,9 +18,9 @@ Giraffe extends the base Backbone classes with lifecycle management, event aggre
 
 ## Download
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) *48.8k*, v0.1
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) *48.8k* **(version 0.1)**
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) *14.6k*, v0.1
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) *14.6k*
 
 ## Building
 
