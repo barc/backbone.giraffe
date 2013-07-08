@@ -12,27 +12,21 @@ var ParentApp, ChildView;
 **Giraffe.App** is a **Giraffe.View** that encapsulates an app.
 ```js
 ParentApp = Giraffe.App.extend({
-```
+  template: '#parent-app-template',
 
-**Giraffe.View** implements `render` for you; `getHTML` is an empty method for you to implement that returns a string of the view's HTML.
-```js
-  getHTML: function() {
-    var html = '<h2>' + this.options.name + '</h2>';
-    html += '<h3>' + this.cid + '</h3>';
-    html += '<button data-gf-click="render">Reset ' + this.options.name + '</button>';
-    return html;
-  },
-```
-
-After a view renders, `afterRender` is called.
-This is a good place to create and attach child views.
-The attach method creates a parent-child relationship between views, allowing **Giraffe.View** to automatically manage memory, nest easily, and do other useful things.
-The `attach` method also renders a view if it hasn't yet been rendered - so `afterRender` gets called when the app is attached.
-```js
   afterRender: function() {
     this.attach(new ChildView());
   }
 });
+```
+
+Here's the app's template.
+```html
+<script id="parent-app-template" type="text/template">
+  <h2><%= this.options.name %></h2>
+  <h3><%= this.cid %></h3>
+  <button data-gf-click="render">Reset <%= this.options.name %></button>
+</script>
 ```
 
 In this example, we're going to create a child view that spawns recursively.
@@ -53,53 +47,56 @@ ChildView = Giraffe.View.extend({
     var color = proto.colors[proto.colorIndex];
     this.$el.css('background-color', color);
   },
-```
 
-The HTML for this child view is a bit messy. You'll probably want to use a templating library!
-```js
-  getHTML: function() {
-    var html = '<h3>' + this.cid + '</h3>';
+  template: '#child-template',
 
-    var $parentChildren = this.$el.parent().find('> .child-view'),
+  serialize: function() {
+    var
+      $parentChildren = this.$el.parent().find('> .child-view'),
       index = $parentChildren.index(this.$el);
-    if (this.parent instanceof ChildView || index !== 0)
-      html += '<button data-gf-click="onMoveUp">▲</button>';
-    if (this.parent instanceof ChildView || index !== $parentChildren.length - 1)
-      html += '<button data-gf-click="onMoveDown">▼</button>';
-
-    html += '<button data-gf-click="onAddChild">Add a child</button>';
-
-    var renderButtonText = 'Rendered ' + this.renderCount +
-      (this.renderCount === 1 ? ' time' : ' times');
-    html += '<button data-gf-click="render">' + renderButtonText + '</button>';
-    html += '<button data-gf-click="onDispose">Dispose</button>';
-
-    if (this.parent instanceof ChildView) {
-      html += '<label><input type="checkbox" data-gf-change="toggleCache"';
-      if (!this.options.disposeOnDetach)
-        html += ' checked="checked"';
-      html += '>Cache this view</label>';
-      html += '<button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>';
-    }
-
-    html += '<div class="child-views"></div>';
-
-    return html;
+    return {
+      showMoveUpButton: this.parent instanceof ChildView || index !== 0,
+      showMoveDownButton: this.parent instanceof ChildView || index !== $parentChildren.length - 1
+    };
   },
 ```
 
+```html
+<script id="child-template" type="text/template">
+  <h3><% this.cid %></h3>
+
+  <% if (showMoveUpButton) { %>
+    <button data-gf-click="onMoveUp">&#9650;</button>
+  <% } %>
+
+  <% if (showMoveDownButton) { %>
+    <button data-gf-click="onMoveDown">&#9660;</button>
+  <% } %>
+
+  <button data-gf-click="onAddChild">Add a child</button>
+  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
+  <button data-gf-click="onDispose">Dispose</button>
+
+  <% if (this.parent instanceof ChildView) { %>
+    <label>
+      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
+      Cache this view
+    </label>
+    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
+  <% } %>
+
+  <div class="child-views"></div>
+</script>
+```
+
 In this example, each child view has a button that adds another `ChildView` to its `children`.
-**Giraffe.View** provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup.
-In `getHTML`, `data-gf-click` specifies the method `onAddChild` to be called on the view when the button is clicked.
-If the method isn't found on the view, it searches up the hierarchy until it finds the method or reaches a view with no `parent`.
-By default, Giraffe binds only `click` and `change`, but you can easily set custom bindings using `Giraffe.View.setDocumentEvents`.
 ```js
   onAddChild: function() {
     this.attach(new ChildView(), {el: this.$('.child-views:first')});
   },
 ```
 
-`dispose` destroys a view. It calls the **Backbone.View** function `remove`, performs cleanup, and calls `dispose` on all `children`.
+Each child view also has a button that calls `dispose`, which cleans up all resources and event bindings on the view and its `children`.
 ```js
   onDispose: function() {
     this.dispose();

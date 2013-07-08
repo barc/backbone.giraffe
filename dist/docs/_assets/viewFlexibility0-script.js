@@ -1,13 +1,7 @@
 var ParentApp, ChildView;
 
 ParentApp = Giraffe.App.extend({
-
-  getHTML: function() {
-    var html = '<h2>' + this.options.name + '</h2>';
-    html += '<h3>' + this.cid + '</h3>';
-    html += '<button data-gf-click="render">Reset ' + this.options.name + '</button>';
-    return html;
-  },
+  template: '#parent-app-template',
 
   afterRender: function() {
     this.attach(new ChildView());
@@ -29,34 +23,16 @@ ChildView = Giraffe.View.extend({
     this.$el.css('background-color', color);
   },
 
-  getHTML: function() {
-    var html = '<h3>' + this.cid + '</h3>';
+  template: '#child-template',
 
-    var $parentChildren = this.$el.parent().find('> .child-view'),
+  serialize: function() {
+    var
+      $parentChildren = this.$el.parent().find('> .child-view'),
       index = $parentChildren.index(this.$el);
-    if (this.parent instanceof ChildView || index !== 0)
-      html += '<button data-gf-click="onMoveUp">▲</button>';
-    if (this.parent instanceof ChildView || index !== $parentChildren.length - 1)
-      html += '<button data-gf-click="onMoveDown">▼</button>';
-
-    html += '<button data-gf-click="onAddChild">Add a child</button>';
-
-    var renderButtonText = 'Rendered ' + this.renderCount +
-      (this.renderCount === 1 ? ' time' : ' times');
-    html += '<button data-gf-click="render">' + renderButtonText + '</button>';
-    html += '<button data-gf-click="onDispose">Dispose</button>';
-
-    if (this.parent instanceof ChildView) {
-      html += '<label><input type="checkbox" data-gf-change="toggleCache"';
-      if (!this.options.disposeOnDetach)
-        html += ' checked="checked"';
-      html += '>Cache this view</label>';
-      html += '<button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>';
-    }
-
-    html += '<div class="child-views"></div>';
-
-    return html;
+    return {
+      showMoveUpButton: this.parent instanceof ChildView || index !== 0,
+      showMoveDownButton: this.parent instanceof ChildView || index !== $parentChildren.length - 1
+    };
   },
 
   onAddChild: function() {
