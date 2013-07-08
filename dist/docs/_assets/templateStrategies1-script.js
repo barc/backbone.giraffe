@@ -6,5 +6,8 @@ var View = Giraffe.View.extend({
   }
 });
 
+// or globally:
+// Giraffe.View.setTemplateStrategy('underscore-template-selector');
+
 var view = new View();
 view.attachTo('body');

@@ -1,21 +1,23 @@
 ## Template Strategies
 
 Creating HTML markup is a lot of what we do as front end developers.
-There are many solutios as evident by the ever increasing number of templating
+There are many solutions as evident by the ever increasing number of templating
 libraries found on the web. __Giraffe__ provides templating strategies
-based on the built-in dependecies of Backbone, namely underscore `template`
-function. The predefined strategies are
+based on the built-in dependecies of __Backbone__, namely the __Underscore__ `template`
+function. Selecting a strategy tells __Giraffe__ how to utilize the `Giraffe.View#template`
+property when rendering a view. The predefined strategies are:
 
-* underscore templates
-* underscore templates in the DOM
-* JavaScript template functions (JST)
+* #### Underscore templates
+  * `Giraffe.View#template` is an __Underscore__ template string.
+* #### Underscore template selector _[default]_
+  * `Giraffe.View#template` is a CSS selector of an __Underscore__ template. This is the default.
+* #### JavaScript template functions (JST)
+  * `Giraffe.View#template` is a function that returns an HTML string.
 
-Selecting a strategy tells __Giraffe__ how to utilize `Giraffe.View#template`
-property when rendering a view. Of course templating is user
-customizable as detailed in the [User Defined](#h-user-defined)
-section below.
+Templating is fully user customizable as detailed in the
+[User Defined](#h-user-defined) section below.
 
-<div class='aside'>
+<div class='note'>
 At [Barc](http://barc.com) we love CoffeeScript and use [funcd](https://github.com/mgutz/funcd),
 a function based template engine.
 </div>
@@ -24,8 +26,8 @@ a function based template engine.
 
 First decide whether to set the strategy globally or to a specific view.
 The global case is the one most used as it enforces consistent templating
-across a project. To enable a global strategy use `Giraffe.View.setTemplateStrategy`
-class method
+across a project. To set a global strategy use `Giraffe.View.setTemplateStrategy`
+class method.
 
 ```js
 Giraffe.View.setTemplateStrategy('underscore-template');
@@ -46,7 +48,7 @@ var View = Giraffe.View.extend({
 
 <div class='note'>
 The `template` property works in concert with `serialize`
-to transform a view's model and/or collection into HTML when
+to transform a view's data into HTML when
 using one of the predefined strategies.
 </div>
 
@@ -64,6 +66,9 @@ var View = Giraffe.View.extend({
     return {name: 'underscore-template'};
   }
 });
+
+// or globally:
+// Giraffe.View.setTemplateStrategy('underscore-template');
 
 var view = new View();
 view.attachTo('body');
@@ -110,6 +115,9 @@ var View = Giraffe.View.extend({
   }
 });
 
+// or globally:
+// Giraffe.View.setTemplateStrategy('underscore-template-selector');
+
 var view = new View();
 view.attachTo('body');
 ```
@@ -131,7 +139,7 @@ p {
 :::END
 
 :::BEGIN Example
-### Javascript Template Function
+### JavaScript Template Function
 
 This strategy expects a function.
 
@@ -145,6 +153,9 @@ var View = Giraffe.View.extend({
     return {name: 'jst'};
   }
 });
+
+// or globally:
+// Giraffe.View.setTemplateStrategy('jst');
 
 var view = new View();
 view.attachTo('body');
@@ -169,7 +180,8 @@ p {
 :::BEGIN Example
 ### User Defined
 
-To completely override __Giraffe__ templating assign a function to `templateStrategy`.
+To completely override __Giraffe__ templating, assign a function to `templateStrategy`
+that returns an HTML string.
 
 ```js
 var View = Giraffe.View.extend({
@@ -181,6 +193,9 @@ var View = Giraffe.View.extend({
     return {name: 'user defined'};
   }
 });
+
+// or globally:
+// Giraffe.View.setTemplateStrategy(function() { ... });
 
 var view = new View();
 view.attachTo('body');
