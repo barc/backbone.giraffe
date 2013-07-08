@@ -2,7 +2,7 @@
 
 ## Routers and App Events
 
-This example demonstrates how **Giraffe.Router** ties into the `appEvents` described in the *App Events* example.
+This example demonstrates how **Giraffe.Router** ties into the `appEvents` described in the [App Events](appEvents.html) example.
 ```js
 var App, ChildView;
 ```
@@ -10,42 +10,46 @@ var App, ChildView;
 **Giraffe.App** is a **Giraffe.View** that encapsulates an app. **Giraffe.Router** requires an app because it uses `appEvents` to communicate with your objects.
 ```js
 App = Giraffe.App.extend({
+  template: '#app-template',
 ```
 
 In this example, clicking some links will change the window location hash, triggering an `appEvent` which shows a child view with a specific name. Here we make three links to the three child views and a container for the active child view.
-```js
-  getHTML: function() {
-    var html = '';
-    html += '<p><a href="#childView/1">show child view 1</a></p>';
-    html += '<p><a href="#childView/2">show child view 2</a></p>';
-    html += '<p><a href="#childView/3">show child view 3</a></p>';
-    html += '<div id="child-view-container"></div>';
-    return html;
-  },
+```html
+<script id="app-template" type="text/template">
+  <p><a href="#childView/1">show child view 1</a></p>
+  <p><a href="#childView/2">show child view 2</a></p>
+  <p><a href="#childView/3">show child view 3</a></p>
+  <div id="child-view-container"></div>
+</script>
 ```
 
-Any Giraffe object, including the app, can listen for `appEvents`. When a route is triggered, its corresponding `appEvent` is called. Note that the `route:` prefix is just a naming convention and is not required. This route event is defined in `Router.triggers` below.
+Any Giraffe object, including the app, can listen for `appEvents`. When a route is triggered, its corresponding `appEvent` is called. In this example we'll have the app listen to itself for the app event `'route:childView'`, which is defined in `Router.triggers` below, and the `'all'` event, so we can log everything that happens to `appEvents`.
 ```js
   appEvents: {
     'route:childView': 'showChildView',
-    'all': function() { console.log('app event', arguments); } // log to see what's happening
-    // 'some:otherRoute': 'someFunctionName'
-    // 'some:otherAppEvent': 'someOtherFunctionName'
+    'all': function() { console.log('app event', arguments); }
+    // 'some:otherRoute': 'someMethodName'
+    // 'some:otherAppEvent': 'someOtherMethodName'
   },
+```
 
+<div class="note">The `route:` prefix is just a naming convention and is not required.</div>
+
+The handler for `'route:childView'` creates a child view named with the route parameter, and inserts it into the DOM using the `attachTo` method `'html'`, which replaces anything inside `'#child-view-container'`.
+```js
   showChildView: function(name) {
     this.attach(new ChildView({name: name}), {el: '#child-view-container', method: 'html'});
   }
 });
+
 ```
 
 In this example, we're going to create a child view that simply displays its name and a color.
 ```js
 ChildView = Giraffe.View.extend({
   className: 'child-view',
-
+  template: '#child-template',
   initialize: function(options) {
-    this.name = 'child view ' + this.options.name;
     var color;
     if (options.name === '1')
       color = '#e99';
@@ -54,12 +58,14 @@ ChildView = Giraffe.View.extend({
     else
       color = '#99e';
     this.$el.css('background-color', color);
-  },
-
-  getHTML: function() {
-    return '<h2>' + this.name + '</h2>';
   }
 });
+```
+
+```html
+<script id="child-template" type="text/template">
+  <h2>child view <%= this.options.name %></h2>
+</script>
 ```
 
 It's time to create and attach the app.
@@ -75,10 +81,9 @@ var router = new Giraffe.Router({
     'childView/:name': 'route:childView'
     // 'someHashLocation/:andItsParams': 'some:appEvent'
   }
-  // app: someApp // to set an app other than Giraffe.app
 });
 
-router.app === Giraffe.app; // => true
+console.log(router.app === Giraffe.app); // => true
 
 // Alternatively:
 // var Router = Giraffe.Router.extend({triggers: {...}});
@@ -90,13 +95,17 @@ Almost finished! Let's start the Backbone history to get things rolling.
 Backbone.history.start();
 ```
 
-The **Giraffe.Router** has one more trick up its sleeve: it gives you programmatic control over your routes. The function `router.cause` takes an `appEvent` and optional parameters, navigates to the corresponding route defined in the router, and then triggers the `appEvent`. No longer must you manually build route links! Here we show *child view 1* as the default view by causing its `appEvent`. **Giraffe.Router** also provides two utility functions to help you manage routes, `isCaused` and `getRoute`. We could have used `getRoute` to build our anchor links in `App.getHTML` above, but didn't for the sake of familiarity.
+The **Giraffe.Router** has one more trick up its sleeve: it gives you programmatic control over your routes. The function `router.cause` takes an `appEvent` and optional parameters, navigates to the corresponding route defined in the router, and then triggers the `appEvent` with the parameters. Here we show *child view 1* as the default view by causing its `appEvent`.
 ```js
 router.cause('route:childView', 1);
-router.isCaused('route:childView', 1); // => true
-router.isCaused('route:childView', 2); // => false
-router.isCaused('route:childView');    // => false
-router.getRoute('route:childView', 1); // => '#childView/1'
+```
+
+**Giraffe.Router** also provides two utility functions to help you manage routes, `isCaused` and `getRoute`. We could have used `getRoute` to build our anchor links in the app template above, but didn't for the sake of familiarity. No longer must you build route links manually!
+```js
+console.log(router.isCaused('route:childView', 1)); // => true
+console.log(router.isCaused('route:childView', 2)); // => false
+console.log(router.isCaused('route:childView'));    // => false
+console.log(router.getRoute('route:childView', 1)); // => '#childView/1'
 ```
 
 <div class='note'>
@@ -141,6 +150,6 @@ h3 {
 
 ## Try It
 
-{{{EXAMPLE}}}
+{{{EXAMPLE style='height: 188px;'}}}
 
 :::END

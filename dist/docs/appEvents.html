@@ -50,7 +50,7 @@ each other using the app as an event aggregator.</p>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'blue'</span>}));
   }
 });</code></pre>
-<p>This example is going to have a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
+<p>This example has a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
 <pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,

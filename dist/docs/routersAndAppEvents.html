@@ -40,37 +40,37 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h2 id='h-routers-and-app-events'>Routers and App Events</h2>
-<p>This example demonstrates how <strong>Giraffe.Router</strong> ties into the <code>appEvents</code> described in the <em>App Events</em> example.</p>
+<p>This example demonstrates how <strong>Giraffe.Router</strong> ties into the <code>appEvents</code> described in the <a href="appEvents.html">App Events</a> example.</p>
 <pre><code class="js"><span class="keyword">var</span> App, ChildView;</code></pre>
 <p><strong>Giraffe.App</strong> is a <strong>Giraffe.View</strong> that encapsulates an app. <strong>Giraffe.Router</strong> requires an app because it uses <code>appEvents</code> to communicate with your objects.</p>
-<pre><code class="js">App = Giraffe.App.extend({</code></pre>
+<pre><code class="js">App = Giraffe.App.extend({
+  template: <span class="string">'#app-template'</span>,</code></pre>
 <p>In this example, clicking some links will change the window location hash, triggering an <code>appEvent</code> which shows a child view with a specific name. Here we make three links to the three child views and a container for the active child view.</p>
-<pre><code class="js">  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">''</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/1"&gt;show child view 1&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/2"&gt;show child view 2&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/3"&gt;show child view 3&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;div id="child-view-container"&gt;&lt;/div&gt;'</span>;
-    <span class="keyword">return</span> html;
-  },</code></pre>
-<p>Any Giraffe object, including the app, can listen for <code>appEvents</code>. When a route is triggered, its corresponding <code>appEvent</code> is called. Note that the <code>route:</code> prefix is just a naming convention and is not required. This route event is defined in <code>Router.triggers</code> below.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;p&gt;<span class="xml"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/1"</span>&gt;</span>show child view 1<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/2"</span>&gt;</span>show child view 2<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/3"</span>&gt;</span>show child view 3<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"child-view-container"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Any Giraffe object, including the app, can listen for <code>appEvents</code>. When a route is triggered, its corresponding <code>appEvent</code> is called. In this example we&#39;ll have the app listen to itself for the app event <code>&#39;route:childView&#39;</code>, which is defined in <code>Router.triggers</code> below, and the <code>&#39;all&#39;</code> event, so we can log everything that happens to <code>appEvents</code>.</p>
 <pre><code class="js">  appEvents: {
     <span class="string">'route:childView'</span>: <span class="string">'showChildView'</span>,
-    <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); } <span class="comment">// log to see what's happening</span>
-    <span class="comment">// 'some:otherRoute': 'someFunctionName'</span>
-    <span class="comment">// 'some:otherAppEvent': 'someOtherFunctionName'</span>
-  },
+    <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); }
+    <span class="comment">// 'some:otherRoute': 'someMethodName'</span>
+    <span class="comment">// 'some:otherAppEvent': 'someOtherMethodName'</span>
+  },</code></pre>
+<div class="note">The <code>route:</code> prefix is just a naming convention and is not required.</div>
 
-  showChildView: <span class="keyword">function</span>(name) {
+<p>The handler for <code>&#39;route:childView&#39;</code> creates a child view named with the route parameter, and inserts it into the DOM using the <code>attachTo</code> method <code>&#39;html&#39;</code>, which replaces anything inside <code>&#39;#child-view-container&#39;</code>.</p>
+<pre><code class="js">  showChildView: <span class="keyword">function</span>(name) {
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({name: name}), {el: <span class="string">'#child-view-container'</span>, method: <span class="string">'html'</span>});
   }
 });</code></pre>
 <p>In this example, we&#39;re going to create a child view that simply displays its name and a color.</p>
 <pre><code class="js">ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
-
+  template: <span class="string">'#child-template'</span>,
   initialize: <span class="keyword">function</span>(options) {
-    <span class="keyword">this</span>.name = <span class="string">'child view '</span> + <span class="keyword">this</span>.options.name;
     <span class="keyword">var</span> color;
     <span class="keyword">if</span> (options.name === <span class="string">'1'</span>)
       color = <span class="string">'#e99'</span>;
@@ -79,12 +79,11 @@
     <span class="keyword">else</span>
       color = <span class="string">'#99e'</span>;
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color);
-  },
-
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.name + <span class="string">'&lt;/h2&gt;'</span>;
   }
 });</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+  &lt;h2&gt;child view &lt;%= <span class="keyword">this</span>.options.name %&gt;<span class="xml"><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>It&#39;s time to create and attach the app.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
 app.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -94,22 +93,22 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="string">'childView/:name'</span>: <span class="string">'route:childView'</span>
     <span class="comment">// 'someHashLocation/:andItsParams': 'some:appEvent'</span>
   }
-  <span class="comment">// app: someApp // to set an app other than Giraffe.app</span>
 });
 
-router.app === Giraffe.app; <span class="comment">// =&gt; true</span>
+console.log(router.app === Giraffe.app); <span class="comment">// =&gt; true</span>
 
 <span class="comment">// Alternatively:</span>
 <span class="comment">// var Router = Giraffe.Router.extend({triggers: {...}});</span>
 <span class="comment">// var router = new Router();</span></code></pre>
 <p>Almost finished! Let&#39;s start the Backbone history to get things rolling.</p>
 <pre><code class="js">Backbone.history.start();</code></pre>
-<p>The <strong>Giraffe.Router</strong> has one more trick up its sleeve: it gives you programmatic control over your routes. The function <code>router.cause</code> takes an <code>appEvent</code> and optional parameters, navigates to the corresponding route defined in the router, and then triggers the <code>appEvent</code>. No longer must you manually build route links! Here we show <em>child view 1</em> as the default view by causing its <code>appEvent</code>. <strong>Giraffe.Router</strong> also provides two utility functions to help you manage routes, <code>isCaused</code> and <code>getRoute</code>. We could have used <code>getRoute</code> to build our anchor links in <code>App.getHTML</code> above, but didn&#39;t for the sake of familiarity.</p>
-<pre><code class="js">router.cause(<span class="string">'route:childView'</span>, <span class="number">1</span>);
-router.isCaused(<span class="string">'route:childView'</span>, <span class="number">1</span>); <span class="comment">// =&gt; true</span>
-router.isCaused(<span class="string">'route:childView'</span>, <span class="number">2</span>); <span class="comment">// =&gt; false</span>
-router.isCaused(<span class="string">'route:childView'</span>);    <span class="comment">// =&gt; false</span>
-router.getRoute(<span class="string">'route:childView'</span>, <span class="number">1</span>); <span class="comment">// =&gt; '#childView/1'</span></code></pre>
+<p>The <strong>Giraffe.Router</strong> has one more trick up its sleeve: it gives you programmatic control over your routes. The function <code>router.cause</code> takes an <code>appEvent</code> and optional parameters, navigates to the corresponding route defined in the router, and then triggers the <code>appEvent</code> with the parameters. Here we show <em>child view 1</em> as the default view by causing its <code>appEvent</code>.</p>
+<pre><code class="js">router.cause(<span class="string">'route:childView'</span>, <span class="number">1</span>);</code></pre>
+<p><strong>Giraffe.Router</strong> also provides two utility functions to help you manage routes, <code>isCaused</code> and <code>getRoute</code>. We could have used <code>getRoute</code> to build our anchor links in the app template above, but didn&#39;t for the sake of familiarity. No longer must you build route links manually!</p>
+<pre><code class="js">console.log(router.isCaused(<span class="string">'route:childView'</span>, <span class="number">1</span>)); <span class="comment">// =&gt; true</span>
+console.log(router.isCaused(<span class="string">'route:childView'</span>, <span class="number">2</span>)); <span class="comment">// =&gt; false</span>
+console.log(router.isCaused(<span class="string">'route:childView'</span>));    <span class="comment">// =&gt; false</span>
+console.log(router.getRoute(<span class="string">'route:childView'</span>, <span class="number">1</span>)); <span class="comment">// =&gt; '#childView/1'</span></code></pre>
 <div class='note'>
 You will not see hash changes in your address bar because the example is in an iframe, but your browser&#39;s back and forward buttons should work!
 </div>
@@ -138,28 +137,20 @@ You will not see hash changes in your address bar because the example is in an i
 </div>
 <div id="routersandappevents0_tabs_content" class="tabs_content">
   <div id="routersandappevents0result-tab" class="tab_content">
-  <iframe id="routersandappevents0" src="_assets/routersAndAppEvents0.html" class="result" ></iframe>
+  <iframe id="routersandappevents0" src="_assets/routersAndAppEvents0.html" class="result"  style='height: 188px;'></iframe>
 </div><div id="routersandappevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> App, ChildView;
 
 App = Giraffe.App.extend({
-
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> html = <span class="string">''</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/1"&gt;show child view 1&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/2"&gt;show child view 2&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;p&gt;&lt;a href="#childView/3"&gt;show child view 3&lt;/a&gt;&lt;/p&gt;'</span>;
-    html += <span class="string">'&lt;div id="child-view-container"&gt;&lt;/div&gt;'</span>;
-    <span class="keyword">return</span> html;
-  },
+  template: <span class="string">'#app-template'</span>,
 
   appEvents: {
     <span class="string">'route:childView'</span>: <span class="string">'showChildView'</span>,
     <span class="string">'all'</span>: <span class="keyword">function</span>() {
       console.log(<span class="string">'app event'</span>, arguments);
-    } <span class="comment">// log to see what's happening</span>
-    <span class="comment">// 'some:otherRoute': 'someFunctionName'</span>
-    <span class="comment">// 'some:otherAppEvent': 'someOtherFunctionName'</span>
+    }
+    <span class="comment">// 'some:otherRoute': 'someMethodName'</span>
+    <span class="comment">// 'some:otherAppEvent': 'someOtherMethodName'</span>
   },
 
   showChildView: <span class="keyword">function</span>(name) {
@@ -174,9 +165,8 @@ App = Giraffe.App.extend({
 
 ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
-
+  template: <span class="string">'#child-template'</span>,
   initialize: <span class="keyword">function</span>(options) {
-    <span class="keyword">this</span>.name = <span class="string">'child view '</span> + <span class="keyword">this</span>.options.name;
     <span class="keyword">var</span> color;
     <span class="keyword">if</span> (options.name === <span class="string">'1'</span>)
       color = <span class="string">'#e99'</span>;
@@ -185,10 +175,6 @@ ChildView = Giraffe.View.extend({
     <span class="keyword">else</span>
       color = <span class="string">'#99e'</span>;
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color);
-  },
-
-  getHTML: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;'</span> + <span class="keyword">this</span>.name + <span class="string">'&lt;/h2&gt;'</span>;
   }
 });
 
@@ -200,10 +186,9 @@ app.attachTo(<span class="string">'body'</span>);
     <span class="string">'childView/:name'</span>: <span class="string">'route:childView'</span>
     <span class="comment">// 'someHashLocation/:andItsParams': 'some:appEvent'</span>
   }
-  <span class="comment">// app: someApp // to set an app other than Giraffe.app</span>
 });
 
-router.app === Giraffe.app; <span class="comment">// =&gt; true</span>
+console.log(router.app === Giraffe.app); <span class="comment">// =&gt; true</span>
 
 <span class="comment">// Alternatively:</span>
 <span class="comment">// var Router = Giraffe.Router.extend({triggers: {...}});</span>
@@ -212,10 +197,11 @@ router.app === Giraffe.app; <span class="comment">// =&gt; true</span>
 Backbone.history.start();
 
 router.cause(<span class="string">'route:childView'</span>, <span class="number">1</span>);
-router.isCaused(<span class="string">'route:childView'</span>, <span class="number">1</span>); <span class="comment">// =&gt; true</span>
-router.isCaused(<span class="string">'route:childView'</span>, <span class="number">2</span>); <span class="comment">// =&gt; false</span>
-router.isCaused(<span class="string">'route:childView'</span>); <span class="comment">// =&gt; false</span>
-router.getRoute(<span class="string">'route:childView'</span>, <span class="number">1</span>); <span class="comment">// =&gt; '#childView/1'</span></code></pre>
+
+console.log(router.isCaused(<span class="string">'route:childView'</span>, <span class="number">1</span>)); <span class="comment">// =&gt; true</span>
+console.log(router.isCaused(<span class="string">'route:childView'</span>, <span class="number">2</span>)); <span class="comment">// =&gt; false</span>
+console.log(router.isCaused(<span class="string">'route:childView'</span>)); <span class="comment">// =&gt; false</span>
+console.log(router.getRoute(<span class="string">'route:childView'</span>, <span class="number">1</span>)); <span class="comment">// =&gt; '#childView/1'</span></code></pre>
 </div><div id="routersandappevents0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
@@ -226,6 +212,14 @@ router.getRoute(<span class="string">'route:childView'</span>, <span class="numb
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt; p &gt; <span class="xml"><span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">1</span>" &gt;</span> show child view 1 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">2</span>" &gt;</span> show child view 2 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">3</span>" &gt;</span> show child view 3 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">id</span> = "<span class="attribute">child-view-container</span>" &gt;</span> <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
+  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
+    &lt; h2 &gt; child view &lt;%= <span class="keyword">this</span>.options.name %&gt; <span class="xml"><span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
+  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>

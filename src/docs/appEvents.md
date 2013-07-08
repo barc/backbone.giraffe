@@ -17,7 +17,7 @@ var App = Giraffe.App.extend({
 });
 ```
 
-This example is going to have a `ChildView` class with a button that paints all child views its color, and they'll send this coloring message via `appEvents`. Each child view starts out its own color.
+This example has a `ChildView` class with a button that paints all child views its color, and they'll send this coloring message via `appEvents`. Each child view starts out its own color.
 ```js
 var ChildView = Giraffe.View.extend({
   className: 'child-view',
