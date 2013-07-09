@@ -191,7 +191,8 @@ p {
 To completely override __Giraffe__ templating, assign a function to `templateStrategy`
 that returns an HTML string.
 
-As an example, many developers use a build process to precompile templates into a `JST`, short for JavaScript Templates, variable looks something like this
+As an example, many developers have a build process to precompile templates into
+a JavaScript Templates (`JST`) object. The object might look something like this
 
 ```js
 var JST = {
@@ -203,7 +204,7 @@ var JST = {
 };
 ```
 
-To use the `JST`, set the template strategy to a function which uses the view's `template` as the name of `JST` function to call.
+To use the `JST`, override the template strategy by setting a function which uses the view's `template` as the name of `JST` function to call.
 
 ```js
 
@@ -219,9 +220,6 @@ var View = Giraffe.View.extend({
     return {name: 'user defined'};
   }
 });
-
-// or globally:
-// Giraffe.View.setTemplateStrategy(function() { ... });
 
 var view = new View();
 view.attachTo('body');

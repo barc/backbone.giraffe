@@ -360,7 +360,8 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <div class='section-example'><h2 id='h-user-defined'>User Defined</h2>
 <p>To completely override <strong>Giraffe</strong> templating, assign a function to <code>templateStrategy</code>
 that returns an HTML string.</p>
-<p>As an example, many developers use a build process to precompile templates into a <code>JST</code>, short for JavaScript Templates, variable looks something like this</p>
+<p>As an example, many developers have a build process to precompile templates into
+a JavaScript Templates (<code>JST</code>) object. The object might look something like this</p>
 <pre><code class="js"><span class="keyword">var</span> JST = {
   body: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
@@ -368,7 +369,7 @@ that returns an HTML string.</p>
   header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>; },
   footer: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;footer&lt;/div&gt;'</span>; },
 };</code></pre>
-<p>To use the <code>JST</code>, set the template strategy to a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to call.</p>
+<p>To use the <code>JST</code>, override the template strategy by setting a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to call.</p>
 <pre><code class="js">
 Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
   <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
@@ -382,9 +383,6 @@ Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">fu
     <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy(function() { ... });</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -441,9 +439,6 @@ Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">fu
     };
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy(function() { ... });</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>

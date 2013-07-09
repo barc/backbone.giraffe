@@ -20,8 +20,5 @@ var View = Giraffe.View.extend({
   }
 });
 
-// or globally:
-// Giraffe.View.setTemplateStrategy(function() { ... });
-
 var view = new View();
 view.attachTo('body');
