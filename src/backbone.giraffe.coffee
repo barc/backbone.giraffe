@@ -78,9 +78,9 @@ class Giraffe.View extends Backbone.View
     @_createEventsFromUIElements()
 
     @_wrapInitialize()
-
-    if @templateStrategy
-      Giraffe.View.setTemplateStrategy @templateStrategy, @
+    
+    if options.templateStrategy
+      @templateStrategy = options.templateStrategy
 
     # Creates and initializes the view.
     super options
@@ -194,14 +194,14 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `getHTML` for more.
+  * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `templateStrategy` for more.
   * @caption Do not override unless you know what you're doing!
   ###
   render: (options) =>
     @beforeRender.apply @, arguments
     @_renderedOnce = true
     @detachChildren options?.preserve
-    @$el.empty().html @getHTML() or ''
+    @$el.empty().html @templateStrategy() or ''
     @_cacheUiElements()
     @afterRender.apply @, arguments
     @
@@ -215,13 +215,13 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `getHTML` with a function returning a string of HTML from your favorite templating engine.
+  * Giraffe implements its own `render` function which calls `templateStrategy` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `templateStrategy` with a function returning a string of HTML from your favorite templating engine.
   ###
-  getHTML: -> ''
+  templateStrategy: -> ''
 
 
   ###
-  * Consumed by the `getHTML` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
+  * Consumed by the `templateStrategy` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
   ###
   template: null
 
@@ -445,7 +445,7 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Calls `method` on the view, or if not found, up the view hierarchy, passing `args` through. Used by Giraffe to call the methods defined for the events bound in `setDocumentEvents`.
+  * Calls `method` on the view via `this[method].apply(this, args)`, or if not found, up the view hierarchy until it finds the method or fails on a view without a parent. Used by Giraffe to call the methods defined for the events bound in `setDocumentEvents`.
   *
   * @param {String} method
   * @param {Any} [args...]
@@ -581,13 +581,13 @@ class Giraffe.View extends Backbone.View
   @setTemplateStrategy: (strategy, instance) ->
 
     if typeof strategy is 'function'
-      getHTML = strategy
+      templateStrategy = strategy
     else
       switch strategy
 
         # @template is a string DOM selector or a function returning DOM selector
         when 'underscore-template-selector'
-          getHTML = ->
+          templateStrategy = ->
             return '' unless @template
             if !@_templateFn
               switch typeof @template
@@ -607,7 +607,7 @@ class Giraffe.View extends Backbone.View
 
         # @template is a string or a function returning a string template
         when 'underscore-template'
-          getHTML = ->
+          templateStrategy = ->
             return '' unless @template
             if !@_templateFn
               switch typeof @template
@@ -622,7 +622,7 @@ class Giraffe.View extends Backbone.View
 
         # @template is the markup or a JST function
         when 'jst'
-          getHTML = ->
+          templateStrategy = ->
             return '' unless @template
             if !@_templateFn
               switch typeof @template
@@ -639,9 +639,9 @@ class Giraffe.View extends Backbone.View
           throw new Error('Unrecognized template strategy: ' + strategy)
 
     if instance
-      instance.getHTML = getHTML
+      instance.templateStrategy = templateStrategy
     else
-      Giraffe.View::getHTML = getHTML
+      Giraffe.View::templateStrategy = templateStrategy
 
 
 

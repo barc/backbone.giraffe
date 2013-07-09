@@ -76,8 +76,8 @@
       this._isAttached = false;
       this._createEventsFromUIElements();
       this._wrapInitialize();
-      if (this.templateStrategy) {
-        Giraffe.View.setTemplateStrategy(this.templateStrategy, this);
+      if (options.templateStrategy) {
+        this.templateStrategy = options.templateStrategy;
       }
       View.__super__.constructor.call(this, options);
     }
@@ -186,7 +186,7 @@
     View.prototype.beforeRender = function() {};
 
     /*
-    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `getHTML` for more.
+    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `templateStrategy` for more.
     * @caption Do not override unless you know what you're doing!
     */
 
@@ -195,7 +195,7 @@
       this.beforeRender.apply(this, arguments);
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
-      this.$el.empty().html(this.getHTML() || '');
+      this.$el.empty().html(this.templateStrategy() || '');
       this._cacheUiElements();
       this.afterRender.apply(this, arguments);
       return this;
@@ -210,16 +210,16 @@
     View.prototype.afterRender = function() {};
 
     /*
-    * Giraffe implements its own `render` function which calls `getHTML` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `getHTML` with a function returning a string of HTML from your favorite templating engine.
+    * Giraffe implements its own `render` function which calls `templateStrategy` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `templateStrategy` with a function returning a string of HTML from your favorite templating engine.
     */
 
 
-    View.prototype.getHTML = function() {
+    View.prototype.templateStrategy = function() {
       return '';
     };
 
     /*
-    * Consumed by the `getHTML` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
+    * Consumed by the `templateStrategy` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
     */
 
 
@@ -536,7 +536,7 @@
     };
 
     /*
-    * Calls `method` on the view, or if not found, up the view hierarchy, passing `args` through. Used by Giraffe to call the methods defined for the events bound in `setDocumentEvents`.
+    * Calls `method` on the view via `this[method].apply(this, args)`, or if not found, up the view hierarchy until it finds the method or fails on a view without a parent. Used by Giraffe to call the methods defined for the events bound in `setDocumentEvents`.
     *
     * @param {String} method
     * @param {Any} [args...]
@@ -711,13 +711,13 @@
 
 
     View.setTemplateStrategy = function(strategy, instance) {
-      var getHTML;
+      var templateStrategy;
       if (typeof strategy === 'function') {
-        getHTML = strategy;
+        templateStrategy = strategy;
       } else {
         switch (strategy) {
           case 'underscore-template-selector':
-            getHTML = function() {
+            templateStrategy = function() {
               var selector,
                 _this = this;
               if (!this.template) {
@@ -743,7 +743,7 @@
             };
             break;
           case 'underscore-template':
-            getHTML = function() {
+            templateStrategy = function() {
               var _this = this;
               if (!this.template) {
                 return '';
@@ -766,7 +766,7 @@
             };
             break;
           case 'jst':
-            getHTML = function() {
+            templateStrategy = function() {
               var html;
               if (!this.template) {
                 return '';
@@ -794,9 +794,9 @@
         }
       }
       if (instance) {
-        return instance.getHTML = getHTML;
+        return instance.templateStrategy = templateStrategy;
       } else {
-        return Giraffe.View.prototype.getHTML = getHTML;
+        return Giraffe.View.prototype.templateStrategy = templateStrategy;
       }
     };
 

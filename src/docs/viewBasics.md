@@ -13,8 +13,7 @@ var MyView = Giraffe.View.extend({
 });
 ```
 
-Giraffe implements `render` so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `getHTML` in the [API docs](api.html#View-template).
-
+Giraffe implements `render` so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `templateStrategy` in the [API docs](api.html#View-template).
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!
@@ -170,7 +169,7 @@ alt if MyView not yet rendered or options.forceRender
 
   GView -> GView: $el.empty()
 
-  GView -> MyView: getHTML()
+  GView -> MyView: templateStrategy()
 
   MyView --> GView: return html string
 
