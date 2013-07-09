@@ -79,7 +79,7 @@
       if (options.templateStrategy) {
         Giraffe.View.setTemplateStrategy(options.templateStrategy, this);
       } else if (typeof this.templateStrategy === 'string') {
-        Giraffe.View.setTemplateStrategy(this.templateStrategy);
+        Giraffe.View.setTemplateStrategy(this.templateStrategy, this);
       }
       View.__super__.constructor.call(this, options);
     }

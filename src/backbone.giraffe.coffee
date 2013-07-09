@@ -1,8 +1,8 @@
-#==============================================================================
+#===============================================================================
 # Copyright (c) 2013 Barc Inc.
 #
 # Barc Permissive License
-#==============================================================================
+#===============================================================================
 
 
 # TODO
@@ -82,7 +82,7 @@ class Giraffe.View extends Backbone.View
     if options.templateStrategy
       Giraffe.View.setTemplateStrategy options.templateStrategy, @
     else if typeof @templateStrategy is 'string'
-      Giraffe.View.setTemplateStrategy @templateStrategy
+      Giraffe.View.setTemplateStrategy @templateStrategy, @
 
     # Creates and initializes the view.
     super options
