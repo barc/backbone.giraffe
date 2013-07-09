@@ -55,7 +55,7 @@ using one of the predefined strategies.
 :::BEGIN Example
 ## Underscore Template
 
-This is the simplest and works well with CoffeeScript's multi-line
+This is the simplest strategy and works well with CoffeeScript's multi-line
 strings.
 
 ```js
@@ -110,16 +110,17 @@ In HTML page
 In script
 
 ```js
+
+Giraffe.View.setTemplateStrategy('underscore-template-selector');
+
 var View = Giraffe.View.extend({
-  templateStrategy: 'underscore-template-selector',
+  // Optionally, set the strategy for this view only
+  //templateStrategy: 'underscore-template-selector',
   template: '#hello-template',
   serialize: function() {
     return {name: 'underscore-template-selector'};
   }
 });
-
-// or globally:
-// Giraffe.View.setTemplateStrategy('underscore-template-selector');
 
 var view = new View();
 view.attachTo('body');
@@ -190,12 +191,30 @@ p {
 To completely override __Giraffe__ templating, assign a function to `templateStrategy`
 that returns an HTML string.
 
+As an example, many developers use a build process to precompile templates into a `JST`, short for JavaScript Templates, variable looks something like this
+
 ```js
-var View = Giraffe.View.extend({
-  templateStrategy: function() {
-    var data = this.serialize();
-    return '<p>Using  ' + data.name + ' strategy</p>';
+var JST = {
+  body: function(it) {
+    return '<p>Using  ' + it.name + ' strategy</p>';
   },
+  header: function(it) { return '<div>Header</div>'; },
+  footer: function(it) { return '<div>footer</div>'; },
+};
+```
+
+To use the `JST`, set the template strategy to a function which uses the view's `template` as the name of `JST` function to call.
+
+```js
+
+Giraffe.View.setTemplateStrategy(function() { 
+  var data = this.serialize();
+  var template = JST[this.template];
+  return template(data);
+});
+
+var View = Giraffe.View.extend({
+  template: 'body',
   serialize: function() {
     return {name: 'user defined'};
   }

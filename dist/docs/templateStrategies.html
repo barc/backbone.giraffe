@@ -97,7 +97,7 @@ using one of the predefined strategies.
 </div>
 
 <p><div class='section-example'><h2 id='h-underscore-template'>Underscore Template</h2>
-<p>This is the simplest and works well with CoffeeScript&#39;s multi-line
+<p>This is the simplest strategy and works well with CoffeeScript&#39;s multi-line
 strings.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
@@ -186,16 +186,17 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <span class="tag">&lt;<span class="title">p</span>&gt;</span>Using <span class="javascript">&lt;%= name %&gt;</span> strategy<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>In script</p>
-<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'underscore-template-selector'</span>,
+<pre><code class="js">
+Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template-selector'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'underscore-template-selector',</span>
   template: <span class="string">'#hello-template'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'underscore-template-selector'</span>};
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('underscore-template-selector');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -248,8 +249,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="templatestrategies1scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'underscore-template-selector'</span>,
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template-selector'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'underscore-template-selector',</span>
   template: <span class="string">'#hello-template'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
@@ -257,9 +261,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
     };
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('underscore-template-selector');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -359,11 +360,24 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <div class='section-example'><h2 id='h-user-defined'>User Defined</h2>
 <p>To completely override <strong>Giraffe</strong> templating, assign a function to <code>templateStrategy</code>
 that returns an HTML string.</p>
-<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+<p>As an example, many developers use a build process to precompile templates into a <code>JST</code>, short for JavaScript Templates, variable looks something like this</p>
+<pre><code class="js"><span class="keyword">var</span> JST = {
+  body: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
+  header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>; },
+  footer: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;footer&lt;/div&gt;'</span>; },
+};</code></pre>
+<p>To use the <code>JST</code>, set the template strategy to a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to call.</p>
+<pre><code class="js">
+Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
+  <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
+  <span class="keyword">var</span> template = JST[<span class="keyword">this</span>.template];
+  <span class="keyword">return</span> template(data);
+});
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  template: <span class="string">'body'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
   }
@@ -400,11 +414,27 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <div id="templatestrategies3result-tab" class="tab_content">
   <iframe id="templatestrategies3" src="_assets/templateStrategies3.html" class="result"  style='height: 40px'></iframe>
 </div><div id="templatestrategies3scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+  <pre><code class="language-js"><span class="keyword">var</span> JST = {
+  body: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
+  header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
+    <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>;
+  },
+  footer: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
+    <span class="keyword">return</span> <span class="string">'&lt;div&gt;footer&lt;/div&gt;'</span>;
+  },
+};
+
+
+Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
+  <span class="keyword">var</span> template = JST[<span class="keyword">this</span>.template];
+  <span class="keyword">return</span> template(data);
+});
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  template: <span class="string">'body'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'user defined'</span>
