@@ -132,6 +132,10 @@ class Giraffe.View extends Backbone.View
 
     $el = Giraffe.View.to$El(el)
 
+    if !$el
+      error 'No such `el` to attach to', el
+      return @
+
     # $el and $container differ for jQuery methods that operate on siblings
     $container = if _.contains(@_siblingAttachMethods, method) then $el.parent() else $el
 

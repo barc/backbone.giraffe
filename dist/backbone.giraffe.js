@@ -123,6 +123,10 @@
         method = 'append';
       }
       $el = Giraffe.View.to$El(el);
+      if (!$el) {
+        error('No such `el` to attach to', el);
+        return this;
+      }
       $container = _.contains(this._siblingAttachMethods, method) ? $el.parent() : $el;
       if (method === 'insertAfter') {
         method = 'after';
