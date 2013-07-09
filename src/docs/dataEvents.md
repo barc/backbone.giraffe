@@ -4,12 +4,14 @@
 ## View Data Events
 
 This example demonstrates how to use the `dataEvents` map of **Giraffe.View**. Similar to how the **Backbone.View** `events` map binds DOM events to view methods, **Giraffe.View** provides the `dataEvents` hash that maps object events to view methods. Like the `events` map, the `dataEvents` bindings are also automatically cleaned up when a view's `dispose` method is called.
+
 ```js
 var View = Giraffe.View.extend({
 ```
 
 To demonstrate `dataEvents`, we'll first need some data. In this example we'll use a regular **Backbone.Collection**,
 but `dataEvents` works with any object that implements `Backbone.Events`.
+
 ```js
   initialize: function() {
     this.collection = new Backbone.Collection();
@@ -18,6 +20,7 @@ but `dataEvents` works with any object that implements `Backbone.Events`.
 
 `dataEvents` maps events on an object to a view method. The hash's key is a space-separated list of events ending with the target object. This structure mirrors the `events` map of **Backbone.View**, `{'domEventName selector': 'viewMethod'}`,
 but replaces the selector with the name of any `Backbone.Events` object on this view instance, and it has the added benefit of accepting multiple events per definition.
+
 ```js
   dataEvents: {
     'add remove collection': 'render'
@@ -27,6 +30,7 @@ but replaces the selector with the name of any `Backbone.Events` object on this 
 ```
 
 This example has a button to add a new model and a button for each model that removes it.
+
 ```js
   template: '#view-template',
 ```
@@ -43,6 +47,7 @@ This example has a button to add a new model and a button for each model that re
 ```
 
 Here are the functions that add and remove models. The ui updates automatically based on the events bound in `dataEvents`.
+
 ```js
   onAddModel: function(e) {
     this.modelCount = this.modelCount || 0;
@@ -66,7 +71,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;

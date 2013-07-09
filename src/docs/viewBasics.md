@@ -14,6 +14,7 @@ var MyView = Giraffe.View.extend({
 ```
 
 Giraffe implements `render` so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `getHTML` in the [API docs](api.html#View-template).
+
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!
@@ -21,6 +22,7 @@ Giraffe implements `render` so it can do some useful things, and by default `ren
 ```
 
 Giraffe uses the function `attachTo` to put views into the DOM or inside one another. If a view has not yet been rendered, `attachTo` will call render on it.
+
 ```js
 var myView = new MyView();
 myView.attachTo('body');
@@ -63,6 +65,7 @@ ParentView = Giraffe.View.extend({
 ```
 
 The `ChildView` will be put inside the `ParentView`.
+
 ```js
 ChildView = Giraffe.View.extend({
   template: '#child-template'
@@ -70,6 +73,7 @@ ChildView = Giraffe.View.extend({
 ```
 
 The `ChildView` simply displays the `name` provided in its `options`. We aren't defining a `serialize` method on the `ChildView`, and by default, `serialize` passes the view to the template function.
+
 ```html
 <script id="child-template" type="text/template">
   <%= this.options.name %>
@@ -91,12 +95,14 @@ console.log(parentView === childView.parent); // => true
 ```
 
 Let's create a second child view. The `method` option of `attachTo` determines the jQuery method used to insert the view. The default is `'append'`. In this case we'll use `'before'` to put it before the first child view we created. See `attachTo` in the [API docs](api.html#View-attachTo) for more.
+
 ```js
 var childView2 = new ChildView({name: 'child view attached with {method: "before"}'});
 childView2.attachTo(childView, {method: 'before'});
 ```
 
 The `parent` of `childView2` is the `parentView`.
+
 ```js
 console.log(childView2.parent === parentView); // => true
 ```
@@ -107,7 +113,9 @@ Here's the result:
 
 {{{EXAMPLE style='height: 274px;'}}}
 
-```css --hide
+:::@ --hide
+
+```css
 * {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -136,6 +144,7 @@ h3 {
 ```
 
 Here's an abridged UML summary of what happens inside `attachTo`:
+
 ```uml
 participant MyView
 participant GView as "Giraffe.View"

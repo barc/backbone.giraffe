@@ -4,11 +4,13 @@
 ## Menu Example
 
 This advanced example demonstrates how you can use Giraffe's features to build a route-powered menu with cached content views that save their scroll position.
+
 ```js
 var App, MenuView, MenuItemView, ContentView, ContentItemView;
 ```
 
 The `App` view creates a collection representing the menu's items along with the menu and content views.
+
 ```js
 App = Giraffe.App.extend({
   initialize: function() {
@@ -27,6 +29,7 @@ App = Giraffe.App.extend({
 ```
 
 The `MenuView` listens for the `'route:menu'` app event and activates the `collection` item whose `name` matches the route parameter.
+
 ```js
 MenuView = Giraffe.View.extend({
   appEvents: {
@@ -57,6 +60,7 @@ MenuView = Giraffe.View.extend({
 ```
 
 The `MenuItemView` takes a `model` and displays its `name` and `active` status.
+
 ```js
 MenuItemView = Giraffe.View.extend({
   template: '#menu-item-template',
@@ -79,6 +83,7 @@ MenuItemView = Giraffe.View.extend({
 ```
 
 The `ContentView` listens for changes to the `active` property on its `collection` and displays the appropriate `ContentItemView`.
+
 ```js
 ContentView = Giraffe.View.extend({
   dataEvents: {
@@ -112,6 +117,7 @@ ContentView = Giraffe.View.extend({
 ```
 
 The `ContentItemView` displays the name of the content. Because these are created with `options.saveScrollPosition` set to `true`, they save their scroll position when detached and apply it when attached.
+
 ```js
 ContentItemView = Giraffe.View.extend({
   className: 'content-item-view',
@@ -152,7 +158,9 @@ router.cause('route:menu', 'menu item 1');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;

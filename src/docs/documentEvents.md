@@ -32,6 +32,7 @@ method `Giraffe.View.setDocumentEvents`.
 </div>
 
 Whenever the input changes, this method is called.
+
 ```js
   onChangeName: function(e) {
     $('#hello-text').text('Hello ' + $(e.target).val() + '!');
@@ -39,6 +40,7 @@ Whenever the input changes, this method is called.
 ```
 
 Whenever the button is clicked, this method is called.
+
 ```js
   onAlertHello: function() {
     alert($('#hello-text').text());
@@ -47,6 +49,7 @@ Whenever the button is clicked, this method is called.
 ```
 
 If you wanted to set your own custom DOM event bindings, this is how you'd do it.
+
 ```js
 Giraffe.View.setDocumentEvents(['mousedown', 'mouseup', 'change', 'keyup']); // as an array
 Giraffe.View.setDocumentEvents('mousedown mouseup change keyup'); // or as a single string
@@ -55,6 +58,7 @@ Giraffe.View.setDocumentEvents('click keyup'); // the events for this example
 ```
 
 All done! Let's create and attach the view.
+
 ```js
 var view = new View();
 view.attachTo('body');
@@ -62,7 +66,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;

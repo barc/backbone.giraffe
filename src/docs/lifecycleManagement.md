@@ -6,12 +6,14 @@
 This example demonstrates the lifecycle management features in Giraffe.
 
 All Giraffe objects implement a `dispose` method. When a **Giraffe.View** is disposed, it calls `dispose` on all of its `children` that have the method. In this example we'll create a **Giraffe.App**, give it some children, `dispose` of it, and see the results. **Giraffe.App**, which is a special **Giraffe.View**, is designed to encapsulate an entire application, but for the purposes of this example we're using no features specific to it - a **Giraffe.View** would have worked too.
+
 ```js
 var app = new Giraffe.App();
 app.attachTo('body');
 ```
 
 Let's listen to the built-in disposal events and write out what's happening.
+
 ```js
 app.once('disposing', function() {
   $('body').append('<p>app is disposing</p>');
@@ -27,6 +29,7 @@ The `Giraffe.View#dispose` method overrides the behavior of `Backbone.View#remov
 </div>
 
 Now that the app is ready, let's give it some children.
+
 ```js
 var childModel = new Giraffe.Model();
 app.addChild(childModel);
@@ -39,6 +42,7 @@ app.attach(childView); // `addChild` would work too, but doesn't put childView.$
 ```
 
 To help us follow the action of `dispose`, we'll listen for the events signaling when these objects are disposed and write out what's happening.
+
 ```js
 childModel.once('disposed', function() {
   $('body').append('<p>model is disposed</p>');
@@ -62,13 +66,16 @@ __Giraffe.Collection__ and __Giraffe.Model__ are very thin wrappers over their B
 </div>
 
 Let's call `dispose` on the app and see what happens!
+
 ```js
 app.dispose();
 ```
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;

@@ -76,7 +76,10 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+
+:::@ --hide
+
+```css
 p {
   color: #F50;
   font-size: 18px;
@@ -124,7 +127,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 p {
   color: #F50;
   font-size: 18px;
@@ -163,7 +168,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 p {
   color: #F50;
   font-size: 18px;
@@ -203,7 +210,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 p {
   color: #F00;
   font-size: 18px;

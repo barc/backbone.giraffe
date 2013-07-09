@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-/* line 6, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 6, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 html,
 body,
 div,
@@ -92,7 +92,7 @@ video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-/* line 27, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 27, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 article,
 aside,
 details,
@@ -106,21 +106,21 @@ nav,
 section {
   display: block;
 }
-/* line 31, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 31, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 body {
   line-height: 1;
 }
-/* line 34, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 34, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 ol,
 ul {
   list-style: none;
 }
-/* line 37, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 37, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 blockquote,
 q {
   quotes: none;
 }
-/* line 40, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 40, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 blockquote:before,
 blockquote:after,
 q:before,
@@ -128,7 +128,7 @@ q:after {
   content: '';
   content: none;
 }
-/* line 45, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\reset.less */
+/* line 45, /home/coder/barc/code/backbone.giraffe/src/docs/css/reset.less */
 table {
   border-collapse: collapse;
   border-spacing: 0;

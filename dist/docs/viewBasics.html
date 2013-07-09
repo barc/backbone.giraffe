@@ -261,40 +261,72 @@ console.log(childView2.parent === parentView); <span class="comment">// =&gt; tr
 <span class="rule">}</span></span></code></pre>
 </div>
 </div><p>Here&#39;s an abridged UML summary of what happens inside <code>attachTo</code>:</p>
-<pre><code class="uml">participant MyView
-participant GView as "Giraffe.View"
-
-MyView -> GView: attachTo
-
-alt if #container has parent view
-    GView -> ParentView: set MyView as child of parent
-end
-
-GView -> DOM: detach MyView's $el
-
-alt if method is 'html'
-  GView -> GView: detach views inside #container
-end
-
-GView -> DOM: put MyView's $el in #container using method
-
-alt if MyView not yet rendered or options.forceRender
-  alt if beforeRender overridden
-      GView -> MyView: beforeRender()
-  end
-
-  GView -> GView: $el.empty()
-
-  GView -> MyView: getHTML()
-
-  MyView --> GView: return html string
-
-  GView -> DOM: append html string to $el
-
-  alt if afterRender overridden
-      GView -> MyView: afterRender()
-  end
-end</code></pre>
+<pre><code class="uml">                              ┌──────┐          ┌────────────┐                       ┌──────────┐          ┌───┐          
+                              │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
+                              └──┬───┘          └─────┬──────┘                       └────┬─────┘          └─┬─┘          
+                                 │      attachTo      │                                   │                  │            
+                                 │ ───────────────────>                                   │                  │            
+                                 │                    │                                   │                  │            
+                                 │                    │                                   │                  │            
+                                 │    ╔══════╤════════╪═══════════════════════════════════╪═══════════════╗  │            
+                                 │    ║ ALT  │  if #container has parent view             │               ║  │            
+                                 │    ╟──────┘        │                                   │               ║  │            
+                                 │    ║               │   set MyView as child of parent   │               ║  │            
+                                 │    ║               │ ──────────────────────────────────>               ║  │            
+                                 │    ╚═══════════════╪═══════════════════════════════════╪═══════════════╝  │            
+                                 │                    │                                   │                  │            
+                                 │                    │                 detach MyView's $el                  │            
+                                 │                    │ ────────────────────────────────────────────────────>│            
+                                 │                    │                                   │                  │            
+                                 │                    │                                   │                  │            
+                                 │    ╔══════╤════════╪═══════════════════════════════════╪════╗             │            
+                                 │    ║ ALT  │  if method is 'html'                       │    ║             │            
+                                 │    ╟──────┘        │                                   │    ║             │            
+                                 │    ║               │────┐                                   ║             │            
+                                 │    ║               │    │ detach views inside #container    ║             │            
+                                 │    ║               │<───┘                                   ║             │            
+                                 │    ╚═══════════════╪═══════════════════════════════════╪════╝             │            
+                                 │                    │                                   │                  │            
+                                 │                    │     put MyView's $el in #container using method      │            
+                                 │                    │ ────────────────────────────────────────────────────>│            
+                                 │                    │                                   │                  │            
+                                 │                    │                                   │                  │            
+          ╔══════╤═══════════════╪════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╗
+          ║ ALT  │  if MyView not yet rendered or options.forceRender                     │                  │           ║
+          ╟──────┘               │                    │                                   │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║         ╔══════╤═════╪════════════════════╪════════════════╗                  │                  │           ║
+          ║         ║ ALT  │  if beforeRender overridden               ║                  │                  │           ║
+          ║         ╟──────┘     │                    │                ║                  │                  │           ║
+          ║         ║            │   beforeRender()   │                ║                  │                  │           ║
+          ║         ║            │ <───────────────────                ║                  │                  │           ║
+          ║         ╚════════════╪════════════════════╪════════════════╝                  │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║                      │                    │────┐                              │                  │           ║
+          ║                      │                    │    │ $el.empty()                  │                  │           ║
+          ║                      │                    │<───┘                              │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║                      │      getHTML()     │                                   │                  │           ║
+          ║                      │ <───────────────────                                   │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║                      │ return html string │                                   │                  │           ║
+          ║                      │  ─ ─ ─ ─ ─ ─ ─ ─ ─ >                                   │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║                      │                    │              append html string to $el               │           ║
+          ║                      │                    │ ────────────────────────────────────────────────────>│           ║
+          ║                      │                    │                                   │                  │           ║
+          ║                      │                    │                                   │                  │           ║
+          ║         ╔══════╤═════╪════════════════════╪════════════════╗                  │                  │           ║
+          ║         ║ ALT  │  if afterRender overridden                ║                  │                  │           ║
+          ║         ╟──────┘     │                    │                ║                  │                  │           ║
+          ║         ║            │    afterRender()   │                ║                  │                  │           ║
+          ║         ║            │ <───────────────────                ║                  │                  │           ║
+          ║         ╚════════════╪════════════════════╪════════════════╝                  │                  │           ║
+          ╚══════════════════════╪════════════════════╪═══════════════════════════════════╪══════════════════╪═══════════╝
+                              ┌──┴───┐          ┌─────┴──────┐                       ┌────┴─────┐          ┌─┴─┐          
+                              │MyView│          │Giraffe.View│                       │ParentView│          │DOM│          
+                              └──────┘          └────────────┘                       └──────────┘          └───┘          
+</code></pre>
 </div></p>
 
       </article>

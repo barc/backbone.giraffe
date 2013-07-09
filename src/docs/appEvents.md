@@ -7,6 +7,7 @@ This example demonstrates how **Giraffe.App** helps components communicate.
 
 Let's create an instance of `Giraffe.App` with three child views that talk to
 each other using the app as an event aggregator.
+
 ```js
 var App = Giraffe.App.extend({
   afterRender: function() {
@@ -18,6 +19,7 @@ var App = Giraffe.App.extend({
 ```
 
 This example has a `ChildView` class with a button that paints all child views its color, and they'll send this coloring message via `appEvents`. Each child view starts out its own color.
+
 ```js
 var ChildView = Giraffe.View.extend({
   className: 'child-view',
@@ -28,6 +30,7 @@ var ChildView = Giraffe.View.extend({
 ```
 
 Each `ChildView` has a button that colors all child views its color.
+
 ```html
 <script id="child-template" type="text/template">
   <button>Color the views <%= this.options.text %>!</button>
@@ -35,6 +38,7 @@ Each `ChildView` has a button that colors all child views its color.
 ```
 
 The `appEvents` hash is a convenient feature that helps your app's objects communicate. It's similar to the **Backbone.View** `events` hash, but instead of mapping DOM events it maps events on an instance of **Giraffe.App**.  If a **Giraffe.App** has been created, `appEvents` is automatically bound for all Giraffe objects *(views, apps, routers, models, and collections)*, and is cleaned up via `Backbone.Events.stopListening` in `dispose`, which all Giraffe objects implement. When an instance of **Giraffe.App** is created, it stores its reference globally at `Giraffe.app` unless an app instance is already there, and all Giraffe objects store this reference as `this.app` unless you pass `{app: someApp}` as an option.
+
 ```js
   appEvents: {
     'setColor': function(color) { this.$el.css('background-color', color); }
@@ -43,6 +47,7 @@ The `appEvents` hash is a convenient feature that helps your app's objects commu
 ```
 
 Clicking the view's button calls the `colorChildViews` method. By triggering an event on `this.app`, all views listening to `appEvents` will hear it.
+
 ```js
   events: {
     'click button': 'colorChildViews'
@@ -54,6 +59,7 @@ Clicking the view's button calls the `colorChildViews` method. By triggering an 
 ```
 
 Like all Giraffe objects, **Giraffe.App** can listen to its own `appEvents`. To help us see what's going on, let's log every event that passes through the app to the console.
+
 ```js
 App.prototype.appEvents = {
   'all': function() { console.log('app event', arguments); }
@@ -69,7 +75,9 @@ app.attachTo('body');
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;

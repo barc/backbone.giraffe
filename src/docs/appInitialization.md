@@ -4,6 +4,7 @@
 ## App Initialization
 
 This example demonstrates how to use the **Giraffe.App** initialization feature. It's a convenient way to get your app into a ready state, and it handles both synchronous and asynchronous initializers.
+
 ```js
 var app = new Giraffe.App();
 ```
@@ -17,6 +18,7 @@ app.addInitializer(function(options) {
 ```
 
 If `addInitializer` is passed a function with 2 arguments, `fn.length === 2`, the second argument is assumed to be an asynchronous callback. Initialization will not proceed until the callback is called.
+
 ```js
 app.addInitializer(function(options, cb) {
   setTimeout(cb, 100); // initialization will not proceed until `cb` is called
@@ -24,6 +26,7 @@ app.addInitializer(function(options, cb) {
 ```
 
 The app fires events when it's initializing and initialized, `'app:initializing'` and `'app:initialized'`. Let's figure out how much time elapses between them.
+
 ```js
 app.on('app:initializing', function(options) {
   this.$el.append('<p>app is initializing</p>');
@@ -41,13 +44,16 @@ app.on('app:initialized', function(options) {
 ```
 
 Now that our initializers are added, let's attach and start up the app.
+
 ```js
 app.attachTo('body').start();
 ```
 
 {{{COMMON}}}
 
-```css --hide
+:::@ --hide
+
+```css
 body {
   background-color: #ffffff;
   padding: 20px;
