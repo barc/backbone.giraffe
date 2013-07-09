@@ -77,7 +77,9 @@
       this._createEventsFromUIElements();
       this._wrapInitialize();
       if (options.templateStrategy) {
-        this.templateStrategy = options.templateStrategy;
+        Giraffe.View.setTemplateStrategy(options.templateStrategy, this);
+      } else if (typeof this.templateStrategy === 'string') {
+        Giraffe.View.setTemplateStrategy(this.templateStrategy);
       }
       View.__super__.constructor.call(this, options);
     }
@@ -818,15 +820,24 @@
   Giraffe.App = (function(_super) {
     __extends(App, _super);
 
-    function App() {
+    function App(options) {
       var _this = this;
       this.app = this;
+      if (options != null ? options.routes : void 0) {
+        this.routes = options.routes;
+      }
       this._initializers = [];
       this.started = false;
       $(window).unload(function() {
         return _this.dispose();
       });
       App.__super__.constructor.apply(this, arguments);
+      if (this.routes) {
+        this.router = new Giraffe.Router({
+          app: this,
+          triggers: this.routes
+        });
+      }
     }
 
     App.prototype._cache = function() {
@@ -847,6 +858,25 @@
       delete Giraffe.apps[this._name];
       return App.__super__._uncache.apply(this, arguments);
     };
+
+    /*
+    * If `routes` is defined on a **Giraffe.App** or passed to its constructor
+    * as an option, the app will create an instance of **Giraffe.Router** as
+    * `this.router` and bind the defined routes. The **Giraffe.App** `routes`
+    * hash is similar to the `routes` of **Backbone.Router**, but instead of
+    * `route: method` the **Giraffe.Router** expects `route: appEvent`, e.g.
+    * `'someUrl/:andItsParams': 'some:appEvent'`.
+    *
+    *     var app = new Giraffe.App({routes: {'route': 'appEvent'}});
+    *     app.router; // => instance of Giraffe.Router
+    *     // or
+    *     var MyApp = Giraffe.App.extend({routes: {'route': 'appEvent'}});
+    *     var myApp = new MyApp();
+    *     myApp.router; // => instance of Giraffe.Router
+    */
+
+
+    App.prototype.routes = null;
 
     /*
     * Queues up the provided function to be run on `start`. The functions you provide are called with the same `options` object passed to `start`. If the provided function has two arguments, the options and a callback, the app's initialization will wait until you call the callback. If the callback is called with a truthy first argument, an error will be logged and initialization will halt. If the app has already started when you call `addInitializer`, the function is called immediately.
@@ -962,16 +992,6 @@
         return this.namespace;
       }
     };
-
-    /*
-    * The `triggers` hash is similar to the `routes` hash of **Backbone.Router**, but instead of `route: method` the **Giraffe.Router** expects `route: appEvent`, e.g. `'someUrl/:andItsParams': 'some:appEvent'`. See the **Giraffe.App** and its `appEvents` for more.
-    *
-    *     var router = new Giraffe.Router({triggers: {'route': 'appEvent'}});
-    *
-    *     var MyRouter = Giraffe.Router.extend({triggers: {'route': 'appEvent'}});
-    *     var myRouter = new MyRouter();
-    */
-
 
     Router.prototype.triggers = null;
 

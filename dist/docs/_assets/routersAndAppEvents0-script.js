@@ -3,6 +3,11 @@ var App, ChildView;
 App = Giraffe.App.extend({
   template: '#app-template',
 
+  routes: {
+    'childView/:name': 'route:childView'
+    // 'someHashLocation/:andItsParams': 'some:appEvent'
+  },
+
   appEvents: {
     'route:childView': 'showChildView',
     'all': function() { console.log('app event', arguments); }
@@ -11,7 +16,8 @@ App = Giraffe.App.extend({
   },
 
   showChildView: function(name) {
-    this.attach(new ChildView({name: name}), {el: '#child-view-container', method: 'html'});
+    var childView = new ChildView({name: name});
+    this.attach(childView, {el: '#child-view-container', method: 'html'});
   }
 });
 
@@ -33,24 +39,11 @@ ChildView = Giraffe.View.extend({
 var app = new App();
 app.attachTo('body');
 
-var router = new Giraffe.Router({
-  triggers: {
-    'childView/:name': 'route:childView'
-    // 'someHashLocation/:andItsParams': 'some:appEvent'
-  }
-});
-
-console.log(router.app === Giraffe.app); // => true
-
-// Alternatively:
-// var Router = Giraffe.Router.extend({triggers: {...}});
-// var router = new Router();
-
 Backbone.history.start();
 
-router.cause('route:childView', 1);
+app.router.cause('route:childView', 1);
 
-console.log(router.isCaused('route:childView', 1)); // => true
-console.log(router.isCaused('route:childView', 2)); // => false
-console.log(router.isCaused('route:childView'));    // => false
-console.log(router.getRoute('route:childView', 1)); // => '#childView/1'
+console.log(app.router.isCaused('route:childView', 1)); // => true
+console.log(app.router.isCaused('route:childView', 2)); // => false
+console.log(app.router.isCaused('route:childView'));    // => false
+console.log(app.router.getRoute('route:childView', 1)); // => '#childView/1'

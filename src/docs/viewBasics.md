@@ -1,6 +1,6 @@
 :::BEGIN Example
 
-## View Basics
+# View Basics
 
 This example demonstrates the basic usage of **Giraffe.View**. It can be extended just like a **Backbone.View**.
 

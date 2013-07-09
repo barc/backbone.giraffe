@@ -80,7 +80,9 @@ class Giraffe.View extends Backbone.View
     @_wrapInitialize()
     
     if options.templateStrategy
-      @templateStrategy = options.templateStrategy
+      Giraffe.View.setTemplateStrategy options.templateStrategy, @
+    else if typeof @templateStrategy is 'string'
+      Giraffe.View.setTemplateStrategy @templateStrategy
 
     # Creates and initializes the view.
     super options
@@ -661,12 +663,16 @@ Giraffe.View.setDocumentEvents ['click', 'change']
 class Giraffe.App extends Giraffe.View
 
 
-  constructor: ->
+  constructor: (options) ->
     @app = @
+    if options?.routes
+      @routes = options.routes
     @_initializers = []
     @started = false
     $(window).unload => @dispose()
     super
+    if @routes
+      @router = new Giraffe.Router(app: @, triggers: @routes)
 
 
   _cache: ->
@@ -681,6 +687,24 @@ class Giraffe.App extends Giraffe.View
     Giraffe.app = null if Giraffe.app is @
     delete Giraffe.apps[@_name]
     super
+
+
+  ###
+  * If `routes` is defined on a **Giraffe.App** or passed to its constructor
+  * as an option, the app will create an instance of **Giraffe.Router** as
+  * `this.router` and bind the defined routes. The **Giraffe.App** `routes`
+  * hash is similar to the `routes` of **Backbone.Router**, but instead of
+  * `route: method` the **Giraffe.Router** expects `route: appEvent`, e.g.
+  * `'someUrl/:andItsParams': 'some:appEvent'`.
+  *
+  *     var app = new Giraffe.App({routes: {'route': 'appEvent'}});
+  *     app.router; // => instance of Giraffe.Router
+  *     // or
+  *     var MyApp = Giraffe.App.extend({routes: {'route': 'appEvent'}});
+  *     var myApp = new MyApp();
+  *     myApp.router; // => instance of Giraffe.Router
+  ###
+  routes: null
 
 
   ###
@@ -790,14 +814,7 @@ class Giraffe.Router extends Backbone.Router
       @namespace
 
 
-  ###
-  * The `triggers` hash is similar to the `routes` hash of **Backbone.Router**, but instead of `route: method` the **Giraffe.Router** expects `route: appEvent`, e.g. `'someUrl/:andItsParams': 'some:appEvent'`. See the **Giraffe.App** and its `appEvents` for more.
-  *
-  *     var router = new Giraffe.Router({triggers: {'route': 'appEvent'}});
-  *
-  *     var MyRouter = Giraffe.Router.extend({triggers: {'route': 'appEvent'}});
-  *     var myRouter = new MyRouter();
-  ###
+  # See `App.routes`
   triggers: null
 
 

@@ -1,4 +1,4 @@
-## Template Strategies
+# Template Strategies
 
 Creating HTML markup is a lot of what we do as front end developers.
 There are many solutions as evident by the ever increasing number of templating
@@ -22,7 +22,7 @@ At [Barc](http://barc.com) we love CoffeeScript and use [funcd](https://github.c
 a function based template engine.
 </div>
 
-### Strategy Scope
+## Strategy Scope
 
 First decide whether to set the strategy globally or to a specific view.
 The global case is the one most used as it enforces consistent templating
@@ -53,7 +53,7 @@ using one of the predefined strategies.
 </div>
 
 :::BEGIN Example
-### Underscore Template
+## Underscore Template
 
 This is the simplest and works well with CoffeeScript's multi-line
 strings.
@@ -87,7 +87,7 @@ p {
 ```
 
 
-#### Result
+### Result
 
 {{{EXAMPLE style='height: 40px'}}}
 
@@ -95,7 +95,7 @@ p {
 
 
 :::BEGIN Example
-### Underscore Template Selector
+## Underscore Template Selector
 
 This strategy expects a selector to a DOM element containing the template.
 
@@ -137,14 +137,14 @@ p {
 ```
 
 
-#### Result
+### Result
 
 {{{EXAMPLE style='height: 40px'}}}
 
 :::END
 
 :::BEGIN Example
-### JavaScript Template Function
+## JavaScript Template Function
 
 This strategy expects a function.
 
@@ -177,7 +177,7 @@ p {
 }
 ```
 
-#### Result
+### Result
 
 {{{EXAMPLE style='height: 40px'}}}
 
@@ -185,7 +185,7 @@ p {
 
 
 :::BEGIN Example
-### User Defined
+## User Defined
 
 To completely override __Giraffe__ templating, assign a function to `templateStrategy`
 that returns an HTML string.
@@ -219,7 +219,7 @@ p {
 }
 ```
 
-#### Result
+### Result
 
 {{{EXAMPLE style='height: 40px'}}}
 

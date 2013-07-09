@@ -44,7 +44,7 @@
       <!-- Main Body -->
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
-        <p><div class='section-example'><h2 id='h-app-initialization'>App Initialization</h2>
+        <p><div class='section-example'><h1 id='h-app-initialization'>App Initialization</h1>
 <p>This example demonstrates how to use the <strong>Giraffe.App</strong> initialization feature. It&#39;s a convenient way to get your app into a ready state, and it handles both synchronous and asynchronous initializers.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();</code></pre>
 <p> <strong>Giraffe.App</strong> has two methods to help with initialization, <code>addInitializer</code> and <code>start</code>. The <code>addInitializer</code> method queues up functions that run when <code>start</code> is called. The <code>start</code> method takes some optional <code>options</code> and then passes them through each initializer, and when initialization completes, <code>app.options</code> are extended with the initialization <code>options</code>. The <code>this</code> of each initializer is the app.</p>

@@ -98,13 +98,11 @@ ContentItemView = Giraffe.View.extend({
   }
 });
 
-var app = new App();
-var router = new Giraffe.Router({
-  triggers: {
+var app = new App({
+  routes: {
     'menu/:name': 'route:menu'
   }
 });
-app.router = router; // set the router reference so the views can use it
 app.attachTo('body');
 Backbone.history.start();
-router.cause('route:menu', 'menu item 1');
+app.router.cause('route:menu', 'menu item 1');

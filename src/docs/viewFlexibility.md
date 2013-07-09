@@ -1,6 +1,6 @@
 :::BEGIN Example
 
-## View Flexibility
+# View Flexibility
 
 This advanced example demonstrates the flexibility of **Giraffe.View**.
 The design goal is to create a single view class that nests, manages memory, and moves around the DOM with ease.

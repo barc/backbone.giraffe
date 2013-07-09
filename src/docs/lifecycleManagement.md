@@ -1,7 +1,7 @@
 :::BEGIN Example
 
 
-## Lifecycle Management
+# Lifecycle Management
 
 This example demonstrates the lifecycle management features in Giraffe.
 

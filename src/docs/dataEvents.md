@@ -1,7 +1,7 @@
 :::BEGIN Example
 
 
-## View Data Events
+# View Data Events
 
 This example demonstrates how to use the `dataEvents` map of **Giraffe.View**. Similar to how the **Backbone.View** `events` map binds DOM events to view methods, **Giraffe.View** provides the `dataEvents` hash that maps object events to view methods. Like the `events` map, the `dataEvents` bindings are also automatically cleaned up when a view's `dispose` method is called.
 

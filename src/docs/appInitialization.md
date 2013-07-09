@@ -1,7 +1,7 @@
 :::BEGIN Example
 
 
-## App Initialization
+# App Initialization
 
 This example demonstrates how to use the **Giraffe.App** initialization feature. It's a convenient way to get your app into a ready state, and it handles both synchronous and asynchronous initializers.
 

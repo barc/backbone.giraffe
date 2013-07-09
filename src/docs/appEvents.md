@@ -1,7 +1,7 @@
 :::BEGIN Example
 
 
-## App Events
+# App Events
 
 This example demonstrates how **Giraffe.App** helps components communicate.
 

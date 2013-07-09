@@ -1,13 +1,15 @@
 :::BEGIN Example
 
 
-## Menu Example
+# Menu Example
 
 This advanced example demonstrates how you can use Giraffe's features to build a route-powered menu with cached content views that save their scroll position.
 
 ```js
 var App, MenuView, MenuItemView, ContentView, ContentItemView;
 ```
+
+## The App
 
 The `App` view creates a collection representing the menu's items along with the menu and content views.
 
@@ -27,6 +29,8 @@ App = Giraffe.App.extend({
   }
 });
 ```
+
+## The MenuView
 
 The `MenuView` listens for the `'route:menu'` app event and activates the `collection` item whose `name` matches the route parameter.
 
@@ -59,6 +63,8 @@ MenuView = Giraffe.View.extend({
 });
 ```
 
+## The MenuItemView
+
 The `MenuItemView` takes a `model` and displays its `name` and `active` status.
 
 ```js
@@ -81,6 +87,8 @@ MenuItemView = Giraffe.View.extend({
   <a href="<%= href %>" class="<%= className %>"><%= name %></a>
 </script>
 ```
+
+## The ContentView
 
 The `ContentView` listens for changes to the `active` property on its `collection` and displays the appropriate `ContentItemView`.
 
@@ -116,6 +124,8 @@ ContentView = Giraffe.View.extend({
 });
 ```
 
+## The ContentItemView
+
 The `ContentItemView` displays the name of the content. Because these are created with `options.saveScrollPosition` set to `true`, they save their scroll position when detached and apply it when attached.
 
 ```js
@@ -141,19 +151,19 @@ ContentItemView = Giraffe.View.extend({
 </script>
 ```
 
-We'll now create and attach the app, create the router, start `Backbone.history`, and then route to the first menu item.
+## Loading the App
+
+We'll now create the app with some `routes`, which automatically creates an instance of **Giraffe.Router** at `app.router`. Next we'll attach the app, start `Backbone.history`, and then route to the first menu item.
 
 ```js
-var app = new App();
-var router = new Giraffe.Router({
-  triggers: {
+var app = new App({
+  routes: {
     'menu/:name': 'route:menu'
   }
 });
-app.router = router; // set the router reference so the views can use it
 app.attachTo('body');
 Backbone.history.start();
-router.cause('route:menu', 'menu item 1');
+app.router.cause('route:menu', 'menu item 1');
 ```
 
 {{{COMMON}}}
