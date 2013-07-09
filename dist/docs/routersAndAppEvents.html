@@ -59,31 +59,31 @@
 <p>Any Giraffe object, including the app, can listen for <code>appEvents</code>. When a route is triggered, its corresponding <code>appEvent</code> is called. In this example we&#39;ll have the app listen to itself for the app event <code>&#39;route:childView&#39;</code>, which is defined in the <code>routes</code> above, and the <code>&#39;all&#39;</code> event, so we can log everything that happens to <code>appEvents</code>.</p>
 <pre><code class="js">  appEvents: {
     <span class="string">'route:childView'</span>: <span class="string">'showChildView'</span>,
-    <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); }
+    <span class="string">'all'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> console.log(<span class="string">'app event'</span>, arguments); }
     <span class="comment">// 'some:otherRoute': 'someMethodName'</span>
     <span class="comment">// 'some:otherAppEvent': 'someOtherMethodName'</span>
   },</code></pre>
 <div class="note">The <code>route:</code> prefix is just a naming convention and is not required.</div>
 
 <p>The handler for <code>&#39;route:childView&#39;</code> creates a child view named with the route parameter, and inserts it into the DOM using the <code>attachTo</code> method <code>&#39;html&#39;</code>, which replaces anything inside <code>&#39;#child-view-container&#39;</code>.</p>
-<pre><code class="js">  showChildView: <span class="keyword">function</span>(name) {
+<pre><code class="js">  showChildView: <span class="function"><span class="keyword">function</span><span class="params">(name)</span> {</span>
     <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({name: name});
     <span class="keyword">this</span>.attach(childView, {el: <span class="string">'#child-view-container'</span>, method: <span class="string">'html'</span>});
   }
 });</code></pre>
 <p>Here&#39;s the App&#39;s template. It has three links to the three child views and a container for the active child view.</p>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;p&gt;<span class="xml"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/1"</span>&gt;</span>show child view 1<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/1"</span>&gt;</span>show child view 1<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
   <span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/2"</span>&gt;</span>show child view 2<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
   <span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#childView/3"</span>&gt;</span>show child view 3<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"child-view-container"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-the-child-view'>The Child View</h2>
 <p>In this example, we&#39;re going to create a child view that simply displays its name and a color.</p>
 <pre><code class="js">ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
-  initialize: <span class="keyword">function</span>(options) {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
     <span class="keyword">var</span> color;
     <span class="keyword">if</span> (options.name === <span class="string">'1'</span>)
       color = <span class="string">'#e99'</span>;
@@ -94,9 +94,9 @@
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color);
   }
 });</code></pre>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;h2&gt;child view &lt;%= <span class="keyword">this</span>.options.name %&gt;<span class="xml"><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= <span class="keyword">this</span>.options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-loading-the-app'>Loading the App</h2>
 <p>It&#39;s time to create and attach the app. The <code>routes</code> hash could have been passed as an option to the <strong>Giraffe.App</strong> constructor.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
@@ -152,14 +152,14 @@ App = Giraffe.App.extend({
 
   appEvents: {
     <span class="string">'route:childView'</span>: <span class="string">'showChildView'</span>,
-    <span class="string">'all'</span>: <span class="keyword">function</span>() {
+    <span class="string">'all'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
       console.log(<span class="string">'app event'</span>, arguments);
     }
     <span class="comment">// 'some:otherRoute': 'someMethodName'</span>
     <span class="comment">// 'some:otherAppEvent': 'someOtherMethodName'</span>
   },
 
-  showChildView: <span class="keyword">function</span>(name) {
+  showChildView: <span class="function"><span class="keyword">function</span><span class="params">(name)</span> {</span>
     <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({
       name: name
     });
@@ -173,7 +173,7 @@ App = Giraffe.App.extend({
 ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
-  initialize: <span class="keyword">function</span>(options) {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
     <span class="keyword">var</span> color;
     <span class="keyword">if</span> (options.name === <span class="string">'1'</span>)
       color = <span class="string">'#e99'</span>;
@@ -206,54 +206,54 @@ console.log(app.router.getRoute(<span class="string">'route:childView'</span>, <
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt; p &gt; <span class="xml"><span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">1</span>" &gt;</span> show child view 1 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">2</span>" &gt;</span> show child view 2 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">3</span>" &gt;</span> show child view 3 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">id</span> = "<span class="attribute">child-view-container</span>" &gt;</span> <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">1</span>" &gt;</span> show child view 1 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">2</span>" &gt;</span> show child view 2 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "#<span class="attribute">childView</span>/<span class="attribute">3</span>" &gt;</span> show child view 3 <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span> &gt;</span> <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">id</span> = "<span class="attribute">child-view-container</span>" &gt;</span> <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt; h2 &gt; child view &lt;%= <span class="keyword">this</span>.options.name %&gt; <span class="xml"><span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">h2</span> &gt;</span> child view <span class="javascript">&lt;%= <span class="keyword">this</span>.options.name %&gt;</span> <span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'routersandappevents0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'routersandappevents0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="routersandappevents0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
 <span class="rule">}</span></span>
 * <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>

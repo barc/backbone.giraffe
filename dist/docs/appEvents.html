@@ -49,7 +49,7 @@
 <p>Let&#39;s create an instance of <code>Giraffe.App</code> with three child views that talk to
 each other using the app as an event aggregator.</p>
 <pre><code class="js"><span class="keyword">var</span> App = Giraffe.App.extend({
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#e99'</span>, text: <span class="string">'red'</span>}));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#9e9'</span>, text: <span class="string">'green'</span>}));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'blue'</span>}));
@@ -59,29 +59,29 @@ each other using the app as an event aggregator.</p>
 <pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
-  initialize: <span class="keyword">function</span>() {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
   },</code></pre>
 <p>Each <code>ChildView</code> has a button that colors all child views its color.</p>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;button&gt;Color the views &lt;%= <span class="keyword">this</span>.options.text %&gt;!<span class="xml"><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= <span class="keyword">this</span>.options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a <strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all Giraffe objects <em>(views, apps, routers, models, and collections)</em>, and is cleaned up via <code>Backbone.Events.stopListening</code> in <code>dispose</code>, which all Giraffe objects implement. When an instance of <strong>Giraffe.App</strong> is created, it stores its reference globally at <code>Giraffe.app</code> unless an app instance is already there, and all Giraffe objects store this reference as <code>this.app</code> unless you pass <code>{app: someApp}</code> as an option.</p>
 <pre><code class="js">  appEvents: {
-    <span class="string">'setColor'</span>: <span class="keyword">function</span>(color) { <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
+    <span class="string">'setColor'</span>: <span class="function"><span class="keyword">function</span><span class="params">(color)</span> {</span> <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
     <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
   },</code></pre>
 <p>Clicking the view&#39;s button calls the <code>colorChildViews</code> method. By triggering an event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
 <pre><code class="js">  events: {
     <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
-  colorChildViews: <span class="keyword">function</span>() {
+  colorChildViews: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
   }
 });</code></pre>
 <p>Like all Giraffe objects, <strong>Giraffe.App</strong> can listen to its own <code>appEvents</code>. To help us see what&#39;s going on, let&#39;s log every event that passes through the app to the console.</p>
 <pre><code class="js">App.prototype.appEvents = {
-  <span class="string">'all'</span>: <span class="keyword">function</span>() { console.log(<span class="string">'app event'</span>, arguments); }
+  <span class="string">'all'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> console.log(<span class="string">'app event'</span>, arguments); }
 };</code></pre>
 <p>That&#39;s it! Let&#39;s create and attach the app.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App();
@@ -113,7 +113,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
   <iframe id="appevents0" src="_assets/appEvents0.html" class="result"  style='height: 324px;'></iframe>
 </div><div id="appevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> App = Giraffe.App.extend({
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({
       color: <span class="string">'#e99'</span>,
       text: <span class="string">'red'</span>
@@ -132,12 +132,12 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
-  initialize: <span class="keyword">function</span>() {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
   },
 
   appEvents: {
-    <span class="string">'setColor'</span>: <span class="keyword">function</span>(color) {
+    <span class="string">'setColor'</span>: <span class="function"><span class="keyword">function</span><span class="params">(color)</span> {</span>
       <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color);
     }
     <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
@@ -146,13 +146,13 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
   events: {
     <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
-  colorChildViews: <span class="keyword">function</span>() {
+  colorChildViews: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
   }
 });
 
 App.prototype.appEvents = {
-  <span class="string">'all'</span>: <span class="keyword">function</span>() {
+  <span class="string">'all'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     console.log(<span class="string">'app event'</span>, arguments);
   }
 };
@@ -169,50 +169,50 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt; button &gt; Color the views &lt;%= <span class="keyword">this</span>.options.text %&gt; ! <span class="xml"><span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">button</span> &gt;</span> Color the views <span class="javascript">&lt;%= <span class="keyword">this</span>.options.text %&gt;</span> ! <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'appevents0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'appevents0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="appevents0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
 <span class="rule">}</span></span>
 * <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>

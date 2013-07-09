@@ -48,22 +48,22 @@
 <p>This example demonstrates how to use the <strong>Giraffe.App</strong> initialization feature. It&#39;s a convenient way to get your app into a ready state, and it handles both synchronous and asynchronous initializers.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();</code></pre>
 <p> <strong>Giraffe.App</strong> has two methods to help with initialization, <code>addInitializer</code> and <code>start</code>. The <code>addInitializer</code> method queues up functions that run when <code>start</code> is called. The <code>start</code> method takes some optional <code>options</code> and then passes them through each initializer, and when initialization completes, <code>app.options</code> are extended with the initialization <code>options</code>. The <code>this</code> of each initializer is the app.</p>
-<pre><code class="js">app.addInitializer(<span class="keyword">function</span>(options) {
+<pre><code class="js">app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
   options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
 });</code></pre>
 <p>If <code>addInitializer</code> is passed a function with 2 arguments, <code>fn.length === 2</code>, the second argument is assumed to be an asynchronous callback. Initialization will not proceed until the callback is called.</p>
-<pre><code class="js">app.addInitializer(<span class="keyword">function</span>(options, cb) {
+<pre><code class="js">app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options, cb)</span> {</span>
   setTimeout(cb, <span class="number">100</span>); <span class="comment">// initialization will not proceed until `cb` is called</span>
 });</code></pre>
 <p>The app fires events when it&#39;s initializing and initialized, <code>&#39;app:initializing&#39;</code> and <code>&#39;app:initialized&#39;</code>. Let&#39;s figure out how much time elapses between them.</p>
-<pre><code class="js">app.on(<span class="string">'app:initializing'</span>, <span class="keyword">function</span>(options) {
+<pre><code class="js">app.on(<span class="string">'app:initializing'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initializing&lt;/p&gt;'</span>);
   options.startTime = Date.now();
   console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; false</span>
 });
 
-app.on(<span class="string">'app:initialized'</span>, <span class="keyword">function</span>(options) {
+app.on(<span class="string">'app:initialized'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
   <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
@@ -100,22 +100,22 @@ app.on(<span class="string">'app:initialized'</span>, <span class="keyword">func
 </div><div id="appinitialization0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
 
-app.addInitializer(<span class="keyword">function</span>(options) {
+app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
   options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
 });
 
-app.addInitializer(<span class="keyword">function</span>(options, cb) {
+app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options, cb)</span> {</span>
   setTimeout(cb, <span class="number">100</span>); <span class="comment">// initialization will not proceed until `cb` is called</span>
 });
 
-app.on(<span class="string">'app:initializing'</span>, <span class="keyword">function</span>(options) {
+app.on(<span class="string">'app:initializing'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initializing&lt;/p&gt;'</span>);
   options.startTime = Date.now();
   console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; false</span>
 });
 
-app.on(<span class="string">'app:initialized'</span>, <span class="keyword">function</span>(options) {
+app.on(<span class="string">'app:initialized'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
   <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
@@ -134,46 +134,46 @@ app.attachTo(<span class="string">'body'</span>).start();</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'appinitialization0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'appinitialization0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="appinitialization0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
 <span class="rule">}</span></span>
 * <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>

@@ -51,11 +51,11 @@ Giraffe does <em>not</em> provide two-way data binding, but given its goal as a 
 <p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form <code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it searches up the hierarchy until it finds the method or fails on a view with no <code>parent</code>.</p>
 <pre><code class="js">  template: <span class="string">'#view-template'</span>,</code></pre>
 <p>Here&#39;s the template:</p>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;div id=<span class="string">"hello-text"</span>&gt;Hello world!<span class="xml"><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"hello-text"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
   <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAlertHello"</span>&gt;</span>Say hello in a popup<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <div class='note'>
 By default, Giraffe binds only <code>click</code> and <code>change</code>, and not <code>keyup</code> as
 this example uses, but you can easily set custom bindings using the static
@@ -63,11 +63,11 @@ method <code>Giraffe.View.setDocumentEvents</code>.
 </div>
 
 <p>Whenever the input changes, this method is called.</p>
-<pre><code class="js">  onChangeName: <span class="keyword">function</span>(e) {
+<pre><code class="js">  onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
   },</code></pre>
 <p>Whenever the button is clicked, this method is called.</p>
-<pre><code class="js">  onAlertHello: <span class="keyword">function</span>() {
+<pre><code class="js">  onAlertHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     alert($(<span class="string">'#hello-text'</span>).text());
   }
 });</code></pre>
@@ -109,11 +109,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
   template: <span class="string">'#view-template'</span>,
 
-  onChangeName: <span class="keyword">function</span>(e) {
+  onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
   },
 
-  onAlertHello: <span class="keyword">function</span>() {
+  onAlertHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     alert($(<span class="string">'#hello-text'</span>).text());
   }
 });
@@ -135,49 +135,49 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt; div id = <span class="string">"hello-text"</span> &gt; Hello world! <span class="xml"><span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">id</span> = "<span class="attribute">hello-text</span>" &gt;</span> Hello world! <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
   <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAlertHello"</span>&gt;</span>Say hello in a popup<span class="tag">&lt;/<span class="title">button</span> &gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'documentevents0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'documentevents0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="documentevents0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
 <span class="rule">}</span></span>
 * <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">strong</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold;</span></span>
+  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold</span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>

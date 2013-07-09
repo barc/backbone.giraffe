@@ -50,7 +50,7 @@
 <h2 id='h-the-app'>The App</h2>
 <p>The <code>App</code> view creates a collection representing the menu&#39;s items along with the menu and content views.</p>
 <pre><code class="js">App = Giraffe.App.extend({
-  initialize: <span class="keyword">function</span>() {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.menuItems = <span class="keyword">new</span> Giraffe.Collection([
       {name: <span class="string">'menu item 1'</span>},
       {name: <span class="string">'menu item 2'</span>},
@@ -58,7 +58,7 @@
     ]);
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> MenuView({collection: <span class="keyword">this</span>.menuItems}));
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ContentView({collection: <span class="keyword">this</span>.menuItems}));
   }
@@ -70,7 +70,7 @@
     <span class="string">'route:menu'</span>: <span class="string">'onRouteMenu'</span>
   },
 
-  onRouteMenu: <span class="keyword">function</span>(menuItemName) {
+  onRouteMenu: <span class="function"><span class="keyword">function</span><span class="params">(menuItemName)</span> {</span>
     <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({active: <span class="literal">true</span>});
     <span class="keyword">if</span> (activeMenuItem) activeMenuItem.set(<span class="string">'active'</span>, <span class="literal">false</span>);
     <span class="keyword">this</span>.collection.findWhere({name: menuItemName}).set(<span class="string">'active'</span>, <span class="literal">true</span>);
@@ -80,13 +80,13 @@
     <span class="string">'change:active collection'</span>: <span class="string">'onChangeActiveItem'</span>
   },
 
-  onChangeActiveItem: <span class="keyword">function</span>(model, active) {
+  onChangeActiveItem: <span class="function"><span class="keyword">function</span><span class="params">(model, active)</span> {</span>
     <span class="keyword">if</span> (active) <span class="keyword">this</span>.render();
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> self = <span class="keyword">this</span>;
-    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
+    <span class="keyword">this</span>.collection.each(<span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span>
       self.attach(<span class="keyword">new</span> MenuItemView({model: model}));
     });
   }
@@ -96,7 +96,7 @@
 <pre><code class="js">MenuItemView = Giraffe.View.extend({
   template: <span class="string">'#menu-item-template'</span>,
 
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>);
     <span class="keyword">return</span> {
       name: name,
@@ -105,9 +105,9 @@
     };
   }
 });</code></pre>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;a href=<span class="string">"&lt;%= href %&gt;"</span> class=<span class="string">"&lt;%= className %&gt;"</span>&gt;<span class="xml"><span class="vbscript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"&lt;%= href %&gt;"</span> <span class="attribute">class</span>=<span class="value">"&lt;%= className %&gt;"</span>&gt;</span><span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-the-contentview'>The ContentView</h2>
 <p>The <code>ContentView</code> listens for changes to the <code>active</code> property on its <code>collection</code> and displays the appropriate <code>ContentItemView</code>.</p>
 <pre><code class="js">ContentView = Giraffe.View.extend({
@@ -115,18 +115,18 @@
     <span class="string">'change:active collection'</span>: <span class="string">'onChangeActive'</span>
   },
 
-  onChangeActive: <span class="keyword">function</span>(model, active) {
+  onChangeActive: <span class="function"><span class="keyword">function</span><span class="params">(model, active)</span> {</span>
     <span class="keyword">if</span> (active) <span class="keyword">this</span>.render();
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({active: <span class="literal">true</span>});
     <span class="keyword">if</span> (activeMenuItem)
       <span class="keyword">this</span>.getItemView(activeMenuItem).attachTo(<span class="keyword">this</span>, {method: <span class="string">'html'</span>});
   },
 
-  getItemView: <span class="keyword">function</span>(menuItem) {
-    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="keyword">function</span>(child) {
+  getItemView: <span class="function"><span class="keyword">function</span><span class="params">(menuItem)</span> {</span>
+    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="function"><span class="keyword">function</span><span class="params">(child)</span> {</span>
       <span class="keyword">return</span> child.model === menuItem;
     });
     <span class="keyword">if</span> (!view) {
@@ -146,18 +146,18 @@
 
   template: <span class="string">'#content-item-template'</span>,
 
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> lines = [];
     <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)
       lines.push(<span class="keyword">this</span>.model.get(<span class="string">'name'</span>));
     <span class="keyword">return</span> {lines: lines};
   }
 });</code></pre>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-  &lt;% _.each(lines, <span class="keyword">function</span>(line) { %&gt;
-    <span class="xml"><span class="tag">&lt;<span class="title">p</span>&gt;</span>content for <span class="vbscript">&lt;%= line %&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
-  <span class="vbscript">&lt;% }); %&gt;</span>
-</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="javascript">&lt;% _.each(lines, <span class="function"><span class="keyword">function</span><span class="params">(line)</span> {</span> %&gt;</span>
+    <span class="tag">&lt;<span class="title">p</span>&gt;</span>content for <span class="javascript">&lt;%= line %&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+  <span class="javascript">&lt;% }); %&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-loading-the-app'>Loading the App</h2>
 <p>We&#39;ll now create the app with some <code>routes</code>, which automatically creates an instance of <strong>Giraffe.Router</strong> at <code>app.router</code>. Next we&#39;ll attach the app, start <code>Backbone.history</code>, and then route to the first menu item.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> App({
@@ -197,7 +197,7 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
   <pre><code class="language-js"><span class="keyword">var</span> App, MenuView, MenuItemView, ContentView, ContentItemView;
 
 App = Giraffe.App.extend({
-  initialize: <span class="keyword">function</span>() {
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.menuItems = <span class="keyword">new</span> Giraffe.Collection([{
       name: <span class="string">'menu item 1'</span>
     }, {
@@ -207,7 +207,7 @@ App = Giraffe.App.extend({
     }]);
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> MenuView({
       collection: <span class="keyword">this</span>.menuItems
     }));
@@ -222,7 +222,7 @@ MenuView = Giraffe.View.extend({
     <span class="string">'route:menu'</span>: <span class="string">'onRouteMenu'</span>
   },
 
-  onRouteMenu: <span class="keyword">function</span>(menuItemName) {
+  onRouteMenu: <span class="function"><span class="keyword">function</span><span class="params">(menuItemName)</span> {</span>
     <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({
       active: <span class="literal">true</span>
     });
@@ -236,13 +236,13 @@ MenuView = Giraffe.View.extend({
     <span class="string">'change:active collection'</span>: <span class="string">'onChangeActiveItem'</span>
   },
 
-  onChangeActiveItem: <span class="keyword">function</span>(model, active) {
+  onChangeActiveItem: <span class="function"><span class="keyword">function</span><span class="params">(model, active)</span> {</span>
     <span class="keyword">if</span> (active) <span class="keyword">this</span>.render();
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> self = <span class="keyword">this</span>;
-    <span class="keyword">this</span>.collection.each(<span class="keyword">function</span>(model) {
+    <span class="keyword">this</span>.collection.each(<span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span>
       self.attach(<span class="keyword">new</span> MenuItemView({
         model: model
       }));
@@ -253,7 +253,7 @@ MenuView = Giraffe.View.extend({
 MenuItemView = Giraffe.View.extend({
   template: <span class="string">'#menu-item-template'</span>,
 
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> name = <span class="keyword">this</span>.model.get(<span class="string">'name'</span>);
     <span class="keyword">return</span> {
       name: name,
@@ -268,11 +268,11 @@ ContentView = Giraffe.View.extend({
     <span class="string">'change:active collection'</span>: <span class="string">'onChangeActive'</span>
   },
 
-  onChangeActive: <span class="keyword">function</span>(model, active) {
+  onChangeActive: <span class="function"><span class="keyword">function</span><span class="params">(model, active)</span> {</span>
     <span class="keyword">if</span> (active) <span class="keyword">this</span>.render();
   },
 
-  afterRender: <span class="keyword">function</span>() {
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> activeMenuItem = <span class="keyword">this</span>.collection.findWhere({
       active: <span class="literal">true</span>
     });
@@ -282,8 +282,8 @@ ContentView = Giraffe.View.extend({
       });
   },
 
-  getItemView: <span class="keyword">function</span>(menuItem) {
-    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="keyword">function</span>(child) {
+  getItemView: <span class="function"><span class="keyword">function</span><span class="params">(menuItem)</span> {</span>
+    <span class="keyword">var</span> view = _.find(<span class="keyword">this</span>.children, <span class="function"><span class="keyword">function</span><span class="params">(child)</span> {</span>
       <span class="keyword">return</span> child.model === menuItem;
     });
     <span class="keyword">if</span> (!view) {
@@ -302,7 +302,7 @@ ContentItemView = Giraffe.View.extend({
 
   template: <span class="string">'#content-item-template'</span>,
 
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> lines = [];
     <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)
       lines.push(<span class="keyword">this</span>.model.get(<span class="string">'name'</span>));
@@ -330,101 +330,101 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt; a href = <span class="string">"&lt;%= href %&gt;"</span>
-    class = <span class="string">"&lt;%= className %&gt;"</span> &gt; <span class="xml"><span class="vbscript">&lt;%= name %&gt;</span> <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "&lt;%= <span class="attribute">href</span> %&gt;</span>"
+    class = "<span class="javascript">&lt;%= className %&gt;</span>" &gt; <span class="javascript">&lt;%= name %&gt;</span> <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span><span class="javascript">
-    &lt;% _.each(lines, <span class="keyword">function</span>(line) { %&gt; <span class="xml"><span class="tag">&lt; <span class="attribute">p</span> &gt;</span> content
-        for <span class="vbscript">&lt;%= line %&gt;</span> <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
-  <span class="vbscript">&lt;% }); %&gt;</span>
-  </span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="javascript">&lt;% _.each(lines, <span class="function"><span class="keyword">function</span><span class="params">(line)</span> {</span> %&gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> content
+        for <span class="javascript">&lt;%= line %&gt;</span> <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
+  <span class="javascript">&lt;% }); %&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="menuexample0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span>
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif;</span></span>
+  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
+  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
 <span class="rule">}</span></span>
 * <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box;</span></span>
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box;</span></span>
+  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
+  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline;</span></span>
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px;</span></span>
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
+  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span>;</span></span>
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
 <span class="rule">}</span></span>
 <span class="class">.menu</span> <span class="rules">{
-  <span class="rule"><span class="attribute">padding-left</span>:<span class="value"> <span class="number">80</span>px;</span></span>
+  <span class="rule"><span class="attribute">padding-left</span>:<span class="value"> <span class="number">80</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.menu</span> <span class="tag">li</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#888</span>;</span></span>
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline-block;</span></span>
-  <span class="rule"><span class="attribute">min-width</span>:<span class="value"> <span class="number">80</span>px;</span></span>
-  <span class="rule"><span class="attribute">cursor</span>:<span class="value"> pointer;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid transparent;</span></span>
-  <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center;</span></span>
-  <span class="rule"><span class="attribute">border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-moz-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-webkit-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-moz-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-webkit-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span>
-  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">1</span>px;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#888</span></span></span>;
+  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline-block</span></span>;
+  <span class="rule"><span class="attribute">min-width</span>:<span class="value"> <span class="number">80</span>px</span></span>;
+  <span class="rule"><span class="attribute">cursor</span>:<span class="value"> pointer</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid transparent</span></span>;
+  <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center</span></span>;
+  <span class="rule"><span class="attribute">border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-moz-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-webkit-border-top-left-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-moz-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-webkit-border-top-right-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">1</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.menu</span> <span class="tag">li</span><span class="pseudo">:active</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#555</span>;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#555</span></span></span>;
 <span class="rule">}</span></span>
 <span class="class">.menu</span> <span class="tag">li</span><span class="class">.active</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#333</span>;</span></span>
-  <span class="rule"><span class="attribute">border-color</span>:<span class="value"> <span class="hexcolor">#bbbbbb</span>;</span></span>
-  <span class="rule"><span class="attribute">border-bottom-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span>;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#333</span></span></span>;
+  <span class="rule"><span class="attribute">border-color</span>:<span class="value"> <span class="hexcolor">#bbbbbb</span></span></span>;
+  <span class="rule"><span class="attribute">border-bottom-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
 <span class="rule">}</span></span>
 <span class="class">.menu-content</span> <span class="rules">{
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid <span class="hexcolor">#bbbbbb</span>;</span></span>
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-moz-border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
-  <span class="rule"><span class="attribute">-webkit-border-radius</span>:<span class="value"> <span class="number">4</span>px;</span></span>
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid <span class="hexcolor">#bbbbbb</span></span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-moz-border-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
+  <span class="rule"><span class="attribute">-webkit-border-radius</span>:<span class="value"> <span class="number">4</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.active</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold;</span></span>
+  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.content-item-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">200</span>px;</span></span>
-  <span class="rule"><span class="attribute">overflow</span>:<span class="value"> auto;</span></span>
-  <span class="rule"><span class="attribute">margin-top</span>:<span class="value"> <span class="number">20</span>px;</span></span>
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid <span class="hexcolor">#bbb</span>;</span></span>
+  <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">200</span>px</span></span>;
+  <span class="rule"><span class="attribute">overflow</span>:<span class="value"> auto</span></span>;
+  <span class="rule"><span class="attribute">margin-top</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid <span class="hexcolor">#bbb</span></span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>

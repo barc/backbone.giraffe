@@ -85,7 +85,7 @@ class method.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
   template: <span class="string">'&lt;p&gt;Hello &lt;%= name %&gt;&lt;/p&gt;'</span>,
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'giraffe'</span>};
   }
   ...
@@ -102,7 +102,7 @@ strings.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
   template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'underscore-template'</span>};
   }
 });
@@ -141,7 +141,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template'</span>,
   template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'underscore-template'</span>
     };
@@ -163,33 +163,33 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies0-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="templatestrategies0stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span></span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
 <div class='section-example'><h2 id='h-underscore-template-selector'>Underscore Template Selector</h2>
 <p>This strategy expects a selector to a DOM element containing the template.</p>
 <p>In HTML page</p>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
-  &lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">p</span>&gt;</span>Using <span class="javascript">&lt;%= name %&gt;</span> strategy<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>In script</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template-selector'</span>,
   template: <span class="string">'#hello-template'</span>,
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'underscore-template-selector'</span>};
   }
 });
@@ -234,15 +234,15 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span><span class="undefined">
-    &lt; p &gt; Using &lt;%= name %&gt; strategy &lt; /p&gt;
-  </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> Using <span class="javascript">&lt;%= name %&gt;</span> strategy <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies1-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies1-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
@@ -251,7 +251,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'underscore-template-selector'</span>,
   template: <span class="string">'#hello-template'</span>,
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'underscore-template-selector'</span>
     };
@@ -265,8 +265,8 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="templatestrategies1stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span></span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
@@ -274,10 +274,10 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>This strategy expects a function.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'jst'</span>,
-  template: <span class="keyword">function</span>(data) {
+  template: <span class="function"><span class="keyword">function</span><span class="params">(data)</span> {</span>
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'jst'</span>};
   }
 });
@@ -315,10 +315,10 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="templatestrategies2scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
   templateStrategy: <span class="string">'jst'</span>,
-  template: <span class="keyword">function</span>(data) {
+  template: <span class="function"><span class="keyword">function</span><span class="params">(data)</span> {</span>
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'jst'</span>
     };
@@ -340,19 +340,19 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies2-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies2-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="templatestrategies2stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span>;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span></span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
@@ -360,11 +360,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <p>To completely override <strong>Giraffe</strong> templating, assign a function to <code>templateStrategy</code>
 that returns an HTML string.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="keyword">function</span>() {
+  templateStrategy: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
   }
 });
@@ -401,11 +401,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <iframe id="templatestrategies3" src="_assets/templateStrategies3.html" class="result"  style='height: 40px'></iframe>
 </div><div id="templatestrategies3scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="keyword">function</span>() {
+  templateStrategy: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
     <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
-  serialize: <span class="keyword">function</span>() {
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'user defined'</span>
     };
@@ -427,19 +427,19 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies3-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies3-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="templatestrategies3stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
-  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F00</span>;</span></span>
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px;</span></span>
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F00</span></span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
