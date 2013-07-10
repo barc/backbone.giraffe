@@ -66,8 +66,10 @@ ContentView = Giraffe.View.extend({
 
   afterRender: function() {
     var activeMenuItem = this.collection.findWhere({active: true});
-    if (activeMenuItem)
-      this.getItemView(activeMenuItem).attachTo(this, {method: 'html'});
+    if (activeMenuItem) {
+      var itemView = this.getItemView(activeMenuItem);
+      itemView.attachTo(this, {method: 'html'}); // first detaches any view in this.$el
+    }
   },
 
   getItemView: function(menuItem) {
@@ -77,7 +79,7 @@ ContentView = Giraffe.View.extend({
     if (!view) {
       view = new ContentItemView({
         model: menuItem,
-        disposeOnDetach: false,
+        disposeOnDetach: false, // keeps the view cached when detached
         saveScrollPosition: true
       });
     }

@@ -112,7 +112,7 @@ name and a color.</p>
   }
 });</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= <span class="keyword">this</span>.options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-loading-the-app'>Loading the App</h2>
 <p>It&#39;s time to create and attach the app.</p>
@@ -168,7 +168,7 @@ iframe, but your browser&#39;s back and forward buttons should work!
 </div>
 <div id="routersandappevents0_tabs_content" class="tabs_content">
   <div id="routersandappevents0result-tab" class="tab_content">
-  <iframe id="routersandappevents0" src="_assets/routersAndAppEvents0.html" class="result"  style='height: 188px;'></iframe>
+  <iframe id="routersandappevents0" src="_assets/routersAndAppEvents0.html" class="result"  style='height: 154px;'></iframe>
 </div><div id="routersandappevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> App, ChildView;
 
@@ -241,7 +241,7 @@ console.log(app.router.getRoute(<span class="string">'route:childView'</span>, <
   <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">h2</span> &gt;</span> child view <span class="javascript">&lt;%= <span class="keyword">this</span>.options.name %&gt;</span> <span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">h2</span> &gt;</span> child view <span class="javascript">&lt;%= options.name %&gt;</span> <span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
@@ -254,30 +254,8 @@ console.log(app.router.getRoute(<span class="string">'route:childView'</span>, <
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="routersandappevents0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
-<span class="rule">}</span></span>
-* <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h2</span> <span class="rules">{
+  <pre><code class="language-css"><span class="tag">h2</span> <span class="rules">{
   <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.child-view</span> <span class="rules">{
   <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;

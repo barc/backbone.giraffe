@@ -45,31 +45,42 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-view-data-events'>View Data Events</h1>
-<p>This example demonstrates how to use the <code>dataEvents</code> map of <strong>Giraffe.View</strong>. Similar to how the <strong>Backbone.View</strong> <code>events</code> map binds DOM events to view methods, <strong>Giraffe.View</strong> provides the <code>dataEvents</code> hash that maps object events to view methods. Like the <code>events</code> map, the <code>dataEvents</code> bindings are also automatically cleaned up when a view&#39;s <code>dispose</code> method is called.</p>
+<p>This example demonstrates how to use the <code>dataEvents</code> map of <strong>Giraffe.View</strong>.
+Similar to how the <strong>Backbone.View</strong> <code>events</code> map binds DOM events to view
+methods, <strong>Giraffe.View</strong> provides the <code>dataEvents</code> hash that maps object events
+to view methods. Like the <code>events</code> map, the <code>dataEvents</code> bindings are also
+automatically cleaned up when a view&#39;s <code>dispose</code> method is called.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
-<p>To demonstrate <code>dataEvents</code>, we&#39;ll first need some data. In this example we&#39;ll use a regular <strong>Backbone.Collection</strong>,
-but <code>dataEvents</code> works with any object that implements <code>Backbone.Events</code>.</p>
+<p>To demonstrate <code>dataEvents</code>, we&#39;ll first need some data. In this example we&#39;ll
+use a regular <strong>Backbone.Collection</strong>, but <code>dataEvents</code> works with any object
+that implements <code>Backbone.Events</code>.</p>
 <pre><code class="js">  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.collection = <span class="keyword">new</span> Backbone.Collection();
   },</code></pre>
-<p><code>dataEvents</code> maps events on an object to a view method. The hash&#39;s key is a space-separated list of events ending with the target object. This structure mirrors the <code>events</code> map of <strong>Backbone.View</strong>, <code>{&#39;domEventName selector&#39;: &#39;viewMethod&#39;}</code>,
-but replaces the selector with the name of any <code>Backbone.Events</code> object on this view instance, and it has the added benefit of accepting multiple events per definition.</p>
+<p><code>dataEvents</code> maps events on an object to a view method. The hash&#39;s key is a
+space-separated list of events ending with the target object. This structure
+mirrors the <code>events</code> map of <strong>Backbone.View</strong>,
+<code>{&#39;domEventName selector&#39;: &#39;viewMethod&#39;}</code>, but replaces the selector with the
+name of any <code>Backbone.Events</code> object on this view instance, and it has the added
+benefit of accepting multiple events per definition.</p>
 <pre><code class="js">  dataEvents: {
     <span class="string">'add remove collection'</span>: <span class="string">'render'</span>
     <span class="comment">// 'someOtherEvent someOtherEventsObject': function() { ... }</span>
     <span class="comment">// 'anEventTriggeredOnThisView this': 'someMethodName'</span>
   },</code></pre>
-<p>This example has a button to add a new model and a button for each model that removes it.</p>
+<p>This example has a button to add a new model and a button for each model that
+removes it.</p>
 <pre><code class="js">  template: <span class="string">'#view-template'</span>,</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAddModel"</span>&gt;</span>add model<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="javascript">&lt;% _.each(<span class="keyword">this</span>.collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
+  <span class="javascript">&lt;% _.each(collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onRemoveModel"</span> <span class="attribute">data-cid</span>=<span class="value">"&lt;%= model.cid %&gt;"</span>&gt;</span>
       remove model <span class="javascript">&lt;%= model.get(<span class="string">"name"</span>) %&gt;</span>
     <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="javascript">&lt;% }); %&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Here are the functions that add and remove models. The ui updates automatically based on the events bound in <code>dataEvents</code>.</p>
+<p>Here are the functions that add and remove models. The ui updates automatically
+based on the events bound in <code>dataEvents</code>.</p>
 <pre><code class="js">  onAddModel: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     <span class="keyword">this</span>.modelCount = <span class="keyword">this</span>.modelCount || <span class="number">0</span>;
     <span class="keyword">this</span>.modelCount += <span class="number">1</span>;
@@ -98,10 +109,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </li><li>
   <a href="#dataevents0markuphtml-tab" rel="dataevents0markuphtml-tab">
     markup.html
-  </a>
-</li><li>
-  <a href="#dataevents0stylecss-tab" rel="dataevents0stylecss-tab">
-    style.css
   </a>
 </li>
   </ul>
@@ -152,7 +159,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
     <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onAddModel</span>" &gt;</span> add model <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
-  <span class="javascript">&lt;% _.each(<span class="keyword">this</span>.collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
+  <span class="javascript">&lt;% _.each(collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onRemoveModel"</span> <span class="attribute">data-cid</span>=<span class="value">"&lt;%= model.cid %&gt;"</span>&gt;</span>
       remove model <span class="javascript">&lt;%= model.get(<span class="string">"name"</span>) %&gt;</span>
     <span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="javascript">&lt;%
@@ -168,32 +175,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="dataevents0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
-<span class="rule">}</span></span>
-* <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
 

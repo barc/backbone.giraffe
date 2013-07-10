@@ -1,6 +1,6 @@
 <script id="view-template" type="text/template">
   <button data-gf-click="onAddModel">add model</button>
-  <% _.each(this.collection.models, function(model) { %>
+  <% _.each(collection.models, function(model) { %>
     <button data-gf-click="onRemoveModel" data-cid="<%= model.cid %>">
       remove model <%= model.get("name") %>
     </button>

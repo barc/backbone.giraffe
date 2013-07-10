@@ -101,7 +101,7 @@ ChildView = Giraffe.View.extend({
 
 ```html
 <script id="child-template" type="text/template">
-  <h2>child view <%= this.options.name %></h2>
+  <h2>child view <%= options.name %></h2>
 </script>
 ```
 
@@ -157,30 +157,8 @@ iframe, but your browser's back and forward buttons should work!
 :::@ --hide
 
 ```css
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
 h2 {
   font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
 }
 .child-view {
   position: relative;
@@ -192,6 +170,6 @@ h3 {
 
 ## Try It
 
-{{{EXAMPLE style='height: 188px;'}}}
+{{{EXAMPLE style='height: 154px;'}}}
 
 :::END

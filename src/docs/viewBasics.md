@@ -23,6 +23,7 @@ templating. For more information, see `template`, `setTemplateStrategy`, and
 `templateStrategy` in the [API docs](api.html#View-template) or the
 [Template Strategies](templateStrategies.html) example. The included strategies
 use a view's `serialize` function to get the data passed into the template.
+
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!
@@ -138,25 +139,6 @@ Here's the result:
 :::@ --hide
 
 ```css
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
 [data-view-cid] {
   position: relative;
   padding: 20px;

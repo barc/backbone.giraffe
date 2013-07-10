@@ -3,19 +3,22 @@
 
 # View Document Events
 
-This example demonstrates Giraffe's document event bindings that link DOM events to **Giraffe.View** methods.
-Giraffe does *not* provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method `Giraffe.View.removeDocumentEvents()`.
+This example demonstrates __Giraffe__'s document event bindings that link DOM events
+to __Giraffe.View__ methods. __Giraffe__ does _not_ provide two-way data binding,
+but given its goal as a lightweight library, it should play nicely with most
+Backbone plugins. This feature can be disabled by calling the class method
+`Giraffe.View.removeDocumentEvents()`.
+
 ```js
 var View = Giraffe.View.extend({
-```
-
-**Giraffe.View** provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form `data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it searches up the hierarchy until it finds the method or fails on a view with no `parent`.
-
-```js
   template: '#view-template',
 ```
 
-Here's the template:
+__Giraffe.View__ provides a simple, convenient, and performant way to bind DOM
+events to view method calls in your markup using the form
+`data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it
+searches up the hierarchy until it finds the method or fails on a view with no
+`parent`. In this template we bind to `'keyup'` and `'click'` events.
 
 ```html
 <script id="view-template" type="text/template">
@@ -26,12 +29,12 @@ Here's the template:
 ```
 
 <div class='note'>
-By default, Giraffe binds only `click` and `change`, and not `keyup` as
-this example uses, but you can easily set custom bindings using the static
-method `Giraffe.View.setDocumentEvents`.
+By default, __Giraffe__ binds only `click` and `change`, and not `keyup` as this
+example uses, but you can easily set custom bindings using the class method
+`Giraffe.View.setDocumentEvents`.
 </div>
 
-Whenever the input changes, this method is called.
+Whenever the input changes via a `'keyup'` event, this method is called.
 
 ```js
   onChangeName: function(e) {
@@ -48,12 +51,12 @@ Whenever the button is clicked, this method is called.
 });
 ```
 
-If you wanted to set your own custom DOM event bindings, this is how you'd do it.
+If you want to set your own custom DOM event bindings, this is how you'd do it.
 
 ```js
-Giraffe.View.setDocumentEvents(['mousedown', 'mouseup', 'change', 'keyup']); // as an array
-Giraffe.View.setDocumentEvents('mousedown mouseup change keyup'); // or as a single string
-Giraffe.View.setDocumentEvents('click change'); // the default events
+Giraffe.View.setDocumentEvents(['mousedown', 'change', 'keyup']); // as an array
+Giraffe.View.setDocumentEvents('mousedown change keyup'); // or as a single string
+Giraffe.View.setDocumentEvents('click change'); // Giraffe's default events
 Giraffe.View.setDocumentEvents('click keyup'); // the events for this example
 ```
 
@@ -66,41 +69,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-:::@ --hide
-
-```css
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
-strong {
-  font-weight: bold;
-}
-```
-
 ## Try It
 
 {{{EXAMPLE style='height: 80px;'}}}
+
 
 :::END

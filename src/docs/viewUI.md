@@ -1,8 +1,13 @@
 :::BEGIN Example
 
+
 # View UI
 
-This example demonstrates the **Giraffe.View** `ui` feature that maintains cached jQuery objects for a view and allows you to use the names of these cached objects in your `events` hash. The `ui` hash is a simple map of names to selectors. For example, `{$button: 'button'}` makes `view.$button` available once the view has rendered at least once.
+This example demonstrates the __Giraffe.View__ `ui` feature that maintains
+cached __jQuery__ objects for a view and allows you to use the names of these
+cached objects in your `events` hash. The `ui` hash is a simple map of names to
+selectors. For example, `{$button: 'button'}` makes `this.$button` available
+once the view has rendered at least once.
 
 ```js
 var View = Giraffe.View.extend({
@@ -11,7 +16,7 @@ var View = Giraffe.View.extend({
   },
   events: {
     'click $someButton': function() {
-      alert('clicked `this.$someButton` which has a length of ' + this.$someButton.length);
+      alert('clicked `this.$someButton` which has length ' + this.$someButton.length);
     }
   },
   template: '#view-template'
@@ -24,7 +29,7 @@ var View = Giraffe.View.extend({
 </script>
 ```
 
-Let's create and attach the view.
+Let's create and attach the view to see it in action.
 
 ```js
 var view = new View();
@@ -33,45 +38,9 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-:::@ --hide
-
-```css
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  display: inline;
-  margin-right: 10px;
-}
-h3 {
-  font-size: 18px;
-  display: inline;
-  margin-right: 10px;
-}
-.child-view {
-  position: relative;
-  padding: 20px;
-  margin: 20px;
-  border: 1px dashed #999;
-}
-```
-
 ## Try It
 
-{{{EXAMPLE style='height: 66px;'}}}
+{{{EXAMPLE style='height: 26px;'}}}
 
 
 :::END

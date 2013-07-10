@@ -45,14 +45,18 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-view-ui'>View UI</h1>
-<p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains cached jQuery objects for a view and allows you to use the names of these cached objects in your <code>events</code> hash. The <code>ui</code> hash is a simple map of names to selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>view.$button</code> available once the view has rendered at least once.</p>
+<p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains
+cached <strong>jQuery</strong> objects for a view and allows you to use the names of these
+cached objects in your <code>events</code> hash. The <code>ui</code> hash is a simple map of names to
+selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>this.$button</code> available
+once the view has rendered at least once.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   ui: {
     <span class="string">'$someButton'</span>: <span class="string">'button'</span>
   },
   events: {
     <span class="string">'click $someButton'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+      alert(<span class="string">'clicked `this.$someButton` which has length '</span> + <span class="keyword">this</span>.$someButton.length);
     }
   },
   template: <span class="string">'#view-template'</span>
@@ -60,7 +64,7 @@
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span>&gt;</span>click me<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Let&#39;s create and attach the view.</p>
+<p>Let&#39;s create and attach the view to see it in action.</p>
 <pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2 id='h-try-it'>Try It</h2>
@@ -78,16 +82,12 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <a href="#viewui0markuphtml-tab" rel="viewui0markuphtml-tab">
     markup.html
   </a>
-</li><li>
-  <a href="#viewui0stylecss-tab" rel="viewui0stylecss-tab">
-    style.css
-  </a>
 </li>
   </ul>
 </div>
 <div id="viewui0_tabs_content" class="tabs_content">
   <div id="viewui0result-tab" class="tab_content">
-  <iframe id="viewui0" src="_assets/viewUI0.html" class="result"  style='height: 66px;'></iframe>
+  <iframe id="viewui0" src="_assets/viewUI0.html" class="result"  style='height: 26px;'></iframe>
 </div><div id="viewui0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
   ui: {
@@ -95,7 +95,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   },
   events: {
     <span class="string">'click $someButton'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+      alert(<span class="string">'clicked `this.$someButton` which has length '</span> + <span class="keyword">this</span>.$someButton.length);
     }
   },
   template: <span class="string">'#view-template'</span>
@@ -126,38 +126,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="viewui0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
-<span class="rule">}</span></span>
-* <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="class">.child-view</span> <span class="rules">{
-  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
-<span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
 

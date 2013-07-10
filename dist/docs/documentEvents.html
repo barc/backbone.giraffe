@@ -45,24 +45,30 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-view-document-events'>View Document Events</h1>
-<p>This example demonstrates Giraffe&#39;s document event bindings that link DOM events to <strong>Giraffe.View</strong> methods.
-Giraffe does <em>not</em> provide two-way data binding, but given its goal as a lightweight library, it should play nicely with most Backbone plugins. This feature can be disabled by calling the static method <code>Giraffe.View.removeDocumentEvents()</code>.</p>
-<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({</code></pre>
-<p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM events to view method calls in your markup using the form <code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it searches up the hierarchy until it finds the method or fails on a view with no <code>parent</code>.</p>
-<pre><code class="js">  template: <span class="string">'#view-template'</span>,</code></pre>
-<p>Here&#39;s the template:</p>
+<p>This example demonstrates <strong>Giraffe</strong>&#39;s document event bindings that link DOM events
+to <strong>Giraffe.View</strong> methods. <strong>Giraffe</strong> does <em>not</em> provide two-way data binding,
+but given its goal as a lightweight library, it should play nicely with most
+Backbone plugins. This feature can be disabled by calling the class method
+<code>Giraffe.View.removeDocumentEvents()</code>.</p>
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  template: <span class="string">'#view-template'</span>,</code></pre>
+<p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM
+events to view method calls in your markup using the form
+<code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it
+searches up the hierarchy until it finds the method or fails on a view with no
+<code>parent</code>. In this template we bind to <code>&#39;keyup&#39;</code> and <code>&#39;click&#39;</code> events.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"hello-text"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
   <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAlertHello"</span>&gt;</span>Say hello in a popup<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <div class='note'>
-By default, Giraffe binds only <code>click</code> and <code>change</code>, and not <code>keyup</code> as
-this example uses, but you can easily set custom bindings using the static
-method <code>Giraffe.View.setDocumentEvents</code>.
+By default, <strong>Giraffe</strong> binds only <code>click</code> and <code>change</code>, and not <code>keyup</code> as this
+example uses, but you can easily set custom bindings using the class method
+<code>Giraffe.View.setDocumentEvents</code>.
 </div>
 
-<p>Whenever the input changes, this method is called.</p>
+<p>Whenever the input changes via a <code>&#39;keyup&#39;</code> event, this method is called.</p>
 <pre><code class="js">  onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
   },</code></pre>
@@ -71,10 +77,10 @@ method <code>Giraffe.View.setDocumentEvents</code>.
     alert($(<span class="string">'#hello-text'</span>).text());
   }
 });</code></pre>
-<p>If you wanted to set your own custom DOM event bindings, this is how you&#39;d do it.</p>
-<pre><code class="js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
-Giraffe.View.setDocumentEvents(<span class="string">'mousedown mouseup change keyup'</span>); <span class="comment">// or as a single string</span>
-Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// the default events</span>
+<p>If you want to set your own custom DOM event bindings, this is how you&#39;d do it.</p>
+<pre><code class="js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// Giraffe's default events</span>
 Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span></code></pre>
 <p>All done! Let&#39;s create and attach the view.</p>
 <pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
@@ -94,10 +100,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <a href="#documentevents0markuphtml-tab" rel="documentevents0markuphtml-tab">
     markup.html
   </a>
-</li><li>
-  <a href="#documentevents0stylecss-tab" rel="documentevents0stylecss-tab">
-    style.css
-  </a>
 </li>
   </ul>
 </div>
@@ -106,7 +108,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   <iframe id="documentevents0" src="_assets/documentEvents0.html" class="result"  style='height: 80px;'></iframe>
 </div><div id="documentevents0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-
   template: <span class="string">'#view-template'</span>,
 
   onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
@@ -118,9 +119,9 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   }
 });
 
-Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
-Giraffe.View.setDocumentEvents(<span class="string">'mousedown mouseup change keyup'</span>); <span class="comment">// or as a single string</span>
-Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// the default events</span>
+Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// Giraffe's default events</span>
 Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
@@ -150,35 +151,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="documentevents0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">body</span> <span class="rules">{
-  <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#ffffff</span></span></span>;
-  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px</span></span>;
-  <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana, Geneva, sans-serif</span></span>;
-<span class="rule">}</span></span>
-* <span class="rules">{
-  <span class="rule"><span class="attribute">box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-moz-box-sizing</span>:<span class="value"> border-box</span></span>;
-  <span class="rule"><span class="attribute">-webkit-box-sizing</span>:<span class="value"> border-box</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h1</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">42</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h2</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
-  <span class="rule"><span class="attribute">margin-bottom</span>:<span class="value"> <span class="number">20</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">h3</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
-  <span class="rule"><span class="attribute">display</span>:<span class="value"> inline</span></span>;
-  <span class="rule"><span class="attribute">margin-right</span>:<span class="value"> <span class="number">10</span>px</span></span>;
-<span class="rule">}</span></span>
-<span class="tag">strong</span> <span class="rules">{
-  <span class="rule"><span class="attribute">font-weight</span>:<span class="value"> bold</span></span>;
-<span class="rule">}</span></span></code></pre>
 </div>
 </div></div></p>
 

@@ -839,30 +839,30 @@
         return _this.dispose();
       });
       App.__super__.constructor.apply(this, arguments);
+    }
+
+    App.prototype._cache = function() {
       if (this.routes) {
         this.router = new Giraffe.Router({
           app: this,
           triggers: this.routes
         });
       }
-    }
-
-    App.prototype._cache = function() {
-      var _ref;
       if (Giraffe.app == null) {
         Giraffe.app = this;
       }
-      this._name = ((_ref = this.options) != null ? _ref.name : void 0) || this.cid;
-      Giraffe.apps[this._name] = this;
-      this.$el.attr('data-gf-app', this._name);
+      Giraffe.apps[this.cid] = this;
       return App.__super__._cache.apply(this, arguments);
     };
 
     App.prototype._uncache = function() {
+      if (this.router) {
+        this.router = null;
+      }
       if (Giraffe.app === this) {
         Giraffe.app = null;
       }
-      delete Giraffe.apps[this._name];
+      delete Giraffe.apps[this.cid];
       return App.__super__._uncache.apply(this, arguments);
     };
 
@@ -1064,6 +1064,20 @@
       return this;
     };
 
+    Router.prototype._unbindTriggers = function() {
+      var triggers;
+      triggers = this._getTriggerRegExpStrings();
+      return Backbone.history.handlers = _.reject(Backbone.history.handlers, function(handler) {
+        return _.contains(triggers, handler.route.toString());
+      });
+    };
+
+    Router.prototype._getTriggerRegExpStrings = function() {
+      return _.map(_.keys(this.triggers), function(route) {
+        return Backbone.Router.prototype._routeToRegExp(route).toString();
+      });
+    };
+
     /*
     * Triggers an app event with optional arguments. If `this.triggers` has a matching route, `Backbone.history` navigates to it.
     *
@@ -1177,7 +1191,9 @@
 
 
     Router.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {});
+      return Giraffe.dispose(this, function() {
+        return this._unbindTriggers();
+      });
     };
 
     return Router;
