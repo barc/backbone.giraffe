@@ -6,8 +6,9 @@
 
 
 # TODO
-# more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
+# clean up after router
 # route namespaces
+# more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
 # view transitions
 # collectionView
 # modelView
@@ -679,21 +680,20 @@ class Giraffe.App extends Giraffe.View
     @started = false
     $(window).unload => @dispose()
     super
-    if @routes
-      @router = new Giraffe.Router(app: @, triggers: @routes)
 
 
   _cache: ->
+    if @routes
+      @router = new Giraffe.Router(app: @, triggers: @routes)
     Giraffe.app ?= @ # for convenience, store the first created app as a global
-    @_name = @options?.name or @cid # TODO use the app's name to namespace routes
-    Giraffe.apps[@_name] = @
-    @$el.attr 'data-gf-app', @_name
+    Giraffe.apps[@cid] = @
     super
 
 
   _uncache: ->
+    @router = null if @router
     Giraffe.app = null if Giraffe.app is @
-    delete Giraffe.apps[@_name]
+    delete Giraffe.apps[@cid]
     super
 
 
