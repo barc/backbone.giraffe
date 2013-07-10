@@ -43,7 +43,7 @@ The `appEvents` hash is a convenient feature that helps your app's objects
 communicate. It's similar to the __Backbone.View__ `events` hash, but instead of
 mapping DOM events it maps events on an instance of __Giraffe.App__.  If a
 __Giraffe.App__ has been created, `appEvents` is automatically bound for all
-__Giraffe__ objects *(views, apps, routers, models, and collections)*, and is
+__Giraffe__ objects _(views, apps, routers, models, and collections)_, and is
 cleaned up via `Backbone.Events.stopListening` in `dispose`, which all
 __Giraffe__ objects implement. When an instance of __Giraffe.App__ is created,
 it stores its reference globally at `Giraffe.app` unless an app instance is

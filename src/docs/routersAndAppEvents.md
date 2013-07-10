@@ -2,7 +2,8 @@
 
 # Routers and App Events
 
-This example demonstrates how **Giraffe.Router** ties into the `appEvents` described in the [App Events](appEvents.html) example.
+This example demonstrates how __Giraffe.Router__ ties into the `appEvents`
+described in the [App Events](appEvents.html) example.
 
 ```js
 var App, ChildView;
@@ -10,14 +11,20 @@ var App, ChildView;
 
 ## The App
 
-**Giraffe.App** is a **Giraffe.View** that encapsulates an app and its routes. In this example, clicking some links will change the window location hash. The **Giraffe.Router** responds to this hash change and triggers an event on the app which shows a child view with a specific name.
+__Giraffe.App__ is a __Giraffe.View__ that encapsulates an app and its routes.
+In this example, clicking some links will change the window location hash. The
+__Giraffe.Router__ responds to this hash change and triggers an event on the app
+which shows a child view with a specific name.
 
 ```js
 App = Giraffe.App.extend({
   template: '#app-template',
 ```
 
-The `routes` option maps url routes to `appEvents`, and as a result of defining `routes` on the app, it will automatically create an instance of **Giraffe.Router** at `app.router`. **Giraffe.Router** is dependent on **Giraffe.App** because it uses `appEvents` to communicate with your objects.
+The `routes` property maps url routes to `appEvents`, and as a result of
+defining `routes` on the app, it will automatically create an instance of
+__Giraffe.Router__ at `app.router`. __Giraffe.Router__ is dependent on
+__Giraffe.App__ because it uses `appEvents` to communicate with your objects.
 
 ```js
   routes: {
@@ -26,7 +33,11 @@ The `routes` option maps url routes to `appEvents`, and as a result of defining 
   },
 ```
 
-Any Giraffe object, including the app, can listen for `appEvents`. When a route is triggered, its corresponding `appEvent` is called. In this example we'll have the app listen to itself for the app event `'route:childView'`, which is defined in the `routes` above, and the `'all'` event, so we can log everything that happens to `appEvents`.
+Any __Giraffe__ object, including the app, can listen for `appEvents`. When a
+route is triggered, its corresponding `appEvent` is called. In this example the
+app listens to itself for the app event `'route:childView'`, which is defined in
+the `routes` above, and the `'all'` event, so we can log everything that happens
+to `appEvents`.
 
 ```js
   appEvents: {
@@ -37,9 +48,13 @@ Any Giraffe object, including the app, can listen for `appEvents`. When a route 
   },
 ```
 
-<div class="note">The `route:` prefix is just a naming convention and is not required.</div>
+<div class="note">
+The `route:` prefix is just a naming convention and is not required.
+</div>
 
-The handler for `'route:childView'` creates a child view named with the route parameter, and inserts it into the DOM using the `attachTo` method `'html'`, which replaces anything inside `'#child-view-container'`.
+The handler for `'route:childView'` creates a child view named with the route
+parameter, and inserts it into the DOM using the `attachTo` method `'html'`,
+which replaces anything inside `'#child-view-container'`.
 
 ```js
   showChildView: function(name) {
@@ -50,7 +65,8 @@ The handler for `'route:childView'` creates a child view named with the route pa
 
 ```
 
-Here's the App's template. It has three links to the three child views and a container for the active child view.
+Here's the app's template. It has three links to the three child views and a
+container for the active child view.
 
 ```html
 <script id="app-template" type="text/template">
@@ -63,7 +79,8 @@ Here's the App's template. It has three links to the three child views and a con
 
 ## The Child View
 
-In this example, we're going to create a child view that simply displays its name and a color.
+In this example, we're going to create a child view that simply displays its
+name and a color.
 
 ```js
 ChildView = Giraffe.View.extend({
@@ -90,26 +107,38 @@ ChildView = Giraffe.View.extend({
 
 ## Loading the App
 
-It's time to create and attach the app. The `routes` hash could have been passed as an option to the **Giraffe.App** constructor.
+It's time to create and attach the app.
 
 ```js
 var app = new App();
 app.attachTo('body');
 ```
 
-Almost finished! Let's start the Backbone history to get things rolling.
+<div class="note">
+The `routes` hash could have been passed as an option to the __Giraffe.App__
+constructor.
+</div>
+
+Almost finished! Let's start __Backbone.history__ to get things rolling.
 
 ```js
 Backbone.history.start();
 ```
 
-The **Giraffe.Router** has one more trick up its sleeve: it gives you programmatic control over your routes. The function `Giraffe.Router#cause` takes an `appEvent` and optional parameters, navigates to the corresponding route defined in the router, and then triggers the `appEvent` with the parameters. Here we show *child view 1* as the default view by causing its `appEvent`.
+The __Giraffe.Router__ has one more trick up its sleeve: it gives you
+programmatic control over your routes. The function `Giraffe.Router#cause` takes
+an `appEvent` and optional parameters, navigates to the corresponding route
+defined in the router, and then triggers the `appEvent` with the parameters.
+Here we show _child view 1_ as the default view by causing its `appEvent`.
 
 ```js
 app.router.cause('route:childView', 1);
 ```
 
-**Giraffe.Router** also provides two utility functions to help you manage routes, `isCaused` and `getRoute`. We could have used `getRoute` to build our anchor links in the app template above, but didn't for the sake of familiarity. No longer must you build route links manually!
+__Giraffe.Router__ also provides two utility functions to help you manage
+routes, `isCaused` and `getRoute`. We could have used `getRoute` to build our
+anchor links in the app template above, but didn't for the sake of familiarity.
+No longer must you build route links manually!
 
 ```js
 console.log(app.router.isCaused('route:childView', 1)); // => true
@@ -119,7 +148,8 @@ console.log(app.router.getRoute('route:childView', 1)); // => '#childView/1'
 ```
 
 <div class='note'>
-You will not see hash changes in your address bar because the example is in an iframe, but your browser's back and forward buttons should work!
+You will not see hash changes in your address bar because the example is in an
+iframe, but your browser's back and forward buttons should work!
 </div>
 
 {{{COMMON}}}
