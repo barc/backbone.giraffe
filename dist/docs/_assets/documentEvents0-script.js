@@ -1,5 +1,4 @@
 var View = Giraffe.View.extend({
-
   template: '#view-template',
 
   onChangeName: function(e) {
@@ -11,9 +10,9 @@ var View = Giraffe.View.extend({
   }
 });
 
-Giraffe.View.setDocumentEvents(['mousedown', 'mouseup', 'change', 'keyup']); // as an array
-Giraffe.View.setDocumentEvents('mousedown mouseup change keyup'); // or as a single string
-Giraffe.View.setDocumentEvents('click change'); // the default events
+Giraffe.View.setDocumentEvents(['mousedown', 'change', 'keyup']); // as an array
+Giraffe.View.setDocumentEvents('mousedown change keyup'); // or as a single string
+Giraffe.View.setDocumentEvents('click change'); // Giraffe's default events
 Giraffe.View.setDocumentEvents('click keyup'); // the events for this example
 
 var view = new View();
