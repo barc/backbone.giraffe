@@ -6,6 +6,7 @@
 
 
 # TODO
+# more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
 # route namespaces
 # view transitions
 # collectionView

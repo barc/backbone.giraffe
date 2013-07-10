@@ -45,10 +45,19 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-lifecycle-management'>Lifecycle Management</h1>
-<p>This example demonstrates the lifecycle management features in Giraffe.</p>
-<p>All Giraffe objects implement a <code>dispose</code> method. When a <strong>Giraffe.View</strong> is disposed, it calls <code>dispose</code> on all of its <code>children</code> that have the method. In this example we&#39;ll create a <strong>Giraffe.App</strong>, give it some children, <code>dispose</code> of it, and see the results. <strong>Giraffe.App</strong>, which is a special <strong>Giraffe.View</strong>, is designed to encapsulate an entire application, but for the purposes of this example we&#39;re using no features specific to it - a <strong>Giraffe.View</strong> would have worked too.</p>
+<p>This example demonstrates the lifecycle management features in <strong>Giraffe</strong>.</p>
+<p>All <strong>Giraffe</strong> objects implement a <code>dispose</code> method. When a <strong>Giraffe.View</strong> is
+disposed, it calls <code>dispose</code> on all of its <code>children</code> that have the method. In
+this example we&#39;ll create a <strong>Giraffe.App</strong>, give it some children, <code>dispose</code> of
+it, and see the results.</p>
 <pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
 app.attachTo(<span class="string">'body'</span>);</code></pre>
+<div class="note">
+<strong>Giraffe.App</strong>, which is a special <strong>Giraffe.View</strong>, is designed to encapsulate
+an entire application, but for the purposes of this example we&#39;re using no
+features specific to it - a <strong>Giraffe.View</strong> would have worked too.
+</div>
+
 <p>Let&#39;s listen to the built-in disposal events and write out what&#39;s happening.</p>
 <pre><code class="js">app.once(<span class="string">'disposing'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;app is disposing&lt;/p&gt;'</span>);
@@ -58,7 +67,10 @@ app.once(<span class="string">'disposed'</span>, <span class="function"><span cl
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;app is disposed&lt;/p&gt;'</span>);
 });</code></pre>
 <div class='note'>
-The <code>Giraffe.View#dispose</code> method overrides the behavior of <code>Backbone.View#remove</code> function, but because we want Giraffe to manage the lifecycle of all objects, and <code>remove</code> means something different for collections, we opted to use the method name <code>dispose</code>.
+The <code>Giraffe.View#dispose</code> method overrides the behavior of
+<code>Backbone.View#remove</code> function. We didn&#39;t want to rename it, but because we
+want <strong>Giraffe</strong> to manage the lifecycle of any object, and <code>remove</code> means
+something different for collections, we opted to use the method name <code>dispose</code>.
 </div>
 
 <p>Now that the app is ready, let&#39;s give it some children.</p>
@@ -69,27 +81,44 @@ app.addChild(childModel);
 app.addChild(childCollection);
 
 <span class="keyword">var</span> childView = <span class="keyword">new</span> Giraffe.View();
-app.attach(childView); <span class="comment">// `addChild` would work too, but doesn't put childView.$el in app.$el</span></code></pre>
-<p>To help us follow the action of <code>dispose</code>, we&#39;ll listen for the events signaling when these objects are disposed and write out what&#39;s happening.</p>
+app.attach(childView);
+<span class="comment">// `app.addChild(childView)` also works, but doesn't put childView.$el in app.$el</span></code></pre>
+<p>To help us follow the action of <code>dispose</code>, we&#39;ll listen for the events signaling
+when these objects are disposed and write out what&#39;s happening.</p>
 <pre><code class="js">childModel.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;model is disposed&lt;/p&gt;'</span>);
 });
 
 childCollection.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection has '</span> + <span class="keyword">this</span>.length + <span class="string">' models&lt;/p&gt;'</span>);
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection is disposed&lt;/p&gt;'</span>);
 });
 
 childCollection.models[<span class="number">0</span>].once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
- $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection\'s model is disposed&lt;/p&gt;'</span>);
+  $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection\'s model is disposed&lt;/p&gt;'</span>);
 });
 
 childView.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view is disposed&lt;/p&gt;'</span>);
 });</code></pre>
 <div class='note'>
-<strong>Giraffe.Collection</strong> and <strong>Giraffe.Model</strong> are very thin wrappers over their Backbone counterparts, adding only <code>dispose</code> and <code>appEvents</code> support. They are by no means required, and you can have Giraffe manage the lifecycles of any objects with a <code>dispose</code> method. If you want to reuse the same <code>dispose</code> method Giraffe&#39;s classes use, it&#39;s available at <code>Giraffe.dispose</code>. It calls <code>stopListening</code>, triggers the <code>disposing</code> and <code>disposed</code> events, and sets <code>this.app</code> to <code>null</code>. It also accepts a function argument to do additional work.
+<strong>Giraffe.Collection</strong> and <strong>Giraffe.Model</strong> are very thin wrappers over their
+<strong>Backbone</strong> counterparts, adding only <code>dispose</code> and <code>appEvents</code> support. They
+are by no means required, and you can have <strong>Giraffe</strong> manage the lifecycles of
+any objects with a <code>dispose</code> method. If you want to reuse the same <code>dispose</code>
+method <strong>Giraffe</strong>&#39;s classes use, it&#39;s available at <code>Giraffe.dispose</code>. It calls
+<code>stopListening</code>, triggers the <code>&#39;disposing&#39;</code> and <code>&#39;disposed&#39;</code> events, and sets
+<code>this.app</code> to <code>null</code>. It also accepts a function argument to do additional work.
 </div>
 
+<p>Any object with a <code>dispose</code> method can be added to a view&#39;s <code>children</code> to be
+cleaned up.</p>
+<pre><code class="js"><span class="keyword">var</span> someObject = {
+  dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;someObject is disposed&lt;/p&gt;'</span>);
+  }
+};
+app.addChild(someObject);</code></pre>
 <p>Let&#39;s call <code>dispose</code> on the app and see what happens!</p>
 <pre><code class="js">app.dispose();</code></pre>
 <p>Here&#39;s what happened:</p>
@@ -116,7 +145,7 @@ childView.once(<span class="string">'disposed'</span>, <span class="function"><s
 </div>
 <div id="lifecyclemanagement0_tabs_content" class="tabs_content">
   <div id="lifecyclemanagement0result-tab" class="tab_content">
-  <iframe id="lifecyclemanagement0" src="_assets/lifecycleManagement0.html" class="result"  style='height: 125px;'></iframe>
+  <iframe id="lifecyclemanagement0" src="_assets/lifecycleManagement0.html" class="result"  style='height: 152px;'></iframe>
 </div><div id="lifecyclemanagement0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
 app.attachTo(<span class="string">'body'</span>);
@@ -138,13 +167,15 @@ app.addChild(childModel);
 app.addChild(childCollection);
 
 <span class="keyword">var</span> childView = <span class="keyword">new</span> Giraffe.View();
-app.attach(childView); <span class="comment">// `addChild` would work too, but doesn't put childView.$el in app.$el</span>
+app.attach(childView);
+<span class="comment">// `app.addChild(childView)` also works, but doesn't put childView.$el in app.$el</span>
 
 childModel.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;model is disposed&lt;/p&gt;'</span>);
 });
 
 childCollection.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection has '</span> + <span class="keyword">this</span>.length + <span class="string">' models&lt;/p&gt;'</span>);
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;collection is disposed&lt;/p&gt;'</span>);
 });
 
@@ -155,6 +186,13 @@ childCollection.models[<span class="number">0</span>].once(<span class="string">
 childView.once(<span class="string">'disposed'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;view is disposed&lt;/p&gt;'</span>);
 });
+
+<span class="keyword">var</span> someObject = {
+  dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;someObject is disposed&lt;/p&gt;'</span>);
+  }
+};
+app.addChild(someObject);
 
 app.dispose();</code></pre>
 </div><div id="lifecyclemanagement0markuphtml-tab" class="tab_content">

@@ -1,11 +1,11 @@
-:::BEGIN Example
-
 # View Basics
+
+:::BEGIN Example
 
 ## Creating and Attaching a View
 
-This example demonstrates the basic usage of **Giraffe.View**. It can be
-extended just like a **Backbone.View**.
+This example demonstrates the basic usage of __Giraffe.View__. It can be
+extended just like a __Backbone.View__.
 
 ```js
 var MyView = Giraffe.View.extend({
@@ -16,8 +16,8 @@ var MyView = Giraffe.View.extend({
 });
 ```
 
-**Giraffe** implements `render` so it can do some useful things, and by default
-`render` expects a view's `template` to be the DOM selector of an **Underscore**
+__Giraffe__ implements `render` so it can do some useful things, and by default
+`render` expects a view's `template` to be the DOM selector of an __Underscore__
 template. This can be easily configured to support any form of string
 templating. For more information, see `template`, `setTemplateStrategy`, and
 `templateStrategy` in the [API docs](api.html#View-template) or the
@@ -29,7 +29,7 @@ use a view's `serialize` function to get the data passed into the template.
 </script>
 ```
 
-**Giraffe** uses the function `attachTo` to put views into the DOM or inside one
+__Giraffe__ uses the function `attachTo` to put views into the DOM or inside one
 another. If a view has not yet been rendered, `attachTo` will call `render` on
 it.
 
@@ -57,7 +57,7 @@ parent-child relationships between views.
 var ParentView, ChildView;
 ```
 
-**Giraffe** calls the functions `beforeRender` and `afterRender` every time a
+__Giraffe__ calls the functions `beforeRender` and `afterRender` every time a
 view renders. These are empty functions for your views to fill in. `afterRender`
 is a good place to create and attach child views.
 
@@ -114,7 +114,7 @@ console.log(parentView === childView.parent); // => true
 ```
 
 Let's create a second child view. The `method` option of `attachTo` is the
-**jQuery** method used to insert the view. The default is `'append'`. In this
+__jQuery__ method used to insert the view. The default is `'append'`. In this
 case we'll use `'before'` to put it before the first child view we created. See
 `attachTo` in the [API docs](api.html#View-attachTo) for more.
 
