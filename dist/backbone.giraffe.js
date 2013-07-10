@@ -717,11 +717,14 @@
 
 
     View.setTemplateStrategy = function(strategy, instance) {
-      var templateStrategy;
-      if (typeof strategy === 'function') {
+      var strategyType, templateStrategy;
+      strategyType = typeof strategy;
+      if (strategyType === 'function') {
         templateStrategy = strategy;
+      } else if (strategyType !== 'string') {
+        return error('Unrecognized template strategy', strategy);
       } else {
-        switch (strategy) {
+        switch (strategy.toLowerCase()) {
           case 'underscore-template-selector':
             templateStrategy = function() {
               var selector,

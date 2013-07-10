@@ -1,6 +1,6 @@
 var JST = {
   body: function(it) {
-    return '<p>Using  ' + it.name + ' strategy</p>';
+    return '<p>Using a ' + it.name + ' strategy</p>';
   },
   header: function(it) { return '<div>Header</div>'; },
   footer: function(it) { return '<div>footer</div>'; },
@@ -16,7 +16,7 @@ Giraffe.View.setTemplateStrategy(function() {
 var View = Giraffe.View.extend({
   template: 'body',
   serialize: function() {
-    return {name: 'user defined'};
+    return {name: 'user-defined'};
   }
 });
 

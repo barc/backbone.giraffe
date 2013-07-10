@@ -587,10 +587,13 @@ class Giraffe.View extends Backbone.View
   ###
   @setTemplateStrategy: (strategy, instance) ->
 
-    if typeof strategy is 'function'
+    strategyType = typeof strategy
+    if strategyType is 'function'
       templateStrategy = strategy
+    else if strategyType isnt 'string'
+      return error('Unrecognized template strategy', strategy)
     else
-      switch strategy
+      switch strategy.toLowerCase()
 
         # @template is a string DOM selector or a function returning DOM selector
         when 'underscore-template-selector'

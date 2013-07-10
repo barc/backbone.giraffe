@@ -45,41 +45,44 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <h1 id='h-template-strategies'>Template Strategies</h1>
-<p>Creating HTML markup is a lot of what we do as front end developers.
-There are many solutions as evident by the ever increasing number of templating
-libraries found on the web. <strong>Giraffe</strong> provides templating strategies
-based on the built-in dependecies of <strong>Backbone</strong>, namely the <strong>Underscore</strong> <code>template</code>
-function. Selecting a strategy tells <strong>Giraffe</strong> how to utilize the <code>Giraffe.View#template</code>
-property when rendering a view. The predefined strategies are:</p>
+<p>Creating HTML markup is a lot of what we do as front end developers. There are
+many solutions as evident by the ever increasing number of templating libraries
+found on the web, and <strong>Giraffe</strong> aims to easily support the common cases and be
+flexible enough to support any form of string templating. <strong>Giraffe</strong> provides
+templating strategies based on the built-in dependecies of <strong>Backbone</strong>, namely
+the <strong>Underscore</strong> <code>template</code> function. Selecting a strategy tells <strong>Giraffe</strong>
+how to utilize the <code>Giraffe.View#template</code> property when rendering a view. The
+predefined strategies are:</p>
 <ul>
-<li><h4 id='h-underscore-templates'>Underscore templates</h4>
+<li><h4 id='h-underscore-templatesh-template-strategy-underscore-template'><a href="#h-template-strategy-underscore-template">Underscore templates</a></h4>
 <ul>
 <li><code>Giraffe.View#template</code> is an <strong>Underscore</strong> template string.</li>
 </ul>
 </li>
-<li><h4 id='h-underscore-template-selector-default-'>Underscore template selector <em>[default]</em></h4>
+<li><h4 id='h-underscore-template-selectorh-template-strategy-underscore-template-selector'><a href="#h-template-strategy-underscore-template-selector">Underscore template selector</a></h4>
 <ul>
 <li><code>Giraffe.View#template</code> is a CSS selector of an <strong>Underscore</strong> template. This is the default.</li>
 </ul>
 </li>
-<li><h4 id='h-javascript-template-functions-jst'>JavaScript template functions (JST)</h4>
+<li><h4 id='h-javascript-template-functions-jsth-template-strategy-jst'><a href="#h-template-strategy-jst">JavaScript template functions (JST)</a></h4>
 <ul>
 <li><code>Giraffe.View#template</code> is a function that returns an HTML string.</li>
 </ul>
 </li>
 </ul>
 <p>Templating is fully user customizable as detailed in the
-<a href="#h-user-defined">User Defined</a> section below.</p>
+<a href="#h-user-defined-template-strategy">User-Defined Template Strategy</a> and 
+<a href="#h-mustache-integration">Mustache Integration</a> sections below.</p>
 <div class='note'>
-At <a href="http://barc.com">Barc</a> we love CoffeeScript and use <a href="https://github.com/mgutz/funcd">funcd</a>,
-a function based template engine.
+At <a href="http://barc.com">Barc</a> we love CoffeeScript and use
+<a href="https://github.com/mgutz/funcd">funcd</a>, a function based template engine.
 </div>
 
 <h2 id='h-strategy-scope'>Strategy Scope</h2>
 <p>First decide whether to set the strategy globally or to a specific view.
 The global case is the one most used as it enforces consistent templating
-across a project. To set a global strategy use <code>Giraffe.View.setTemplateStrategy</code>
-class method.</p>
+across a project. To set a global strategy use the class method
+<code>Giraffe.View.setTemplateStrategy</code>.</p>
 <pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);</code></pre>
 <p>To enable for a specific view, set the <code>templateStrategy</code> option.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
@@ -94,21 +97,24 @@ class method.</p>
 The <code>template</code> property works in concert with <code>serialize</code>
 to transform a view&#39;s data into HTML when
 using one of the predefined strategies.
+By default, <code>serialize</code> returns the view.
 </div>
 
-<p><div class='section-example'><h2 id='h-underscore-template'>Underscore Template</h2>
+<p><div class='section-example'><h2 id='h-template-strategy-underscore-template'>Template Strategy &#39;underscore-template&#39;</h2>
 <p>This is the simplest strategy and works well with CoffeeScript&#39;s multi-line
 strings.</p>
-<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'underscore-template'</span>,
-  template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
+<pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'underscore-template',</span>
+  template: <span class="string">'&lt;p&gt;Using the \'&lt;%= name %&gt;\' strategy&lt;/p&gt;'</span>,
+  <span class="comment">// or</span>
+  <span class="comment">//template: $('#my-template-selector').html(),</span>
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'underscore-template'</span>};
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('underscore-template');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -136,20 +142,22 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="templatestrategies0_tabs_content" class="tabs_content">
   <div id="templatestrategies0result-tab" class="tab_content">
-  <iframe id="templatestrategies0" src="_assets/templateStrategies0.html" class="result"  style='height: 40px'></iframe>
+  <iframe id="templatestrategies0" src="_assets/templateStrategies0.html" class="result"  style='height: 20px'></iframe>
 </div><div id="templatestrategies0scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'underscore-template'</span>,
-  template: <span class="string">'&lt;p&gt;Using &lt;%= name %&gt; strategy&lt;/p&gt;'</span>,
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'underscore-template',</span>
+  template: <span class="string">'&lt;p&gt;Using the \'&lt;%= name %&gt;\' strategy&lt;/p&gt;'</span>,
+  <span class="comment">// or</span>
+  <span class="comment">//template: $('#my-template-selector').html(),</span>
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'underscore-template'</span>
     };
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('underscore-template');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -179,11 +187,13 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h2 id='h-underscore-template-selector'>Underscore Template Selector</h2>
-<p>This strategy expects a selector to a DOM element containing the template.</p>
+<div class='section-example'><h2 id='h-template-strategy-underscore-template-selector'>Template Strategy &#39;underscore-template-selector&#39;</h2>
+<p>This strategy expects a selector to a DOM element containing the template. This
+is the default template strategy because it is concise and a common choice of
+<strong>Backbone</strong> developers.</p>
 <p>In HTML page</p>
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">p</span>&gt;</span>Using <span class="javascript">&lt;%= name %&gt;</span> strategy<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">p</span>&gt;</span>Using the '<span class="javascript">&lt;%= name %&gt;</span>' strategy<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>In script</p>
 <pre><code class="js">
@@ -224,7 +234,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="templatestrategies1_tabs_content" class="tabs_content">
   <div id="templatestrategies1result-tab" class="tab_content">
-  <iframe id="templatestrategies1" src="_assets/templateStrategies1.html" class="result"  style='height: 40px'></iframe>
+  <iframe id="templatestrategies1" src="_assets/templateStrategies1.html" class="result"  style='height: 20px'></iframe>
 </div><div id="templatestrategies1markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
@@ -235,8 +245,9 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'gf-template'</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> Using <span class="javascript">&lt;%= name %&gt;</span> strategy <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> Using the '<span class="javascript">&lt;%= name %&gt;</span>'
+    strategy <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
@@ -271,20 +282,20 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h2 id='h-javascript-template-function'>JavaScript Template Function</h2>
-<p>This strategy expects a function.</p>
-<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'jst'</span>,
+<div class='section-example'><h2 id='h-template-strategy-jst'>Template Strategy &#39;jst&#39;</h2>
+<p>This strategy expects <code>template</code> to be a function that returns an HTML string.</p>
+<pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="string">'jst'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'jst',</span>
   template: <span class="function"><span class="keyword">function</span><span class="params">(data)</span> {</span>
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using the \''</span> + data.name + <span class="string">'\' strategy&lt;/p&gt;'</span>;
   },
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'jst'</span>};
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('jst');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -312,12 +323,15 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="templatestrategies2_tabs_content" class="tabs_content">
   <div id="templatestrategies2result-tab" class="tab_content">
-  <iframe id="templatestrategies2" src="_assets/templateStrategies2.html" class="result"  style='height: 40px'></iframe>
+  <iframe id="templatestrategies2" src="_assets/templateStrategies2.html" class="result"  style='height: 20px'></iframe>
 </div><div id="templatestrategies2scriptjs-tab" class="tab_content">
-  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
-  templateStrategy: <span class="string">'jst'</span>,
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'jst'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'jst',</span>
   template: <span class="function"><span class="keyword">function</span><span class="params">(data)</span> {</span>
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using '</span> + data.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using the \''</span> + data.name + <span class="string">'\' strategy&lt;/p&gt;'</span>;
   },
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
@@ -325,9 +339,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
     };
   }
 });
-
-<span class="comment">// or globally:</span>
-<span class="comment">// Giraffe.View.setTemplateStrategy('jst');</span>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
@@ -357,19 +368,21 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div>
-<div class='section-example'><h2 id='h-user-defined'>User Defined</h2>
-<p>To completely override <strong>Giraffe</strong> templating, assign a function to <code>templateStrategy</code>
-that returns an HTML string.</p>
+<div class='section-example'><h2 id='h-user-defined-template-strategy'>User-Defined Template Strategy</h2>
+<p>To completely override <strong>Giraffe</strong> templating, assign a function to
+<code>templateStrategy</code> that returns an HTML string.</p>
 <p>As an example, many developers have a build process to precompile templates into
-a JavaScript Templates (<code>JST</code>) object. The object might look something like this</p>
+JavaScript Templates (<code>JST</code>) objects. The object might look something like this:</p>
 <pre><code class="js"><span class="keyword">var</span> JST = {
   body: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using a '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
   header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>; },
   footer: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;footer&lt;/div&gt;'</span>; },
 };</code></pre>
-<p>To use the <code>JST</code>, override the template strategy by setting a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to call.</p>
+<p>To use the <code>JST</code> template strategy, override the template strategy by setting 
+a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to
+call.</p>
 <pre><code class="js">
 Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
   <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
@@ -380,7 +393,7 @@ Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">fu
 <span class="keyword">var</span> View = Giraffe.View.extend({
   template: <span class="string">'body'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">return</span> {name: <span class="string">'user defined'</span>};
+    <span class="keyword">return</span> {name: <span class="string">'user-defined'</span>};
   }
 });
 
@@ -410,11 +423,11 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="templatestrategies3_tabs_content" class="tabs_content">
   <div id="templatestrategies3result-tab" class="tab_content">
-  <iframe id="templatestrategies3" src="_assets/templateStrategies3.html" class="result"  style='height: 40px'></iframe>
+  <iframe id="templatestrategies3" src="_assets/templateStrategies3.html" class="result"  style='height: 20px'></iframe>
 </div><div id="templatestrategies3scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> JST = {
   body: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
-    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using  '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
+    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Using a '</span> + it.name + <span class="string">' strategy&lt;/p&gt;'</span>;
   },
   header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span>
     <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>;
@@ -435,7 +448,7 @@ Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">fu
   template: <span class="string">'body'</span>,
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
-      name: <span class="string">'user defined'</span>
+      name: <span class="string">'user-defined'</span>
     };
   }
 });
@@ -462,6 +475,95 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="templatestrategies3stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F00</span></span></span>;
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+<span class="rule">}</span></span></code></pre>
+</div>
+</div></div>
+<div class='section-example'><h2 id='h-mustache-integration'>Mustache Integration</h2>
+<p>This example shows how to integrate <strong>Mustache</strong> templates into <strong>Giraffe</strong>
+using a user-defined strategy.</p>
+<pre><code class="js">Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  <span class="keyword">return</span> Mustache.render(<span class="keyword">this</span>.template, <span class="keyword">this</span>.serialize());
+});
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: function() { return Mustache.render(...); },</span>
+  template: <span class="string">'&lt;p&gt;Using {{name}}&lt;/p&gt;'</span>,
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {name: <span class="string">'Mustache'</span>};
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h3 id='h-result'>Result</h3>
+<div id="templatestrategies4_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#templatestrategies4result-tab" rel="templatestrategies4result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#templatestrategies4scriptjs-tab" rel="templatestrategies4scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#templatestrategies4markuphtml-tab" rel="templatestrategies4markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#templatestrategies4stylecss-tab" rel="templatestrategies4stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="templatestrategies4_tabs_content" class="tabs_content">
+  <div id="templatestrategies4result-tab" class="tab_content">
+  <iframe id="templatestrategies4" src="_assets/templateStrategies4.html" class="result"  style='height: 20px'></iframe>
+</div><div id="templatestrategies4scriptjs-tab" class="tab_content">
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  <span class="keyword">return</span> Mustache.render(<span class="keyword">this</span>.template, <span class="keyword">this</span>.serialize());
+});
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: function() { return Mustache.render(...); },</span>
+  template: <span class="string">'&lt;p&gt;Using {{name}}&lt;/p&gt;'</span>,
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {
+      name: <span class="string">'Mustache'</span>
+    };
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="templatestrategies4markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'templatestrategies4-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">'templatestrategies4-script.js'</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="templatestrategies4stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
   <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F00</span></span></span>;
   <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
