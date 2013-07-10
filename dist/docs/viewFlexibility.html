@@ -47,6 +47,7 @@
         <p><div class='section-example'><h1 id='h-view-flexibility'>View Flexibility</h1>
 <p>This advanced example demonstrates the flexibility of <strong>Giraffe.View</strong>.
 The design goal is to create a single view class that nests, manages memory, and moves around the DOM with ease.</p>
+<h2 id='h-the-parent-app'>The Parent App</h2>
 <p><strong>Giraffe.App</strong> is a <strong>Giraffe.View</strong> that encapsulates an app.</p>
 <pre><code class="js"><span class="keyword">var</span> ParentApp = Giraffe.App.extend({
   template: <span class="string">'#parent-app-template'</span>,
@@ -63,35 +64,10 @@ The design goal is to create a single view class that nests, manages memory, and
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>Now let&#39;s build the child view that spawns recursively. Let&#39;s start with its template.</p>
 <div class='note'>
-The attribute <code>data-gf-click</code> is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with <code>on</code> to make it clear an event triggers the method. 
+The attribute <code>data-gf-click</code> is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with <code>on</code> to make it clear an event triggers the method. See the <a href="documentEvents.html">Document Events example</a> for more.
 </div>
 
-<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;% <span class="keyword">this</span>.cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
-
-  <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveUpButton) { %&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="javascript">&lt;% } %&gt;</span>
-
-  <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveDownButton) { %&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveDown"</span>&gt;</span>&amp;#9660;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="javascript">&lt;% } %&gt;</span>
-
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAddChild"</span>&gt;</span>Add a child<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Render count: <span class="javascript">&lt;%= <span class="keyword">this</span>.renderCount%&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onDispose"</span>&gt;</span>Dispose<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-
-  <span class="javascript">&lt;% <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView) { %&gt;</span>
-    <span class="tag">&lt;<span class="title">label</span>&gt;</span>
-      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">data-gf-change</span>=<span class="value">"toggleCache"</span> &lt;%= <span class="attribute">this.options.disposeOnDetach</span> ? '' <span class="attribute">:</span> "<span class="attribute">checked</span>=<span class="value">'checked'</span>" %&gt;</span>&gt;
-      Cache this view
-    <span class="tag">&lt;/<span class="title">label</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAttachUsingHTML"</span>&gt;</span>Reattach to parent using $.html<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="javascript">&lt;% } %&gt;</span>
-
-  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Define the child view</p>
+<h2 id='h-the-child-view'>The Child View</h2>
 <pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,</code></pre>
 <p>In this example, each child view has a button that adds another <code>ChildView</code> to its <code>children</code>.</p>
@@ -177,6 +153,33 @@ Giraffe automatically disposes of any uncached views that get in the way.</p>
     console.log(<span class="string">'Disposing of '</span> + <span class="keyword">this</span>.cid);
   }
 });</code></pre>
+<p>Here&#39;s the child view&#39;s template:</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;% <span class="keyword">this</span>.cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+
+  <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveUpButton) { %&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="javascript">&lt;% } %&gt;</span>
+
+  <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveDownButton) { %&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveDown"</span>&gt;</span>&amp;#9660;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="javascript">&lt;% } %&gt;</span>
+
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAddChild"</span>&gt;</span>Add a child<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Render count: <span class="javascript">&lt;%= <span class="keyword">this</span>.renderCount%&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onDispose"</span>&gt;</span>Dispose<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+
+  <span class="javascript">&lt;% <span class="keyword">if</span> (<span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView) { %&gt;</span>
+    <span class="tag">&lt;<span class="title">label</span>&gt;</span>
+      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">data-gf-change</span>=<span class="value">"toggleCache"</span> &lt;%= <span class="attribute">this.options.disposeOnDetach</span> ? '' <span class="attribute">:</span> "<span class="attribute">checked</span>=<span class="value">'checked'</span>" %&gt;</span>&gt;
+      Cache this view
+    <span class="tag">&lt;/<span class="title">label</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAttachUsingHTML"</span>&gt;</span>Reattach to parent using $.html<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="javascript">&lt;% } %&gt;</span>
+
+  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<h2 id='h-creating-the-apps'>Creating the App(s)</h2>
 <p>That&#39;s it! Let&#39;s create and attach the app.
 The <code>name</code> property is only used for display purposes.</p>
 <pre><code class="js"><span class="keyword">var</span> app1 = <span class="keyword">new</span> ParentApp({name: <span class="string">'app1'</span>});

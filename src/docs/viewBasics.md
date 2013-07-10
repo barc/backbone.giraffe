@@ -1,8 +1,11 @@
-:::BEGIN Example
-
 # View Basics
 
-This example demonstrates the basic usage of **Giraffe.View**. It can be extended just like a **Backbone.View**.
+:::BEGIN Example
+
+## Creating and Attaching a View
+
+This example demonstrates the basic usage of __Giraffe.View__. It can be
+extended just like a __Backbone.View__.
 
 ```js
 var MyView = Giraffe.View.extend({
@@ -13,14 +16,22 @@ var MyView = Giraffe.View.extend({
 });
 ```
 
-Giraffe implements `render` so it can do some useful things, and by default `render` expects `template` to be the DOM selector of an **Underscore** template. This can be easily configured to support any form of string templating. For more information, see `template`, `setTemplateStrategy`, and `templateStrategy` in the [API docs](api.html#View-template).
+__Giraffe__ implements `render` so it can do some useful things, and by default
+`render` expects a view's `template` to be the DOM selector of an __Underscore__
+template. This can be easily configured to support any form of string
+templating. For more information, see `template`, `setTemplateStrategy`, and
+`templateStrategy` in the [API docs](api.html#View-template) or the
+[Template Strategies](templateStrategies.html) example. The included strategies
+use a view's `serialize` function to get the data passed into the template.
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!
 </script>
 ```
 
-Giraffe uses the function `attachTo` to put views into the DOM or inside one another. If a view has not yet been rendered, `attachTo` will call render on it.
+__Giraffe__ uses the function `attachTo` to put views into the DOM or inside one
+another. If a view has not yet been rendered, `attachTo` will call `render` on
+it.
 
 ```js
 var myView = new MyView();
@@ -39,13 +50,16 @@ Here's the result:
 :::BEGIN Example
 ## Creating Child Views
 
-This example demonstrates how the `attachTo` function automatically sets up parent-child relationships between views.
+This example demonstrates how the `attachTo` function automatically sets up
+parent-child relationships between views.
 
 ```js
 var ParentView, ChildView;
 ```
 
-Giraffe calls the functions `beforeRender` and `afterRender` every time a view renders. These are empty functions for your views to fill in. `afterRender` is a good place to create and attach child views.
+__Giraffe__ calls the functions `beforeRender` and `afterRender` every time a
+view renders. These are empty functions for your views to fill in. `afterRender`
+is a good place to create and attach child views.
 
 ```js
 ParentView = Giraffe.View.extend({
@@ -53,6 +67,8 @@ ParentView = Giraffe.View.extend({
   afterRender: function() {
     var childView = new ChildView({name: 'child view'});
     childView.attachTo(this);
+    // or
+    // this.attach(childView);
   }
 });
 ```
@@ -71,11 +87,13 @@ ChildView = Giraffe.View.extend({
 });
 ```
 
-The `ChildView` simply displays the `name` provided in its `options`. We aren't defining a `serialize` method on the `ChildView`, and by default, `serialize` passes the view to the template function.
+The `ChildView` simply displays the `name` provided in its `options`. We aren't
+defining a `serialize` method on the `ChildView`, and by default, `serialize`
+passes the view to the template function.
 
 ```html
 <script id="child-template" type="text/template">
-  <%= this.options.name %>
+  <%= options.name %>
 </script>
 ```
 
@@ -86,14 +104,19 @@ var parentView = new ParentView();
 parentView.attachTo('body');
 ```
 
-Now we'll inspect things to see what the child-parent relationship looks like. The parent has an array of `children` and the children have a reference to their `parent`.
+Now is a good time to inspect the views to see what the child-parent
+relationship looks like. The parent has an array of `children` and the children
+have a reference to their `parent`.
 
 ```js
 var childView = parentView.children[0];
 console.log(parentView === childView.parent); // => true
 ```
 
-Let's create a second child view. The `method` option of `attachTo` determines the jQuery method used to insert the view. The default is `'append'`. In this case we'll use `'before'` to put it before the first child view we created. See `attachTo` in the [API docs](api.html#View-attachTo) for more.
+Let's create a second child view. The `method` option of `attachTo` is the
+__jQuery__ method used to insert the view. The default is `'append'`. In this
+case we'll use `'before'` to put it before the first child view we created. See
+`attachTo` in the [API docs](api.html#View-attachTo) for more.
 
 ```js
 var childView2 = new ChildView({name: 'child view attached with {method: "before"}'});
@@ -142,13 +165,13 @@ h3 {
 }
 ```
 
-Here's an abridged UML summary of what happens inside `attachTo`:
+## UML Summary of `attachTo`
 
 ```uml
 participant MyView
 participant GView as "Giraffe.View"
 
-MyView -> GView: attachTo
+MyView -> GView: attachTo #container
 
 alt if #container has parent view
     GView -> ParentView: set MyView as child of parent

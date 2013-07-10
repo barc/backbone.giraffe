@@ -5,6 +5,8 @@ ParentView = Giraffe.View.extend({
   afterRender: function() {
     var childView = new ChildView({name: 'child view'});
     childView.attachTo(this);
+    // or
+    // this.attach(childView);
   }
 });
 

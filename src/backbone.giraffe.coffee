@@ -6,6 +6,7 @@
 
 
 # TODO
+# more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
 # route namespaces
 # view transitions
 # collectionView
@@ -131,6 +132,10 @@ class Giraffe.View extends Backbone.View
       method = 'append'
 
     $el = Giraffe.View.to$El(el)
+
+    if !$el
+      error 'No such `el` to attach to', el
+      return @
 
     # $el and $container differ for jQuery methods that operate on siblings
     $container = if _.contains(@_siblingAttachMethods, method) then $el.parent() else $el
@@ -582,10 +587,13 @@ class Giraffe.View extends Backbone.View
   ###
   @setTemplateStrategy: (strategy, instance) ->
 
-    if typeof strategy is 'function'
+    strategyType = typeof strategy
+    if strategyType is 'function'
       templateStrategy = strategy
+    else if strategyType isnt 'string'
+      return error('Unrecognized template strategy', strategy)
     else
-      switch strategy
+      switch strategy.toLowerCase()
 
         # @template is a string DOM selector or a function returning DOM selector
         when 'underscore-template-selector'

@@ -3,9 +3,8 @@
 
 # App Events
 
-This example demonstrates how **Giraffe.App** helps components communicate.
-
-Let's create an instance of `Giraffe.App` with three child views that talk to
+This example demonstrates how __Giraffe.App__ helps your objects communicate.
+We'll create an instance of `Giraffe.App` with three child views that talk to
 each other using the app as an event aggregator.
 
 ```js
@@ -18,7 +17,9 @@ var App = Giraffe.App.extend({
 });
 ```
 
-This example has a `ChildView` class with a button that paints all child views its color, and they'll send this coloring message via `appEvents`. Each child view starts out its own color.
+This example has a `ChildView` class with a particular color and a button. When
+the button is clicked, it sends a message to all other child views via
+`appEvents` to color them its color.
 
 ```js
 var ChildView = Giraffe.View.extend({
@@ -29,15 +30,25 @@ var ChildView = Giraffe.View.extend({
   },
 ```
 
-Each `ChildView` has a button that colors all child views its color.
+Here's the `ChildView` template with the button. The default `serialize`
+function passes the view to the template.
 
 ```html
 <script id="child-template" type="text/template">
-  <button>Color the views <%= this.options.text %>!</button>
+  <button>Color the views <%= options.text %>!</button>
 </script>
 ```
 
-The `appEvents` hash is a convenient feature that helps your app's objects communicate. It's similar to the **Backbone.View** `events` hash, but instead of mapping DOM events it maps events on an instance of **Giraffe.App**.  If a **Giraffe.App** has been created, `appEvents` is automatically bound for all Giraffe objects *(views, apps, routers, models, and collections)*, and is cleaned up via `Backbone.Events.stopListening` in `dispose`, which all Giraffe objects implement. When an instance of **Giraffe.App** is created, it stores its reference globally at `Giraffe.app` unless an app instance is already there, and all Giraffe objects store this reference as `this.app` unless you pass `{app: someApp}` as an option.
+The `appEvents` hash is a convenient feature that helps your app's objects
+communicate. It's similar to the __Backbone.View__ `events` hash, but instead of
+mapping DOM events it maps events on an instance of __Giraffe.App__.  If a
+__Giraffe.App__ has been created, `appEvents` is automatically bound for all
+__Giraffe__ objects _(views, apps, routers, models, and collections)_, and is
+cleaned up via `Backbone.Events.stopListening` in `dispose`, which all
+__Giraffe__ objects implement. When an instance of __Giraffe.App__ is created,
+it stores its reference globally at `Giraffe.app` unless an app instance is
+already there, and all __Giraffe__ objects store this reference as `this.app`
+unless you pass `{app: someApp}` as an option.
 
 ```js
   appEvents: {
@@ -46,7 +57,8 @@ The `appEvents` hash is a convenient feature that helps your app's objects commu
   },
 ```
 
-Clicking the view's button calls the `colorChildViews` method. By triggering an event on `this.app`, all views listening to `appEvents` will hear it.
+Clicking the view's button calls the `colorChildViews` method. By triggering an
+event on `this.app`, all views listening to `appEvents` will hear it.
 
 ```js
   events: {
@@ -58,7 +70,9 @@ Clicking the view's button calls the `colorChildViews` method. By triggering an 
 });
 ```
 
-Like all Giraffe objects, **Giraffe.App** can listen to its own `appEvents`. To help us see what's going on, let's log every event that passes through the app to the console.
+Like all __Giraffe__ objects, __Giraffe.App__ can listen to its own `appEvents`.
+To help us see what's going on, let's log every event that passes through the
+app to the console.
 
 ```js
 App.prototype.appEvents = {

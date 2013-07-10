@@ -123,6 +123,10 @@
         method = 'append';
       }
       $el = Giraffe.View.to$El(el);
+      if (!$el) {
+        error('No such `el` to attach to', el);
+        return this;
+      }
       $container = _.contains(this._siblingAttachMethods, method) ? $el.parent() : $el;
       if (method === 'insertAfter') {
         method = 'after';
@@ -713,11 +717,14 @@
 
 
     View.setTemplateStrategy = function(strategy, instance) {
-      var templateStrategy;
-      if (typeof strategy === 'function') {
+      var strategyType, templateStrategy;
+      strategyType = typeof strategy;
+      if (strategyType === 'function') {
         templateStrategy = strategy;
+      } else if (strategyType !== 'string') {
+        return error('Unrecognized template strategy', strategy);
       } else {
-        switch (strategy) {
+        switch (strategy.toLowerCase()) {
           case 'underscore-template-selector':
             templateStrategy = function() {
               var selector,
