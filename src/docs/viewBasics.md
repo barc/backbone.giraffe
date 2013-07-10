@@ -23,6 +23,7 @@ templating. For more information, see `template`, `setTemplateStrategy`, and
 `templateStrategy` in the [API docs](api.html#View-template) or the
 [Template Strategies](templateStrategies.html) example. The included strategies
 use a view's `serialize` function to get the data passed into the template.
+
 ```html
 <script id="my-template" type="text/template">
   Hello <%= name %>!

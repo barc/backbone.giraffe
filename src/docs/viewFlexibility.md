@@ -2,12 +2,15 @@
 
 # View Flexibility
 
-This advanced example demonstrates the flexibility of **Giraffe.View**.
-The design goal is to create a single view class that nests, manages memory, and moves around the DOM with ease.
+This advanced example demonstrates the flexibility of __Giraffe.View__. The
+design goal is to create a single view class that nests, manages memory, and
+moves around the DOM with ease.
 
 ## The Parent App
 
-**Giraffe.App** is a **Giraffe.View** that encapsulates an app.
+__Giraffe.App__ is a __Giraffe.View__ that encapsulates an app. This example has
+an app with a `ChildView` that has buttons to move around the DOM and create
+more child views.
 
 ```js
 var ParentApp = Giraffe.App.extend({
@@ -19,20 +22,21 @@ var ParentApp = Giraffe.App.extend({
 });
 ```
 
-Here's the app's template.
+Here's the app's template:
 
 ```html
 <script id="parent-app-template" type="text/template">
-  <h2><%= this.options.name %></h2>
-  <h3><%= this.cid %></h3>
-  <button data-gf-click="render">Reset <%= this.options.name %></button>
+  <h2><%= options.name %></h2>
+  <h3><%= cid %></h3>
+  <button data-gf-click="render">Reset <%= options.name %></button>
 </script>
 ```
 
-Now let's build the child view that spawns recursively. Let's start with its template.
-
 <div class='note'>
-The attribute `data-gf-click` is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. See the [Document Events example](documentEvents.html) for more.
+The attribute `data-gf-click` is an convenient way to assign a view method as
+the click event handler for the DOM element. We recommend prefixing the name of
+the handler with `on` to make it clear an event triggers the method. See the
+[Document Events example](documentEvents.html) for more.
 </div>
 
 ## The Child View
@@ -56,22 +60,11 @@ var ChildView = Giraffe.View.extend({
     var color = proto.colors[proto.colorIndex];
     this.$el.css('background-color', color);
   },
-
-  template: '#child-template',
-
-  serialize: function() {
-    var
-      $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
-    return {
-      showMoveUpButton: this.parent instanceof ChildView || index !== 0,
-      showMoveDownButton: this.parent instanceof ChildView || index !== $parentChildren.length - 1
-    };
-  },
 ```
 
 
-In this example, each child view has a button that adds another `ChildView` to its `children`.
+In this example, each `ChildView` has a button that adds another `ChildView` to
+its `children` via the `onAddChild` method.
 
 ```js
   onAddChild: function() {
@@ -79,29 +72,23 @@ In this example, each child view has a button that adds another `ChildView` to i
   },
 ```
 
-Each child view also has a button that calls `dispose`, which cleans up all resources and event bindings on the view and its `children`.
-
-```js
-  onDispose: function() {
-    this.dispose();
-  },
-```
-
-By default, Giraffe recreates child views every `render`, but this is often not desired.
-`options.disposeOnDetach` tells Giraffe whether or not to cache a view.
-By default, `disposeOnDetach` is true, and child views are disposed of when their `parent` detaches them before a `render`.
-If you set a view's `disposeOnDetach` option to false, it is preserved when its `parent` renders.
+By default, __Giraffe__ recreates child views every `render`, but this is often
+not desired. `options.disposeOnDetach` tells __Giraffe__ whether or not to cache
+a view. By default, `disposeOnDetach` is true, and child views are disposed when
+their `parent` detaches them before a `render`. If you set a view's
+`disposeOnDetach` option to false, it is preserved when its `parent` renders.
 In this example, the `ChildView` has a checkbox to toggle this caching behavior.
 
 ```js
-  toggleCache: function(e) {
+  onToggleCache: function(e) {
     this.options.disposeOnDetach = !$(e.target).is(':checked');
   },
 ```
 
-Cached child views will be in `children` after rendering the `parent`.
-Uncached child views have already been disposed of by this point.
-Giraffe does *not* automatically reattach child views, so you retain full control.
+Cached child views will be in `children` after rendering the `parent`. Uncached
+child views have already been disposed of by this point which removes them from
+`children`. __Giraffe__ does _not_ automatically reattach child views, so you
+retain full control over what happens each `render`.
 
 ```js
   afterRender: function() {
@@ -111,7 +98,7 @@ Giraffe does *not* automatically reattach child views, so you retain full contro
   },
 ```
 
-Like `afterRender`, `beforeRender` is an empty function for you to create when needed.
+Let's track and display the number of renders so we can see what's happening.
 
 ```js
   beforeRender: function() {
@@ -120,12 +107,22 @@ Like `afterRender`, `beforeRender` is an empty function for you to create when n
   },
 ```
 
-Giraffe views can move freely around the DOM using jQuery methods to insert themselves and automatically update their `parent`.
-The supported insertion methods are `append`, `prepend`, `before`, `after`, and `html`. The function `attachTo` is an inverted way to call `attach`, the difference being `attachTo` doesn't require a parent view - any DOM element, selector, or view will do.
-When a view is attached, Giraffe automatically calls `render` on the view if it hasn't yet been rendered, but passing the option `forceRender` will cause attach to always render.
-The option `preserve` prevents child view disposal, even if `disposeOnDetach` is true.
-In this example, we force `render` on the relevant views so the correct movement buttons are displayed,
-and we use `preserve` to prevent the `render` from disposing of uncached child views.
+__Giraffe__ views can move freely around the DOM using the function `attachTo`,
+which automatically sets up parent-child relationships between views. `attachTo`
+takes an optional `method` option, which is a __jQuery__ insertion method
+defaulting to `'append'`. The methods are `'append'`, `'prepend'`, `'before'`,
+`'after'`, and `'html'`. The function `attachTo` is an inverted way to call
+`attach`, the difference being `attachTo` doesn't require a parent view - any
+DOM element, selector, or view will do.
+
+When a view is attached, __Giraffe__ automatically calls `render` on the view if
+it hasn't yet been rendered, but passing the option `forceRender` will cause
+`attachTo` to always `render` the view. The option `preserve` prevents child
+view disposal, even if `disposeOnDetach` is true. In this example, we have
+buttons to move the views around, but we don't want to display an up or down
+button when that's an invalid move. To display the correct buttons, we need to
+`render` a view when it moves, so we `forceRender` on `attachTo` and we use
+`preserve` to prevent `render` from disposing of uncached child views.
 
 ```js
   onMoveUp: function() {
@@ -167,8 +164,9 @@ and we use `preserve` to prevent the `render` from disposing of uncached child v
   },
 ```
 
-The `html` jQuery method replaces existing content.
-Giraffe automatically disposes of any uncached views that get in the way.
+The `'html'` __jQuery__ method replaces existing content. __Giraffe__
+automatically detaches any views that get in the way when it's used. We'll add a
+button to see how this behavior works with sibling views.
 
 ```js
   onAttachUsingHTML: function() {
@@ -182,15 +180,34 @@ Let's use the console to see when views get disposed.
   dispose: function() {
     Giraffe.View.prototype.dispose.call(this);
     console.log('Disposing of ' + this.cid);
+  },
+```
+
+Here's the child view's `serialize` function and `template`:
+
+```js
+  template: '#child-template',
+
+  serialize: function() {
+    var
+      $parentChildren = this.$el.parent().find('> .child-view'),
+      index = $parentChildren.index(this.$el),
+      parentIsChildView = this.parent instanceof ChildView;
+    return {
+      parentIsChildView: parentIsChildView,
+      showMoveUpButton: parentIsChildView || index !== 0,
+      showMoveDownButton: parentIsChildView || index !== $parentChildren.length - 1,
+      checkedAttr: this.options.disposeOnDetach ? '' : "checked='checked'",
+      renderCount: this.renderCount,
+      cid: this.cid
+    };
   }
 });
 ```
 
-Here's the child view's template:
-
 ```html
 <script id="child-template" type="text/template">
-  <h3><% this.cid %></h3>
+  <h3><% cid %></h3>
 
   <% if (showMoveUpButton) { %>
     <button data-gf-click="onMoveUp">&#9650;</button>
@@ -201,12 +218,12 @@ Here's the child view's template:
   <% } %>
 
   <button data-gf-click="onAddChild">Add a child</button>
-  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
-  <button data-gf-click="onDispose">Dispose</button>
+  <button data-gf-click="render">Render count: <%= renderCount%></button>
+  <button data-gf-click="dispose">Dispose</button>
 
-  <% if (this.parent instanceof ChildView) { %>
+  <% if (parentIsChildView) { %>
     <label>
-      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
+      <input type="checkbox" data-gf-change="onToggleCache" <%= checkedAttr %>>
       Cache this view
     </label>
     <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
@@ -218,7 +235,7 @@ Here's the child view's template:
 
 ## Creating the App(s)
 
-That's it! Let's create and attach the app.
+Phew, that's it! Let's create and attach the app.
 The `name` property is only used for display purposes.
 
 ```js

@@ -3,10 +3,10 @@
 
 # View Document Events
 
-This example demonstrates Giraffe's document event bindings that link DOM events
-to __Giraffe.View__ methods. Giraffe does _not_ provide two-way data binding,
+This example demonstrates __Giraffe__'s document event bindings that link DOM events
+to __Giraffe.View__ methods. __Giraffe__ does _not_ provide two-way data binding,
 but given its goal as a lightweight library, it should play nicely with most
-Backbone plugins. This feature can be disabled by calling the static method
+Backbone plugins. This feature can be disabled by calling the class method
 `Giraffe.View.removeDocumentEvents()`.
 
 ```js
@@ -29,8 +29,8 @@ searches up the hierarchy until it finds the method or fails on a view with no
 ```
 
 <div class='note'>
-By default, Giraffe binds only `click` and `change`, and not `keyup` as this
-example uses, but you can easily set custom bindings using the static method
+By default, __Giraffe__ binds only `click` and `change`, and not `keyup` as this
+example uses, but you can easily set custom bindings using the class method
 `Giraffe.View.setDocumentEvents`.
 </div>
 
@@ -72,5 +72,6 @@ view.attachTo('body');
 ## Try It
 
 {{{EXAMPLE style='height: 80px;'}}}
+
 
 :::END

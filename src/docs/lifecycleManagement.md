@@ -107,7 +107,7 @@ app.dispose();
 
 Here's what happened:
 
-{{{EXAMPLE style='height: 152px;'}}}
+{{{EXAMPLE style='height: 129px;'}}}
 
 
 :::END

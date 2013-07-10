@@ -101,7 +101,7 @@ ChildView = Giraffe.View.extend({
 
 ```html
 <script id="child-template" type="text/template">
-  <h2>child view <%= this.options.name %></h2>
+  <h2>child view <%= options.name %></h2>
 </script>
 ```
 
@@ -170,6 +170,6 @@ h2 {
 
 ## Try It
 
-{{{EXAMPLE style='height: 188px;'}}}
+{{{EXAMPLE style='height: 154px;'}}}
 
 :::END

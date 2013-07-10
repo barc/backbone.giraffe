@@ -73,7 +73,7 @@ removes it.</p>
 <pre><code class="js">  template: <span class="string">'#view-template'</span>,</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAddModel"</span>&gt;</span>add model<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
-  <span class="javascript">&lt;% _.each(<span class="keyword">this</span>.collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
+  <span class="javascript">&lt;% _.each(collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onRemoveModel"</span> <span class="attribute">data-cid</span>=<span class="value">"&lt;%= model.cid %&gt;"</span>&gt;</span>
       remove model <span class="javascript">&lt;%= model.get(<span class="string">"name"</span>) %&gt;</span>
     <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
@@ -159,7 +159,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
     <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onAddModel</span>" &gt;</span> add model <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
-  <span class="javascript">&lt;% _.each(<span class="keyword">this</span>.collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
+  <span class="javascript">&lt;% _.each(collection.models, <span class="function"><span class="keyword">function</span><span class="params">(model)</span> {</span> %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onRemoveModel"</span> <span class="attribute">data-cid</span>=<span class="value">"&lt;%= model.cid %&gt;"</span>&gt;</span>
       remove model <span class="javascript">&lt;%= model.get(<span class="string">"name"</span>) %&gt;</span>
     <span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="javascript">&lt;%

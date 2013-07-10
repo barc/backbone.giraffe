@@ -6,13 +6,13 @@
   </head>
   <body>
     <script id="parent-app-template" type="text/template">
-  <h2><%= this.options.name %></h2>
-  <h3><%= this.cid %></h3>
-  <button data-gf-click="render">Reset <%= this.options.name %></button>
+  <h2><%= options.name %></h2>
+  <h3><%= cid %></h3>
+  <button data-gf-click="render">Reset <%= options.name %></button>
 </script>
 
 <script id="child-template" type="text/template">
-  <h3><% this.cid %></h3>
+  <h3><% cid %></h3>
 
   <% if (showMoveUpButton) { %>
     <button data-gf-click="onMoveUp">&#9650;</button>
@@ -23,12 +23,12 @@
   <% } %>
 
   <button data-gf-click="onAddChild">Add a child</button>
-  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
-  <button data-gf-click="onDispose">Dispose</button>
+  <button data-gf-click="render">Render count: <%= renderCount%></button>
+  <button data-gf-click="dispose">Dispose</button>
 
-  <% if (this.parent instanceof ChildView) { %>
+  <% if (parentIsChildView) { %>
     <label>
-      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
+      <input type="checkbox" data-gf-change="onToggleCache" <%= checkedAttr %>>
       Cache this view
     </label>
     <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>

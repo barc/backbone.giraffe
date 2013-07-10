@@ -3,7 +3,7 @@
 
 # Menu Example
 
-This advanced example demonstrates how you can use Giraffe's features to build a
+This advanced example demonstrates how you can use __Giraffe__'s features to build a
 route-powered menu with cached content views that save their scroll position.
 
 ```js
@@ -171,7 +171,7 @@ ContentItemView = Giraffe.View.extend({
 ## Loading the App
 
 We'll now create the app with some `routes`, which automatically creates an
-instance of **Giraffe.Router** at `app.router`. Next we'll attach the app, start
+instance of __Giraffe.Router__ at `app.router`. Next we'll attach the app, start
 `Backbone.history`, and then route to the first menu item.
 
 ```js

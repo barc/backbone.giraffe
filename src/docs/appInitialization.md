@@ -67,6 +67,6 @@ app.attachTo('body').start();
 
 Here's what happened:
 
-{{{EXAMPLE style='height: 96px;'}}}
+{{{EXAMPLE style='height: 65px;'}}}
 
 :::END

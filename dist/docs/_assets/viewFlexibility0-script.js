@@ -21,27 +21,11 @@ var ChildView = Giraffe.View.extend({
     this.$el.css('background-color', color);
   },
 
-  template: '#child-template',
-
-  serialize: function() {
-    var
-      $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
-    return {
-      showMoveUpButton: this.parent instanceof ChildView || index !== 0,
-      showMoveDownButton: this.parent instanceof ChildView || index !== $parentChildren.length - 1
-    };
-  },
-
   onAddChild: function() {
     this.attach(new ChildView(), {el: this.$('.child-views:first')});
   },
 
-  onDispose: function() {
-    this.dispose();
-  },
-
-  toggleCache: function(e) {
+  onToggleCache: function(e) {
     this.options.disposeOnDetach = !$(e.target).is(':checked');
   },
 
@@ -101,6 +85,23 @@ var ChildView = Giraffe.View.extend({
   dispose: function() {
     Giraffe.View.prototype.dispose.call(this);
     console.log('Disposing of ' + this.cid);
+  },
+
+  template: '#child-template',
+
+  serialize: function() {
+    var
+      $parentChildren = this.$el.parent().find('> .child-view'),
+      index = $parentChildren.index(this.$el),
+      parentIsChildView = this.parent instanceof ChildView;
+    return {
+      parentIsChildView: parentIsChildView,
+      showMoveUpButton: parentIsChildView || index !== 0,
+      showMoveDownButton: parentIsChildView || index !== $parentChildren.length - 1,
+      checkedAttr: this.options.disposeOnDetach ? '' : "checked='checked'",
+      renderCount: this.renderCount,
+      cid: this.cid
+    };
   }
 });
 
