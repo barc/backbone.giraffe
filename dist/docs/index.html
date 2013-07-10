@@ -59,6 +59,38 @@
 <li><p><strong>Giraffe.Model</strong> and <strong>Giraffe.Collection</strong> are thin wrappers that add Giraffe&#39;s lifecycle management and app events.</p>
 </li>
 </ul>
+<h2 id='h-how-it-is-different'>How it is Different</h2>
+<p><strong>Giraffe</strong> was created by the needs of our team as we built <a href="http://barc.com">Barc</a>.
+We tried many existing libraries but some did way too much, others
+added too many layers, and others performed poorly.</p>
+<p><strong>Giraffe</strong> does not have all the bells and
+whistles of the larger frameworks. For example, there is no CollectionView
+or ItemView. We found the effort to customize them for our needs was more
+effort than simply attaching child views to a container. In fact, there is
+no concept of specialiased containers like regions as any view in <strong>Giraffe</strong>
+can act as a parent of one or more child views.</p>
+<p>Is this Framework for you? It depends. We feel <strong>Giraffe</strong> adds essential
+features to make you more productive with Backbone.</p>
+<h3 id='h-highlights'>Highlights</h3>
+<ul>
+<li><p><strong>Routes emit events</strong> and not tied to functions. This makes it extremely
+simple for a deeply nested view to act on a route.</p>
+</li>
+<li><p><strong>Reverse routes with arguments</strong> A way to trigger actions in the
+application without having to know a URL path.</p>
+</li>
+<li><p><code>View.attachTo(someElement)</code> inverse logic is simpler in most cases and
+easier to reattach views.</p>
+</li>
+<li><p>(A)sync app initialization (asyncronously fetch bootstrap data)</p>
+</li>
+<li><p>Object tracking to mitigate memory leaks</p>
+</li>
+<li><p>Application wide event hub</p>
+</li>
+<li><p>Declarative event handling in markup (does not try to be Knockdown or AngularJS)</p>
+</li>
+</ul>
 <h2 id='h-download'>Download</h2>
 <p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js">backbone.giraffe.js</a> <em>48.8k</em> <strong>(version 0.1)</strong></p>
 <p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js">backbone.giraffe.min.js</a> <em>14.6k</em></p>
