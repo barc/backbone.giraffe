@@ -45,8 +45,8 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-app-events'>App Events</h1>
-<p>This example demonstrates how <strong>Giraffe.App</strong> helps components communicate.</p>
-<p>Let&#39;s create an instance of <code>Giraffe.App</code> with three child views that talk to
+<p>This example demonstrates how <strong>Giraffe.App</strong> helps your objects communicate.
+We&#39;ll create an instance of <code>Giraffe.App</code> with three child views that talk to
 each other using the app as an event aggregator.</p>
 <pre><code class="js"><span class="keyword">var</span> App = Giraffe.App.extend({
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
@@ -55,23 +55,36 @@ each other using the app as an event aggregator.</p>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'blue'</span>}));
   }
 });</code></pre>
-<p>This example has a <code>ChildView</code> class with a button that paints all child views its color, and they&#39;ll send this coloring message via <code>appEvents</code>. Each child view starts out its own color.</p>
+<p>This example has a <code>ChildView</code> class with a particular color and a button. When
+the button is clicked, it sends a message to all other child views via
+<code>appEvents</code> to color them its color.</p>
 <pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
   initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
   },</code></pre>
-<p>Each <code>ChildView</code> has a button that colors all child views its color.</p>
+<p>Here&#39;s the <code>ChildView</code> template with the button. The default <code>serialize</code>
+function passes the view to the template.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= <span class="keyword">this</span>.options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a <strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all Giraffe objects <em>(views, apps, routers, models, and collections)</em>, and is cleaned up via <code>Backbone.Events.stopListening</code> in <code>dispose</code>, which all Giraffe objects implement. When an instance of <strong>Giraffe.App</strong> is created, it stores its reference globally at <code>Giraffe.app</code> unless an app instance is already there, and all Giraffe objects store this reference as <code>this.app</code> unless you pass <code>{app: someApp}</code> as an option.</p>
+<p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects
+communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of
+mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a
+<strong>Giraffe.App</strong> has been created, <code>appEvents</code> is automatically bound for all
+<strong>Giraffe</strong> objects <em>(views, apps, routers, models, and collections)</em>, and is
+cleaned up via <code>Backbone.Events.stopListening</code> in <code>dispose</code>, which all
+<strong>Giraffe</strong> objects implement. When an instance of <strong>Giraffe.App</strong> is created,
+it stores its reference globally at <code>Giraffe.app</code> unless an app instance is
+already there, and all <strong>Giraffe</strong> objects store this reference as <code>this.app</code>
+unless you pass <code>{app: someApp}</code> as an option.</p>
 <pre><code class="js">  appEvents: {
     <span class="string">'setColor'</span>: <span class="function"><span class="keyword">function</span><span class="params">(color)</span> {</span> <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, color); }
     <span class="comment">//'someOtherAppEvent': 'someFunctionName'</span>
   },</code></pre>
-<p>Clicking the view&#39;s button calls the <code>colorChildViews</code> method. By triggering an event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
+<p>Clicking the view&#39;s button calls the <code>colorChildViews</code> method. By triggering an
+event on <code>this.app</code>, all views listening to <code>appEvents</code> will hear it.</p>
 <pre><code class="js">  events: {
     <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
@@ -79,7 +92,9 @@ each other using the app as an event aggregator.</p>
     <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
   }
 });</code></pre>
-<p>Like all Giraffe objects, <strong>Giraffe.App</strong> can listen to its own <code>appEvents</code>. To help us see what&#39;s going on, let&#39;s log every event that passes through the app to the console.</p>
+<p>Like all <strong>Giraffe</strong> objects, <strong>Giraffe.App</strong> can listen to its own <code>appEvents</code>.
+To help us see what&#39;s going on, let&#39;s log every event that passes through the
+app to the console.</p>
 <pre><code class="js">App.prototype.appEvents = {
   <span class="string">'all'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> console.log(<span class="string">'app event'</span>, arguments); }
 };</code></pre>
@@ -170,7 +185,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">button</span> &gt;</span> Color the views <span class="javascript">&lt;%= <span class="keyword">this</span>.options.text %&gt;</span> ! <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">button</span> &gt;</span> Color the views <span class="javascript">&lt;%= options.text %&gt;</span> ! <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
