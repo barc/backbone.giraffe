@@ -5,6 +5,8 @@
 This advanced example demonstrates the flexibility of **Giraffe.View**.
 The design goal is to create a single view class that nests, manages memory, and moves around the DOM with ease.
 
+## The Parent App
+
 **Giraffe.App** is a **Giraffe.View** that encapsulates an app.
 
 ```js
@@ -30,38 +32,10 @@ Here's the app's template.
 Now let's build the child view that spawns recursively. Let's start with its template.
 
 <div class='note'>
-The attribute `data-gf-click` is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. 
+The attribute `data-gf-click` is an intuitive way to assign a view method as the click event handler for the DOM element. We recommend prefixing the name of the handler with `on` to make it clear an event triggers the method. See the [Document Events example](documentEvents.html) for more.
 </div>
 
-```html
-<script id="child-template" type="text/template">
-  <h3><% this.cid %></h3>
-
-  <% if (showMoveUpButton) { %>
-    <button data-gf-click="onMoveUp">&#9650;</button>
-  <% } %>
-
-  <% if (showMoveDownButton) { %>
-    <button data-gf-click="onMoveDown">&#9660;</button>
-  <% } %>
-
-  <button data-gf-click="onAddChild">Add a child</button>
-  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
-  <button data-gf-click="onDispose">Dispose</button>
-
-  <% if (this.parent instanceof ChildView) { %>
-    <label>
-      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
-      Cache this view
-    </label>
-    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
-  <% } %>
-
-  <div class="child-views"></div>
-</script>
-```
-
-Define the child view
+## The Child View
 
 ```js
 var ChildView = Giraffe.View.extend({
@@ -211,6 +185,38 @@ Let's use the console to see when views get disposed.
   }
 });
 ```
+
+Here's the child view's template:
+
+```html
+<script id="child-template" type="text/template">
+  <h3><% this.cid %></h3>
+
+  <% if (showMoveUpButton) { %>
+    <button data-gf-click="onMoveUp">&#9650;</button>
+  <% } %>
+
+  <% if (showMoveDownButton) { %>
+    <button data-gf-click="onMoveDown">&#9660;</button>
+  <% } %>
+
+  <button data-gf-click="onAddChild">Add a child</button>
+  <button data-gf-click="render">Render count: <%= this.renderCount%></button>
+  <button data-gf-click="onDispose">Dispose</button>
+
+  <% if (this.parent instanceof ChildView) { %>
+    <label>
+      <input type="checkbox" data-gf-change="toggleCache" <%= this.options.disposeOnDetach ? '' : "checked='checked'" %>>
+      Cache this view
+    </label>
+    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
+  <% } %>
+
+  <div class="child-views"></div>
+</script>
+```
+
+## Creating the App(s)
 
 That's it! Let's create and attach the app.
 The `name` property is only used for display purposes.
