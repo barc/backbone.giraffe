@@ -45,14 +45,18 @@
       <article id="content" class="col content">
         <img id="logo" src="img/logo.png" />
         <p><div class='section-example'><h1 id='h-view-ui'>View UI</h1>
-<p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains cached jQuery objects for a view and allows you to use the names of these cached objects in your <code>events</code> hash. The <code>ui</code> hash is a simple map of names to selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>view.$button</code> available once the view has rendered at least once.</p>
+<p>This example demonstrates the <strong>Giraffe.View</strong> <code>ui</code> feature that maintains
+cached <strong>jQuery</strong> objects for a view and allows you to use the names of these
+cached objects in your <code>events</code> hash. The <code>ui</code> hash is a simple map of names to
+selectors. For example, <code>{$button: &#39;button&#39;}</code> makes <code>this.$button</code> available
+once the view has rendered at least once.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   ui: {
     <span class="string">'$someButton'</span>: <span class="string">'button'</span>
   },
   events: {
     <span class="string">'click $someButton'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+      alert(<span class="string">'clicked `this.$someButton` which has length '</span> + <span class="keyword">this</span>.$someButton.length);
     }
   },
   template: <span class="string">'#view-template'</span>
@@ -60,7 +64,7 @@
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span>&gt;</span>click me<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Let&#39;s create and attach the view.</p>
+<p>Let&#39;s create and attach the view to see it in action.</p>
 <pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
 <h2 id='h-try-it'>Try It</h2>
@@ -83,7 +87,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div>
 <div id="viewui0_tabs_content" class="tabs_content">
   <div id="viewui0result-tab" class="tab_content">
-  <iframe id="viewui0" src="_assets/viewUI0.html" class="result"  style='height: 66px;'></iframe>
+  <iframe id="viewui0" src="_assets/viewUI0.html" class="result"  style='height: 26px;'></iframe>
 </div><div id="viewui0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
   ui: {
@@ -91,7 +95,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   },
   events: {
     <span class="string">'click $someButton'</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-      alert(<span class="string">'clicked `this.$someButton` which has a length of '</span> + <span class="keyword">this</span>.$someButton.length);
+      alert(<span class="string">'clicked `this.$someButton` which has length '</span> + <span class="keyword">this</span>.$someButton.length);
     }
   },
   template: <span class="string">'#view-template'</span>

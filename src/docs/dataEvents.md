@@ -3,9 +3,9 @@
 
 # View Data Events
 
-This example demonstrates how to use the `dataEvents` map of **Giraffe.View**.
-Similar to how the **Backbone.View** `events` map binds DOM events to view
-methods, **Giraffe.View** provides the `dataEvents` hash that maps object events
+This example demonstrates how to use the `dataEvents` map of __Giraffe.View__.
+Similar to how the __Backbone.View__ `events` map binds DOM events to view
+methods, __Giraffe.View__ provides the `dataEvents` hash that maps object events
 to view methods. Like the `events` map, the `dataEvents` bindings are also
 automatically cleaned up when a view's `dispose` method is called.
 
@@ -14,7 +14,7 @@ var View = Giraffe.View.extend({
 ```
 
 To demonstrate `dataEvents`, we'll first need some data. In this example we'll
-use a regular **Backbone.Collection**, but `dataEvents` works with any object
+use a regular __Backbone.Collection__, but `dataEvents` works with any object
 that implements `Backbone.Events`.
 
 ```js
@@ -25,7 +25,7 @@ that implements `Backbone.Events`.
 
 `dataEvents` maps events on an object to a view method. The hash's key is a
 space-separated list of events ending with the target object. This structure
-mirrors the `events` map of **Backbone.View**,
+mirrors the `events` map of __Backbone.View__,
 `{'domEventName selector': 'viewMethod'}`, but replaces the selector with the
 name of any `Backbone.Events` object on this view instance, and it has the added
 benefit of accepting multiple events per definition.

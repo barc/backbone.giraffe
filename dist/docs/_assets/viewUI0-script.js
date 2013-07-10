@@ -4,7 +4,7 @@ var View = Giraffe.View.extend({
   },
   events: {
     'click $someButton': function() {
-      alert('clicked `this.$someButton` which has a length of ' + this.$someButton.length);
+      alert('clicked `this.$someButton` which has length ' + this.$someButton.length);
     }
   },
   template: '#view-template'
