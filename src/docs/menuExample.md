@@ -3,7 +3,8 @@
 
 # Menu Example
 
-This advanced example demonstrates how you can use Giraffe's features to build a route-powered menu with cached content views that save their scroll position.
+This advanced example demonstrates how you can use Giraffe's features to build a
+route-powered menu with cached content views that save their scroll position.
 
 ```js
 var App, MenuView, MenuItemView, ContentView, ContentItemView;
@@ -11,7 +12,8 @@ var App, MenuView, MenuItemView, ContentView, ContentItemView;
 
 ## The App
 
-The `App` view creates a collection representing the menu's items along with the menu and content views.
+The `App` view creates a collection representing the menu's items along with the
+menu and content views.
 
 ```js
 App = Giraffe.App.extend({
@@ -32,7 +34,8 @@ App = Giraffe.App.extend({
 
 ## The MenuView
 
-The `MenuView` listens for the `'route:menu'` app event and activates the `collection` item whose `name` matches the route parameter.
+The `MenuView` listens for the `'route:menu'` app event and activates the
+`collection` item whose `name` matches the route parameter.
 
 ```js
 MenuView = Giraffe.View.extend({
@@ -90,7 +93,8 @@ MenuItemView = Giraffe.View.extend({
 
 ## The ContentView
 
-The `ContentView` listens for changes to the `active` property on its `collection` and displays the appropriate `ContentItemView`.
+The `ContentView` listens for changes to the `active` property on its
+`collection` and displays the appropriate `ContentItemView`.
 
 ```js
 ContentView = Giraffe.View.extend({
@@ -104,8 +108,10 @@ ContentView = Giraffe.View.extend({
 
   afterRender: function() {
     var activeMenuItem = this.collection.findWhere({active: true});
-    if (activeMenuItem)
-      this.getItemView(activeMenuItem).attachTo(this, {method: 'html'});
+    if (activeMenuItem) {
+      var itemView = this.getItemView(activeMenuItem);
+      itemView.attachTo(this, {method: 'html'}); // first detaches any view in this.$el
+    }
   },
 
   getItemView: function(menuItem) {
@@ -115,7 +121,7 @@ ContentView = Giraffe.View.extend({
     if (!view) {
       view = new ContentItemView({
         model: menuItem,
-        disposeOnDetach: false,
+        disposeOnDetach: false, // keeps the view cached when detached
         saveScrollPosition: true
       });
     }
@@ -124,9 +130,20 @@ ContentView = Giraffe.View.extend({
 });
 ```
 
+<div class="note">
+The option `disposeOnDetach: false` is passed to the `ContentItemView` because
+by default, views are disposed when detached from the DOM, and by using
+`{method: 'html'}` to attach the view, all views in the target element are first
+detached. In this example we want to keep views around so they can save their
+scroll position, but there are other reasons to cache views beyond saving view
+state, like speed.
+</div>
+
 ## The ContentItemView
 
-The `ContentItemView` displays the name of the content. Because these are created with `options.saveScrollPosition` set to `true`, they save their scroll position when detached and apply it when attached.
+The `ContentItemView` displays the name of the content. Because these are
+created with `options.saveScrollPosition` set to `true`, they save their scroll
+position when detached and apply it when attached.
 
 ```js
 ContentItemView = Giraffe.View.extend({
@@ -153,7 +170,9 @@ ContentItemView = Giraffe.View.extend({
 
 ## Loading the App
 
-We'll now create the app with some `routes`, which automatically creates an instance of **Giraffe.Router** at `app.router`. Next we'll attach the app, start `Backbone.history`, and then route to the first menu item.
+We'll now create the app with some `routes`, which automatically creates an
+instance of **Giraffe.Router** at `app.router`. Next we'll attach the app, start
+`Backbone.history`, and then route to the first menu item.
 
 ```js
 var app = new App({
