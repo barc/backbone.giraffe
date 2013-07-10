@@ -239,18 +239,7 @@ app2.attachTo('body');
 
 ```css
 body {
-  background-color: #ffffff;
   padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-h1 {
-  font-size: 42px;
 }
 h2 {
   font-size: 24px;
@@ -283,7 +272,7 @@ h3 {
 
 ### Result
 
-{{{EXAMPLE style='height: 600px;'}}}
+{{{EXAMPLE style='height: 550px;'}}}
 
 
 :::END

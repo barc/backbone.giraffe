@@ -69,22 +69,6 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-:::@ --hide
-
-```css
-body {
-  background-color: #ffffff;
-  padding: 20px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-```
-
 ## Try It
 
 {{{EXAMPLE style='height: 80px;'}}}
