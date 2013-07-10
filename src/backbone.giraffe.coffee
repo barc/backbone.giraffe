@@ -6,7 +6,6 @@
 
 
 # TODO
-# clean up after router
 # route namespaces
 # more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
 # view transitions
@@ -883,6 +882,19 @@ class Giraffe.Router extends Backbone.Router
     @
 
 
+  # Unbinds all triggers registered to Backbone.history
+  _unbindTriggers: ->
+    triggers = @_getTriggerRegExpStrings()
+    Backbone.history.handlers = _.reject Backbone.history.handlers, (handler) ->
+      _.contains triggers, handler.route.toString()
+
+
+  # Gets the routes of `triggers` as RegExps turned to strings, the `route` of Backbone.history
+  _getTriggerRegExpStrings: ->
+    _.map _.keys(@triggers), (route) ->
+      Backbone.Router::_routeToRegExp(route).toString()
+
+
   ###
   * Triggers an app event with optional arguments. If `this.triggers` has a matching route, `Backbone.history` navigates to it.
   *
@@ -975,7 +987,7 @@ class Giraffe.Router extends Backbone.Router
   ###
   dispose: ->
     Giraffe.dispose @, ->
-      # TODO remove callbacks registered to Backbone.history
+      @_unbindTriggers()
 
 
 

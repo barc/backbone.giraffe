@@ -1064,6 +1064,20 @@
       return this;
     };
 
+    Router.prototype._unbindTriggers = function() {
+      var triggers;
+      triggers = this._getTriggerRegExpStrings();
+      return Backbone.history.handlers = _.reject(Backbone.history.handlers, function(handler) {
+        return _.contains(triggers, handler.route.toString());
+      });
+    };
+
+    Router.prototype._getTriggerRegExpStrings = function() {
+      return _.map(_.keys(this.triggers), function(route) {
+        return Backbone.Router.prototype._routeToRegExp(route).toString();
+      });
+    };
+
     /*
     * Triggers an app event with optional arguments. If `this.triggers` has a matching route, `Backbone.history` navigates to it.
     *
@@ -1177,7 +1191,9 @@
 
 
     Router.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {});
+      return Giraffe.dispose(this, function() {
+        return this._unbindTriggers();
+      });
     };
 
     return Router;
