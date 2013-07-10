@@ -1,6 +1,4 @@
-var ParentView, ChildView;
-
-ParentView = Giraffe.View.extend({
+var ParentView = Giraffe.View.extend({
   template: '#parent-template',
   afterRender: function() {
     var childView = new ChildView({name: 'child view'});
@@ -10,7 +8,7 @@ ParentView = Giraffe.View.extend({
   }
 });
 
-ChildView = Giraffe.View.extend({
+var ChildView = Giraffe.View.extend({
   template: '#child-template'
 });
 

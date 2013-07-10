@@ -71,7 +71,7 @@ predefined strategies are:</p>
 </li>
 </ul>
 <p>Templating is fully user customizable as detailed in the
-<a href="#h-user-defined-template-strategy">User-Defined Template Strategy</a> and 
+<a href="#h-user-defined-template-strategy">User-Defined Template Strategy</a> and
 <a href="#h-mustache-integration">Mustache Integration</a> sections below.</p>
 <div class='note'>
 At <a href="http://barc.com">Barc</a> we love CoffeeScript and use
@@ -380,11 +380,11 @@ JavaScript Templates (<code>JST</code>) objects. The object might look something
   header: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;Header&lt;/div&gt;'</span>; },
   footer: <span class="function"><span class="keyword">function</span><span class="params">(it)</span> {</span> <span class="keyword">return</span> <span class="string">'&lt;div&gt;footer&lt;/div&gt;'</span>; },
 };</code></pre>
-<p>To use the <code>JST</code> template strategy, override the template strategy by setting 
-a function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to
+<p>To use this <code>JST</code>, we&#39;ll assign <code>setTemplateStrategy</code> a
+function which uses the view&#39;s <code>template</code> as the name of <code>JST</code> function to
 call.</p>
 <pre><code class="js">
-Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
+Giraffe.View.setTemplateStrategy(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
   <span class="keyword">var</span> data = <span class="keyword">this</span>.serialize();
   <span class="keyword">var</span> template = JST[<span class="keyword">this</span>.template];
   <span class="keyword">return</span> template(data);
@@ -499,6 +499,8 @@ using a user-defined strategy.</p>
 
 <span class="keyword">var</span> view = <span class="keyword">new</span> View();
 view.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>All we need now is a reference to the Mustache library in our page</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h3 id='h-result'>Result</h3>
 <div id="templatestrategies4_tabs" class="tabs">
   <ul>

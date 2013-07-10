@@ -17,7 +17,7 @@ predefined strategies are:
   * `Giraffe.View#template` is a function that returns an HTML string.
 
 Templating is fully user customizable as detailed in the
-[User-Defined Template Strategy](#h-user-defined-template-strategy) and 
+[User-Defined Template Strategy](#h-user-defined-template-strategy) and
 [Mustache Integration](#h-mustache-integration) sections below.
 
 
@@ -213,13 +213,13 @@ var JST = {
 };
 ```
 
-To use the `JST` template strategy, override the template strategy by setting 
-a function which uses the view's `template` as the name of `JST` function to
+To use this `JST`, we'll assign `setTemplateStrategy` a
+function which uses the view's `template` as the name of `JST` function to
 call.
 
 ```js
 
-Giraffe.View.setTemplateStrategy(function() { 
+Giraffe.View.setTemplateStrategy(function() {
   var data = this.serialize();
   var template = JST[this.template];
   return template(data);
@@ -280,7 +280,7 @@ view.attachTo('body');
 
 {{{COMMON}}}
 
-:::@ --hide
+All we need now is a reference to the Mustache library in our page
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>

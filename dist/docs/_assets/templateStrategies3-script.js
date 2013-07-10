@@ -7,7 +7,7 @@ var JST = {
 };
 
 
-Giraffe.View.setTemplateStrategy(function() { 
+Giraffe.View.setTemplateStrategy(function() {
   var data = this.serialize();
   var template = JST[this.template];
   return template(data);

@@ -54,16 +54,12 @@ Here's the result:
 This example demonstrates how the `attachTo` function automatically sets up
 parent-child relationships between views.
 
-```js
-var ParentView, ChildView;
-```
-
 __Giraffe__ calls the functions `beforeRender` and `afterRender` every time a
 view renders. These are empty functions for your views to fill in. `afterRender`
 is a good place to create and attach child views.
 
 ```js
-ParentView = Giraffe.View.extend({
+var ParentView = Giraffe.View.extend({
   template: '#parent-template',
   afterRender: function() {
     var childView = new ChildView({name: 'child view'});
@@ -83,7 +79,7 @@ ParentView = Giraffe.View.extend({
 The `ChildView` will be put inside the `ParentView`.
 
 ```js
-ChildView = Giraffe.View.extend({
+var ChildView = Giraffe.View.extend({
   template: '#child-template'
 });
 ```
@@ -147,7 +143,7 @@ Here's the result:
 }
 ```
 
-## UML Summary of `attachTo`
+## `attachTo` Sequence Diagram
 
 ```uml
 participant MyView
