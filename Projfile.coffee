@@ -46,11 +46,18 @@ exports.project = (pm) ->
       f.writeFile _filename: 'dist/backbone.giraffe.min.js'
     ]
 
+  # _docs
   _copyReadmeAsIndex:
     desc: 'Copies README.md as the source for index.html'
-    dev: ->
-      $.cp 'README.md', 'src/docs/index.md'
-      $.cp 'LICENSE', 'src/docs/license.md'
+    files: ['README.md', 'LICENSE']
+    dev: [
+      f.tap (asset) ->
+        asset.filename = switch asset.filename
+          when 'README.md' then 'src/docs/index.md'
+          when 'LICENSE' then 'src/docs/LICENSE.md'
+      f.writeFile
+    ]
+
 
   _deleteTempIndex:
     desc: 'Deletes copied README.md'
