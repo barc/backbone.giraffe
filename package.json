@@ -6,12 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["backbone", "coffee", "mvc"],
+  "keywords": [
+    "backbone",
+    "coffee",
+    "mvc"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/barc/backbone.giraffe.git"
   },
   "author": "ryan@barc.com",
   "license": "MIT",
-  "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf"
+  "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf",
+  "devDependencies": {
+    "async": "~0.2.9"
+  }
 }
