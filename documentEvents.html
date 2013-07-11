@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        <h2><a href="index.html#">Backbone.Giraffe</a></h2>
+        <ul>
+          <li><a href="index.html#h-download">Download</a></li>
+          <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
+        </ul>
+        
+        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+</ul>
+
+        <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        <p><div class='section-example'><h1 id='h-view-document-events'>View Document Events</h1>
+<p>This example demonstrates <strong>Giraffe</strong>&#39;s document event bindings that link DOM events
+to <strong>Giraffe.View</strong> methods. <strong>Giraffe</strong> does <em>not</em> provide two-way data binding,
+but given its goal as a lightweight library, it should play nicely with most
+Backbone plugins. This feature can be disabled by calling the class method
+<code>Giraffe.View.removeDocumentEvents()</code>.</p>
+<pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  template: <span class="string">'#view-template'</span>,</code></pre>
+<p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM
+events to view method calls in your markup using the form
+<code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it
+searches up the hierarchy until it finds the method or fails on a view with no
+<code>parent</code>. In this template we bind to <code>&#39;keyup&#39;</code> and <code>&#39;click&#39;</code> events.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"hello-text"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAlertHello"</span>&gt;</span>Say hello in a popup<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<div class='note'>
+By default, <strong>Giraffe</strong> binds only <code>click</code> and <code>change</code>, and not <code>keyup</code> as this
+example uses, but you can easily set custom bindings using the class method
+<code>Giraffe.View.setDocumentEvents</code>.
+</div>
+
+<p>Whenever the input changes via a <code>&#39;keyup&#39;</code> event, this method is called.</p>
+<pre><code class="js">  onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
+    $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
+  },</code></pre>
+<p>Whenever the button is clicked, this method is called.</p>
+<pre><code class="js">  onAlertHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    alert($(<span class="string">'#hello-text'</span>).text());
+  }
+});</code></pre>
+<p>If you want to set your own custom DOM event bindings, this is how you&#39;d do it.</p>
+<pre><code class="js">Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// Giraffe's default events</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span></code></pre>
+<p>All done! Let&#39;s create and attach the view.</p>
+<pre><code class="js"><span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+<h2 id='h-try-it'>Try It</h2>
+<div id="documentevents0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#documentevents0result-tab" rel="documentevents0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#documentevents0scriptjs-tab" rel="documentevents0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#documentevents0markuphtml-tab" rel="documentevents0markuphtml-tab">
+    markup.html
+  </a>
+</li>
+  </ul>
+</div>
+<div id="documentevents0_tabs_content" class="tabs_content">
+  <div id="documentevents0result-tab" class="tab_content">
+  <iframe id="documentevents0" src="_assets/documentEvents0.html" class="result"  style='height: 80px;'></iframe>
+</div><div id="documentevents0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> View = Giraffe.View.extend({
+  template: <span class="string">'#view-template'</span>,
+
+  onChangeName: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
+    $(<span class="string">'#hello-text'</span>).text(<span class="string">'Hello '</span> + $(e.target).val() + <span class="string">'!'</span>);
+  },
+
+  onAlertHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    alert($(<span class="string">'#hello-text'</span>).text());
+  }
+});
+
+Giraffe.View.setDocumentEvents([<span class="string">'mousedown'</span>, <span class="string">'change'</span>, <span class="string">'keyup'</span>]); <span class="comment">// as an array</span>
+Giraffe.View.setDocumentEvents(<span class="string">'mousedown change keyup'</span>); <span class="comment">// or as a single string</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click change'</span>); <span class="comment">// Giraffe's default events</span>
+Giraffe.View.setDocumentEvents(<span class="string">'click keyup'</span>); <span class="comment">// the events for this example</span>
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="documentevents0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">id</span> = "<span class="attribute">hello-text</span>" &gt;</span> Hello world! <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAlertHello"</span>&gt;</span>Say hello in a popup<span class="tag">&lt;/<span class="title">button</span> &gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'documentevents0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div>
+</div></div></p>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+</body>
+</html>
+

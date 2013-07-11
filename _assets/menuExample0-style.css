@@ -1,0 +1,12 @@
+body {
+  padding: 20px;
+}
+.active {
+  font-weight: bold;
+}
+.content-item-view {
+  height: 200px;
+  overflow: auto;
+  margin-top: 20px;
+  border: 1px solid #bbb;
+}

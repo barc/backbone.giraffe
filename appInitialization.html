@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        <h2><a href="index.html#">Backbone.Giraffe</a></h2>
+        <ul>
+          <li><a href="index.html#h-download">Download</a></li>
+          <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
+        </ul>
+        
+        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+</ul>
+
+        <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        <p><div class='section-example'><h1 id='h-app-initialization'>App Initialization</h1>
+<p>This example demonstrates how to use the <strong>Giraffe.App</strong> initialization feature.
+It&#39;s a convenient way to get your app into a ready state, and it handles both
+synchronous and asynchronous initializers.</p>
+<pre><code class="js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();</code></pre>
+<p> <strong>Giraffe.App</strong> has two methods to help with initialization, <code>addInitializer</code>
+ and <code>start</code>. The <code>addInitializer</code> method queues up functions that run when
+ <code>start</code> is called. The <code>start</code> method takes some optional <code>options</code> and then
+ passes them through each initializer, and when initialization completes,
+ <code>app.options</code> are extended with the initialization <code>options</code>. The <code>this</code> of
+ each initializer is the app.</p>
+<pre><code class="js">app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
+  options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
+});</code></pre>
+<p>If <code>addInitializer</code> is passed a function with 2 arguments, <code>fn.length === 2</code>,
+the second argument is assumed to be an asynchronous callback. Initialization
+will not proceed until the callback is called. Per <strong>Node.js</strong> convention, if
+<code>cb</code> is called with a truthy first argument, an error is thrown and
+initialization halts.</p>
+<pre><code class="js">app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options, cb)</span> {</span>
+  setTimeout(cb, <span class="number">100</span>); <span class="comment">// initialization will not proceed until `cb` is called</span>
+});</code></pre>
+<p>The app fires events when it&#39;s initializing and initialized,
+<code>&#39;app:initializing&#39;</code> and <code>&#39;app:initialized&#39;</code>. Let&#39;s figure out how much time
+elapses between them.</p>
+<pre><code class="js">app.on(<span class="string">'app:initializing'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initializing&lt;/p&gt;'</span>);
+  options.startTime = Date.now();
+  console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; false</span>
+});
+
+app.on(<span class="string">'app:initialized'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
+  <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
+  <span class="keyword">this</span>.options.thisWillBeAddedToOptions === options.thisWillBeAddedToOptions; <span class="comment">// =&gt; true</span>
+  console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; true</span>
+});</code></pre>
+<p>Now that our initializers are added, let&#39;s attach and start up the app.</p>
+<pre><code class="js">app.attachTo(<span class="string">'body'</span>).start();</code></pre>
+<p>Here&#39;s what happened:</p>
+<div id="appinitialization0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#appinitialization0result-tab" rel="appinitialization0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#appinitialization0scriptjs-tab" rel="appinitialization0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#appinitialization0markuphtml-tab" rel="appinitialization0markuphtml-tab">
+    markup.html
+  </a>
+</li>
+  </ul>
+</div>
+<div id="appinitialization0_tabs_content" class="tabs_content">
+  <div id="appinitialization0result-tab" class="tab_content">
+  <iframe id="appinitialization0" src="_assets/appInitialization0.html" class="result"  style='height: 65px;'></iframe>
+</div><div id="appinitialization0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> app = <span class="keyword">new</span> Giraffe.App();
+
+app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
+  options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
+});
+
+app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options, cb)</span> {</span>
+  setTimeout(cb, <span class="number">100</span>); <span class="comment">// initialization will not proceed until `cb` is called</span>
+});
+
+app.on(<span class="string">'app:initializing'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initializing&lt;/p&gt;'</span>);
+  options.startTime = Date.now();
+  console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; false</span>
+});
+
+app.on(<span class="string">'app:initialized'</span>, <span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
+  <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
+  <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
+  <span class="keyword">this</span>.options.thisWillBeAddedToOptions === options.thisWillBeAddedToOptions; <span class="comment">// =&gt; true</span>
+  console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; true</span>
+});
+
+app.attachTo(<span class="string">'body'</span>).start();</code></pre>
+</div><div id="appinitialization0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'appinitialization0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div>
+</div></div></p>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+</body>
+</html>
+

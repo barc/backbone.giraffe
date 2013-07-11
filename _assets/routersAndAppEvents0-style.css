@@ -1,0 +1,9 @@
+h2 {
+  font-size: 24px;
+}
+.child-view {
+  position: relative;
+  padding: 20px;
+  margin: 20px;
+  border: 1px dashed #999;
+}

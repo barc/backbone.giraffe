@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        <h2><a href="index.html#">Backbone.Giraffe</a></h2>
+        <ul>
+          <li><a href="index.html#h-download">Download</a></li>
+          <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
+        </ul>
+        
+        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+</ul>
+
+        <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        <h1 id='h-view-basics'>View Basics</h1>
+<p><div class='section-example'><h2 id='h-creating-and-attaching-a-view'>Creating and Attaching a View</h2>
+<p>This example demonstrates the basic usage of <strong>Giraffe.View</strong>. It can be
+extended just like a <strong>Backbone.View</strong>.</p>
+<pre><code class="js"><span class="keyword">var</span> MyView = Giraffe.View.extend({
+  template: <span class="string">'#my-template'</span>,
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {name: <span class="string">'my view'</span>};
+  }
+});</code></pre>
+<p><strong>Giraffe</strong> implements <code>render</code> so it can do some useful things, and by default
+<code>render</code> expects a view&#39;s <code>template</code> to be the DOM selector of an <strong>Underscore</strong>
+template. This can be easily configured to support any form of string
+templating. For more information, see <code>template</code>, <code>setTemplateStrategy</code>, and
+<code>templateStrategy</code> in the <a href="api.html#View-template">API docs</a> or the
+<a href="templateStrategies.html">Template Strategies</a> example. The included strategies
+use a view&#39;s <code>serialize</code> function to get the data passed into the template.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"my-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  Hello <span class="javascript">&lt;%= name %&gt;</span>!
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p><strong>Giraffe</strong> uses the function <code>attachTo</code> to put views into the DOM or inside one
+another. If a view has not yet been rendered, <code>attachTo</code> will call <code>render</code> on
+it.</p>
+<pre><code class="js"><span class="keyword">var</span> myView = <span class="keyword">new</span> MyView();
+myView.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>Here&#39;s the result:</p>
+<div id="viewbasics0_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#viewbasics0result-tab" rel="viewbasics0result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#viewbasics0scriptjs-tab" rel="viewbasics0scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#viewbasics0markuphtml-tab" rel="viewbasics0markuphtml-tab">
+    markup.html
+  </a>
+</li>
+  </ul>
+</div>
+<div id="viewbasics0_tabs_content" class="tabs_content">
+  <div id="viewbasics0result-tab" class="tab_content">
+  <iframe id="viewbasics0" src="_assets/viewBasics0.html" class="result"  style='height: 30px;'></iframe>
+</div><div id="viewbasics0scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> MyView = Giraffe.View.extend({
+  template: <span class="string">'#my-template'</span>,
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {
+      name: <span class="string">'my view'</span>
+    };
+  }
+});
+
+<span class="keyword">var</span> myView = <span class="keyword">new</span> MyView();
+myView.attachTo(<span class="string">'body'</span>);</code></pre>
+</div><div id="viewbasics0markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"my-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    Hello <span class="javascript">&lt;%= name %&gt;</span> !
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'viewbasics0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div>
+</div></div>
+<div class='section-example'><h2 id='h-creating-child-views'>Creating Child Views</h2>
+<p>This example demonstrates how the <code>attachTo</code> function automatically sets up
+parent-child relationships between views.</p>
+<p><strong>Giraffe</strong> calls the functions <code>beforeRender</code> and <code>afterRender</code> every time a
+view renders. These are empty functions for your views to fill in. <code>afterRender</code>
+is a good place to create and attach child views.</p>
+<pre><code class="js"><span class="keyword">var</span> ParentView = Giraffe.View.extend({
+  template: <span class="string">'#parent-template'</span>,
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({name: <span class="string">'child view'</span>});
+    childView.attachTo(<span class="keyword">this</span>);
+    <span class="comment">// or</span>
+    <span class="comment">// this.attach(childView);</span>
+  }
+});</code></pre>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  parent view
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>The <code>ChildView</code> will be put inside the <code>ParentView</code>.</p>
+<pre><code class="js"><span class="keyword">var</span> ChildView = Giraffe.View.extend({
+  template: <span class="string">'#child-template'</span>
+});</code></pre>
+<p>The <code>ChildView</code> simply displays the <code>name</code> provided in its <code>options</code>. We aren&#39;t
+defining a <code>serialize</code> method on the <code>ChildView</code>, and by default, <code>serialize</code>
+passes the view to the template function.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="javascript">&lt;%= options.name %&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Let&#39;s create and attach the parent view.</p>
+<pre><code class="js"><span class="keyword">var</span> parentView = <span class="keyword">new</span> ParentView();
+parentView.attachTo(<span class="string">'body'</span>);</code></pre>
+<p>Now is a good time to inspect the views to see what the child-parent
+relationship looks like. The parent has an array of <code>children</code> and the children
+have a reference to their <code>parent</code>.</p>
+<pre><code class="js"><span class="keyword">var</span> childView = parentView.children[<span class="number">0</span>];
+console.log(parentView === childView.parent); <span class="comment">// =&gt; true</span></code></pre>
+<p>Let&#39;s create a second child view. The <code>method</code> option of <code>attachTo</code> is the
+<strong>jQuery</strong> method used to insert the view. The default is <code>&#39;append&#39;</code>. In this
+case we&#39;ll use <code>&#39;before&#39;</code> to put it before the first child view we created. See
+<code>attachTo</code> in the <a href="api.html#View-attachTo">API docs</a> for more.</p>
+<pre><code class="js"><span class="keyword">var</span> childView2 = <span class="keyword">new</span> ChildView({name: <span class="string">'child view attached with {method: "before"}'</span>});
+childView2.attachTo(childView, {method: <span class="string">'before'</span>});</code></pre>
+<p>The <code>parent</code> of <code>childView2</code> is the <code>parentView</code>.</p>
+<pre><code class="js">console.log(childView2.parent === parentView); <span class="comment">// =&gt; true</span></code></pre>
+<p>Here&#39;s the result:</p>
+<div id="viewbasics1_tabs" class="tabs">
+  <ul>
+    <li class="active">
+  <a href="#viewbasics1result-tab" rel="viewbasics1result-tab">
+    result
+  </a>
+</li><li>
+  <a href="#viewbasics1scriptjs-tab" rel="viewbasics1scriptjs-tab">
+    script.js
+  </a>
+</li><li>
+  <a href="#viewbasics1markuphtml-tab" rel="viewbasics1markuphtml-tab">
+    markup.html
+  </a>
+</li><li>
+  <a href="#viewbasics1stylecss-tab" rel="viewbasics1stylecss-tab">
+    style.css
+  </a>
+</li>
+  </ul>
+</div>
+<div id="viewbasics1_tabs_content" class="tabs_content">
+  <div id="viewbasics1result-tab" class="tab_content">
+  <iframe id="viewbasics1" src="_assets/viewBasics1.html" class="result"  style='height: 274px;'></iframe>
+</div><div id="viewbasics1scriptjs-tab" class="tab_content">
+  <pre><code class="language-js"><span class="keyword">var</span> ParentView = Giraffe.View.extend({
+  template: <span class="string">'#parent-template'</span>,
+  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">var</span> childView = <span class="keyword">new</span> ChildView({
+      name: <span class="string">'child view'</span>
+    });
+    childView.attachTo(<span class="keyword">this</span>);
+    <span class="comment">// or</span>
+    <span class="comment">// this.attach(childView);</span>
+  }
+});
+
+<span class="keyword">var</span> ChildView = Giraffe.View.extend({
+  template: <span class="string">'#child-template'</span>
+});
+
+<span class="keyword">var</span> parentView = <span class="keyword">new</span> ParentView();
+parentView.attachTo(<span class="string">'body'</span>);
+
+<span class="keyword">var</span> childView = parentView.children[<span class="number">0</span>];
+console.log(parentView === childView.parent); <span class="comment">// =&gt; true</span>
+
+<span class="keyword">var</span> childView2 = <span class="keyword">new</span> ChildView({
+  name: <span class="string">'child view attached with {method: "before"}'</span>
+});
+childView2.attachTo(childView, {
+  method: <span class="string">'before'</span>
+});
+
+console.log(childView2.parent === parentView); <span class="comment">// =&gt; true</span></code></pre>
+</div><div id="viewbasics1markuphtml-tab" class="tab_content">
+  <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewbasics1-style.css'</span> /&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    parent view
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+    <span class="javascript">&lt;%= options.name %&gt;</span>
+  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'viewbasics1-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+</div><div id="viewbasics1stylecss-tab" class="tab_content">
+  <pre><code class="language-css"><span class="attr_selector">[data-view-cid]</span> <span class="rules">{
+  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;
+  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px</span></span>;
+  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px dashed <span class="hexcolor">#999</span></span></span>;
+<span class="rule">}</span></span></code></pre>
+</div>
+</div><h2 id='h-attachto-sequence-diagram'><code>attachTo</code> Sequence Diagram</h2>
+<pre><code class="uml"><?xml version="1.0" encoding="UTF-8" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="533pt" style="width:529px;height:533px;" version="1.1" viewBox="0 0 529 533" width="529pt"><defs><filter height="300%" id="f1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4" dy="4" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><rect fill="#FFFFFF" filter="url(#f1)" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="308.5" x="145" y="77"/><rect fill="#FFFFFF" filter="url(#f1)" height="57.3105" style="stroke: #000000; stroke-width: 2.0;" width="254.5" x="145" y="162.3105"/><rect fill="#FFFFFF" filter="url(#f1)" height="254.9316" style="stroke: #000000; stroke-width: 2.0;" width="510" x="10" y="260.6211"/><rect fill="#FFFFFF" filter="url(#f1)" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="243" x="20" y="284.9316"/><rect fill="#FFFFFF" filter="url(#f1)" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="240" x="20" y="464.2422"/><line style="stroke: #666666; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="63" x2="63" y1="33" y2="532.5527"/><line style="stroke: #666666; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="202" x2="202" y1="33" y2="532.5527"/><line style="stroke: #666666; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="398.5" x2="398.5" y1="33" y2="532.5527"/><line style="stroke: #666666; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="484" x2="484" y1="33" y2="532.5527"/><rect fill="#EEEEEE" filter="url(#f1)" height="28" style="stroke: #666666; stroke-width: 1.5;" width="63" x="30" y="0"/><text fill="#333333" font-family="Helvetica" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="49" x="37" y="21">MyView</text><rect fill="#EEEEEE" filter="url(#f1)" height="28" style="stroke: #666666; stroke-width: 1.5;" width="91" x="155" y="0"/><text fill="#333333" font-family="Helvetica" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="77" x="162" y="21">Giraffe.View</text><rect fill="#EEEEEE" filter="url(#f1)" height="28" style="stroke: #666666; stroke-width: 1.5;" width="86" x="353.5" y="0"/><text fill="#333333" font-family="Helvetica" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="72" x="360.5" y="21">ParentView</text><rect fill="#EEEEEE" filter="url(#f1)" height="28" style="stroke: #666666; stroke-width: 1.5;" width="47" x="459" y="0"/><text fill="#333333" font-family="Helvetica" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="33" x="466" y="21">DOM</text><polygon fill="#444444" points="190.5,58,200.5,62,190.5,66,194.5,62" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="63.5" x2="196.5" y1="62" y2="62"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="115" x="70.5" y="60">attachTo #container</text><rect fill="none" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="308.5" x="145" y="77"/><polygon fill="#EEEEEE" points="145,77,207,77,207,84,197,94,145,94,145,77" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="17" x="160" y="91">alt</text><text fill="#000000" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="172" x="222" y="90">[if #container has parent view]</text><polygon fill="#444444" points="386.5,109.3105,396.5,113.3105,386.5,117.3105,390.5,113.3105" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="392.5" y1="113.3105" y2="113.3105"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="172" x="209.5" y="111.3105">set MyView as child of parent</text><polygon fill="#444444" points="472.5,143.3105,482.5,147.3105,472.5,151.3105,476.5,147.3105" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="478.5" y1="147.3105" y2="147.3105"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="119" x="209.5" y="145.3105">detach MyView's $el</text><rect fill="none" height="57.3105" style="stroke: #000000; stroke-width: 2.0;" width="254.5" x="145" y="162.3105"/><polygon fill="#EEEEEE" points="145,162.3105,207,162.3105,207,169.3105,197,179.3105,145,179.3105,145,162.3105" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="17" x="160" y="176.3105">alt</text><text fill="#000000" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="113" x="222" y="175.3105">[if method is 'html']</text><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="244.5" y1="198.6211" y2="198.6211"/><line style="stroke: #444444; stroke-width: 1.0;" x1="244.5" x2="244.5" y1="198.6211" y2="211.6211"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="244.5" y1="211.6211" y2="211.6211"/><polygon fill="#444444" points="212.5,207.6211,202.5,211.6211,212.5,215.6211,208.5,211.6211" style="stroke: #444444; stroke-width: 1.0;"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="178" x="209.5" y="196.6211">detach views inside #container</text><polygon fill="#444444" points="472.5,241.6211,482.5,245.6211,472.5,249.6211,476.5,245.6211" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="478.5" y1="245.6211" y2="245.6211"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="258" x="209.5" y="243.6211">put MyView's $el in #container using method</text><rect fill="none" height="254.9316" style="stroke: #000000; stroke-width: 2.0;" width="510" x="10" y="260.6211"/><polygon fill="#EEEEEE" points="10,260.6211,72,260.6211,72,267.6211,62,277.6211,10,277.6211,10,260.6211" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="17" x="25" y="274.6211">alt</text><text fill="#000000" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="292" x="87" y="273.6211">[if MyView not yet rendered or options.forceRender]</text><rect fill="none" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="243" x="20" y="284.9316"/><polygon fill="#EEEEEE" points="20,284.9316,82,284.9316,82,291.9316,72,301.9316,20,301.9316,20,284.9316" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="17" x="35" y="298.9316">alt</text><text fill="#000000" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="161" x="97" y="297.9316">[if beforeRender overridden]</text><polygon fill="#444444" points="74.5,317.2422,64.5,321.2422,74.5,325.2422,70.5,321.2422" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="68.5" x2="201.5" y1="321.2422" y2="321.2422"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="85" x="80.5" y="319.2422">beforeRender()</text><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="244.5" y1="355.2422" y2="355.2422"/><line style="stroke: #444444; stroke-width: 1.0;" x1="244.5" x2="244.5" y1="355.2422" y2="368.2422"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="244.5" y1="368.2422" y2="368.2422"/><polygon fill="#444444" points="212.5,364.2422,202.5,368.2422,212.5,372.2422,208.5,368.2422" style="stroke: #444444; stroke-width: 1.0;"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="65" x="209.5" y="353.2422">$el.empty()</text><polygon fill="#444444" points="74.5,391.2422,64.5,395.2422,74.5,399.2422,70.5,395.2422" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="68.5" x2="201.5" y1="395.2422" y2="395.2422"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="107" x="80.5" y="393.2422">templateStrategy()</text><polygon fill="#444444" points="190.5,418.2422,200.5,422.2422,190.5,426.2422,194.5,422.2422" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="63.5" x2="196.5" y1="422.2422" y2="422.2422"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="98" x="70.5" y="420.2422">return html string</text><polygon fill="#444444" points="472.5,445.2422,482.5,449.2422,472.5,453.2422,476.5,449.2422" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="202.5" x2="478.5" y1="449.2422" y2="449.2422"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="143" x="209.5" y="447.2422">append html string to $el</text><rect fill="none" height="44.3105" style="stroke: #000000; stroke-width: 2.0;" width="240" x="20" y="464.2422"/><polygon fill="#EEEEEE" points="20,464.2422,82,464.2422,82,471.2422,72,481.2422,20,481.2422,20,464.2422" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="17" x="35" y="478.2422">alt</text><text fill="#000000" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="151" x="97" y="477.2422">[if afterRender overridden]</text><polygon fill="#444444" points="74.5,496.5527,64.5,500.5527,74.5,504.5527,70.5,500.5527" style="stroke: #444444; stroke-width: 1.0;"/><line style="stroke: #444444; stroke-width: 1.0;" x1="68.5" x2="201.5" y1="500.5527" y2="500.5527"/><text fill="#CC5F00" font-family="Helvetica" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="75" x="80.5" y="498.5527">afterRender()</text></g></svg></code></pre>
+</div></p>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+</body>
+</html>
+

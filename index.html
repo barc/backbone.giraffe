@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        <h2><a href="index.html#">Backbone.Giraffe</a></h2>
+        <ul>
+          <li><a href="index.html#h-download">Download</a></li>
+          <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
+        </ul>
+        
+        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="dataEvents.html">View Data Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+</ul>
+
+        <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <img id="logo" src="img/logo.png" />
+        <h1 id='h-backbonegiraffe'>Backbone.Giraffe</h1>
+<h2 id='h-introduction'>Introduction</h2>
+<p><strong>Backbone.Giraffe</strong> is a lightweight library that extends <a href="http://documentcloud.github.com/backbone/"><strong>Backbone.js</strong></a> to new heights. Giraffe&#39;s goal is to follow the Backbone philosophy of simplicity and flexibilty to provide commonly needed features with few assumptions. It differs from other Backbone libraries like Marionette and Chaplin in its reduced scope and size, and it takes a different approach to the problems of route handling, object lifecycles, event aggregation, and view management.</p>
+<h2 id='h-overview'>Overview</h2>
+<p>Giraffe extends the base Backbone classes with lifecycle management, event aggregation for app-wide communication and route handling, and some features we at <a href="https://barc.com">Barc</a> find useful.</p>
+<ul>
+<li><p><strong>Giraffe.View</strong> is a nestable, disposable, and flexible class that provides lifecycle management and some useful features.</p>
+</li>
+<li><p><strong>Giraffe.App</strong> is a special view that helps your views, models, collections, and routers communicate.</p>
+</li>
+<li><p><strong>Giraffe.Router</strong> leverages an app&#39;s events to provide routing events that any object can listen for and programmatic route encapsulation.</p>
+</li>
+<li><p><strong>Giraffe.Model</strong> and <strong>Giraffe.Collection</strong> are thin wrappers that add Giraffe&#39;s lifecycle management and app events.</p>
+</li>
+</ul>
+<h2 id='h-how-it-is-different'>How it is Different</h2>
+<p><strong>Giraffe</strong> was created by the needs of our team as we built <a href="http://barc.com">Barc</a>.
+We tried many existing libraries but some did way too much, others
+added too many layers, and others performed poorly.</p>
+<p><strong>Giraffe</strong> does not have all the bells and
+whistles of the larger frameworks. For example, there is no CollectionView
+or ItemView. We found the effort to customize them for our needs was more
+effort than simply attaching child views to a container. In fact, there is
+no concept of specialiased containers like regions as any view in <strong>Giraffe</strong>
+can act as a parent of one or more child views.</p>
+<p>Is this Framework for you? It depends. We feel <strong>Giraffe</strong> adds essential
+features to make you more productive with Backbone.</p>
+<h3 id='h-highlights'>Highlights</h3>
+<ul>
+<li><p><strong>Routes emit events</strong> and not tied to functions. This makes it extremely
+simple for a deeply nested view to act on a route.</p>
+</li>
+<li><p><strong>Reverse routes with arguments</strong> A way to trigger actions in the
+application without having to know a URL path.</p>
+</li>
+<li><p><code>View.attachTo(someElement)</code> inverse logic is simpler in most cases and
+easier to reattach views.</p>
+</li>
+<li><p>(A)sync app initialization (asyncronously fetch bootstrap data)</p>
+</li>
+<li><p>Object tracking to mitigate memory leaks</p>
+</li>
+<li><p>Application wide event hub</p>
+</li>
+<li><p>Declarative event handling in markup (does not try to be Knockdown or AngularJS)</p>
+</li>
+</ul>
+<h2 id='h-download'>Download</h2>
+<p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js">backbone.giraffe.js</a> <em>48.8k</em> <strong>(version 0.1)</strong></p>
+<p><a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js">backbone.giraffe.min.js</a> <em>14.6k</em></p>
+<h2 id='h-building'>Building</h2>
+<pre><code>npm install projmate-cli@0.1.0-dev -g
+pm run all</code></pre>
+<h2 id='h-license'>License</h2>
+<p>Copyright (c) 2013 Barc Inc.</p>
+<p>See the file <a href="license.html">LICENSE</a> for copying permission.</p>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="_assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+</body>
+</html>
+
