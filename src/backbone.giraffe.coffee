@@ -18,7 +18,7 @@ if global?
   $ = require('jQuery')
 else
   Backbone = window.Backbone
-  $ = window.$
+  $ = Backbone.$
 
 
 Backbone.Giraffe = Giraffe =
