@@ -2,61 +2,80 @@
 
 ## Introduction
 
-**Backbone.Giraffe** is a lightweight library that extends [**Backbone.js**](http://documentcloud.github.com/backbone/) to new heights. Giraffe's goal is to follow the Backbone philosophy of simplicity and flexibilty to provide commonly needed features with few assumptions. It differs from other Backbone libraries like Marionette and Chaplin in its reduced scope and size, and it takes a different approach to the problems of route handling, object lifecycles, event aggregation, and view management.
+__Backbone.Giraffe__ is a lightweight library that extends
+[__Backbone.js__](http://documentcloud.github.com/backbone/) to new heights.
+__Giraffe__'s goal is to follow the __Backbone__ philosophy of simplicity and
+flexibilty to provide commonly needed features with few assumptions. It differs
+from other __Backbone__ libraries like __Marionette__ and __Chaplin__ in its
+reduced scope and size, and it takes a different approach to the problems of
+route handling, object lifecycles, event aggregation, and view management.
 
 ## Overview
 
-Giraffe extends the base Backbone classes with lifecycle management, event aggregation for app-wide communication and route handling, and some features we at [Barc](https://barc.com) find useful.
+- __Giraffe.View__ is a nestable and flexible class that provides lifecycle
+management and many other useful features. It defaults to __Underscore__
+templates and easily supports any form of string templating.
 
-- **Giraffe.View** is a nestable, disposable, and flexible class that provides lifecycle management and some useful features.
+- __Giraffe.App__ is a special view that helps your views, models, collections,
+and routers communicate by acting as an event hub. Multiple apps can coexist and
+teardown is as simple as it gets.
 
-- **Giraffe.App** is a special view that helps your views, models, collections, and routers communicate.
+- __Giraffe.Router__ leverages an app's events to trigger routing events that
+any object can listen for.
 
-- **Giraffe.Router** leverages an app's events to provide routing events that any object can listen for and programmatic route encapsulation.
+- __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add
+__Giraffe__'s lifecycle management and app events.
 
-- **Giraffe.Model** and **Giraffe.Collection** are thin wrappers that add Giraffe's lifecycle management and app events.
+## How Giraffe is Different
 
-## How it is Different
+__Giraffe__ was created by the needs of our team as we built
+[Barc](http://barc.com). We tried many existing libraries but some did way too
+much, others added too many layers, and others performed poorly.
 
-__Giraffe__ was created by the needs of our team as we built [Barc](http://barc.com).
-We tried many existing libraries but some did way too much, others
-added too many layers, and others performed poorly.
+__Giraffe__ does not have all the bells and whistles of the larger frameworks.
+We found the effort to customize them for our needs was more effort than simply 
+building upon __Backbone__ with a minimalist approach. For example, there is no
+concept of specialized containers like regions or layouts, as any view in
+__Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
+has no CollectionView or ItemView, but we are open to suggestions to make
+__Giraffe__ as useful as possible to __Backbone__ developers who want an
+unopinionated extension library.
 
-__Giraffe__ does not have all the bells and
-whistles of the larger frameworks. For example, there is no CollectionView
-or ItemView. We found the effort to customize them for our needs was more
-effort than simply attaching child views to a container. In fact, there is
-no concept of specialiased containers like regions as any view in __Giraffe__
-can act as a parent of one or more child views.
-
-Is this Framework for you? It depends. We feel __Giraffe__ adds essential
-features to make you more productive with Backbone.
+Is this framework for you? It depends. We feel __Giraffe__ adds essential
+features to make you more productive with __Backbone__.
 
 ### Highlights
 
-- __Routes emit events__ and not tied to functions. This makes it extremely
-simple for a deeply nested view to act on a route.
+- __Routes emit events__ instead of being tied to functions. This makes it
+extremely simple for a deeply nested view to act on a route.
 
-- __Reverse routes with arguments__ A way to trigger actions in the
+- __Reverse routes with arguments__ provide a way to trigger actions in the
 application without having to know a URL path.
 
-- `View.attachTo(someElement)` inverse logic is simpler in most cases and
-easier to reattach views.
+- __`Giraffe.View#attachTo(someElement)`__ allows views to move anywhere on the
+DOM without clobbering each other's events, and it automatically sets up
+parent-child relationships for memory management.
 
-- (A)sync app initialization (asyncronously fetch bootstrap data)
+- __(A)sync app initialization__ helps an app reach its ready state. For
+example, an app may need to wait for asynchronous bootstrap data or a websocket
+connection before starting.
 
-- Object tracking to mitigate memory leaks
+- __Object tracking__ to mitigate memory leaks. It's automatic for nested
+__Giraffe.Views__ and can be used for any object with a `dispose` method via
+`Giraffe.View#addChild`.
 
-- Application wide event hub
+- __App-wide event hub__ with convenient `appEvents` bindings inspired by
+`Backbone.View#events`.
 
-- Declarative event handling in markup (does not try to be Knockdown or AngularJS)
+- __Declarative event handling__ in markup for simple one-way binding. (does not
+try to be __Knockout__ or __AngularJS__)
 
 
 ## Download
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) *48.8k* **(version 0.1)**
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _51.2k_ __(version 0.1)__
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) *14.6k*
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _15.6k_
 
 ## Building
 

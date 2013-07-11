@@ -3,11 +3,11 @@
 ## [Examples](index.html)
 
 - [View Basics](viewBasics.html)
+- [Template Strategies](templateStrategies.html)
 - [Lifecycle Management](lifecycleManagement.html)
 - [App Events](appEvents.html)
 - [Routers and App Events](routersAndAppEvents.html)
 - [App Initialization](appInitialization.html)
-- [Template Strategies](templateStrategies.html)
 - [View Document Events](documentEvents.html)
 - [View Data Events](dataEvents.html)
 - [View UI](viewUI.html)

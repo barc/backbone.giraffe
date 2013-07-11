@@ -9,8 +9,8 @@
 # route namespaces
 # more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
 # view transitions
-# collectionView
-# modelView
+# collectionView?
+# modelView?
 
 
 if global?
