@@ -18,7 +18,7 @@ if global?
   $ = require('jQuery')
 else
   Backbone = window.Backbone
-  $ = window.$
+  $ = Backbone.$
 
 
 Backbone.Giraffe = Giraffe =
@@ -483,8 +483,11 @@ class Giraffe.View extends Backbone.View
       @removeChildren()
       @_uncacheUiElements()
       @_uncache()
-      @remove()
-      @$el = null
+      if @$el
+        @remove()
+        @$el = null
+      else
+        error "Disposed of a view that has already been disposed", @
 
 
   ###
@@ -677,7 +680,6 @@ class Giraffe.App extends Giraffe.View
       @routes = options.routes
     @_initializers = []
     @started = false
-    $(window).unload => @dispose()
     super
 
 
@@ -686,6 +688,7 @@ class Giraffe.App extends Giraffe.View
       @router = new Giraffe.Router(app: @, triggers: @routes)
     Giraffe.app ?= @ # for convenience, store the first created app as a global
     Giraffe.apps[@cid] = @
+    $(window).on "unload", @_onUnload
     super
 
 
@@ -693,7 +696,12 @@ class Giraffe.App extends Giraffe.View
     @router = null if @router
     Giraffe.app = null if Giraffe.app is @
     delete Giraffe.apps[@cid]
+    $(window).off "unload", @_onUnload
     super
+
+
+  _onUnload: =>
+    @dispose()
 
 
   ###

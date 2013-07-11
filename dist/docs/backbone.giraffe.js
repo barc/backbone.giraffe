@@ -10,7 +10,7 @@
     $ = require('jQuery');
   } else {
     Backbone = window.Backbone;
-    $ = window.$;
+    $ = Backbone.$;
   }
 
   Backbone.Giraffe = Giraffe = {
@@ -582,8 +582,12 @@
         this.removeChildren();
         this._uncacheUiElements();
         this._uncache();
-        this.remove();
-        return this.$el = null;
+        if (this.$el) {
+          this.remove();
+          return this.$el = null;
+        } else {
+          return error("Disposed of a view that has already been disposed", this);
+        }
       });
     };
 
@@ -828,16 +832,13 @@
     __extends(App, _super);
 
     function App(options) {
-      var _this = this;
+      this._onUnload = __bind(this._onUnload, this);
       this.app = this;
       if (options != null ? options.routes : void 0) {
         this.routes = options.routes;
       }
       this._initializers = [];
       this.started = false;
-      $(window).unload(function() {
-        return _this.dispose();
-      });
       App.__super__.constructor.apply(this, arguments);
     }
 
@@ -852,6 +853,7 @@
         Giraffe.app = this;
       }
       Giraffe.apps[this.cid] = this;
+      $(window).on("unload", this._onUnload);
       return App.__super__._cache.apply(this, arguments);
     };
 
@@ -863,7 +865,12 @@
         Giraffe.app = null;
       }
       delete Giraffe.apps[this.cid];
+      $(window).off("unload", this._onUnload);
       return App.__super__._uncache.apply(this, arguments);
+    };
+
+    App.prototype._onUnload = function() {
+      return this.dispose();
     };
 
     /*
