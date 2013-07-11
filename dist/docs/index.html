@@ -92,20 +92,20 @@ extremely simple for a deeply nested view to act on a route.</p>
 <li><p><strong>Reverse routes with arguments</strong> provide a way to trigger actions in the
 application without having to know a URL path.</p>
 </li>
+<li><p><strong>App-wide event hub</strong> with convenient <code>appEvents</code> bindings inspired by
+<code>Backbone.View#events</code>.</p>
+</li>
 <li><p><strong><code>Giraffe.View#attachTo(someElement)</code></strong> allows views to move anywhere on the
 DOM without clobbering each other&#39;s events, and it automatically sets up
 parent-child relationships for memory management.</p>
-</li>
-<li><p><strong>(A)sync app initialization</strong> helps an app reach its ready state. For
-example, an app may need to wait for asynchronous bootstrap data or a websocket
-connection before starting.</p>
 </li>
 <li><p><strong>Object tracking</strong> to mitigate memory leaks. It&#39;s automatic for nested
 <strong>Giraffe.Views</strong> and can be used for any object with a <code>dispose</code> method via
 <code>Giraffe.View#addChild</code>.</p>
 </li>
-<li><p><strong>App-wide event hub</strong> with convenient <code>appEvents</code> bindings inspired by
-<code>Backbone.View#events</code>.</p>
+<li><p><strong>(A)sync app initialization</strong> helps an app reach its ready state. For
+example, an app may need to wait for asynchronous bootstrap data or a websocket
+connection before starting.</p>
 </li>
 <li><p><strong>Declarative event handling</strong> in markup for simple one-way binding. (does not
 try to be <strong>Knockout</strong> or <strong>AngularJS</strong>)</p>

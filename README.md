@@ -52,20 +52,20 @@ extremely simple for a deeply nested view to act on a route.
 - __Reverse routes with arguments__ provide a way to trigger actions in the
 application without having to know a URL path.
 
+- __App-wide event hub__ with convenient `appEvents` bindings inspired by
+`Backbone.View#events`.
+
 - __`Giraffe.View#attachTo(someElement)`__ allows views to move anywhere on the
 DOM without clobbering each other's events, and it automatically sets up
 parent-child relationships for memory management.
-
-- __(A)sync app initialization__ helps an app reach its ready state. For
-example, an app may need to wait for asynchronous bootstrap data or a websocket
-connection before starting.
 
 - __Object tracking__ to mitigate memory leaks. It's automatic for nested
 __Giraffe.Views__ and can be used for any object with a `dispose` method via
 `Giraffe.View#addChild`.
 
-- __App-wide event hub__ with convenient `appEvents` bindings inspired by
-`Backbone.View#events`.
+- __(A)sync app initialization__ helps an app reach its ready state. For
+example, an app may need to wait for asynchronous bootstrap data or a websocket
+connection before starting.
 
 - __Declarative event handling__ in markup for simple one-way binding. (does not
 try to be __Knockout__ or __AngularJS__)
