@@ -742,7 +742,7 @@ body {
 /* } */
 /* line 33, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #page-wrapper {
-  padding-left: 245px;
+  padding-left: 250px;
 }
 /* line 39, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\style.less */
 #sidebar {
@@ -750,7 +750,7 @@ body {
   left: 0;
   top: 0;
   padding: 8px 24px 24px 24px;
-  width: 245px;
+  width: 250px;
   height: 100%;
   overflow: auto;
 }
