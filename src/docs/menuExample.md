@@ -185,6 +185,11 @@ Backbone.history.start();
 app.router.cause('route:menu', 'menu item 1');
 ```
 
+<div class='note'>
+You will not see hash changes in your address bar because the example is in an
+iframe, but your browser's back and forward buttons should work!
+</div>
+
 {{{COMMON}}}
 
 :::@ --hide

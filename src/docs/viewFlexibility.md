@@ -6,6 +6,13 @@ This advanced example demonstrates the flexibility of __Giraffe.View__. The
 design goal is to create a single view class that nests, manages memory, and
 moves around the DOM with ease.
 
+## What We're Building
+
+There is a lot of information in this example, so let's begin by playing around
+with the result. If something doesn't make sense to you, read on!
+
+{{{EXAMPLE style='height: 550px;'}}}
+
 ## The Parent App
 
 __Giraffe.App__ is a __Giraffe.View__ that encapsulates an app. This example has
@@ -174,6 +181,13 @@ button to see how this behavior works with sibling views.
   },
 ```
 
+<div class="note">
+In this example, siblings of a view reattached with `{method: 'html'}` will
+be automatically detached. If the detached views are cached, they will actually
+cause a memory leak! It's probably a good practice to keep a reference to any
+cached views so they don't slip through the cracks.
+</div>
+
 Let's use the console to see when views get disposed.
 
 ```js
@@ -286,10 +300,6 @@ h3 {
   bottom: 0;
 }
 ```
-
-### Result
-
-{{{EXAMPLE style='height: 550px;'}}}
 
 
 :::END
