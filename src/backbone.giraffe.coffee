@@ -79,7 +79,7 @@ class Giraffe.View extends Backbone.View
     @_createEventsFromUIElements()
 
     @_wrapInitialize()
-    
+
     if options.templateStrategy
       Giraffe.View.setTemplateStrategy options.templateStrategy, @
     else if typeof @templateStrategy is 'string'
@@ -940,10 +940,10 @@ class Giraffe.Router extends Backbone.Router
   * @param {String} appEvent App event name.
   * @param {Object} [any] Optional parameter.
   ###
-  getRoute: (appEvent, any) ->
+  getRoute: (appEvent, any...) ->
     route = @_routes[appEvent]
     if route?
-      route = @_reverseHash(route, any)
+      route = @_reverseHash(route, any...)
       if route
         if Backbone.history._hasPushState
           route
@@ -963,24 +963,28 @@ class Giraffe.Router extends Backbone.Router
 
 
   # Reverse map a route using `any` value.
-  _reverseHash: (route, any) ->
-    return route unless any
+  _reverseHash: (route, args...) ->
+    first = args[0]
+    return route unless first?
 
-    regex = /:(\w+)\b/g
-    matches = route.match(regex)
-    if matches
-      for match in matches
-        key = match.slice(1)
+    wildcards = /:\w+|\*\w+/g
+    result = ""
+    start = 0
 
-        if any instanceof Backbone.Model
-          val = any.get(key)
-        else if _.isObject(any)
-          val = any[key]
-        else
-          val = any
+    if _.isObject(first)
+      matches = route.replace wildcards, (token, index) ->
+        key = token.slice(1)
+        val = first[key] || ''
+        result += route.slice(start, index) + val
+        start = index + token.length
+    else
+      matches = route.replace wildcards, (token, index) ->
+        val = args.shift() || ''
+        result += route.slice(start, index) + val
+        start = index + token.length
 
-        route = route.replace(///#{match}///g, val)
-    route
+    result
+
 
 
   ###

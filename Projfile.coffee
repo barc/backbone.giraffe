@@ -56,7 +56,7 @@ exports.project = (pm) ->
       f.tap (asset) ->
         asset.filename = switch asset.filename
           when 'README.md' then 'src/docs/index.md'
-          when 'LICENSE' then 'src/docs/LICENSE.md'
+          when 'LICENSE' then 'src/docs/license.md'
       f.writeFile
     ]
 

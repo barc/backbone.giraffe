@@ -1135,11 +1135,12 @@
     */
 
 
-    Router.prototype.getRoute = function(appEvent, any) {
-      var route;
+    Router.prototype.getRoute = function() {
+      var any, appEvent, route;
+      appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       route = this._routes[appEvent];
       if (route != null) {
-        route = this._reverseHash(route, any);
+        route = this._reverseHash.apply(this, [route].concat(__slice.call(any)));
         if (route) {
           if (Backbone.history._hasPushState) {
             return route;
@@ -1160,28 +1161,33 @@
       return this._routes[appEvent] = route;
     };
 
-    Router.prototype._reverseHash = function(route, any) {
-      var key, match, matches, regex, val, _i, _len;
-      if (!any) {
+    Router.prototype._reverseHash = function() {
+      var args, first, matches, result, route, start, wildcards;
+      route = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      first = args[0];
+      if (first == null) {
         return route;
       }
-      regex = /:(\w+)\b/g;
-      matches = route.match(regex);
-      if (matches) {
-        for (_i = 0, _len = matches.length; _i < _len; _i++) {
-          match = matches[_i];
-          key = match.slice(1);
-          if (any instanceof Backbone.Model) {
-            val = any.get(key);
-          } else if (_.isObject(any)) {
-            val = any[key];
-          } else {
-            val = any;
-          }
-          route = route.replace(RegExp("" + match, "g"), val);
-        }
+      wildcards = /:\w+|\*\w+/g;
+      result = "";
+      start = 0;
+      if (_.isObject(first)) {
+        matches = route.replace(wildcards, function(token, index) {
+          var key, val;
+          key = token.slice(1);
+          val = first[key] || '';
+          result += route.slice(start, index) + val;
+          return start = index + token.length;
+        });
+      } else {
+        matches = route.replace(wildcards, function(token, index) {
+          var val;
+          val = args.shift() || '';
+          result += route.slice(start, index) + val;
+          return start = index + token.length;
+        });
       }
-      return route;
+      return result;
     };
 
     /*
