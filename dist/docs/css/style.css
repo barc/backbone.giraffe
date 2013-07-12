@@ -555,7 +555,7 @@ pre .xml .cdata {
   color: #091e29;
 }
 .tabs ul li.active a {
-  border-bottom: none;
+  border-bottom: 1px solid #fff;
   color: #040e14;
   padding-bottom: 11px;
   font-weight: bold;
@@ -668,14 +668,14 @@ body {
 /*         .feature, .info { width: 50%; } */
 /* } */
 #page-wrapper {
-  padding-left: 245px;
+  padding-left: 250px;
 }
 #sidebar {
   position: fixed;
   left: 0;
   top: 0;
   padding: 8px 24px 24px 24px;
-  width: 245px;
+  width: 250px;
   height: 100%;
   overflow: auto;
 }

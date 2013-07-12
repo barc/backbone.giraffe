@@ -26,10 +26,15 @@ any object can listen for.
 - __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add
 __Giraffe__'s lifecycle management and app events.
 
+## Documentation
+
+Read the [__API docs__](http://barc.github.io/backbone.giraffe/api.html) and
+check out our [__live examples__](http://barc.github.io/backbone.giraffe/viewBasics.html).
+
 ## How Giraffe is Different
 
 __Giraffe__ was created by the needs of our team as we built
-[Barc](http://barc.com). We tried many existing libraries but some did way too
+[__Barc__](http://barc.com). We tried many existing libraries but some did way too
 much, others added too many layers, and others performed poorly.
 
 __Giraffe__ does not have all the bells and whistles of the larger frameworks.
