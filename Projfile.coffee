@@ -88,6 +88,8 @@ exports.project = (pm) ->
       f.tutdown
         exampleLayoutFile: 'src/docs/_example.mustache'
         assetsDirname: 'dist/docs/assets'
+      f.intrude ->
+        console.error 'HERE'
       f.tap (asset) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
@@ -122,7 +124,7 @@ exports.project = (pm) ->
     desc: 'Builds less files'
     files: ['src/docs/css/*.less']
     dev: [
-      f.less
+      f.less dumpLineNumbers: null
       changeToDist
       f.writeFile
     ]
