@@ -616,7 +616,7 @@ pre .xml .cdata {
 }
 /* line 39, C:\Users\ryan\barc\code\backbone.giraffe\src\docs\css\_tutdown\tabs.less */
 .tabs ul li.active a {
-  border-bottom: none;
+  border-bottom: 1px solid #fff;
   color: #040e14;
   padding-bottom: 11px;
   font-weight: bold;
