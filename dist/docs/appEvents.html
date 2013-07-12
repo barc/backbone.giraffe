@@ -71,6 +71,12 @@ function passes the view to the template.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<div class="note">
+These examples use <strong>Giraffe</strong>&#39;s templating default, <strong>Underscore</strong> templates,
+but <strong>Giraffe</strong> supports any form of string templating. See the
+<a href="templateStrategies.html">Template Strategies</a> example for more.
+</div>
+
 <p>The <code>appEvents</code> hash is a convenient feature that helps your app&#39;s objects
 communicate. It&#39;s similar to the <strong>Backbone.View</strong> <code>events</code> hash, but instead of
 mapping DOM events it maps events on an instance of <strong>Giraffe.App</strong>.  If a

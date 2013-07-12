@@ -39,6 +39,12 @@ function passes the view to the template.
 </script>
 ```
 
+<div class="note">
+These examples use __Giraffe__'s templating default, __Underscore__ templates,
+but __Giraffe__ supports any form of string templating. See the
+[Template Strategies](templateStrategies.html) example for more.
+</div>
+
 The `appEvents` hash is a convenient feature that helps your app's objects
 communicate. It's similar to the __Backbone.View__ `events` hash, but instead of
 mapping DOM events it maps events on an instance of __Giraffe.App__.  If a
