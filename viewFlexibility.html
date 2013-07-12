@@ -50,7 +50,7 @@
 <p>This advanced example demonstrates the flexibility of <strong>Giraffe.View</strong>. The
 design goal is to create a single view class that nests, manages memory, and
 moves around the DOM with ease.</p>
-<h2 id='h-what-were-building'>What We&#39;re Building</h2>
+<h2 id='h-the-final-result'>The Final Result</h2>
 <p>There is a lot of information in this example, so let&#39;s begin by playing around
 with the result. If something doesn&#39;t make sense to you, read on!</p>
 <div id="viewflexibility0_tabs" class="tabs">
@@ -237,7 +237,8 @@ app2.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="tag">&lt;<span class="title">label</span>&gt;</span>
       <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">data-gf-change</span>=<span class="value">"onToggleCache"</span> &lt;%= <span class="attribute">checkedAttr</span> %&gt;</span>&gt;
       Cache this view
-    <span class="tag">&lt;/<span class="title">label</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onAttachUsingHTML</span>" &gt;</span> Reattach to parent using $.html <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">label</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onAttachUsingHTML</span>" &gt;</span>
+        Reattach to parent using jQuery method 'html' <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
   <span class="javascript">&lt;% } %&gt;</span>
 
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span> &gt;</span>
@@ -447,7 +448,9 @@ cached views so they don&#39;t slip through the cracks.
       <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">data-gf-change</span>=<span class="value">"onToggleCache"</span> &lt;%= <span class="attribute">checkedAttr</span> %&gt;</span>&gt;
       Cache this view
     <span class="tag">&lt;/<span class="title">label</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAttachUsingHTML"</span>&gt;</span>Reattach to parent using $.html<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAttachUsingHTML"</span>&gt;</span>
+      Reattach to parent using jQuery method 'html'
+    <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="javascript">&lt;% } %&gt;</span>
 
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>

@@ -237,6 +237,22 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <div id="templatestrategies1_tabs_content" class="tabs_content">
   <div id="templatestrategies1result-tab" class="tab_content">
   <iframe id="templatestrategies1" src="assets/templateStrategies1.html" class="result"  style='height: 20px'></iframe>
+</div><div id="templatestrategies1scriptjs-tab" class="tab_content">
+  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template-selector'</span>);
+
+<span class="keyword">var</span> View = Giraffe.View.extend({
+  <span class="comment">// Optionally, set the strategy for this view only</span>
+  <span class="comment">//templateStrategy: 'underscore-template-selector',</span>
+  template: <span class="string">'#hello-template'</span>,
+  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {
+      name: <span class="string">'underscore-template-selector'</span>
+    };
+  }
+});
+
+<span class="keyword">var</span> view = <span class="keyword">new</span> View();
+view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="templatestrategies1markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
@@ -261,22 +277,6 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-</div><div id="templatestrategies1scriptjs-tab" class="tab_content">
-  <pre><code class="language-js">Giraffe.View.setTemplateStrategy(<span class="string">'underscore-template-selector'</span>);
-
-<span class="keyword">var</span> View = Giraffe.View.extend({
-  <span class="comment">// Optionally, set the strategy for this view only</span>
-  <span class="comment">//templateStrategy: 'underscore-template-selector',</span>
-  template: <span class="string">'#hello-template'</span>,
-  serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">return</span> {
-      name: <span class="string">'underscore-template-selector'</span>
-    };
-  }
-});
-
-<span class="keyword">var</span> view = <span class="keyword">new</span> View();
-view.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="templatestrategies1stylecss-tab" class="tab_content">
   <pre><code class="language-css"><span class="tag">p</span> <span class="rules">{
   <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#F50</span></span></span>;
