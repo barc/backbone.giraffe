@@ -1,7 +1,11 @@
 @blue: #4999de;
-@textColor: #333;
-@lightTextColor: #666;
+@darkBlue: #002a41;
+@headerColor: @darkBlue;
+@textColor: desaturate(lighten(@darkBlue, 2%), 35%);
+@lightTextColor: desaturate(lighten(@darkBlue, 30%), 80%);
 @linkColor: @textColor;
+@linkHoverColor: darken(@textColor, 5%);
+@linkActiveColor: darken(@textColor, 10%);
 @backgroundColor: #fff;
 @borderColor: #bbb;
 @border: 1px solid @borderColor;
@@ -14,6 +18,3 @@
 
 @codeBorderColor: #ECECF0;
 @codeBackgroundColor: #FAFAFC;
-@linkColor: #333;
-@linkActiveColor: #111;
-@linkHoverColor: #111;

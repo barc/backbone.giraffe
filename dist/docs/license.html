@@ -43,8 +43,10 @@
 
       <!-- Main Body -->
       <article id="content" class="col content">
-        <img id="logo" src="img/logo.png" />
-        <p>Copyright (c) 2013 Barc Inc. <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#103;&#102;&#x61;&#x72;&#x77;&#101;&#108;&#x6c;&#x40;&#x62;&#x61;&#x72;&#99;&#x2e;&#x63;&#x6f;&#x6d;">&#103;&#102;&#x61;&#x72;&#x77;&#101;&#108;&#x6c;&#x40;&#x62;&#x61;&#x72;&#99;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
+        <p>Copyright (c) 2013 Barc Inc. <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x67;&#x66;&#97;&#114;&#x77;&#101;&#x6c;&#x6c;&#64;&#98;&#97;&#114;&#99;&#x2e;&#x63;&#x6f;&#x6d;">&#x67;&#x66;&#97;&#114;&#x77;&#101;&#x6c;&#x6c;&#64;&#98;&#97;&#114;&#99;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
 in the Software without restriction, including without limitation the rights
@@ -65,7 +67,7 @@ THE SOFTWARE.</p>
     </div>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="assets/tutdown.js"></script>
   <script>
   $(function() {
@@ -88,6 +90,15 @@ THE SOFTWARE.</p>
       b.src = "https://barc.com/js/libs/barc/barc.js"; 
       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
     })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
   </script>
 </body>
 </html>

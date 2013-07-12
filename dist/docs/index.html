@@ -43,7 +43,9 @@
 
       <!-- Main Body -->
       <article id="content" class="col content">
-        <img id="logo" src="img/logo.png" />
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
         <h1 id='h-backbonegiraffe'>Backbone.Giraffe</h1>
 <h2 id='h-introduction'>Introduction</h2>
 <p><strong>Backbone.Giraffe</strong> is a lightweight library that extends
@@ -125,7 +127,7 @@ pm run all</code></pre>
     </div>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="assets/tutdown.js"></script>
   <script>
   $(function() {
@@ -148,6 +150,15 @@ pm run all</code></pre>
       b.src = "https://barc.com/js/libs/barc/barc.js"; 
       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
     })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
   </script>
 </body>
 </html>
