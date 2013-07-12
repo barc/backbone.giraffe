@@ -29,7 +29,9 @@
 
       <!-- Main Body -->
       <article id="content" class="col content">
-        <img id="logo" src="img/logo.png" />
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
         <section><h2 id="View">View<span class="caption">new Giraffe.View([options])</span></h2><p><strong>Giraffe.View</strong> is optimized for simplicity and flexibility. Views can move around the DOM safely and freely with the <code>attachTo</code> method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like <code>'prepend'</code>, <code>'after'</code>, or <code>'html'</code>. The default is <code>'append'</code>. The <code>attachTo</code> method automatically sets up parent-child relationships between views via the references <code>children</code> and <code>parent</code> to allow nesting with no extra work. Views automatically manage the lifecycle of all <code>children</code>, and any object with a <code>dispose</code> method can be added to <code>children</code> via <code>addChild</code>. When a view is disposed, it disposes of all of its <code>children</code>, allowing the disposal of an entire application with a single method call.</p>
 
 <p>When a view renders, it first calls <code>detach</code> on all of its <code>children</code>, and when a view is detached, the default behavior is call <code>dispose</code> on it. To overried this behavior and cache a view even when its <code>parent</code> renders, you can set the cached view's <code>options.disposeOnDetach</code> to <code>false</code>.</p>
@@ -71,7 +73,7 @@ myApp.router; // =&gt; instance of Giraffe.Router
     </div>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="assets/tutdown.js"></script>
   <script>
   $(function() {
@@ -94,6 +96,15 @@ myApp.router; // =&gt; instance of Giraffe.Router
       b.src = "https://barc.com/js/libs/barc/barc.js"; 
       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
     })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
   </script>
 </body>
 </html>

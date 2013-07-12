@@ -43,7 +43,9 @@
 
       <!-- Main Body -->
       <article id="content" class="col content">
-        <img id="logo" src="img/logo.png" />
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
         <p><div class='section-example'><h1 id='h-menu-example'>Menu Example</h1>
 <p>This advanced example demonstrates how you can use <strong>Giraffe</strong>&#39;s features to build a
 route-powered menu with cached content views that save their scroll position.</p>
@@ -187,6 +189,11 @@ instance of <strong>Giraffe.Router</strong> at <code>app.router</code>. Next we&
 app.attachTo(<span class="string">'body'</span>);
 Backbone.history.start();
 app.router.cause(<span class="string">'route:menu'</span>, <span class="string">'menu item 1'</span>);</code></pre>
+<div class='note'>
+You will not see hash changes in your address bar because the example is in an
+iframe, but your browser&#39;s back and forward buttons should work!
+</div>
+
 <h2 id='h-try-it'>Try It</h2>
 <div id="menuexample0_tabs" class="tabs">
   <ul>
@@ -391,7 +398,7 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
     </div>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="assets/tutdown.js"></script>
   <script>
   $(function() {
@@ -414,6 +421,15 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
       b.src = "https://barc.com/js/libs/barc/barc.js"; 
       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
     })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
   </script>
 </body>
 </html>

@@ -43,7 +43,9 @@
 
       <!-- Main Body -->
       <article id="content" class="col content">
-        <img id="logo" src="img/logo.png" />
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
         <p><div class='section-example'><h1 id='h-view-data-events'>View Data Events</h1>
 <p>This example demonstrates how to use the <code>dataEvents</code> map of <strong>Giraffe.View</strong>.
 Similar to how the <strong>Backbone.View</strong> <code>events</code> map binds DOM events to view
@@ -182,7 +184,7 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
     </div>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="assets/tutdown.js"></script>
   <script>
   $(function() {
@@ -205,6 +207,15 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
       b.src = "https://barc.com/js/libs/barc/barc.js"; 
       var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
     })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
   </script>
 </body>
 </html>
