@@ -6,7 +6,7 @@ This advanced example demonstrates the flexibility of __Giraffe.View__. The
 design goal is to create a single view class that nests, manages memory, and
 moves around the DOM with ease.
 
-## What We're Building
+## The Final Result
 
 There is a lot of information in this example, so let's begin by playing around
 with the result. If something doesn't make sense to you, read on!
@@ -240,7 +240,9 @@ Here's the child view's `serialize` function and `template`:
       <input type="checkbox" data-gf-change="onToggleCache" <%= checkedAttr %>>
       Cache this view
     </label>
-    <button data-gf-click="onAttachUsingHTML">Reattach to parent using $.html</button>
+    <button data-gf-click="onAttachUsingHTML">
+      Reattach to parent using jQuery method 'html'
+    </button>
   <% } %>
 
   <div class="child-views"></div>
