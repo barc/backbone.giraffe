@@ -654,7 +654,7 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
   text-shadow: none;
 }
 .light-text {
-  color: #577383;
+  color: #8398a3;
 }
 * {
   box-sizing: border-box;
@@ -679,6 +679,10 @@ body {
   width: 250px;
   height: 100%;
   overflow: auto;
+  color: #8398a3;
+}
+#sidebar a {
+  color: #8398a3;
 }
 #sidebar .active {
   font-weight: bold;
@@ -689,9 +693,11 @@ body {
 #sidebar h2 {
   font-size: 18px;
   margin-bottom: 2px;
+  color: #486778;
 }
 #sidebar h3 {
-  font-size: 16px;
+  font-size: 14px;
+  color: #486778;
 }
 #sidebar a {
   text-decoration: none;
@@ -719,7 +725,7 @@ h2,
 h3,
 h4,
 h5 {
-  color: #002a41;
+  color: #486778;
 }
 iframe.result {
   width: 100%;
@@ -735,6 +741,7 @@ ul {
 }
 strong {
   font-weight: bold;
+  color: #486778;
 }
 a {
   color: #0d2d3e;
@@ -744,7 +751,7 @@ a {
   margin-left: 14px;
   /* font-size: 12px; */
 
-  color: #577383;
+  color: #8398a3;
   font-family: consolas, menlo, "ubuntu mono", monospace;
   font-weight: normal;
   font-size: 14px;
