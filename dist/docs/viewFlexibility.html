@@ -347,14 +347,15 @@ defaulting to <code>&#39;append&#39;</code>. The methods are <code>&#39;append&#
 <code>&#39;after&#39;</code>, and <code>&#39;html&#39;</code>. The function <code>attachTo</code> is an inverted way to call
 <code>attach</code>, the difference being <code>attachTo</code> doesn&#39;t require a parent view - any
 DOM element, selector, or view will do.</p>
-<p>When a view is attached, <strong>Giraffe</strong> automatically calls <code>render</code> on the view if
-it hasn&#39;t yet been rendered, but passing the option <code>forceRender</code> will cause
-<code>attachTo</code> to always <code>render</code> the view. The option <code>preserve</code> prevents child
-view disposal, even if <code>disposeOnDetach</code> is true. In this example, we have
-buttons to move the views around, but we don&#39;t want to display an up or down
-button when that&#39;s an invalid move. To display the correct buttons, we need to
-<code>render</code> a view when it moves, so we <code>forceRender</code> on <code>attachTo</code> and we use
-<code>preserve</code> to prevent <code>render</code> from disposing of uncached child views.</p>
+<p>In this example, we have buttons to move the views around, but we don&#39;t want to
+display an up or down button when that&#39;s an invalid move. To display the correct
+buttons, we need to <code>render</code> a view when it moves, so we <code>forceRender</code> on
+<code>attachTo</code> and we use <code>preserve</code> to prevent <code>render</code> from disposing of uncached
+child views. When a view is attached, <strong>Giraffe</strong> automatically calls <code>render</code>
+on the view if it hasn&#39;t yet been rendered, but passing the option <code>forceRender</code>
+will cause <code>attachTo</code> to always <code>render</code> the view. The option <code>preserve</code>
+prevents child view disposal, even if <code>disposeOnDetach</code> is true, and is used
+because we don&#39;t want to dispose of uncached views just to update the arrows.</p>
 <pre><code class="js">  onMoveUp: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> previousView = <span class="keyword">this</span>.getPreviousView();
     <span class="keyword">this</span>.attachTo(previousView, {
@@ -400,9 +401,9 @@ button to see how this behavior works with sibling views.</p>
   },</code></pre>
 <div class="note">
 In this example, siblings of a view reattached with <code>{method: &#39;html&#39;}</code> will
-be automatically detached. If the detached views are cached, they will actually
-cause a memory leak! It&#39;s probably a good practice to keep a reference to any
-cached views so they don&#39;t slip through the cracks.
+be automatically detached. If the detached views are cached, they will remain in
+<code>children</code> and will be reattached when the parent renders since <code>afterRender</code>
+attaches all child views.
 </div>
 
 <p>Let&#39;s use the console to see when views get disposed.</p>

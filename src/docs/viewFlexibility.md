@@ -122,14 +122,15 @@ defaulting to `'append'`. The methods are `'append'`, `'prepend'`, `'before'`,
 `attach`, the difference being `attachTo` doesn't require a parent view - any
 DOM element, selector, or view will do.
 
-When a view is attached, __Giraffe__ automatically calls `render` on the view if
-it hasn't yet been rendered, but passing the option `forceRender` will cause
-`attachTo` to always `render` the view. The option `preserve` prevents child
-view disposal, even if `disposeOnDetach` is true. In this example, we have
-buttons to move the views around, but we don't want to display an up or down
-button when that's an invalid move. To display the correct buttons, we need to
-`render` a view when it moves, so we `forceRender` on `attachTo` and we use
-`preserve` to prevent `render` from disposing of uncached child views.
+In this example, we have buttons to move the views around, but we don't want to
+display an up or down button when that's an invalid move. To display the correct
+buttons, we need to `render` a view when it moves, so we `forceRender` on
+`attachTo` and we use `preserve` to prevent `render` from disposing of uncached
+child views. When a view is attached, __Giraffe__ automatically calls `render`
+on the view if it hasn't yet been rendered, but passing the option `forceRender`
+will cause `attachTo` to always `render` the view. The option `preserve`
+prevents child view disposal, even if `disposeOnDetach` is true, and is used
+because we don't want to dispose of uncached views just to update the arrows.
 
 ```js
   onMoveUp: function() {
@@ -183,9 +184,9 @@ button to see how this behavior works with sibling views.
 
 <div class="note">
 In this example, siblings of a view reattached with `{method: 'html'}` will
-be automatically detached. If the detached views are cached, they will actually
-cause a memory leak! It's probably a good practice to keep a reference to any
-cached views so they don't slip through the cracks.
+be automatically detached. If the detached views are cached, they will remain in
+`children` and will be reattached when the parent renders since `afterRender`
+attaches all child views.
 </div>
 
 Let's use the console to see when views get disposed.
