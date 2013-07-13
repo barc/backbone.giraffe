@@ -44,6 +44,11 @@ body {
   width: @sidebarWidth;
   height: 100%;
   overflow: auto;
+  color: @lightTextColor;
+
+  a {
+    color: @lightTextColor;
+  }
   
   .active {
     font-weight: bold;
@@ -54,9 +59,11 @@ body {
   h2 {
     font-size: 18px;
     margin-bottom: 2px;
+    color: @mediumTextColor;
   }
   h3 {
-    font-size: 16px;
+    font-size: 14px;
+    color: @mediumTextColor;
   }
   a {
     text-decoration: none;
@@ -83,7 +90,7 @@ body {
 
 /////////// GENERAL
 h1, h2, h3, h4, h5 {
-  color: @headerColor;
+  color: @mediumTextColor;
 }
 
 iframe.result {
@@ -105,6 +112,7 @@ ul {
 
 strong {
   font-weight: bold;
+  color: @mediumTextColor;
 }
 
 a {
