@@ -1,3 +1,6 @@
-* text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.less text eol=lf
+*.css text eol=lf
 
 *.gitattributes text
