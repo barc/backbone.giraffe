@@ -59,9 +59,18 @@ error = ->
 *
 *     parentView.dispose(); // disposes both `parentView` and `childView`
 *
-* When a view renders, it first calls `detach` on all of its `children`, and when a view is detached, the default behavior is call `dispose` on it. To overried this behavior and cache a view even when its `parent` renders, you can set the cached view's `options.disposeOnDetach` to `false`.
+* When a view renders, it first calls `detach` on all of its `children`, and
+* when a view is detached, the default behavior is to call `dispose` on it.
+* To overried this behavior and cache a view even when its `parent` renders, you
+* can set the cached view's `options.disposeOnDetach` to `false`.
 *
-* **Giraffe.View** gets much of its smarts by way of the `data-view-cid` attribute attached to `view.$el`. This attribute allows us to find a view's parent when attached to a DOM element and safely detach views when they would otherwise be clobbered. Currently, Giraffe has only one class that extends **Giraffe.View**, **Giraffe.App**, which encapsulates app-wide messenging and routing.
+* **Giraffe.View** gets much of its smarts by way of the `data-view-cid`
+* attribute attached to `view.$el`. This attribute allows us to find a view's
+* parent when attached to a DOM element and safely detach views when they would
+* otherwise be clobbered.
+*
+* Currently, **Giraffe** has only one class that extends **Giraffe.View**,
+* **Giraffe.App**, which encapsulates app-wide messenging and routing.
 *
 * @param {Object} [options]
 ###
