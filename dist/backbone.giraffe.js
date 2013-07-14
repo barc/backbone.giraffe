@@ -29,7 +29,30 @@
   };
 
   /*
-  * **Giraffe.View** is optimized for simplicity and flexibility. Views can move around the DOM safely and freely with the `attachTo` method, which accepts any selector, DOM element, or view, as well as an optional jQuery insertion method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`. The `attachTo` method automatically sets up parent-child relationships between views via the references `children` and `parent` to allow nesting with no extra work. Views automatically manage the lifecycle of all `children`, and any object with a `dispose` method can be added to `children` via `addChild`. When a view is disposed, it disposes of all of its `children`, allowing the disposal of an entire application with a single method call.
+  * **Giraffe.View** is optimized for simplicity and flexibility. Views can move
+  * around the DOM safely and freely with the `attachTo` method, which accepts any
+  * selector, DOM element, or view, as well as an optional jQuery insertion method
+  * like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`.
+  *
+  *     var parentView = new Giraffe.View();
+  *     parentView.attachTo('body', {method: 'prepend'});
+  *     parentView.$el.parent(); // => $('body')
+  *
+  * The `attachTo` method automatically sets up parent-child relationships between
+  * views via the references `children` and `parent` to allow nesting with no
+  * extra work.
+  *
+  *     var childView = new Giraffe.View();
+  *     childView.attachTo(parentView); // or parentView.attach(childView);
+  *     childView.parent === parentView; // => true
+  *     parentView.children[0] === childView; // => true
+  *
+  * Views automatically manage the lifecycle of all `children`, and any object
+  * with a `dispose` method can be added to `children` via `addChild`.
+  * When a view is disposed, it disposes of all of its `children`, allowing the
+  * disposal of an entire application with a single method call.
+  *
+  *     parentView.dispose(); // disposes both `parentView` and `childView`
   *
   * When a view renders, it first calls `detach` on all of its `children`, and when a view is detached, the default behavior is call `dispose` on it. To overried this behavior and cache a view even when its `parent` renders, you can set the cached view's `options.disposeOnDetach` to `false`.
   *

@@ -21,7 +21,7 @@ App = Giraffe.App.extend({
   template: '#app-template',
 ```
 
-The `routes` property maps URL routes to `appEvents`, and as a result of
+The `Giraffe.App#routes` property maps URL routes to `appEvents`, and as a result of
 defining `routes` on the app, it will automatically create an instance of
 __Giraffe.Router__ at `app.router`. __Giraffe.Router__ is dependent on
 __Giraffe.App__ because it uses `appEvents` to communicate with your objects.
@@ -40,11 +40,11 @@ exists on the page, and instead of defining `routes` on an **Giraffe.Router**,
 you define `triggers`, which avoids conflict with `Backbone.Router#routes`.
 </div>
 
-Any __Giraffe__ object, including the app, can listen for `appEvents`. When a
-route is triggered, its corresponding `appEvent` is called. In this example the
-app listens to itself for the app event `'route:childView'`, which is defined in
-the `routes` above, and the `'all'` event, so we can log everything that happens
-to `appEvents`.
+When a route is triggered, its corresponding `appEvent` is called. Any
+__Giraffe__  object, including the app, can listen for `appEvents`. In this
+example the app listens to itself for the app event `'route:childView'`, which
+is defined in the `routes` above, and the `'all'` event, so we can log
+everything that happens to `appEvents`.
 
 ```js
   appEvents: {
