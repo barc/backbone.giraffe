@@ -823,7 +823,7 @@ class Giraffe.Router extends Backbone.Router
     ###
       The `triggers` hash is a map of routes to app events, e.g. `{'some/route/:andItsParams': 'some:appEvent'}`. If a **Giraffe.App** is created with a `routes` hash, it automatically creates a **Giraffe.Router** setting the router's `triggers` to the app's `routes`. `Backbone.Router#routes` is used internally, which is why `Giraffe.Router#triggers` is renamed.
     ###
-    @triggers = null
+    @triggers = @triggers # TODO doc annotations to make this line unnecessary
     if options.triggers
       @triggers = options.triggers
     if typeof @triggers is 'function'
