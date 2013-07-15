@@ -29,21 +29,21 @@
   };
 
   /*
-  * **Giraffe.View** is optimized for simplicity and flexibility. Views can move
+  * __Giraffe.View__ is optimized for simplicity and flexibility. Views can move
   * around the DOM safely and freely with the `attachTo` method, which accepts any
-  * selector, DOM element, or view, as well as an optional jQuery insertion method
-  * like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`.
+  * selector, DOM element, or view, as well as an optional __jQuery__ insertion
+  * method like `'prepend'`, `'after'`, or `'html'`. The default is `'append'`.
   *
   *     var parentView = new Giraffe.View();
   *     parentView.attachTo('body', {method: 'prepend'});
-  *     parentView.$el.parent(); // => $('body')
+  *     $('body').find(parentView.$el).length; // => 1
   *
   * The `attachTo` method automatically sets up parent-child relationships between
   * views via the references `children` and `parent` to allow nesting with no
   * extra work.
   *
   *     var childView = new Giraffe.View();
-  *     childView.attachTo(parentView); // or parentView.attach(childView);
+  *     childView.attachTo(parentView); // or `parentView.attach(childView);`
   *     childView.parent === parentView; // => true
   *     parentView.children[0] === childView; // => true
   *
@@ -54,18 +54,29 @@
   *
   *     parentView.dispose(); // disposes both `parentView` and `childView`
   *
+  * When a view is attached, `render` is called if it has not yet been rendered.
   * When a view renders, it first calls `detach` on all of its `children`, and
   * when a view is detached, the default behavior is to call `dispose` on it.
   * To overried this behavior and cache a view even when its `parent` renders, you
   * can set the cached view's `options.disposeOnDetach` to `false`.
   *
-  * **Giraffe.View** gets much of its smarts by way of the `data-view-cid`
+  *     var parentView = new Giraffe.View();
+  *     parentView.attach(new Giraffe.View());
+  *     parentView.attach(new Giraffe.View({disposeOnDetach: false}));
+  *     parentView.attachTo('body'); // render() is called, disposes of the first view
+  *     parentView.children.length; // => 1
+  *
+  * Views are not automatically reattached after `render`, so you retain control,
+  * but their parent-child relationships stay intact unless they're disposed.
+  * See [__`Giraffe.View#afterRender`__](#View-afterRender) for more.
+  *
+  * __Giraffe.View__ gets much of its smarts by way of the `data-view-cid`
   * attribute attached to `view.$el`. This attribute allows us to find a view's
   * parent when attached to a DOM element and safely detach views when they would
   * otherwise be clobbered.
   *
-  * Currently, **Giraffe** has only one class that extends **Giraffe.View**,
-  * **Giraffe.App**, which encapsulates app-wide messenging and routing.
+  * Currently, __Giraffe__ has only one class that extends __Giraffe.View__,
+  * __Giraffe.App__, which encapsulates app-wide messaging and routing.
   *
   * @param {Object} [options]
   */
@@ -89,10 +100,6 @@
       this.render = __bind(this.render, this);
       _.defaults(options, Giraffe.View.defaultOptions);
       this.app || (this.app = options.app || Giraffe.app);
-      /*
-      * Similar to the `events` hash of **Backbone.View**, the `appEvents` hash maps events on `this.app` to methods on the view. App events can be triggered from routes or by any object in your application. If a **Giraffe.App** has been created, every view has a reference to the global **Giraffe.app** instance at `this.app`, and a specific app instance can be set by passing `options.app` to the view. The instance of `this.app` is used to bind `appEvents`, and these bindings are automatically cleaned up when a view is disposed. See **Giraffe.App** and **Giraffe.Router** for more.
-      */
-
       Giraffe.bindEventMap(this, this.app, this.appEvents);
       /*
       * When one view is attached to another, the child view is added to the parent's `children` array. When a view renders, it first calls `detach` on its `children`. By default, `dispose` is called on a view when it is detached if `options.disposeOnDetach` is `true`, which is the default setting. After a view renders, any child views with `options.disposeOnDetach` set to `false` will be in `children`, ready to be attached. When `dispose` is called on a view, it disposes of all of its `children`. Any object with a `dispose` method can be added to a view's `children` via `addChild` to take advantage of lifecycle management.
@@ -224,7 +231,7 @@
     View.prototype.beforeRender = function() {};
 
     /*
-    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an **Underscore** template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `templateStrategy` for more.
+    * Giraffe implements `render` so it can do some helpful things, but you can still call it like you normally would. By default, `render` uses a view's `template`, which is the DOM selector of an __Underscore__ template, but this is easily configured. See `template`, `Giraffe.View.setTemplateStrategy`, and `templateStrategy` for more.
     * @caption Do not override unless you know what you're doing!
     */
 
@@ -248,7 +255,7 @@
     View.prototype.afterRender = function() {};
 
     /*
-    * Giraffe implements its own `render` function which calls `templateStrategy` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses **Underscore** templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `templateStrategy` with a function returning a string of HTML from your favorite templating engine.
+    * Giraffe implements its own `render` function which calls `templateStrategy` to get the HTML string to put inside `view.$el`. Your views can either define a `template`, which uses __Underscore__ templates by default and is customizable via `Giraffe.View.setTemplateStrategy`, or override `templateStrategy` with a function returning a string of HTML from your favorite templating engine.
     */
 
 
@@ -257,7 +264,7 @@
     };
 
     /*
-    * Consumed by the `templateStrategy` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an **Underscore** template.
+    * Consumed by the `templateStrategy` function created by `Giraffe.View.setTemplateStrategy`. By default, `template` is the DOM selector of an __Underscore__ template.
     */
 
 
@@ -597,14 +604,14 @@
     };
 
     /*
-    * Define `appEvents` on any Giraffe object to listen to events on `this.app`, which is either the option passed in `{app: myApp}` or the first instance of **Giraffe.App** created on the page, which is globally assigned to `Giraffe.app`. Any object with a reference to an app can `trigger` arbitrary `appEvents`, and any object with a reference to a router can `cause` an app event and navigate to its corresponding route.
+    * See [__`Giraffe.App#appEvents`__](#App-appEvents).
     */
 
 
     View.prototype.appEvents = null;
 
     /*
-    * Destroys a view, unbinding its events and freeing its resources. Calls the `remove` method defined by **Backbone.View** and calls `dispose` on all `children`.
+    * Destroys a view, unbinding its events and freeing its resources. Calls the `remove` method defined by __Backbone.View__ and calls `dispose` on all `children`.
     */
 
 
@@ -624,7 +631,7 @@
     };
 
     /*
-    * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
+    * Detaches the top-level views inside `el`, which can be a selector, element, jQuery object, or __Giraffe.View__. Used internally by Giraffe to remove views that would otherwise be clobbered when the `method` option `'html'` is used to attach a view. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
     *
     * @param {Element/jQuery/Giraffe.View} el
     * @param {Boolean} [preserve]
@@ -646,7 +653,7 @@
     };
 
     /*
-    * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or **Giraffe.View**. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
+    * Gets the closest parent view of `el`, which can be a selector, element, jQuery object, or __Giraffe.View__. Uses the `data-view-cid` attribute to match DOM nodes to view instances.
     *
     * @param {Element/jQuery/Giraffe.View} el
     */
@@ -854,7 +861,22 @@
   Giraffe.View.setDocumentEvents(['click', 'change']);
 
   /*
-  * **Giraffe.App** is a special **Giraffe.View** that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will destroy all views, models, collections, and routers that have been added as `children` of the app or its descendents. The first **Giraffe.App** created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing. The app also provides synchronous and asynchronous initializers with `addInitializer` and `start`.
+  * __Giraffe.App__ is a special __Giraffe.View__ that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will call `dispose` on all `children` that have the method. The first __Giraffe.App__ created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing. 
+  *
+  *     var myApp = new Giraffe.App();
+  *     window.Giraffe.app; // => `myApp`
+  *     myApp.attach(new Giraffe.View({
+  *       appEvents: {
+  *         'say:hello': function() { console.log('hello world'); }
+  *       },
+  *       // app: someOtherApp // if you don't want to use `window.Giraffe.app`
+  *     }));
+  *     myApp.trigger('say:hello'); // => 'hello world'
+  *
+  * `appEvents` are also used by the __Giraffe.Router__. See
+  * [__`Giraffe.App#routes`__](#App-routes) for more.
+  *
+  * The app also provides synchronous and asynchronous initializers with `addInitializer` and `start`.
   *
   * @param {Object} [options]
   */
@@ -906,12 +928,31 @@
     };
 
     /*
-    * If `routes` is defined on a **Giraffe.App** or passed to its constructor
-    * as an option, the app will create an instance of **Giraffe.Router** as
-    * `this.router` and bind the defined routes. The **Giraffe.App** `routes`
-    * hash is similar to the `routes` of **Backbone.Router**, but instead of
-    * `route: method` the **Giraffe.Router** expects `route: appEvent`, e.g.
-    * `'someUrl/:andItsParams': 'some:appEvent'`.
+    * Similar to the `events` hash of __Backbone.View__, `appEvents` maps events
+    * on `this.app` to methods on a __Giraffe__ object. App events can be
+    * triggered from routes or by any object in your application. If a
+    * __Giraffe.App__ has been created, every __Giraffe__ object has a reference
+    * to the global __Giraffe.app__ instance at `this.app`, and a specific app
+    * instance can be set by passing `options.app` to the object's constructor.
+    * The instance of `this.app` is used to bind `appEvents`, and these bindings
+    * are automatically cleaned up when an object is disposed.
+    *
+    *     // in a Giraffe object
+    *     this.appEvents = {'some:appEvent': 'someMethod'};
+    *     this.app.trigger('some:appEvent', params) // => this.someMethod(params)
+    */
+
+
+    App.prototype.appEvents = null;
+
+    /*
+    * If `routes` is defined on a __Giraffe.App__ or passed to its constructor
+    * as an option, the app will create an instance of __Giraffe.Router__ as
+    * `this.router` and set the router's `triggers` to the app's `routes`. Any
+    * number of routers can be instantiated manually, but they do require that an
+    * instance of __Giraffe.App__ is first created, because they use `appEvents`
+    * for route handling. See [__`Giraffe.Router#triggers`__](#Router-triggers)
+    * for more.
     *
     *     var app = new Giraffe.App({routes: {'route': 'appEvent'}});
     *     app.router; // => instance of Giraffe.Router
@@ -983,12 +1024,38 @@
       return this;
     };
 
+    /*
+    * See [__`Giraffe.View#dispose`__](#View-dispose).
+    */
+
+
+    App.prototype.dispose = function() {
+      return App.__super__.dispose.apply(this, arguments);
+    };
+
     return App;
 
   })(Giraffe.View);
 
   /*
-  * The **Giraffe.Router** integrates with a **Giraffe.App** to decouple your router and route handlers and to provide programmatic encapsulation for your routes. A route can be handled by any Giraffe object by subscribing to the corresponding app event defined in `triggers`. The `cause` method navigates to a route and triggers the corresponding app event, and you can ask the router if a given app event is currently caused via `isCaused`. Additionally, rather than building anchor links and window locations manually, you can build routes from app events and optional parameters with `getRoute`.
+  * The __Giraffe.Router__ integrates with a __Giraffe.App__ to decouple your router and route handlers and to provide programmatic encapsulation for your routes. Routes trigger `appEvents` on the router's instance of __Giraffe.App__. All __Giraffe__ objects implement the `appEvents` hash as a shortcut. `Giraffe.Router#cause` triggers an app event and navigates to its route if one exists in `Giraffe.Router#triggers`, and you can ask the router if a given app event is currently caused via `Giraffe.Router#isCaused`. Additionally, rather than building anchor links and window locations manually, you can build routes from app events and optional parameters with `Giraffe.Router#getRoute`.
+  *
+  *     var myRouter = Giraffe.Router.extend({
+  *       triggers: {
+  *         'post/:id': 'show:post', // triggers 'show:posts' on this.app
+  *         'some/route': '-> some/redirected/route' // redirect
+  *       }
+  *     });
+  *     myRouter.cause('show:post', 42); // goes to #post/42 and triggers its event
+  *     myRouter.isCaused('show:post', 42); // => true
+  *     myRouter.getRoute('show:post', 42); // => '#post/42'
+  *
+  * The __Giraffe.Router__ requires that a __Giraffe.App__ has been created on the page so it can trigger events for your objects to listen to. For convenience, if a __Giraffe.App__ is created with a `routes` hash, it will automatically instantiate a router and set its `triggers` equal to the app's `routes`.
+  *
+  *     var myApp = Giraffe.App.extend({
+  *       routes: {'my/route': 'app:event'}
+  *     });
+  *     myApp.router.triggers; // => {'my/route': 'app:event'}
   *
   * @param {Object} [options]
   */
@@ -1007,11 +1074,6 @@
       }
       this.app.addChild(this);
       Giraffe.bindEventMap(this, this.app, this.appEvents);
-      /*
-        The `triggers` hash is a map of routes to app events, e.g. `{'some/route/:andItsParams': 'some:appEvent'}`. If a **Giraffe.App** is created with a `routes` hash, it automatically creates a **Giraffe.Router** setting the router's `triggers` to the app's `routes`. `Backbone.Router#routes` is used internally, which is why `Giraffe.Router#triggers` is renamed.
-      */
-
-      this.triggers = this.triggers;
       if (options.triggers) {
         this.triggers = options.triggers;
       }
@@ -1044,22 +1106,21 @@
       }
     };
 
-    Router.prototype.triggers = null;
-
     /*
-    * Performs a page refresh. If `url` is defined, the router first silently navigates to it before refeshing.
+    * The __Giraffe.App__ `routes` hash is similar `Backbone.Router#routes`,
+    * but instead of `route: method` the __Giraffe.Router__ expects
+    * `route: appEvent`. `Backbone.Router#routes` is used internally, which is why
+    * `Giraffe.Router#triggers` is renamed. The router also has a redirect
+    * feature as demonstrated below.
     *
-    * @param {String} [url]
+    *     triggers: {
+    *       'some/route/:andItsParams': 'some:appEvent', // triggers 'some:appEvent' on this.app
+    *       'some/other/route': '-> some/redirect/route' // redirect
+    *     }
     */
 
 
-    Router.prototype.reload = function(url) {
-      if (url) {
-        Backbone.history.stop();
-        window.location = url;
-      }
-      return window.location.reload();
-    };
+    Router.prototype.triggers = null;
 
     Router.prototype._bindTriggers = function() {
       var appEvent, fullNs, route, _fn, _ref,
@@ -1123,36 +1184,41 @@
     };
 
     /*
-    * Triggers an app event with optional arguments. If `this.triggers` has a matching route, `Backbone.history` navigates to it.
+    * If `this.triggers` has a route matching `appEvent`, the router navigates to
+    * the route, triggering the `appEvent`. If no such matching route exists,
+    * `cause` acts as an alias for `this.app.trigger`.
     *
     * @param {String} appEvent App event name.
     * @param {Object} [any] Optional parameters.
     */
 
 
-    Router.prototype.cause = function(appEvent, any) {
-      var route;
-      route = this.getRoute(appEvent, any);
+    Router.prototype.cause = function() {
+      var any, appEvent, route, _ref;
+      appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
         return Backbone.history.navigate(route, {
           trigger: true
         });
       } else {
-        return this.app.trigger(appEvent, any);
+        return (_ref = this.app).trigger.apply(_ref, [appEvent].concat(__slice.call(any)));
       }
     };
 
     /*
-    * Returns true if the current `window.location` matches the route that the given app event and optional arguments map to.
+    * Returns true if the current `window.location` matches the route that the
+    * given app event and optional arguments map to in this router's `triggers`.
     *
     * @param {String} appEvent App event name.
     * @param {Object} [any] Optional parameters.
     */
 
 
-    Router.prototype.isCaused = function(appEvent, any) {
-      var route;
-      route = this.getRoute(appEvent, any);
+    Router.prototype.isCaused = function() {
+      var any, appEvent, route;
+      appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
         if (Backbone.history._hasPushState) {
           return window.location.pathname.slice(1) === route;
@@ -1165,7 +1231,9 @@
     };
 
     /*
-    * Converts an app event and optional arguments into a url mapped in `this.triggers`. Useful if you want to programmatically encapsulate your routes, so you don't need to manually build anchor links and window locations to navigate to.
+    * Converts an app event and optional arguments into a url mapped in
+    * `this.triggers`. Useful to build links to the routes in your app without
+    * manually manipulating route strings.
     *
     * @param {String} appEvent App event name.
     * @param {Object} [any] Optional parameter.
@@ -1228,7 +1296,22 @@
     };
 
     /*
-    * Define `appEvents` on any Giraffe object to listen to events on `this.app`, which is either the option passed in `{app: myApp}` or the first instance of **Giraffe.App** created on the page, which is globally assigned to `Giraffe.app`. Any object with a reference to an app can `trigger` arbitrary `appEvents`, and any object with a reference to a router can `cause` an app event and navigate to its corresponding route.
+    * Performs a page refresh. If `url` is defined, the router first silently navigates to it before refeshing.
+    *
+    * @param {String} [url]
+    */
+
+
+    Router.prototype.reload = function(url) {
+      if (url) {
+        Backbone.history.stop();
+        window.location = url;
+      }
+      return window.location.reload();
+    };
+
+    /*
+    * See [__`Giraffe.App#appEvents`__](#App-appEvents).
     */
 
 
@@ -1251,7 +1334,7 @@
   })(Backbone.Router);
 
   /*
-  * **Giraffe.Model** and **Giraffe.Collection** are thin wrappers that add lifecycle management and `appEvents` support. To add lifecycle management to an arbitrary object, simply give it a `dispose` method and add it to a view via `addChild`. The function `Giraffe.dispose` can be used to perform some useful disposal work. The helper function `Giraffe.bindEventMap` adds `appEvents` bindings for any object, and Backbone's `stopListening` will unbind them.
+  * __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add lifecycle management and `appEvents` support. To add lifecycle management to an arbitrary object, simply give it a `dispose` method and add it to a view via `addChild`. To use this functionality in your own objects, see [__`Giraffe.dispose`__](#dispose) and [__`Giraffe.bindEventMap`__](#bindEventMap).
   *
   * @param {Object} [attributes]
   * @param {Object} [options]
@@ -1268,7 +1351,7 @@
     }
 
     /*
-    * Define `appEvents` on any Giraffe object to listen to events on `this.app`, which is either the option passed in `{app: myApp}` or the first instance of **Giraffe.App** created on the page, which is globally assigned to `Giraffe.app`. Any object with a reference to an app can `trigger` arbitrary `appEvents`, and any object with a reference to a router can `cause` an app event and navigate to its corresponding route.
+    * See [__`Giraffe.App#appEvents`__](#App-appEvents).
     */
 
 
@@ -1291,7 +1374,7 @@
   })(Backbone.Model);
 
   /*
-  * **Giraffe.Model** and **Giraffe.Collection** are thin wrappers that add lifecycle management and `appEvents` support. To add lifecycle management to an arbitrary object, simply give it a `dispose` method and add it to a view via `addChild`. The function `Giraffe.dispose` can be used to perform some useful disposal work. The helper function `Giraffe.bindEventMap` adds `appEvents` bindings for any object, and Backbone's `stopListening` will unbind them.
+  * See [__`Giraffe.Model`__](#Model).
   *
   * @param {Array} [models]
   * @param {Object} [options]
@@ -1310,7 +1393,7 @@
     }
 
     /*
-    * Define `appEvents` on any Giraffe object to listen to events on `this.app`, which is either the option passed in `{app: myApp}` or the first instance of **Giraffe.App** created on the page, which is globally assigned to `Giraffe.app`. Any object with a reference to an app can `trigger` arbitrary `appEvents`, and any object with a reference to a router can `cause` an app event and navigate to its corresponding route.
+    * See [__`Giraffe.App#appEvents`__](#App-appEvents).
     */
 
 
@@ -1339,7 +1422,7 @@
   })(Backbone.Collection);
 
   /*
-  * Disposes of a object. Calls Backbone's `obj.stopListening()` and sets `obj.app` to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before and after the disposal. Takes an optional `fn` argument to do additional work, and optional `args` that are passed through to the events and `fn`.
+  * Disposes of a object. Calls `Backbone.Events#stopListening` and sets `obj.app` to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before and after the disposal. Takes an optional `fn` argument to do additional work, and optional `args` that are passed through to the events and `fn`.
   *
   * @param {Object} obj The object to dispose.
   * @param {Function} [fn] A callback to perform additional work in between the `'disposing'` and `'disposed'` events.
@@ -1399,12 +1482,13 @@
   };
 
   /*
-  * Uses `bindEvent` to bind an event map of the form `{eventName: methodName}`.
+  * Makes `contextObj` listen to `targetObj` for the events of `eventMap` in the form `eventName: method`, where `method` is a function or the name of a function on `contextObj`.
+  *
+  *     Giraffe.bindEventMap(this, this.app, this.appEvents);
   *
   * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
-  * @param {Function} cb The event's callback.
   */
 
 
@@ -1420,7 +1504,6 @@
   * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
   * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
-  * @param {Function} cb The event's callback.
   */
 
 
