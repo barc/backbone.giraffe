@@ -138,6 +138,9 @@ class Giraffe.View extends Backbone.View
       # Set the initial parent -- needed only in cases where an existing `el` is given to the view.
       @setParent Giraffe.View.getClosestView(@$el)
 
+      # Cache any elements that might already be in `el`
+      @_cacheUiElements()
+
       # Initialize the view
       initialize.apply @, Array.prototype.slice.call(arguments, 1)
 

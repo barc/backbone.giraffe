@@ -134,6 +134,7 @@
         _this._cache();
         _this.$el.attr('data-view-cid', _this.cid);
         _this.setParent(Giraffe.View.getClosestView(_this.$el));
+        _this._cacheUiElements();
         initialize.apply(_this, Array.prototype.slice.call(arguments, 1));
         return _this._bindDataEvents();
       });
