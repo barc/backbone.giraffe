@@ -21,7 +21,8 @@ and routers communicate by acting as an event hub. Multiple apps can coexist and
 teardown is as simple as it gets.
 
 - __Giraffe.Router__ leverages an app's events to trigger routing events that
-any object can listen for.
+any object can listen for. It also has reverse routes to allow the construction
+of URLs using app events and arguments.
 
 - __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add
 __Giraffe__'s lifecycle management and app events.
@@ -54,8 +55,8 @@ features to make you more productive with __Backbone__.
 - __Routes emit events__ instead of being tied to functions. This makes it
 extremely simple for a deeply nested view to act on a route.
 
-- __Reverse routes with arguments__ provide a way to trigger actions in the
-application without having to know a URL path.
+- __Reverse routes with arguments__ provide a way to trigger routes in the
+application using app events without having to know a URL path.
 
 - __App-wide event hub__ with convenient `appEvents` bindings inspired by
 `Backbone.View#events`.
