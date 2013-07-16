@@ -613,6 +613,7 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
   -moz-box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
   box-shadow: 0 1px 3px #9fc9ee inset, 0 -1px 1px #2273b9 inset;
   outline: none !important;
+  width: 265px;
 }
 .big-button:hover,
 .big-button:focus {
@@ -810,4 +811,18 @@ a strong {
   padding: 0.5em;
   border-right: solid 1px #ececec;
   border-bottom: solid 1px #ececec;
+}
+.download-labels {
+  display: inline;
+}
+.download-size-label {
+  text-decoration: italic;
+}
+.download-version-label {
+  font-weight: bold;
+}
+.button-size-label {
+  position: relative;
+  top: 15px;
+  left: 8px;
 }
