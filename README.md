@@ -88,6 +88,7 @@ try to be __Knockout__ or __AngularJS__)
 ## Building
 
     npm install projmate-cli@0.1.0-dev -g
+    npm install -d
     pm run all
 
 ## License
