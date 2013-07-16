@@ -12,4 +12,4 @@
 - [View UI](viewUI.html)
 - [Menu Example](menuExample.html)
 - [View Flexibility](viewFlexibility.html)
-- [_TodoMVC on Github_](https://github.com/iamthe35th/todomvc/tree/gh-pages/labs/architecture-examples/backbone.giraffe)
+- [_TodoMVC on Github_](http://iamthe35th.github.io/todomvc/labs/architecture-examples/backbone.giraffe/index.html)
