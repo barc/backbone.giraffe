@@ -81,10 +81,10 @@ try to be __Knockout__ or __AngularJS__)
 __Version 0.1__
 
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">51.2k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">54.6k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">15.6k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">16.1k</em>
 </p>
 
 [Giraffe on Github](https://github.com/barc/backbone.giraffe)
