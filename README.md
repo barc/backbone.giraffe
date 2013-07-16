@@ -1,4 +1,4 @@
-![Backbone.Giraffe](https://raw.github.com/barc/backbone.giraffe/master/src/docs/img/logo.png)
+[![Backbone.Giraffe](https://raw.github.com/barc/backbone.giraffe/master/src/docs/img/logo.png)](https://barc.github.io/backbone.giraffe)
 
 # Backbone.Giraffe
 
