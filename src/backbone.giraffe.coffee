@@ -5,14 +5,6 @@
 #===============================================================================
 
 
-# TODO
-# route namespaces
-# more events like disposing and disposed? rendering/rendered, attaching/attached - replace before/afterRender?
-# view transitions
-# collectionView?
-# modelView?
-
-
 if global?
   Backbone = require('backbone')
   $ = require('jQuery')
@@ -137,6 +129,9 @@ class Giraffe.View extends Backbone.View
 
       # Set the data-view-cid attribute to link dom els to their view objects.
       @$el.attr 'data-view-cid', @cid
+
+      # Set the initial parent -- needed only in cases where an existing `el` is given to the view.
+      @setParent Giraffe.View.getClosestView(@$el)
 
       # Initialize the view
       initialize.apply @, Array.prototype.slice.call(arguments, 1)
@@ -1253,3 +1248,12 @@ _setEventMapBindings = (contextObj, targetObj, eventMap, bindOrUnbindFnName) ->
   for eventName, cb of eventMap
     _setEventBindings contextObj, targetObj, eventName, cb, bindOrUnbindFnName
   null
+
+
+
+# TODO
+# route namespaces
+# more events like disposing/disposed? rendering/rendered, attaching/attached - replace before/afterRender?
+# view transitions
+# collectionView?
+# modelView?

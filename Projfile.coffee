@@ -49,22 +49,19 @@ exports.project = (pm) ->
     ]
 
   # _docs
-  _copyReadmeAsIndex:
-    desc: 'Copies README.md as the source for index.html'
-    files: ['README.md', 'LICENSE']
+  _copyLicense:
+    desc: 'Copies LICENSE to be made into an HTML file'
+    files: ['LICENSE']
     dev: [
       f.tap (asset) ->
         asset.filename = switch asset.filename
-          when 'README.md' then 'src/docs/index.md'
           when 'LICENSE' then 'src/docs/license.md'
       f.writeFile
     ]
 
-
-  _deleteTempIndex:
-    desc: 'Deletes copied README.md'
+  _deleteTempLicense:
+    desc: 'Deletes copied LICENSE'
     dev: ->
-      $.rm 'src/docs/index.md'
       $.rm 'src/docs/license.md'
 
   _toc:
@@ -118,7 +115,7 @@ exports.project = (pm) ->
 
   docs:
     desc: 'Builds the docs'
-    deps: ['prep', '_copyReadmeAsIndex', '_docs', '_deleteTempIndex', '_api']
+    deps: ['prep', '_copyLicense', '_docs', '_deleteTempLicense', '_api']
 
   stylesheets:
     desc: 'Builds less files'

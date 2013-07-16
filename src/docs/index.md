@@ -1,5 +1,3 @@
-![Backbone.Giraffe](https://raw.github.com/barc/backbone.giraffe/master/src/docs/img/logo.png)
-
 # Backbone.Giraffe
 
 ## Introduction
@@ -80,14 +78,17 @@ try to be __Knockout__ or __AngularJS__)
 
 ## Download
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _51.2k_ __(version 0.1)__
+__Version 0.1__
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _15.6k_
+<p>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">51.2k</em>
+</p>
+<p>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">15.6k</em>
+</p>
 
-## Building
+[Giraffe on Github](https://github.com/barc/backbone.giraffe)
 
-    npm install projmate-cli@0.1.0-dev -g
-    pm run all
 
 ## License
 
