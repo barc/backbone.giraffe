@@ -702,7 +702,7 @@ Giraffe.View.setDocumentEvents ['click', 'change']
 
 
 ###
-* __Giraffe.App__ is a special __Giraffe.View__ that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will call `dispose` on all `children` that have the method. The first __Giraffe.App__ created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing. 
+* __Giraffe.App__ is a special __Giraffe.View__ that provides encapsulation for an entire application. Like all Giraffe views, the app has lifecycle management for all `children`, so calling `dispose` on an app will call `dispose` on all `children` that have the method. The first __Giraffe.App__ created on a page is available globally at `Giraffe.app`, and by default all Giraffe objects reference this app as `this.app` unless they're passed a different app in `options.app`. This app reference is used to bind `appEvents`, a hash that all Giraffe objects can implement which uses the app as an event aggregator for communication and routing.
 *
 *     var myApp = new Giraffe.App();
 *     window.Giraffe.app; // => `myApp`
@@ -1054,20 +1054,12 @@ class Giraffe.Router extends Backbone.Router
     return route unless first?
 
     wildcards = /:\w+|\*\w+/g
-    result = ""
-    start = 0
-
     if _.isObject(first)
-      matches = route.replace wildcards, (token, index) ->
-        key = token.slice(1)
-        val = first[key] || ''
-        result += route.slice(start, index) + val
-        start = index + token.length
+      result = route.replace wildcards, (token, index) ->
+        first[key] || ''
     else
-      matches = route.replace wildcards, (token, index) ->
-        val = args.shift() || ''
-        result += route.slice(start, index) + val
-        start = index + token.length
+      result = route.replace wildcards, (token, index) ->
+        args.shift() || ''
 
     result
 

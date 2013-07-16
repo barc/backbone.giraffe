@@ -83,7 +83,9 @@ exports.project = (pm) ->
         asset.filename = asset.filename.replace(/^src/, 'dist')
         asset.text = asset.text.replace(/{{{COMMON}}}/g, COMMON)
       f.tutdown
-        exampleLayoutFile: 'src/docs/_example.mustache'
+        templates:
+          example: fs.readFileSync('src/docs/_example.mustache', 'utf8')
+          uml: fs.readFileSync('src/docs/_uml.mustache', 'utf8')
         assetsDirname: 'dist/docs/assets'
       f.intrude ->
         console.error 'HERE'
