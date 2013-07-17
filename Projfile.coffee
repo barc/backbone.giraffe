@@ -93,7 +93,7 @@ exports.project = (pm) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
         delimiters: 'mustache'
-        layout: 'src/docs/_layout.mustache'
+        filename: 'src/docs/_layout.mustache'
         navHeader: ''
       f.writeFile
     ]
@@ -106,7 +106,7 @@ exports.project = (pm) ->
       f.tutdown commentFiller: '* '
       f.template
         delimiters: 'mustache'
-        layout: 'src/docs/_layout.mustache'
+        filename: 'src/docs/_layout.mustache'
         navHeader:
           """
           <h2><a href="index.html">Examples</a></h2>
@@ -174,12 +174,4 @@ exports.project = (pm) ->
         else
           $.info '_gh-pages updated. cd into it and `git push origin gh-pages`'
         cb()
-
-
-
-
-
-
-
-
 
