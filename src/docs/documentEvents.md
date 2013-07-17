@@ -17,13 +17,6 @@ events to view method calls in your markup using the form
 searches up the hierarchy until it finds the method or fails on a view with no
 `parent`. In this template we bind to `'keyup'` and `'click'` events.
 
-<div class="note">
-__Giraffe__ does _not_ provide two-way data binding, but given its goal as a
-light and flexible library, it should play nicely with most Backbone plugins.
-This feature can be disabled by calling the class method
-`Giraffe.View.removeDocumentEvents()`.
-</div>
-
 ```html
 <script id="view-template" type="text/template">
   <div id="hello-text">Hello world!</div>
@@ -63,6 +56,13 @@ Giraffe.View.setDocumentEvents('mousedown change keyup'); // or as a single stri
 Giraffe.View.setDocumentEvents('click change'); // Giraffe's default events
 Giraffe.View.setDocumentEvents('click keyup'); // the events for this example
 ```
+
+<div class="note">
+__Giraffe__ does _not_ provide two-way data binding, but given its goal as a
+light and flexible library, it should play nicely with most Backbone plugins.
+This feature can be disabled by calling the class method
+`Giraffe.View.removeDocumentEvents()`.
+</div>
 
 All done! Let's create and attach the view.
 
