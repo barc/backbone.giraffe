@@ -151,7 +151,8 @@
     * defaults to `'append'` and also accepts `'prepend'`, `'after'`, `'before'`,
     * and `'html'`. If the view has not yet been rendered when attached, `render`
     * is called. This `render` behavior can be overridden via
-    * `options.forceRender` and `options.suppressRender`.
+    * `options.forceRender` and `options.suppressRender`. See the
+    * [_View Basics_ example](viewBasics.html) for more.
     *
     * @param {String/Element/jQuery/View} el A view, selector, or DOM element to attach `view.$el` to.
     * @param {Object} [options]
@@ -296,7 +297,7 @@
     * customizable via [`Giraffe.View#setTemplateStrategy`](#View-setTemplateStrategy),
     * or override `templateStrategy` with a function returning a string of HTML
     * from your favorite templating engine. See the
-    * [Template Strategies example](templateStrategies.html) for more.
+    * [_Template Strategies_ example](templateStrategies.html) for more.
     */
 
 
@@ -308,7 +309,7 @@
     * Consumed by the `templateStrategy` function created by
     * [`Giraffe.View#setTemplateStrategy`](#View-setTemplateStrategy). By default,
     * `template` is the DOM selector of an __Underscore__ template. See the
-    * [Template Strategies example](templateStrategies.html) for more.
+    * [_Template Strategies_ example](templateStrategies.html) for more.
     *
     *     // the default `templateStrategy` is 'underscore-template-selector'
     *     view.template = '#my-template-selector';
@@ -846,7 +847,7 @@
     *
     *     - `view.template` is an html string or a JST function
     *
-    * See the [Template Strategies example](templateStrategies.html) for more.
+    * See the [_Template Strategies_ example](templateStrategies.html) for more.
     *
     * @param {String} strategy Choose 'underscore-template-selector', 'underscore-template', 'jst'
     *

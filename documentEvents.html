@@ -48,10 +48,7 @@
         </a>
         <p><div class='section-example'><h1 id='h-view-document-events'>View Document Events</h1>
 <p>This example demonstrates <strong>Giraffe</strong>&#39;s document event bindings that link DOM events
-to <strong>Giraffe.View</strong> methods. <strong>Giraffe</strong> does <em>not</em> provide two-way data binding,
-but given its goal as a lightweight library, it should play nicely with most
-Backbone plugins. This feature can be disabled by calling the class method
-<code>Giraffe.View.removeDocumentEvents()</code>.</p>
+to <strong>Giraffe.View</strong> methods.</p>
 <pre><code class="js"><span class="keyword">var</span> View = Giraffe.View.extend({
   template: <span class="string">'#view-template'</span>,</code></pre>
 <p><strong>Giraffe.View</strong> provides a simple, convenient, and performant way to bind DOM
@@ -59,6 +56,13 @@ events to view method calls in your markup using the form
 <code>data-gf-eventName=&#39;viewMethodName&#39;</code>. If the method isn&#39;t found on the view, it
 searches up the hierarchy until it finds the method or fails on a view with no
 <code>parent</code>. In this template we bind to <code>&#39;keyup&#39;</code> and <code>&#39;click&#39;</code> events.</p>
+<div class="note">
+<strong>Giraffe</strong> does <em>not</em> provide two-way data binding, but given its goal as a
+light and flexible library, it should play nicely with most Backbone plugins.
+This feature can be disabled by calling the class method
+<code>Giraffe.View.removeDocumentEvents()</code>.
+</div>
+
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"view-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"hello-text"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
   <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">value</span>=<span class="value">"world"</span> <span class="attribute">data-gf-keyup</span>=<span class="value">"onChangeName"</span>&gt;</span>

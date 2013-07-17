@@ -92,30 +92,34 @@ extension library with few opinions.</p>
 features to make you more productive with <strong>Backbone</strong>.</p>
 <h3 id='h-highlights'>Highlights</h3>
 <ul>
-<li><p><strong>Routes emit events</strong> instead of being tied to functions. This makes it
-extremely simple for a deeply nested view to act on a route.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/routersAndAppEvents.html"><strong>Routes emit events</strong></a>
+instead of being tied to functions. This makes it extremely simple for a deeply
+nested view to act on a route.</p>
 </li>
-<li><p><strong>Reverse routes with arguments</strong> provide a way to trigger routes in the
-application using app events without having to know a URL path.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/api.html"><strong>Reverse routes with arguments</strong></a>
+provide a way to trigger routes in the application using app events without
+having to know a URL path.</p>
 </li>
-<li><p><strong>Giraffe.App</strong> is a special view that acts as an event hub to help your
-app communicate and respond to routes, and all <strong>Giraffe</strong> objects have
-convenient <code>appEvents</code> bindings inspired by <code>Backbone.View#events</code>.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/appEvents.html"><strong>Giraffe.App</strong></a> is a
+special view that acts as an event hub to help your app communicate and respond
+to routes, and all <strong>Giraffe</strong> objects have convenient <code>appEvents</code> bindings
+inspired by <code>Backbone.View#events</code>.</p>
 </li>
-<li><p><strong><code>Giraffe.View#attachTo(someElement)</code></strong> allows views to move anywhere on the
-DOM without clobbering each other&#39;s events, and it automatically sets up
-parent-child relationships for memory management.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/api.html#View-attachTo"><strong><code>Giraffe.View#attachTo(someElement)</code></strong></a>
+allows views to move anywhere on the DOM without clobbering each other&#39;s events,
+and it automatically sets up parent-child relationships for memory management.</p>
 </li>
-<li><p><strong>Object tracking</strong> mitigates memory leaks. It&#39;s automatic for nested
-views and can be used for any object with a <code>dispose</code> method via
-<code>Giraffe.View#addChild</code>.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/lifecycleManagement.html"><strong>Lifecycle management</strong></a>
+mitigates memory leaks. It&#39;s automatic for nested views and can be used for any
+object with a <code>dispose</code> method via <code>Giraffe.View#addChild</code>.</p>
 </li>
-<li><p><strong>(A)sync app initialization</strong> helps an app reach its ready state. For
-example, an app may need to wait for asynchronous bootstrap data or a websocket
-connection before starting.</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/appInitialization.html"><strong>(A)sync app initialization</strong></a>
+helps an app reach its ready state. For example, an app may need to wait for
+asynchronous bootstrap data or a websocket connection before starting.</p>
 </li>
-<li><p><strong>Declarative event handling</strong> in markup provides simple one-way binding.
-(does not try to be <strong>Knockout</strong> or <strong>AngularJS</strong>)</p>
+<li><p><a href="http://barc.github.io/backbone.giraffe/documentEvents.html"><strong>Declarative event handling</strong></a>
+in markup provides simple one-way binding. (does not try to be <strong>Knockout</strong> or
+<strong>AngularJS</strong>)</p>
 </li>
 </ul>
 <h2 id='h-download'>Download</h2>
