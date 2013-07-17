@@ -60,9 +60,9 @@ extremely simple for a deeply nested view to act on a route.
 - __Reverse routes with arguments__ provide a way to trigger routes in the
 application using app events without having to know a URL path.
 
-- __Giraffe.App__ is an __event hub__ that helps your app communicate and
-respond to routes, and all __Giraffe__ objects have convenient `appEvents`
-bindings inspired by `Backbone.View#events`.
+- __Giraffe.App__ is a special view that acts as an event hub to help your
+app communicate and respond to routes, and all __Giraffe__ objects have
+convenient `appEvents` bindings inspired by `Backbone.View#events`.
 
 - __`Giraffe.View#attachTo(someElement)`__ allows views to move anywhere on the
 DOM without clobbering each other's events, and it automatically sets up

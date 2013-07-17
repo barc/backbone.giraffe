@@ -98,9 +98,9 @@ extremely simple for a deeply nested view to act on a route.</p>
 <li><p><strong>Reverse routes with arguments</strong> provide a way to trigger routes in the
 application using app events without having to know a URL path.</p>
 </li>
-<li><p><strong>Giraffe.App</strong> is an <strong>event hub</strong> that helps your app communicate and
-respond to routes, and all <strong>Giraffe</strong> objects have convenient <code>appEvents</code>
-bindings inspired by <code>Backbone.View#events</code>.</p>
+<li><p><strong>Giraffe.App</strong> is a special view that acts as an event hub to help your
+app communicate and respond to routes, and all <strong>Giraffe</strong> objects have
+convenient <code>appEvents</code> bindings inspired by <code>Backbone.View#events</code>.</p>
 </li>
 <li><p><strong><code>Giraffe.View#attachTo(someElement)</code></strong> allows views to move anywhere on the
 DOM without clobbering each other&#39;s events, and it automatically sets up
