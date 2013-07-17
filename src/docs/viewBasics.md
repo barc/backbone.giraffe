@@ -21,7 +21,7 @@ __Giraffe__ implements `render` so it can do some useful things, and by default
 template. This can be easily configured to support any form of string
 templating. For more information, see `template`, `setTemplateStrategy`, and
 `templateStrategy` in the [API docs](api.html#View-template) or the
-[Template Strategies](templateStrategies.html) example. The included strategies
+[_Template Strategies_ example](templateStrategies.html). The included strategies
 use a view's `serialize` function to get the data passed into the template.
 
 ```html

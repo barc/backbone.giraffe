@@ -4,10 +4,7 @@
 # View Document Events
 
 This example demonstrates __Giraffe__'s document event bindings that link DOM events
-to __Giraffe.View__ methods. __Giraffe__ does _not_ provide two-way data binding,
-but given its goal as a lightweight library, it should play nicely with most
-Backbone plugins. This feature can be disabled by calling the class method
-`Giraffe.View.removeDocumentEvents()`.
+to __Giraffe.View__ methods.
 
 ```js
 var View = Giraffe.View.extend({
@@ -19,6 +16,13 @@ events to view method calls in your markup using the form
 `data-gf-eventName='viewMethodName'`. If the method isn't found on the view, it
 searches up the hierarchy until it finds the method or fails on a view with no
 `parent`. In this template we bind to `'keyup'` and `'click'` events.
+
+<div class="note">
+__Giraffe__ does _not_ provide two-way data binding, but given its goal as a
+light and flexible library, it should play nicely with most Backbone plugins.
+This feature can be disabled by calling the class method
+`Giraffe.View.removeDocumentEvents()`.
+</div>
 
 ```html
 <script id="view-template" type="text/template">

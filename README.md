@@ -54,31 +54,34 @@ features to make you more productive with __Backbone__.
 
 ### Highlights
 
-- __Routes emit events__ instead of being tied to functions. This makes it
-extremely simple for a deeply nested view to act on a route.
+- [__Routes emit events__](http://barc.github.io/backbone.giraffe/routersAndAppEvents.html)
+instead of being tied to functions. This makes it extremely simple for a deeply
+nested view to act on a route.
 
-- __Reverse routes with arguments__ provide a way to trigger routes in the
-application using app events without having to know a URL path.
+- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html)
+provide a way to trigger routes in the application using app events without
+having to know a URL path.
 
-- __Giraffe.App__ is a special view that acts as an event hub to help your
-app communicate and respond to routes, and all __Giraffe__ objects have
-convenient `appEvents` bindings inspired by `Backbone.View#events`.
+- [__Giraffe.App__](http://barc.github.io/backbone.giraffe/appEvents.html) is a
+special view that acts as an event hub to help your app communicate and respond
+to routes, and all __Giraffe__ objects have convenient `appEvents` bindings
+inspired by `Backbone.View#events`.
 
-- __`Giraffe.View#attachTo(someElement)`__ allows views to move anywhere on the
-DOM without clobbering each other's events, and it automatically sets up
-parent-child relationships for memory management.
+- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/api.html#View-attachTo)
+allows views to move anywhere on the DOM without clobbering each other's events,
+and it automatically sets up parent-child relationships for memory management.
 
-- __Object tracking__ mitigates memory leaks. It's automatic for nested
-views and can be used for any object with a `dispose` method via
-`Giraffe.View#addChild`.
+- [__Lifecycle management__](http://barc.github.io/backbone.giraffe/lifecycleManagement.html)
+mitigates memory leaks. It's automatic for nested views and can be used for any
+object with a `dispose` method via `Giraffe.View#addChild`.
 
-- __(A)sync app initialization__ helps an app reach its ready state. For
-example, an app may need to wait for asynchronous bootstrap data or a websocket
-connection before starting.
+- [__(A)sync app initialization__](http://barc.github.io/backbone.giraffe/appInitialization.html)
+helps an app reach its ready state. For example, an app may need to wait for
+asynchronous bootstrap data or a websocket connection before starting.
 
-- __Declarative event handling__ in markup provides simple one-way binding.
-(does not try to be __Knockout__ or __AngularJS__)
-
+- [__Declarative event handling__](http://barc.github.io/backbone.giraffe/documentEvents.html)
+in markup provides simple one-way binding. (does not try to be __Knockout__ or
+__AngularJS__)
 
 ## Download
 
