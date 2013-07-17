@@ -58,7 +58,7 @@ features to make you more productive with __Backbone__.
 instead of being tied to functions. This makes it extremely simple for a deeply
 nested view to act on a route.
 
-- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html)
+- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html#Router)
 provide a way to trigger routes in the application using app events without
 having to know a URL path.
 
