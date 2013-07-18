@@ -2,7 +2,7 @@
 
 CollectionView and ItemView are classes often found in other Backbone
 frameworks. This example details how to implement this pattern in __Giraffe__
-by rendering a collection of fruits.
+by rendering a collection of savory colored fruits.
 
 :::BEGIN Example
 
@@ -27,32 +27,40 @@ var Fruits = Giraffe.Collection.extend({
 
 ## Item View
 
-In __Giraffe__ views are composable meaning many of the features needed
-for CollectionView and ItemView are already baked into the view.
+In __Giraffe__ views are composable obviating the need for a
+a dedicated CollectionView and ItemView.
 
 ```js
 var FruitView = Giraffe.View.extend({
   template: '#fruit-template',
 
   initialize: function() {
+    // used to find this view by its unique collection id
+    this.$el.attr('id', this.model.cid);
     this.$el.css('background-color', this.model.get('color'));
   },
 
+  serialize: function() {
+    return this.model.toJSON()
+  },
+```
+
+We could cheat and call `this.dispose()` here. By modifying the collection
+instead, any view observing the collection is notified.
+
+```js
   onDelete: function() {
-    // We could cheat and call this.dispose(). Modify the collection
-    // instead and let the parent view worry about removing the child view.
     this.model.collection.remove(this.model);
   }
 });
 ```
 
-In the view's template, assign `model.cid` as the id. This will be used
-to find the closest view in the remove handler for the collection.
+Add a delete button to manually remove elements from the collection.
 
 ```html
 <script id='fruit-template' type='text/template'>
-  <div id='<%= model.cid %>' class='fruit-view'>
-    <h2><%= model.get('name') %></h2>
+  <div class='fruit-view'>
+    <h2><%= name %></h2>
     <button data-gf-click='onDelete'>delete</button>
   </div>
 </script>
@@ -60,9 +68,9 @@ to find the closest view in the remove handler for the collection.
 
 ## Collection View
 
-The parent or collection view acts on changes in its collection, thus the
-view has to listen for `add` and `remove` events. The `dataEvents` property
-facilitates assigning data event handlers.
+A collection view reacts to changes on its collection, thus the
+view needs handlers for `add` and `remove` events. The
+`dataEvents` property facilitates assigning handlers.
 
 ```js
 var FruitsView = Giraffe.View.extend({
@@ -73,8 +81,15 @@ var FruitsView = Giraffe.View.extend({
 ```
 
 <div class='note'>
-Consider `dataEvents` property unstable. One of our smart interns found a common
-use case where this does not work. We may deprecate this property.
+  <p>
+    Consider `dataEvents` property unstable. One of our smart interns found a common
+    use case where events do not trigger. That is, if you modify a model/collection
+    in the `initialize` method, event listeners have not yet been assigned and
+    expected events do not fire.
+  </p>
+  <p>
+    We may obsolete this property altogether as it could lead to [astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment).
+  </p>
 </div>
 
 ```js
@@ -90,7 +105,7 @@ use case where this does not work. We may deprecate this property.
   },
 ```
 
-Child items must be added __after__ this collection view has rendered itself.
+Child items must be added _after_ this collection view has rendered itself.
 
 ```js
   afterRender: function() {
