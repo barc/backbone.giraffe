@@ -13,12 +13,16 @@ var FruitView = Giraffe.View.extend({
   template: '#fruit-template',
 
   initialize: function() {
+    // used to find this view by its unique collection id
+    this.$el.attr('id', this.model.cid);
     this.$el.css('background-color', this.model.get('color'));
   },
 
+  serialize: function() {
+    return this.model.toJSON()
+  },
+
   onDelete: function() {
-    // We could cheat and call this.dispose(). Modify the collection
-    // instead and let the parent view worry about removing the child view.
     this.model.collection.remove(this.model);
   }
 });
