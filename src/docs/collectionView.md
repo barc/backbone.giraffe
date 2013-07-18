@@ -27,8 +27,8 @@ var Fruits = Giraffe.Collection.extend({
 
 ## Item View
 
-Unlike many frameworks, __Giraffe.View__s are composable meaning implementing
-a CollectionView and ItemView is fairly simple.
+In __Giraffe__ views are composable meaning many of the features needed
+for CollectionView and ItemView are already baked into the view.
 
 ```js
 var FruitView = Giraffe.View.extend({
@@ -46,8 +46,8 @@ var FruitView = Giraffe.View.extend({
 });
 ```
 
-In the view's template, `model.cid` is assinged as the id. This will be used
-by the delete action later.
+In the view's template, assign `model.cid` as the id. This will be used
+to find the closest view in the remove handler for the collection.
 
 ```html
 <script id='fruit-template' type='text/template'>
@@ -61,8 +61,8 @@ by the delete action later.
 ## Collection View
 
 The parent or collection view acts on changes in its collection, thus the
-view listens for `add` and `remove` events. The `dataEvents` property facilitates
-assigning data event handlers.
+view has to listen for `add` and `remove` events. The `dataEvents` property
+facilitates assigning data event handlers.
 
 ```js
 var FruitsView = Giraffe.View.extend({
@@ -73,8 +73,8 @@ var FruitsView = Giraffe.View.extend({
 ```
 
 <div class='note'>
-Consider `dataEvents` property unstable. One of smart interns found a common
-use case where it does not work. We may deprecate this property.
+Consider `dataEvents` property unstable. One of our smart interns found a common
+use case where this does not work. We may deprecate this property.
 </div>
 
 ```js
@@ -90,7 +90,7 @@ use case where it does not work. We may deprecate this property.
   },
 ```
 
-Child items must be added after this collection view has rendered itself.
+Child items must be added __after__ this collection view has rendered itself.
 
 ```js
   afterRender: function() {
@@ -102,7 +102,7 @@ Child items must be added after this collection view has rendered itself.
 });
 ```
 
-All that is left is to create tasty and attach the collection view to the page.
+Let's create tasty fruits and attach the collection view to the page.
 
 ```js
 var fruits = new Fruits([
