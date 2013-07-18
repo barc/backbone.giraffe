@@ -66,8 +66,8 @@ a <strong>Giraffe.View</strong>.</p>
   model: Fruit
 });</code></pre>
 <h2 id='h-item-view'>Item View</h2>
-<p>Unlike many frameworks, <strong>Giraffe.View</strong>s are composable meaning implementing
-a CollectionView and ItemView is fairly simple.</p>
+<p>In <strong>Giraffe</strong> views are composable meaning many of the features needed
+for CollectionView and ItemView are already baked into the view.</p>
 <pre><code class="js"><span class="keyword">var</span> FruitView = Giraffe.View.extend({
   template: <span class="string">'#fruit-template'</span>,
 
@@ -81,8 +81,8 @@ a CollectionView and ItemView is fairly simple.</p>
     <span class="keyword">this</span>.model.collection.remove(<span class="keyword">this</span>.model);
   }
 });</code></pre>
-<p>In the view&#39;s template, <code>model.cid</code> is assinged as the id. This will be used
-by the delete action later.</p>
+<p>In the view&#39;s template, assign <code>model.cid</code> as the id. This will be used
+to find the closest view in the remove handler for the collection.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruit-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">'&lt;%= model.cid %&gt;'</span> <span class="attribute">class</span>=<span class="value">'fruit-view'</span>&gt;</span>
     <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= model.get(<span class="string">'name'</span>) %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
@@ -91,16 +91,16 @@ by the delete action later.</p>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-collection-view'>Collection View</h2>
 <p>The parent or collection view acts on changes in its collection, thus the
-view listens for <code>add</code> and <code>remove</code> events. The <code>dataEvents</code> property facilitates
-assigning data event handlers.</p>
+view has to listen for <code>add</code> and <code>remove</code> events. The <code>dataEvents</code> property
+facilitates assigning data event handlers.</p>
 <pre><code class="js"><span class="keyword">var</span> FruitsView = Giraffe.View.extend({
   dataEvents: {
     <span class="string">'add collection'</span>: <span class="string">'onAddItem'</span>,
     <span class="string">'remove collection'</span>: <span class="string">'onRemoveItem'</span>
   },</code></pre>
 <div class='note'>
-Consider <code>dataEvents</code> property unstable. One of smart interns found a common
-use case where it does not work. We may deprecate this property.
+Consider <code>dataEvents</code> property unstable. One of our smart interns found a common
+use case where this does not work. We may deprecate this property.
 </div>
 
 <pre><code class="js">  onAddItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
@@ -113,7 +113,7 @@ use case where it does not work. We may deprecate this property.
     <span class="keyword">var</span> itemView = Giraffe.View.getClosestView(<span class="string">'#'</span> + fruit.cid);
     itemView.dispose();
   },</code></pre>
-<p>Child items must be added after this collection view has rendered itself.</p>
+<p>Child items must be added <strong>after</strong> this collection view has rendered itself.</p>
 <pre><code class="js">  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> my = <span class="keyword">this</span>;
     <span class="keyword">this</span>.collection.each(<span class="function"><span class="keyword">function</span> <span class="params">(item)</span> {</span>
@@ -121,7 +121,7 @@ use case where it does not work. We may deprecate this property.
     });
   }
 });</code></pre>
-<p>All that is left is to create tasty and attach the collection view to the page.</p>
+<p>Let&#39;s create tasty fruits and attach the collection view to the page.</p>
 <pre><code class="js"><span class="keyword">var</span> fruits = <span class="keyword">new</span> Fruits([
   {name: <span class="string">'Apple'</span>, color: <span class="string">'#0F0'</span>},
   {name: <span class="string">'Banana'</span>, color: <span class="string">'#FF0'</span>},
