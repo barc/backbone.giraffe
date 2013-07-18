@@ -1,14 +1,16 @@
 # Implement CollectionView
 
-CollectionView and ItemView are classes found in other Backbone frameworks.
-This example shows how to implement this pattern in __Giraffe__.
+CollectionView and ItemView are classes often found in other Backbone
+frameworks. This example details how to implement this pattern in __Giraffe__
+by rendering a collection of fruits.
 
 :::BEGIN Example
 
-## The View's Model
+## Collection and Model
 
-This example renders a collection of fruits. Defining the model is the
-same as in __Backbone__.
+Defining the model and collection is the same as in __Backbone__.
+Any __Giraffe.Model__ is automatically tracked for dispoal when assigned to
+a __Giraffe.View__.
 
 ```js
 var Fruit = Giraffe.Model.extend({
@@ -23,12 +25,10 @@ var Fruits = Giraffe.Collection.extend({
 });
 ```
 
-## Collection and Item View
+## Item View
 
-Unlike other frameworks, every __Giraffe.View__ is composable.
-Collection and item views in __Giraffe__ are just views.
-
-The item view for fruit is fairly simple.
+Unlike many frameworks, __Giraffe.View__s are composable meaning implementing
+a CollectionView and ItemView is fairly simple.
 
 ```js
 var FruitView = Giraffe.View.extend({
@@ -39,11 +39,15 @@ var FruitView = Giraffe.View.extend({
   },
 
   onDelete: function() {
-    // we could cheat and call this.dispose(), modify the collection instead
-    this.parent.collection.remove(this.model);
+    // We could cheat and call this.dispose(). Modify the collection
+    // instead and let the parent view worry about removing the child view.
+    this.model.collection.remove(this.model);
   }
 });
 ```
+
+In the view's template, `model.cid` is assinged as the id. This will be used
+by the delete action later.
 
 ```html
 <script id='fruit-template' type='text/template'>
@@ -54,8 +58,10 @@ var FruitView = Giraffe.View.extend({
 </script>
 ```
 
-The collection view acts on changes in its collection, thus the view needs
-to listen for `add` and `remove` events. The `dataEvents` property facilitates
+## Collection View
+
+The parent or collection view acts on changes in its collection, thus the
+view listens for `add` and `remove` events. The `dataEvents` property facilitates
 assigning data event handlers.
 
 ```js
@@ -84,8 +90,7 @@ use case where it does not work. We may deprecate this property.
   },
 ```
 
-Adding of child items has to happen after this collection view has rendered
-itself.
+Child items must be added after this collection view has rendered itself.
 
 ```js
   afterRender: function() {
@@ -93,12 +98,11 @@ itself.
     this.collection.each(function (item) {
       my.onAddItem(item, my.collection);
     });
-
   }
 });
 ```
 
-All that is left is to create tasty fruits and attach the view to the page.
+All that is left is to create tasty and attach the collection view to the page.
 
 ```js
 var fruits = new Fruits([

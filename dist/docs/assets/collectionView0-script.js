@@ -17,8 +17,9 @@ var FruitView = Giraffe.View.extend({
   },
 
   onDelete: function() {
-    // we could cheat and call this.dispose(), modify the collection instead
-    this.parent.collection.remove(this.model);
+    // We could cheat and call this.dispose(). Modify the collection
+    // instead and let the parent view worry about removing the child view.
+    this.model.collection.remove(this.model);
   }
 });
 
@@ -44,7 +45,6 @@ var FruitsView = Giraffe.View.extend({
     this.collection.each(function (item) {
       my.onAddItem(item, my.collection);
     });
-
   }
 });
 
