@@ -1,0 +1,11 @@
+<script id='fruit-template' type='text/template'>
+  <div id='<%= model.cid %>' class='fruit-view'>
+    <h2><%= model.get('name') %></h2>
+    <button data-gf-click='onDelete'>delete</button>
+  </div>
+</script>
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+<script src="../backbone.giraffe.js" type="text/javascript"></script>

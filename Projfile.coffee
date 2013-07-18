@@ -87,8 +87,6 @@ exports.project = (pm) ->
           example: fs.readFileSync('src/docs/_example.mustache', 'utf8')
           uml: fs.readFileSync('src/docs/_uml.mustache', 'utf8')
         assetsDirname: 'dist/docs/assets'
-      f.intrude ->
-        console.error 'HERE'
       f.tap (asset) ->
         asset.nav = fs.readFileSync('dist/docs/_toc.html')
       f.template
