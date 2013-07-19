@@ -283,7 +283,7 @@
     * Views that are cached by setting `options.disposeOnDetach` to true will be
     * in `view.children` in `afterRender`, but will not be attached to the
     * parent's `$el`.
-    * 
+    *
     * @caption Implement this function in your views.
     */
 
@@ -774,7 +774,7 @@
     * __Giraffe__, but `setDocumentEvents` allows you to set a custom list of
     * events, first unbinding the existing ones and then setting the ones you give
     * it, if any.
-    *     
+    *
     *     Giraffe.View.setDocumentEvents(['click', 'change']); // default
     *     // or
     *     Giraffe.View.setDocumentEvents(['click', 'change', 'keydown']);
@@ -1402,6 +1402,8 @@
       wildcards = /:\w+|\*\w+/g;
       if (_.isObject(first)) {
         result = route.replace(wildcards, function(token, index) {
+          var key;
+          key = token.slice(1);
           return first[key] || '';
         });
       } else {
