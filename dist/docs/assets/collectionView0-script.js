@@ -6,15 +6,14 @@ var Fruit = Giraffe.Model.extend({
 });
 
 var Fruits = Giraffe.Collection.extend({
-  model: Fruit
+  model: Fruit,
+  comparator: 'name'
 });
 
 var FruitView = Giraffe.View.extend({
   template: '#fruit-template',
 
   initialize: function() {
-    // used to find this view by its unique collection id
-    this.$el.attr('id', this.model.cid);
     this.$el.css('background-color', this.model.get('color'));
   },
 
@@ -22,8 +21,13 @@ var FruitView = Giraffe.View.extend({
     return this.model.toJSON()
   },
 
+  onClone: function() {
+    this.model.collection.add(this.model.clone());
+  },
+
   onDelete: function() {
-    this.model.collection.remove(this.model);
+    // Giraffe method which also removes it from the collection
+    this.model.dispose();
   }
 });
 
@@ -33,20 +37,32 @@ var FruitsView = Giraffe.View.extend({
     'remove collection': 'onRemoveItem'
   },
 
+  getAttachOptions: function(fruit) {
+    var index = this.collection.indexOf(fruit);
+    var options = {method: 'prepend'};
+    if (index > 0) {
+      options.method = 'after';
+      var pred = this.collection.at(index - 1);
+      var predView = _.findWhere(this.children, {model: pred});
+      options.el = predView;
+    }
+    return options;
+  },
+
   onAddItem: function(fruit) {
     var itemView = new FruitView({model: fruit});
-    this.attach(itemView);
+    var options = this.getAttachOptions(fruit);
+    this.attach(itemView, options);
   },
 
   onRemoveItem: function(fruit) {
-    // fruit template assigns fruit.cid to div
-    var itemView = Giraffe.View.getClosestView('#' + fruit.cid);
+    var itemView = _.findWhere(this.children, {model: fruit});
     itemView.dispose();
   },
 
   afterRender: function() {
     var my = this;
-    this.collection.each(function (item) {
+    this.collection.each(function(item) {
       my.onAddItem(item, my.collection);
     });
   }
@@ -55,7 +71,8 @@ var FruitsView = Giraffe.View.extend({
 var fruits = new Fruits([
   {name: 'Apple', color: '#0F0'},
   {name: 'Banana', color: '#FF0'},
-  {name: 'Orange', color: '#FF7F00'}
+  {name: 'Orange', color: '#FF7F00'},
+  {name: 'Pink Grapefruit', color: '#C5363A'}
 ]);
 
 var fruitsView = new FruitsView({
@@ -63,10 +80,3 @@ var fruitsView = new FruitsView({
 });
 
 fruitsView.attachTo('body');
-
-setTimeout(function() {
-  fruits.add([{
-    name: 'Pink Grapefruit',
-    color: '#C5363A'
-  }]);
-}, 300);

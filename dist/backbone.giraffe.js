@@ -226,12 +226,13 @@
 
 
     View.prototype.attach = function(view, options) {
-      var childEl;
+      var childEl, el;
       if (options != null ? options.el : void 0) {
-        childEl = this.$el.find(options.el);
+        el = Giraffe.View.to$El(options.el);
+        childEl = this.$el.find(el);
         if (childEl.length) {
           view.attachTo(childEl, options);
-        } else if (this.$el.is(options.el)) {
+        } else if (this.$el.is(el)) {
           view.attachTo(this.$el, options);
         } else {
           error('Attempting to attach to an element that doesn\'t exist inside this view!', options, view, this);

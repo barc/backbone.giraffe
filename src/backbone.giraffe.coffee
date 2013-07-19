@@ -237,10 +237,11 @@ class Giraffe.View extends Backbone.View
   ###
   attach: (view, options) ->
     if options?.el
-      childEl = @$el.find(options.el)
+      el = Giraffe.View.to$El(options.el)
+      childEl = @$el.find(el)
       if childEl.length
         view.attachTo childEl, options
-      else if @$el.is(options.el)
+      else if @$el.is(el)
         view.attachTo @$el, options
       else
         error 'Attempting to attach to an element that doesn\'t exist inside this view!', options, view, @

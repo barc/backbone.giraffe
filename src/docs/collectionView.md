@@ -21,22 +21,21 @@ var Fruit = Giraffe.Model.extend({
 });
 
 var Fruits = Giraffe.Collection.extend({
-  model: Fruit
+  model: Fruit,
+  comparator: 'name'
 });
 ```
 
 ## Item View
 
-In __Giraffe__ views are composable obviating the need for a
-a dedicated CollectionView and ItemView.
+In __Giraffe__ views are composable. A collection view can be implemented
+simply by attaching one or more views to a view.
 
 ```js
 var FruitView = Giraffe.View.extend({
   template: '#fruit-template',
 
   initialize: function() {
-    // used to find this view by its unique collection id
-    this.$el.attr('id', this.model.cid);
     this.$el.css('background-color', this.model.get('color'));
   },
 
@@ -49,19 +48,25 @@ We could cheat and call `this.dispose()` here. By modifying the collection
 instead, any view observing the collection is notified.
 
 ```js
+  onClone: function() {
+    this.model.collection.add(this.model.clone());
+  },
+
   onDelete: function() {
-    this.model.collection.remove(this.model);
+    // Giraffe method which also removes it from the collection
+    this.model.dispose();
   }
 });
 ```
 
-Add a delete button to manually remove elements from the collection.
+Add a delete and clone button to manually modify the collection.
 
 ```html
 <script id='fruit-template' type='text/template'>
   <div class='fruit-view'>
     <h2><%= name %></h2>
     <button data-gf-click='onDelete'>delete</button>
+    <button data-gf-click='onClone'>clone</button>
   </div>
 </script>
 ```
@@ -92,15 +97,31 @@ var FruitsView = Giraffe.View.extend({
   </p>
 </div>
 
+
+Let's do something more than just appending the item to the collection. Add a new item after the view which was just
+clicked.
+
 ```js
+  getAttachOptions: function(fruit) {
+    var index = this.collection.indexOf(fruit);
+    var options = {method: 'prepend'};
+    if (index > 0) {
+      options.method = 'after';
+      var pred = this.collection.at(index - 1);
+      var predView = _.findWhere(this.children, {model: pred});
+      options.el = predView;
+    }
+    return options;
+  },
+
   onAddItem: function(fruit) {
     var itemView = new FruitView({model: fruit});
-    this.attach(itemView);
+    var options = this.getAttachOptions(fruit);
+    this.attach(itemView, options);
   },
 
   onRemoveItem: function(fruit) {
-    // fruit template assigns fruit.cid to div
-    var itemView = Giraffe.View.getClosestView('#' + fruit.cid);
+    var itemView = _.findWhere(this.children, {model: fruit});
     itemView.dispose();
   },
 ```
@@ -110,7 +131,7 @@ Child items must be added _after_ this collection view has rendered itself.
 ```js
   afterRender: function() {
     var my = this;
-    this.collection.each(function (item) {
+    this.collection.each(function(item) {
       my.onAddItem(item, my.collection);
     });
   }
@@ -123,7 +144,8 @@ Let's create tasty fruits and attach the collection view to the page.
 var fruits = new Fruits([
   {name: 'Apple', color: '#0F0'},
   {name: 'Banana', color: '#FF0'},
-  {name: 'Orange', color: '#FF7F00'}
+  {name: 'Orange', color: '#FF7F00'},
+  {name: 'Pink Grapefruit', color: '#C5363A'}
 ]);
 
 var fruitsView = new FruitsView({
@@ -133,17 +155,6 @@ var fruitsView = new FruitsView({
 fruitsView.attachTo('body');
 ```
 
-To see `add` in action, let's add grapefruit asyncronously.
-
-```js
-setTimeout(function() {
-  fruits.add([{
-    name: 'Pink Grapefruit',
-    color: '#C5363A'
-  }]);
-}, 300);
-
-```
 :::@ --hide
 
 ```css
