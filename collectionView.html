@@ -63,17 +63,16 @@ a <strong>Giraffe.View</strong>.</p>
 });
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
-  model: Fruit
+  model: Fruit,
+  comparator: <span class="string">'name'</span>
 });</code></pre>
 <h2 id='h-item-view'>Item View</h2>
-<p>In <strong>Giraffe</strong> views are composable obviating the need for a
-a dedicated CollectionView and ItemView.</p>
+<p>In <strong>Giraffe</strong> views are composable. A collection view can be implemented
+simply by attaching one or more views to a view.</p>
 <pre><code class="js"><span class="keyword">var</span> FruitView = Giraffe.View.extend({
   template: <span class="string">'#fruit-template'</span>,
 
   initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="comment">// used to find this view by its unique collection id</span>
-    <span class="keyword">this</span>.$el.attr(<span class="string">'id'</span>, <span class="keyword">this</span>.model.cid);
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.model.get(<span class="string">'color'</span>));
   },
 
@@ -82,15 +81,21 @@ a dedicated CollectionView and ItemView.</p>
   },</code></pre>
 <p>We could cheat and call <code>this.dispose()</code> here. By modifying the collection
 instead, any view observing the collection is notified.</p>
-<pre><code class="js">  onDelete: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.model.collection.remove(<span class="keyword">this</span>.model);
+<pre><code class="js">  onClone: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">this</span>.model.collection.add(<span class="keyword">this</span>.model.clone());
+  },
+
+  onDelete: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="comment">// Giraffe method which also removes it from the collection</span>
+    <span class="keyword">this</span>.model.dispose();
   }
 });</code></pre>
-<p>Add a delete button to manually remove elements from the collection.</p>
+<p>Add a delete and clone button to manually modify the collection.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruit-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
   <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">'fruit-view'</span>&gt;</span>
     <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onDelete'</span>&gt;</span>delete<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClone'</span>&gt;</span>clone<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-collection-view'>Collection View</h2>
@@ -114,20 +119,35 @@ view needs handlers for <code>add</code> and <code>remove</code> events. The
   </p>
 </div>
 
-<pre><code class="js">  onAddItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+
+<p>Let&#39;s do something more than just appending the item to the collection. Add a new item after the view which was just
+clicked.</p>
+<pre><code class="js">  getAttachOptions: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+    <span class="keyword">var</span> index = <span class="keyword">this</span>.collection.indexOf(fruit);
+    <span class="keyword">var</span> options = {method: <span class="string">'prepend'</span>};
+    <span class="keyword">if</span> (index &gt; <span class="number">0</span>) {
+      options.method = <span class="string">'after'</span>;
+      <span class="keyword">var</span> pred = <span class="keyword">this</span>.collection.at(index - <span class="number">1</span>);
+      <span class="keyword">var</span> predView = _.findWhere(<span class="keyword">this</span>.children, {model: pred});
+      options.el = predView;
+    }
+    <span class="keyword">return</span> options;
+  },
+
+  onAddItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
     <span class="keyword">var</span> itemView = <span class="keyword">new</span> FruitView({model: fruit});
-    <span class="keyword">this</span>.attach(itemView);
+    <span class="keyword">var</span> options = <span class="keyword">this</span>.getAttachOptions(fruit);
+    <span class="keyword">this</span>.attach(itemView, options);
   },
 
   onRemoveItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-    <span class="comment">// fruit template assigns fruit.cid to div</span>
-    <span class="keyword">var</span> itemView = Giraffe.View.getClosestView(<span class="string">'#'</span> + fruit.cid);
+    <span class="keyword">var</span> itemView = _.findWhere(<span class="keyword">this</span>.children, {model: fruit});
     itemView.dispose();
   },</code></pre>
 <p>Child items must be added <em>after</em> this collection view has rendered itself.</p>
 <pre><code class="js">  afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">var</span> my = <span class="keyword">this</span>;
-    <span class="keyword">this</span>.collection.each(<span class="function"><span class="keyword">function</span> <span class="params">(item)</span> {</span>
+    <span class="keyword">this</span>.collection.each(<span class="function"><span class="keyword">function</span><span class="params">(item)</span> {</span>
       my.onAddItem(item, my.collection);
     });
   }
@@ -136,7 +156,8 @@ view needs handlers for <code>add</code> and <code>remove</code> events. The
 <pre><code class="js"><span class="keyword">var</span> fruits = <span class="keyword">new</span> Fruits([
   {name: <span class="string">'Apple'</span>, color: <span class="string">'#0F0'</span>},
   {name: <span class="string">'Banana'</span>, color: <span class="string">'#FF0'</span>},
-  {name: <span class="string">'Orange'</span>, color: <span class="string">'#FF7F00'</span>}
+  {name: <span class="string">'Orange'</span>, color: <span class="string">'#FF7F00'</span>},
+  {name: <span class="string">'Pink Grapefruit'</span>, color: <span class="string">'#C5363A'</span>}
 ]);
 
 <span class="keyword">var</span> fruitsView = <span class="keyword">new</span> FruitsView({
@@ -144,13 +165,6 @@ view needs handlers for <code>add</code> and <code>remove</code> events. The
 });
 
 fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
-<p>To see <code>add</code> in action, let&#39;s add grapefruit asyncronously.</p>
-<pre><code class="js">setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-  fruits.add([{
-    name: <span class="string">'Pink Grapefruit'</span>,
-    color: <span class="string">'#C5363A'</span>
-  }]);
-}, <span class="number">300</span>);</code></pre>
 <p>Voila! Fruitty-tutty</p>
 <div id="collectionview0_tabs" class="tabs">
   <ul>
@@ -185,15 +199,14 @@ fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
 });
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
-  model: Fruit
+  model: Fruit,
+  comparator: <span class="string">'name'</span>
 });
 
 <span class="keyword">var</span> FruitView = Giraffe.View.extend({
   template: <span class="string">'#fruit-template'</span>,
 
   initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="comment">// used to find this view by its unique collection id</span>
-    <span class="keyword">this</span>.$el.attr(<span class="string">'id'</span>, <span class="keyword">this</span>.model.cid);
     <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.model.get(<span class="string">'color'</span>));
   },
 
@@ -201,8 +214,13 @@ fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="keyword">return</span> <span class="keyword">this</span>.model.toJSON()
   },
 
+  onClone: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">this</span>.model.collection.add(<span class="keyword">this</span>.model.clone());
+  },
+
   onDelete: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.model.collection.remove(<span class="keyword">this</span>.model);
+    <span class="comment">// Giraffe method which also removes it from the collection</span>
+    <span class="keyword">this</span>.model.dispose();
   }
 });
 
@@ -212,16 +230,34 @@ fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="string">'remove collection'</span>: <span class="string">'onRemoveItem'</span>
   },
 
+  getAttachOptions: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+    <span class="keyword">var</span> index = <span class="keyword">this</span>.collection.indexOf(fruit);
+    <span class="keyword">var</span> options = {
+      method: <span class="string">'prepend'</span>
+    };
+    <span class="keyword">if</span> (index &gt; <span class="number">0</span>) {
+      options.method = <span class="string">'after'</span>;
+      <span class="keyword">var</span> pred = <span class="keyword">this</span>.collection.at(index - <span class="number">1</span>);
+      <span class="keyword">var</span> predView = _.findWhere(<span class="keyword">this</span>.children, {
+        model: pred
+      });
+      options.el = predView;
+    }
+    <span class="keyword">return</span> options;
+  },
+
   onAddItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
     <span class="keyword">var</span> itemView = <span class="keyword">new</span> FruitView({
       model: fruit
     });
-    <span class="keyword">this</span>.attach(itemView);
+    <span class="keyword">var</span> options = <span class="keyword">this</span>.getAttachOptions(fruit);
+    <span class="keyword">this</span>.attach(itemView, options);
   },
 
   onRemoveItem: <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-    <span class="comment">// fruit template assigns fruit.cid to div</span>
-    <span class="keyword">var</span> itemView = Giraffe.View.getClosestView(<span class="string">'#'</span> + fruit.cid);
+    <span class="keyword">var</span> itemView = _.findWhere(<span class="keyword">this</span>.children, {
+      model: fruit
+    });
     itemView.dispose();
   },
 
@@ -242,20 +278,16 @@ fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
 }, {
   name: <span class="string">'Orange'</span>,
   color: <span class="string">'#FF7F00'</span>
+}, {
+  name: <span class="string">'Pink Grapefruit'</span>,
+  color: <span class="string">'#C5363A'</span>
 }]);
 
 <span class="keyword">var</span> fruitsView = <span class="keyword">new</span> FruitsView({
   collection: fruits
 });
 
-fruitsView.attachTo(<span class="string">'body'</span>);
-
-setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-  fruits.add([{
-    name: <span class="string">'Pink Grapefruit'</span>,
-    color: <span class="string">'#C5363A'</span>
-  }]);
-}, <span class="number">300</span>);</code></pre>
+fruitsView.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="collectionview0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
@@ -268,7 +300,8 @@ setTimeout(<span class="function"><span class="keyword">function</span><span cla
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruit-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
     <span class="tag">&lt; <span class="attribute">div</span> <span class="attribute">class</span> = '<span class="attribute">fruit-view</span>' &gt;</span> <span class="tag">&lt; <span class="attribute">h2</span> &gt;</span> <span class="javascript">&lt;%= name %&gt;</span> <span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onDelete'</span>&gt;</span>delete<span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="tag">&lt; /<span class="attribute">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onDelete'</span>&gt;</span>delete<span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = '<span class="attribute">onClone</span>' &gt;</span> clone <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">div</span> &gt;</span>
   <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
   <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>

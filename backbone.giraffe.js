@@ -226,12 +226,13 @@
 
 
     View.prototype.attach = function(view, options) {
-      var childEl;
+      var childEl, el;
       if (options != null ? options.el : void 0) {
-        childEl = this.$el.find(options.el);
+        el = Giraffe.View.to$El(options.el);
+        childEl = this.$el.find(el);
         if (childEl.length) {
           view.attachTo(childEl, options);
-        } else if (this.$el.is(options.el)) {
+        } else if (this.$el.is(el)) {
           view.attachTo(this.$el, options);
         } else {
           error('Attempting to attach to an element that doesn\'t exist inside this view!', options, view, this);
@@ -283,7 +284,7 @@
     * Views that are cached by setting `options.disposeOnDetach` to true will be
     * in `view.children` in `afterRender`, but will not be attached to the
     * parent's `$el`.
-    * 
+    *
     * @caption Implement this function in your views.
     */
 
@@ -774,7 +775,7 @@
     * __Giraffe__, but `setDocumentEvents` allows you to set a custom list of
     * events, first unbinding the existing ones and then setting the ones you give
     * it, if any.
-    *     
+    *
     *     Giraffe.View.setDocumentEvents(['click', 'change']); // default
     *     // or
     *     Giraffe.View.setDocumentEvents(['click', 'change', 'keydown']);
@@ -1402,6 +1403,8 @@
       wildcards = /:\w+|\*\w+/g;
       if (_.isObject(first)) {
         result = route.replace(wildcards, function(token, index) {
+          var key;
+          key = token.slice(1);
           return first[key] || '';
         });
       } else {
