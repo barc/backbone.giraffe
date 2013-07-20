@@ -543,7 +543,9 @@
     * `{$someName: '#some-selector'}`. If a view defines `ui`, the __jQuery__
     * objects it names will be cached and updated every `render`. For example,
     * declaring `this.ui = {$button: '#button'}` in a view makes `this.$button`
-    * always available once `render` has been called.
+    * always available once `render` has been called. Typically the selector
+    * value is a string, but if it's function, its return value will be assigned,
+    * and if it's neither a string or a function, the value itself is assigned.
     */
 
 
@@ -555,7 +557,16 @@
         _ref = this.ui;
         for (name in _ref) {
           selector = _ref[name];
-          this[name] = this.$(selector);
+          this[name] = (function() {
+            switch (typeof selector) {
+              case 'string':
+                return this.$(selector);
+              case 'function':
+                return selector();
+              default:
+                return selector;
+            }
+          }).call(this);
         }
       }
       return this;
