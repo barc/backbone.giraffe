@@ -6,3 +6,8 @@ h2 {
   padding: 10px;
   margin: 10px;
 }
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px dashed #ccc;
+}
