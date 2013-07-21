@@ -22,7 +22,7 @@
           <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
         </ul>
         
-        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+        <h2 id='h-giraffe-apibackbonegiraffehtml'><a href="backbone.giraffe.html">Giraffe API</a></h2>
 <h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
@@ -352,31 +352,27 @@ app.router.cause(<span class="string">'route:menu'</span>, <span class="string">
 </div><div id="menuexample0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'menuexample0-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"&lt;%= href %&gt;"</span> <span class="attribute">class</span>=<span class="value">"&lt;%= className %&gt;"</span>&gt;</span><span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-<span class="tag">&lt;<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'menuexample0-style.css'</span> /&gt;</span>
-<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-
-<span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"menu-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">a</span> <span class="attribute">href</span> = "&lt;%= <span class="attribute">href</span> %&gt;</span>"
-    class = "<span class="javascript">&lt;%= className %&gt;</span>" &gt; <span class="javascript">&lt;%= name %&gt;</span> <span class="tag">&lt; /<span class="attribute">a</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="javascript">&lt;% _.each(lines, <span class="function"><span class="keyword">function</span><span class="params">(line)</span> {</span> %&gt;</span> <span class="tag">&lt; <span class="attribute">p</span> &gt;</span> content
-        for <span class="javascript">&lt;%= line %&gt;</span> <span class="tag">&lt; /<span class="attribute">p</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"content-item-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="javascript">&lt;% _.each(lines, <span class="function"><span class="keyword">function</span><span class="params">(line)</span> {</span> %&gt;</span>
+    <span class="tag">&lt;<span class="title">p</span>&gt;</span>content for <span class="javascript">&lt;%= line %&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span>
   <span class="javascript">&lt;% }); %&gt;</span>
-  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'menuexample0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="menuexample0stylecss-tab" class="tab_content">

@@ -20,7 +20,7 @@ __Giraffe__ implements `render` so it can do some useful things, and by default
 `render` expects a view's `template` to be the DOM selector of an __Underscore__
 template. This can be easily configured to support any form of string
 templating. For more information, see `template`, `setTemplateStrategy`, and
-`templateStrategy` in the [API docs](api.html#View-template) or the
+`templateStrategy` in the [API docs](backbone.giraffe.html#View-template) or the
 [_Template Strategies_ example](templateStrategies.html). The included strategies
 use a view's `serialize` function to get the data passed into the template.
 
@@ -113,7 +113,7 @@ console.log(parentView === childView.parent); // => true
 Let's create a second child view. The `method` option of `attachTo` is the
 __jQuery__ method used to insert the view. The default is `'append'`. In this
 case we'll use `'before'` to put it before the first child view we created. See
-`attachTo` in the [API docs](api.html#View-attachTo) for more.
+`attachTo` in the [API docs](backbone.giraffe.html#View-attachTo) for more.
 
 ```js
 var childView2 = new ChildView({name: 'child view attached with {method: "before"}'});

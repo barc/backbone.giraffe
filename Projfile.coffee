@@ -32,20 +32,24 @@ exports.project = (pm) ->
 
   giraffe:
     desc: 'Builds Giraffe'
-    files: 'src/backbone.giraffe.coffee'
+    files: 'src/backbone*.coffee'
     dev: [
       f.coffee
-      changeToDist
-      f.writeFile
+      f.writeFile _filename: {replace: [/^src/, 'dist']}
+      f.writeFile _filename: {replace: [/^dist/, 'dist/docs']}
     ]
 
   miniGiraffe:
     desc: 'Builds Minified Giraffe'
-    files: 'src/backbone.giraffe.coffee'
+    files: 'src/backbone*.coffee'
     dev: [
       f.coffee
       f.uglify
-      f.writeFile _filename: 'dist/backbone.giraffe.min.js'
+      f.tap (asset) ->
+        asset.dirname = 'dist'
+        asset.basename = asset.basename.replace(/\.js$/, '.min.js')
+      f.writeFile _filename: {replace: [/^src/, 'dist']}
+      f.writeFile _filename: {replace: [/^dist/, 'dist/docs']}
     ]
 
   # _docs
@@ -101,16 +105,18 @@ exports.project = (pm) ->
     deps: ['stylesheets', 'staticFiles']
     files: ['src/backbone.giraffe.coffee']
     dev: [
-      f.tutdown commentFiller: '* '
+      f.tutdown commentFiller: '* '  #, debug:true
       f.template
         delimiters: 'mustache'
         filename: 'src/docs/_layout.mustache'
         navHeader:
           """
           <h2><a href="index.html">Examples</a></h2>
-          <h2><a href="api.html">API</a></h2>
+          <h2><a href="backbone.giraffe.html">Giraffe API</a></h2>
+          <!-- <h2><a href="backbone.giraffe.contrib.html">Giraffe.Contrib API</a></h2> -->
           """
-      f.writeFile _filename: 'dist/docs/api.html'
+      f.tap (asset) -> asset.dirname = 'dist/docs'
+      f.writeFile
     ]
 
   docs:
@@ -131,8 +137,7 @@ exports.project = (pm) ->
     dev: ->
       $.cp '-rf', 'src/docs/img', 'dist/docs'
       # needed since we only copy dist/docs/* to gh-pages
-      $.cp 'dist/backbone.giraffe.js', 'dist/docs'
-      $.cp 'dist/backbone.giraffe.min.js', 'dist/docs'
+      #$.cp 'dist/backbone.giraffe*js', 'dist/docs'
 
   prep: ->
     $.mkdir '-p', 'dist/docs/assets'

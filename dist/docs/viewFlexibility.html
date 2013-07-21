@@ -22,7 +22,7 @@
           <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
         </ul>
         
-        <h2 id='h-apiapihtml'><a href="api.html">API</a></h2>
+        <h2 id='h-giraffe-apibackbonegiraffehtml'><a href="backbone.giraffe.html">Giraffe API</a></h2>
 <h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
 <ul>
 <li><a href="viewBasics.html">View Basics</a></li>
@@ -208,50 +208,51 @@ app2.attachTo(<span class="string">'body'</span>);</code></pre>
 </div><div id="viewflexibility0markuphtml-tab" class="tab_content">
   <pre><code class="language-html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewflexibility0-style.css'</span> /&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-<span class="tag">&lt;<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'../css/reset.css'</span> /&gt;</span>
-  <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">'stylesheet'</span> <span class="attribute">type</span>=<span class="value">'text/css'</span> <span class="attribute">href</span>=<span class="value">'viewflexibility0-style.css'</span> /&gt;</span>
-<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-
-<span class="tag">&lt;<span class="title">body</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">h2</span> &gt;</span> <span class="javascript">&lt;%= options.name %&gt;</span> <span class="tag">&lt; /<span class="attribute">h2</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">render</span>" &gt;</span> Reset <span class="javascript">&lt;%= options.name %&gt;</span> <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-    <span class="tag">&lt; <span class="attribute">h3</span> &gt;</span> <span class="javascript">&lt;% cid %&gt;</span> <span class="tag">&lt; /<span class="attribute">h3</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;% cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
 
   <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveUpButton) { %&gt;</span>
-    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="javascript">&lt;%
-    } %&gt;</span>
-
-     <span class="javascript">&lt;%
-    <span class="keyword">if</span> (showMoveDownButton) { %&gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onMoveDown</span>" &gt;</span> &amp; #9660;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="javascript">&lt;% } %&gt;</span>
 
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>= "<span class="attribute">onAddChild</span>" &gt;</span> Add a child <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Render count: <span class="javascript">&lt;%= renderCount%&gt;</span><span class="tag">&lt;/<span class="title">button</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">dispose</span>" &gt;</span> Dispose <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+  <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveDownButton) { %&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveDown"</span>&gt;</span>&amp;#9660;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="javascript">&lt;% } %&gt;</span>
+
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAddChild"</span>&gt;</span>Add a child<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Render count: <span class="javascript">&lt;%= renderCount%&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"dispose"</span>&gt;</span>Dispose<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 
   <span class="javascript">&lt;% <span class="keyword">if</span> (parentIsChildView) { %&gt;</span>
     <span class="tag">&lt;<span class="title">label</span>&gt;</span>
       <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">data-gf-change</span>=<span class="value">"onToggleCache"</span> &lt;%= <span class="attribute">checkedAttr</span> %&gt;</span>&gt;
       Cache this view
-    <span class="tag">&lt;/<span class="title">label</span> &gt;</span> <span class="tag">&lt; <span class="attribute">button</span> <span class="attribute">data</span> <span class="attribute">-</span> <span class="attribute">gf</span> <span class="attribute">-</span> <span class="attribute">click</span> = "<span class="attribute">onAttachUsingHTML</span>" &gt;</span>
-        Reattach to parent using jQuery method 'html' <span class="tag">&lt; /<span class="attribute">button</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">label</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onAttachUsingHTML"</span>&gt;</span>
+      Reattach to parent using jQuery method 'html'
+    <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="javascript">&lt;% } %&gt;</span>
 
-  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span> &gt;</span>
-  <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"child-views"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'viewflexibility0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">'text/javascript'</span> <span class="attribute">src</span>=<span class="value">'viewflexibility0-script.js'</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="viewflexibility0stylecss-tab" class="tab_content">

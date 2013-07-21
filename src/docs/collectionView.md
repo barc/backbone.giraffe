@@ -1,16 +1,29 @@
-# Implement CollectionView
+# Giraffe.Contrib.CollectionView
 
-CollectionView and ItemView are classes often found in other Backbone
-frameworks. This example details how to implement this pattern in __Giraffe__
-by rendering a collection of savory colored fruits.
+This example details how to use `Giraffe.Contrib` to implement views for a
+collection of fruits using the CollectionView and ItemView pattern.
 
 :::BEGIN Example
 
+## Live Example
+
+Here is the live example detailed below. Each fruit is rendered using an
+item view named `FruitView`. The collection of fruits are children of a
+single collection view named `FruitsView`.
+
+- `clone` burton creates a duplicate of the fruit
+- `delete` button deltes the fruit from the collection
+- `sort` button toggles ascending/descending sort
+- `reset` button resets the collection to its original state
+
+{{{EXAMPLE style='height: 375px'}}}
+
 ## Collection and Model
 
-Defining the model and collection is the same as in __Backbone__.
-Any __Giraffe.Model__ is automatically tracked for dispoal when assigned to
-a __Giraffe.View__.
+First define the model and collection representing the fruits. The advantage
+of using __Giraffe.Model__ is the addition of a few methods such as
+`Model#dispose` which is used later. This is not that different from using
+__Backbone.Model__.
 
 ```js
 var Fruit = Giraffe.Model.extend({
@@ -28,8 +41,9 @@ var Fruits = Giraffe.Collection.extend({
 
 ## Item View
 
-In __Giraffe__ views are composable. A collection view can be implemented
-simply by attaching one or more views to a view.
+Instead of generating markup for each fruit in a single view, it is more
+maintainable to create an item view representing each item in the collection.
+The item view encapsulates operations around the specific item.
 
 ```js
 var FruitView = Giraffe.View.extend({
@@ -45,21 +59,23 @@ var FruitView = Giraffe.View.extend({
 ```
 
 We could cheat and call `this.dispose()` here. By modifying the collection
-instead, any view observing the collection is notified.
+instead, any view observing the collection is notified. `Contrib.CollectionView`
+observes collection changes and modifies its item views accordingly.
 
 ```js
-  onClone: function() {
-    this.model.collection.add(this.model.clone());
-  },
-
   onDelete: function() {
     // Giraffe method which also removes it from the collection
     this.model.dispose();
+  },
+
+  onClone: function() {
+    this.model.collection.add(this.model.clone());
   }
 });
 ```
 
-Add a delete and clone button to manually modify the collection.
+Let's add a delete and clone button to allow users to visually modify the
+collection.
 
 ```html
 <script id='fruit-template' type='text/template'>
@@ -73,86 +89,89 @@ Add a delete and clone button to manually modify the collection.
 
 ## Collection View
 
-A collection view reacts to changes on its collection, thus the
-view needs handlers for `add` and `remove` events. The
-`dataEvents` property facilitates assigning handlers.
+`Giraffe.Contrib` contains a `CollectionView` class . The `CollectionView`
+adds and removes item views to itself as it observes changes on its
+collection. It is good practice to __always__ modify the collection
+instead of trying to add views manually.
 
 ```js
-var FruitsView = Giraffe.View.extend({
-  dataEvents: {
-    'add collection': 'onAddItem',
-    'remove collection': 'onRemoveItem'
-  },
-```
-
-<div class='note'>
-  <p>
-    Consider `dataEvents` property unstable. One of our smart interns found a common
-    use case where events do not trigger. That is, if you modify a model/collection
-    in the `initialize` method, event listeners have not yet been assigned and
-    expected events do not fire.
-  </p>
-  <p>
-    We may obsolete this property altogether as it could lead to [astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment).
-  </p>
-</div>
-
-
-Let's do something more than just appending the item to the collection. Add a new item after the view which was just
-clicked.
-
-```js
-  getAttachOptions: function(fruit) {
-    var index = this.collection.indexOf(fruit);
-    var options = {method: 'prepend'};
-    if (index > 0) {
-      options.method = 'after';
-      var pred = this.collection.at(index - 1);
-      var predView = _.findWhere(this.children, {model: pred});
-      options.el = predView;
-    }
-    return options;
-  },
-
-  onAddItem: function(fruit) {
-    var itemView = new FruitView({model: fruit});
-    var options = this.getAttachOptions(fruit);
-    this.attach(itemView, options);
-  },
-
-  onRemoveItem: function(fruit) {
-    var itemView = _.findWhere(this.children, {model: fruit});
-    itemView.dispose();
-  },
-```
-
-Child items must be added _after_ this collection view has rendered itself.
-
-```js
-  afterRender: function() {
-    var my = this;
-    this.collection.each(function(item) {
-      my.onAddItem(item, my.collection);
-    });
-  }
+var FruitsView = Giraffe.Contrib.CollectionView.extend({
+  itemView: FruitView
 });
 ```
 
-Let's create tasty fruits and attach the collection view to the page.
+Now create some tasty fruits and create the collection to assign to  `FruitsView`.
 
 ```js
-var fruits = new Fruits([
-  {name: 'Apple', color: '#0F0'},
-  {name: 'Banana', color: '#FF0'},
-  {name: 'Orange', color: '#FF7F00'},
-  {name: 'Pink Grapefruit', color: '#C5363A'}
-]);
+var savoryFruits = [
+    {name: 'Orange', color: '#FF7F00'},
+    {name: 'Pink Grapefruit', color: '#C5363A'},
+    {name: 'Apple', color: '#0F0'},
+    {name: 'Banana', color: '#FF0'},
+];
+
+var fruits = new Fruits(savoryFruits);
 
 var fruitsView = new FruitsView({
   collection: fruits
 });
+```
 
-fruitsView.attachTo('body');
+## Resetting and Sorting
+
+Let's also give the user the ability to `reset` and `sort` fruits at
+any time. The buttons need to be outside of the collection view otherwise
+they would be disposed when the view resets its children.
+
+Create a main view to contain the button just to keep things tidy and
+easy one-way click binding.
+
+```html
+<script id='main-template' type='text/template'>
+  <button data-gf-click='onClickReset'>reset</button>
+  <button data-gf-click='onClickSort'>sort</button>
+  <hr />
+  <!-- fruits view is appended here in afterRender -->
+</script>
+```
+
+```js
+var MainView = Giraffe.View.extend({
+  template: '#main-template',
+
+  onClickReset: function() {
+    fruitsView.collection.reset(savoryFruits);
+  },
+
+  onClickSort: function() {
+    var comparator = fruitsView.collection.comparator;
+
+    // Revere string order isn't as simple as prefixing with '-'. See
+    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a  good
+    // idea as the collection would not properly sort on add/remove.
+    if (typeof comparator === 'string') {
+      comparator = function(fruit) {
+        return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),
+          function (c) {
+            return 0xffff - c.charCodeAt();
+          }
+        ));
+      }
+    } else {
+      comparator = 'name';
+    }
+    fruitsView.collection.comparator = comparator;
+    fruitsView.collection.sort();
+  },
+
+  afterRender: function() {
+    this.attach(fruitsView, {method: 'append'});
+  }
+});
+
+var mainView = new MainView();
+
+mainView.attachTo('body');
 ```
 
 :::@ --hide
@@ -166,12 +185,24 @@ h2 {
   padding: 10px;
   margin: 10px;
 }
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px dashed #ccc;
+}
 ```
 
 {{{COMMON}}}
 
-Voila! Fruitty-tutty
+We need to source the  `Backbone.Giraffe.Contrib` library which defines `Giraffe.CollectionView`.
 
-{{{EXAMPLE style='height: 340px'}}}
+<div class='note'>
+None-core goodies are added to `Backbone.Giraffe.Contrib`, short for contributions.
+</div>
+
+```html
+  <script src="../backbone.giraffe.contrib.js" type="text/javascript"></script>
+```
+
 
 :::END

@@ -29,7 +29,7 @@ __Giraffe__'s lifecycle management and app events.
 
 ## Documentation
 
-Read the [__API docs__](http://barc.github.io/backbone.giraffe/api.html) and
+Read the [__API docs__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html) and
 check out our [__live examples__](http://barc.github.io/backbone.giraffe/viewBasics.html).
 
 ## How Giraffe is Different
@@ -39,7 +39,7 @@ __Giraffe__ was created by the needs of our team as we built
 much, others added too many layers, and others performed poorly.
 
 __Giraffe__ does not have all the bells and whistles of the larger frameworks.
-We found the effort to customize them for our needs was more effort than simply 
+We found the effort to customize them for our needs was more effort than simply
 building upon __Backbone__ with a minimalist approach. For example, there is no
 concept of specialized containers like regions or layouts, as any view in
 __Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
@@ -56,7 +56,7 @@ features to make you more productive with __Backbone__.
 instead of being tied to functions. This makes it extremely simple for a deeply
 nested view to act on a route.
 
-- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html#Router)
+- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html.html#Router)
 provide a way to trigger routes in the application using app events without
 having to know a URL path.
 
@@ -65,7 +65,7 @@ special view that acts as an event hub to help your app communicate and respond
 to routes, and all __Giraffe__ objects have convenient `appEvents` bindings
 inspired by `Backbone.View#events`.
 
-- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/api.html#View-attachTo)
+- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#View-attachTo)
 allows views to move anywhere on the DOM without clobbering each other's events,
 and it automatically sets up parent-child relationships for memory management.
 

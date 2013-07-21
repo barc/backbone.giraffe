@@ -1,4 +1,4 @@
-## [API](api.html)
+## [Giraffe API](backbone.giraffe.html)
 
 ## [Examples](index.html)
 
