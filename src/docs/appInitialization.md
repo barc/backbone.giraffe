@@ -63,7 +63,7 @@ Now that our initializers are added, let's attach and start up the app.
 app.attachTo('body').start();
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 Here's what happened:
 

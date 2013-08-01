@@ -81,7 +81,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 
 :::@ --hide
@@ -135,7 +135,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 :::@ --hide
 
@@ -176,7 +176,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 :::@ --hide
 
@@ -236,7 +236,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 :::@ --hide
 
@@ -278,7 +278,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 All we need now is a reference to the Mustache library in our page
 

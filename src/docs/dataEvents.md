@@ -80,7 +80,7 @@ var view = new View();
 view.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 ## Try It
 

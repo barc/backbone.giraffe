@@ -103,7 +103,7 @@ Let's call `dispose` on the app and see what happens!
 app.dispose();
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 Here's what happened:
 

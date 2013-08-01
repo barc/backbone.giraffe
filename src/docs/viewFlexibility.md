@@ -267,7 +267,7 @@ var app2 = new ParentApp({name: 'app2'});
 app2.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 :::@ --hide
 

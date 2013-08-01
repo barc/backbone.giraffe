@@ -1,7 +1,7 @@
 # Giraffe.Contrib.CollectionView
 
 This example details how to use `Giraffe.Contrib` to implement views for a
-collection of fruits using the CollectionView and ItemView pattern.
+collection of fruits with the CollectionView and ItemView design pattern.
 
 :::BEGIN Example
 
@@ -11,8 +11,8 @@ Here is the live example detailed below. Each fruit is rendered using an
 item view named `FruitView`. The collection of fruits are children of a
 single collection view named `FruitsView`.
 
-- `clone` burton creates a duplicate of the fruit
-- `delete` button deltes the fruit from the collection
+- `clone` button creates a duplicate of the fruit
+- `delete` button deletes the fruit from the collection
 - `sort` button toggles ascending/descending sort
 - `reset` button resets the collection to its original state
 
@@ -25,6 +25,7 @@ of using __Giraffe.Model__ is the addition of a few methods such as
 `Model#dispose` which is used later. This is not that different from using
 __Backbone.Model__.
 
+
 ```js
 var Fruit = Giraffe.Model.extend({
   defaults: {
@@ -35,7 +36,28 @@ var Fruit = Giraffe.Model.extend({
 
 var Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: 'name'
+  comparator: 'name',
+
+  toggleSort: function() {
+    var comparator = this.comparator;
+
+    // Reverse string order isn't as simple as prefixing with '-'. See
+    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a good
+    // idea neither as the collection would not sort properly on add/remove.
+    if (typeof comparator === 'string') {
+      comparator = function(fruit) {
+        return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),
+          function (c) {
+            return 0xffff - c.charCodeAt();
+          }
+        ));
+      }
+    } else {
+      comparator = 'name';
+    }
+    this.comparator = comparator;
+    this.sort();
+  }
 });
 ```
 
@@ -144,24 +166,7 @@ var MainView = Giraffe.View.extend({
   },
 
   onClickSort: function() {
-    var comparator = fruitsView.collection.comparator;
-
-    // Revere string order isn't as simple as prefixing with '-'. See
-    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a  good
-    // idea as the collection would not properly sort on add/remove.
-    if (typeof comparator === 'string') {
-      comparator = function(fruit) {
-        return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),
-          function (c) {
-            return 0xffff - c.charCodeAt();
-          }
-        ));
-      }
-    } else {
-      comparator = 'name';
-    }
-    fruitsView.collection.comparator = comparator;
-    fruitsView.collection.sort();
+    fruitsView.collection.toggleSort();
   },
 
   afterRender: function() {
@@ -192,7 +197,7 @@ hr {
 }
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 We need to source the  `Backbone.Giraffe.Contrib` library which defines `Giraffe.CollectionView`.
 

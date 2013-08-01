@@ -41,7 +41,7 @@ myView.attachTo('body');
 
 Here's the result:
 
-{{{COMMON}}}
+:::< common.md --raw
 
 {{{EXAMPLE style='height: 30px;'}}}
 
@@ -126,7 +126,7 @@ The `parent` of `childView2` is the `parentView`.
 console.log(childView2.parent === parentView); // => true
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 Here's the result:
 

@@ -93,7 +93,7 @@ var app = new App();
 app.attachTo('body');
 ```
 
-{{{COMMON}}}
+:::< common.md --raw
 
 :::@ --hide
 
