@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Giraffe - Barc's Backbone Framework</title>
+
+    <!-- Stylesheets -->
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+
+    <!-- Scripts -->
+    <!--[if lt IE 9]><script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <div id="page-wrapper">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <section id="sidebar" class="col sidebar">
+        <h2><a href="index.html#">Backbone.Giraffe</a></h2>
+        <ul>
+          <li><a href="index.html#h-download">Download</a></li>
+          <li><a href="https://github.com/barc/backbone.giraffe">Github</a></li>
+        </ul>
+        
+        <h2 id='h-giraffe-apibackbonegiraffehtml'><a href="backbone.giraffe.html">Giraffe API</a></h2>
+<h2 id='h-examplesindexhtml'><a href="index.html">Examples</a></h2>
+<ul>
+<li><a href="viewBasics.html">View Basics</a></li>
+<li><a href="templateStrategies.html">Template Strategies</a></li>
+<li><a href="lifecycleManagement.html">Lifecycle Management</a></li>
+<li><a href="appEvents.html">App Events</a></li>
+<li><a href="routersAndAppEvents.html">Routers and App Events</a></li>
+<li><a href="appInitialization.html">App Initialization</a></li>
+<li><a href="documentEvents.html">View Document Events</a></li>
+<li><a href="viewUI.html">View UI</a></li>
+<li><a href="menuExample.html">Menu Example</a></li>
+<li><a href="viewFlexibility.html">View Flexibility</a></li>
+<li><a href="collectionView.html">Collection View</a></li>
+<li><a href="http://iamthe35th.github.io/todomvc/labs/architecture-examples/backbone.giraffe/index.html"><em>TodoMVC on Github</em></a></li>
+</ul>
+
+        <h3><a href='http://barc.com' class='barc'>@Barc</a></h3>
+      </section>
+
+      <!-- Main Body -->
+      <article id="content" class="col content">
+        <a href='index.html'>
+          <img id="logo" src="img/logo.png" />
+        </a>
+        <p>:::@ --hide</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="assets/tutdown.js"></script>
+  <script>
+  $(function() {
+    $('.more-details').click(function() {
+      $this = $(this);
+      if ($this.hasClass('collapsed')) {
+        $this.removeClass('collapsed');
+        $this.addClass('uncollapsed');
+      } else {
+        $this.removeClass('uncollapsed');
+        $this.addClass('collapsed');
+      }
+    });
+  });
+  </script>
+  <script type="text/javascript"> 
+    (function() { 
+      var b = document.createElement("script"); b.type = "text/javascript"; b.async = true; 
+      b.src = "https://barc.com/js/libs/barc/barc.js"; 
+      var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(b, s); 
+    })(); 
+  </script>
+  <script type="text/javascript">
+    $('#sidebar a').each(function() {
+      var 
+        $a = $(this),
+        href = window.location.href;
+      if (href.indexOf && href.indexOf($a.attr('href')) > -1 && href.indexOf('#') === -1) // hacky to grab only example links
+        $a.closest('li').addClass('active');
+    });
+  </script>
+</body>
+</html>
+

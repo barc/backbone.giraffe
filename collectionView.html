@@ -49,14 +49,14 @@
         </a>
         <h1 id='h-giraffecontribcollectionview'>Giraffe.Contrib.CollectionView</h1>
 <p>This example details how to use <code>Giraffe.Contrib</code> to implement views for a
-collection of fruits using the CollectionView and ItemView pattern.</p>
-<p><div class='section-example'><h2 id='h-live-example'>Live Example</h2>
+collection of fruits with the CollectionView and ItemView design pattern.</p>
+<div class='section-example'><h2 id='h-live-example'>Live Example</h2>
 <p>Here is the live example detailed below. Each fruit is rendered using an
 item view named <code>FruitView</code>. The collection of fruits are children of a
 single collection view named <code>FruitsView</code>.</p>
 <ul>
-<li><code>clone</code> burton creates a duplicate of the fruit</li>
-<li><code>delete</code> button deltes the fruit from the collection</li>
+<li><code>clone</code> button creates a duplicate of the fruit</li>
+<li><code>delete</code> button deletes the fruit from the collection</li>
 <li><code>sort</code> button toggles ascending/descending sort</li>
 <li><code>reset</code> button resets the collection to its original state</li>
 </ul>
@@ -94,7 +94,28 @@ single collection view named <code>FruitsView</code>.</p>
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: <span class="string">'name'</span>
+  comparator: <span class="string">'name'</span>,
+
+  toggleSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
+
+    <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
+    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a good</span>
+    <span class="comment">// idea neither as the collection would not sort properly on add/remove.</span>
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
+      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
+          <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>
+            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
+          }
+        ));
+      }
+    } <span class="keyword">else</span> {
+      comparator = <span class="string">'name'</span>;
+    }
+    <span class="keyword">this</span>.comparator = comparator;
+    <span class="keyword">this</span>.sort();
+  }
 });
 
 <span class="keyword">var</span> FruitView = Giraffe.View.extend({
@@ -150,24 +171,7 @@ single collection view named <code>FruitsView</code>.</p>
   },
 
   onClickSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> comparator = fruitsView.collection.comparator;
-
-    <span class="comment">// Revere string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a  good</span>
-    <span class="comment">// idea as the collection would not properly sort on add/remove.</span>
-    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
-      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
-          <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>
-            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
-          }
-        ));
-      }
-    } <span class="keyword">else</span> {
-      comparator = <span class="string">'name'</span>;
-    }
-    fruitsView.collection.comparator = comparator;
-    fruitsView.collection.sort();
+    fruitsView.collection.toggleSort();
   },
 
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
@@ -242,7 +246,28 @@ of using <strong>Giraffe.Model</strong> is the addition of a few methods such as
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: <span class="string">'name'</span>
+  comparator: <span class="string">'name'</span>,
+
+  toggleSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
+
+    <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
+    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a good</span>
+    <span class="comment">// idea neither as the collection would not sort properly on add/remove.</span>
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
+      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
+          <span class="function"><span class="keyword">function</span> <span class="params">(c)</span> {</span>
+            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
+          }
+        ));
+      }
+    } <span class="keyword">else</span> {
+      comparator = <span class="string">'name'</span>;
+    }
+    <span class="keyword">this</span>.comparator = comparator;
+    <span class="keyword">this</span>.sort();
+  }
 });</code></pre>
 <h2 id='h-item-view'>Item View</h2>
 <p>Instead of generating markup for each fruit in a single view, it is more
@@ -320,24 +345,7 @@ easy one-way click binding.</p>
   },
 
   onClickSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> comparator = fruitsView.collection.comparator;
-
-    <span class="comment">// Revere string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a  good</span>
-    <span class="comment">// idea as the collection would not properly sort on add/remove.</span>
-    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
-      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
-          <span class="function"><span class="keyword">function</span> <span class="params">(c)</span> {</span>
-            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
-          }
-        ));
-      }
-    } <span class="keyword">else</span> {
-      comparator = <span class="string">'name'</span>;
-    }
-    fruitsView.collection.comparator = comparator;
-    fruitsView.collection.sort();
+    fruitsView.collection.toggleSort();
   },
 
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
@@ -354,8 +362,7 @@ None-core goodies are added to <code>Backbone.Giraffe.Contrib</code>, short for 
 </div>
 
 <pre><code class="html">  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"../backbone.giraffe.contrib.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-</div></p>
-
+</div>
       </article>
     </div>
   </div>

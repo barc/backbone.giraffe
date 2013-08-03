@@ -26,7 +26,7 @@ var ChildView = Giraffe.View.extend({
   },
 
   onToggleCache: function(e) {
-    this.options.disposeOnDetach = !$(e.target).is(':checked');
+    this.disposeOnDetach = !$(e.target).is(':checked');
   },
 
   afterRender: function() {
@@ -98,7 +98,7 @@ var ChildView = Giraffe.View.extend({
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== 0,
       showMoveDownButton: parentIsChildView || index !== $parentChildren.length - 1,
-      checkedAttr: this.options.disposeOnDetach ? '' : "checked='checked'",
+      checkedAttr: this.disposeOnDetach ? '' : "checked='checked'",
       renderCount: this.renderCount,
       cid: this.cid
     };
