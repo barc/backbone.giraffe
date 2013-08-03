@@ -9,19 +9,27 @@
       app = new Giraffe.App;
       return assert.ok(app);
     });
-    return it('should accept appEvents', function(done) {
-      
-    var MyApp = Giraffe.App.extend({
-      appEvents: {
-        'all': 'catchAll'
-      },
-      catchAll: function() {
-        done()
-      }
-    });
-    ;
-      var app;
+    it('should accept appEvents on extended class', function(done) {
+      var MyApp, app;
+      MyApp = Giraffe.App.extend({
+        appEvents: {
+          'app:initialized': function() {
+            return done();
+          }
+        }
+      });
       app = new MyApp;
+      return app.start();
+    });
+    return it('should accept appEvents as an option', function(done) {
+      var app;
+      app = new Giraffe.App({
+        appEvents: {
+          'app:initialized': function() {
+            return done();
+          }
+        }
+      });
       return app.start();
     });
   });
