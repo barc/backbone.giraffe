@@ -56,11 +56,11 @@ synchronous and asynchronous initializers.</p>
  and <code>start</code>. The <code>addInitializer</code> method queues up functions that run when
  <code>start</code> is called. The <code>start</code> method takes some optional <code>options</code> and then
  passes them through each initializer, and when initialization completes,
- <code>app.options</code> are extended with the initialization <code>options</code>. The <code>this</code> of
+ the app instance is extended with the initialization <code>options</code>. The <code>this</code> of
  each initializer is the app.</p>
 <pre><code class="js">app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
-  options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
+  options.thisWillBeAddedToTheView = <span class="string">'afterInitializationCompletes'</span>;
 });</code></pre>
 <p>If <code>addInitializer</code> is passed a function with 2 arguments, <code>fn.length === 2</code>,
 the second argument is assumed to be an asynchronous callback. Initialization
@@ -83,7 +83,7 @@ app.on(<span class="string">'app:initialized'</span>, <span class="function"><sp
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
   <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
-  <span class="keyword">this</span>.options.thisWillBeAddedToOptions === options.thisWillBeAddedToOptions; <span class="comment">// =&gt; true</span>
+  options.thisWillBeAddedToTheView === <span class="keyword">this</span>.thisWillBeAddedToTheView; <span class="comment">// =&gt; true</span>
   console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; true</span>
 });</code></pre>
 <p>Now that our initializers are added, let&#39;s attach and start up the app.</p>
@@ -114,7 +114,7 @@ app.on(<span class="string">'app:initialized'</span>, <span class="function"><sp
 
 app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options)</span> {</span>
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;initializer `this` is app: '</span> + (<span class="keyword">this</span> === app) + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; true</span>
-  options.thisWillBeAddedToOptions = <span class="string">'afterInitializationCompletes'</span>;
+  options.thisWillBeAddedToTheView = <span class="string">'afterInitializationCompletes'</span>;
 });
 
 app.addInitializer(<span class="function"><span class="keyword">function</span><span class="params">(options, cb)</span> {</span>
@@ -131,7 +131,7 @@ app.on(<span class="string">'app:initialized'</span>, <span class="function"><sp
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;app is initialized&lt;/p&gt;'</span>);
   <span class="keyword">var</span> elapsedTime = (Date.now() - options.startTime) + <span class="string">'ms'</span>;
   <span class="keyword">this</span>.$el.append(<span class="string">'&lt;p&gt;elapsed initialization time: '</span> + elapsedTime + <span class="string">'&lt;/p&gt;'</span>); <span class="comment">// =&gt; ~100ms</span>
-  <span class="keyword">this</span>.options.thisWillBeAddedToOptions === options.thisWillBeAddedToOptions; <span class="comment">// =&gt; true</span>
+  options.thisWillBeAddedToTheView === <span class="keyword">this</span>.thisWillBeAddedToTheView; <span class="comment">// =&gt; true</span>
   console.log(<span class="string">'started'</span>, app.started); <span class="comment">// =&gt; true</span>
 });
 

@@ -6,6 +6,7 @@
     __slice = [].slice;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
+    version: '0.1.1',
     app: null,
     apps: {},
     views: {}
@@ -46,7 +47,7 @@
   * When a view renders, it first calls `detach` on all of its `children`, and
   * when a view is detached, the default behavior is to call `dispose` on it.
   * To overried this behavior and cache a view even when its `parent` renders, you
-  * can set the cached view's `options.disposeOnDetach` to `false`.
+  * can set the cached view's `disposeOnDetach` property to `false`.
   *
   *     var parentView = new Giraffe.View();
   *     parentView.attach(new Giraffe.View());
@@ -66,6 +67,9 @@
   * Currently, __Giraffe__ has only one class that extends __Giraffe.View__,
   * __Giraffe.App__, which encapsulates app-wide messaging and routing.
   *
+  * Like all __Giraffe__ objects, __Giraffe.View__ extends each instance with
+  * every property in `options`.
+  *
   * @param {Object} [options]
   */
 
@@ -77,17 +81,15 @@
       disposeOnDetach: true,
       alwaysRender: false,
       saveScrollPosition: false,
-      documentTitle: null,
-      templateStrategy: null
+      documentTitle: null
     };
 
     function View(options) {
-      if (options == null) {
-        options = {};
-      }
       this.render = __bind(this.render, this);
-      _.defaults(options, Giraffe.View.defaultOptions);
-      this.app || (this.app = options.app || Giraffe.app);
+      _.extend(this, Giraffe.View.defaultOptions, options);
+      if (this.app == null) {
+        this.app = Giraffe.app;
+      }
       Giraffe.bindEventMap(this, this.app, this.appEvents);
       /*
       * When one view is attached to another, the child view is added to the
@@ -108,12 +110,10 @@
       this._isAttached = false;
       this._createEventsFromUIElements();
       this._wrapInitialize();
-      if (options.templateStrategy) {
-        Giraffe.View.setTemplateStrategy(options.templateStrategy, this);
-      } else if (typeof this.templateStrategy === 'string') {
+      if (typeof this.templateStrategy === 'string') {
         Giraffe.View.setTemplateStrategy(this.templateStrategy, this);
       }
-      View.__super__.constructor.call(this, options);
+      View.__super__.constructor.apply(this, arguments);
     }
 
     View.prototype._wrapInitialize = function() {
@@ -187,15 +187,15 @@
       }
       $el[method](this.$el);
       this._isAttached = true;
-      shouldRender = !suppressRender && (!this._renderedOnce || forceRender || this.options.alwaysRender);
+      shouldRender = !suppressRender && (!this._renderedOnce || forceRender || this.alwaysRender);
       if (shouldRender) {
         this.render(options);
       }
-      if (this.options.saveScrollPosition) {
+      if (this.saveScrollPosition) {
         this._loadScrollPosition();
       }
-      if (this.options.documentTitle != null) {
-        document.title = this.options.documentTitle;
+      if (this.documentTitle != null) {
+        document.title = this.documentTitle;
       }
       return this;
     };
@@ -269,7 +269,7 @@
     /*
     * This is an empty function for you to implement. After a view renders,
     * `afterRender` is called. Child views are normally attached to the DOM here.
-    * Views that are cached by setting `options.disposeOnDetach` to true will be
+    * Views that are cached by setting `disposeOnDetach` to true will be
     * in `view.children` in `afterRender`, but will not be attached to the
     * parent's `$el`.
     *
@@ -325,7 +325,7 @@
     };
 
     /*
-    * Detaches the view from the DOM. If `view.options.disposeOnDetach` is true,
+    * Detaches the view from the DOM. If `view.disposeOnDetach` is true,
     * which is the default, `dispose` will be called on the view and its
     * `children` unless `preserve` is true. `preserve` defaults to false. When
     * a view renders, it first calls `detach(false)` on the views inside its `$el`.
@@ -342,11 +342,11 @@
         return this;
       }
       this._isAttached = false;
-      if (this.options.saveScrollPosition) {
+      if (this.saveScrollPosition) {
         this._saveScrollPosition();
       }
       this.$el.detach();
-      if (this.options.disposeOnDetach && !preserve) {
+      if (this.disposeOnDetach && !preserve) {
         this.dispose();
       }
       return this;
@@ -385,13 +385,21 @@
     };
 
     View.prototype._getScrollPositionEl = function() {
-      switch (typeof this.options.saveScrollPosition) {
-        case 'string':
-          return this.$(this.options.saveScrollPosition).first();
-        case 'object':
-          return $(this.options.saveScrollPosition);
-        default:
-          return this.$el;
+      var $el;
+      if (typeof this.saveScrollPosition === 'boolean' || this.$el.is(this.saveScrollPosition)) {
+        return this.$el;
+      } else {
+        $el = Giraffe.View.to$El(this.saveScrollPosition, this.$el).first();
+        if ($el.length) {
+          return $el;
+        } else {
+          $el = Giraffe.View.to$El(this.saveScrollPosition).first();
+          if ($el.length) {
+            return $el;
+          } else {
+            return this.$el;
+          }
+        }
       }
     };
 
@@ -758,8 +766,21 @@
       return Giraffe.views[cid];
     };
 
-    View.to$El = function(el) {
-      return (el != null ? el.$el : void 0) || (el instanceof $ ? el : $(el));
+    View.to$El = function(el, $parent) {
+      var $el;
+      if ($parent != null) {
+        $parent = Giraffe.View.to$El($parent);
+      }
+      if ($parent) {
+        $el = Giraffe.View.to$El(el);
+        return $parent.find($el);
+      } else if (el != null ? el.$el : void 0) {
+        return el.$el;
+      } else if (el instanceof $) {
+        return el;
+      } else {
+        return $(el);
+      }
     };
 
     /*
@@ -981,6 +1002,9 @@
   *
   * The app also provides synchronous and asynchronous initializers with `addInitializer` and `start`.
   *
+  * Like all __Giraffe__ objects, __Giraffe.App__ extends each instance with
+  * every property in `options`.
+  *
   * @param {Object} [options]
   */
 
@@ -991,37 +1015,34 @@
     function App(options) {
       this._onUnload = __bind(this._onUnload, this);
       this.app = this;
-      if (options != null ? options.routes : void 0) {
-        this.routes = options.routes;
-      }
       this._initializers = [];
       this.started = false;
       App.__super__.constructor.apply(this, arguments);
     }
 
     App.prototype._cache = function() {
+      if (Giraffe.app == null) {
+        Giraffe.app = this;
+      }
+      Giraffe.apps[this.cid] = this;
       if (this.routes) {
         this.router = new Giraffe.Router({
           app: this,
           triggers: this.routes
         });
       }
-      if (Giraffe.app == null) {
-        Giraffe.app = this;
-      }
-      Giraffe.apps[this.cid] = this;
       $(window).on("unload", this._onUnload);
       return App.__super__._cache.apply(this, arguments);
     };
 
     App.prototype._uncache = function() {
-      if (this.router) {
-        this.router = null;
-      }
       if (Giraffe.app === this) {
         Giraffe.app = null;
       }
       delete Giraffe.apps[this.cid];
+      if (this.router) {
+        this.router = null;
+      }
       $(window).off("unload", this._onUnload);
       return App.__super__._uncache.apply(this, arguments);
     };
@@ -1093,7 +1114,8 @@
 
     App.prototype.addInitializer = function(fn) {
       if (this.started) {
-        fn.call(this, this.options);
+        fn.call(this, this._startOptions);
+        _.extend(this, this._startOptions);
       } else {
         this._initializers.push(fn);
       }
@@ -1115,6 +1137,7 @@
       if (options == null) {
         options = {};
       }
+      this._startOptions = options;
       this.trigger('app:initializing', options);
       next = function(err) {
         var fn;
@@ -1130,7 +1153,7 @@
             return next();
           }
         } else {
-          _.extend(_this.options, options);
+          _.extend(_this, options);
           _this.started = true;
           return _this.trigger('app:initialized', options);
         }
@@ -1183,6 +1206,9 @@
   *     });
   *     myApp.router.triggers; // => {'my/route': 'app:event'}
   *
+  * Like all __Giraffe__ objects, __Giraffe.Router__ extends each instance with
+  * every property in `options`.
+  *
   * @param {Object} [options]
   */
 
@@ -1191,38 +1217,27 @@
     __extends(Router, _super);
 
     function Router(options) {
-      if (options == null) {
-        options = {};
+      _.extend(this, options);
+      if (this.app == null) {
+        this.app = Giraffe.app;
       }
-      this.app = options.app || Giraffe.app;
       if (!this.app) {
         return error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.');
       }
       this.app.addChild(this);
       Giraffe.bindEventMap(this, this.app, this.appEvents);
-      if (options.triggers) {
-        this.triggers = options.triggers;
-      }
       if (typeof this.triggers === 'function') {
         this.triggers = this.triggers();
       }
       if (!this.triggers) {
         return error('Giraffe routers require a `triggers` map of routes to app events.');
       }
-      if (options.parentRouter) {
-        this.parentRouter = options.parentRouter;
-      }
-      if (options.namespace) {
-        this.namespace = options.namespace;
-      } else if (!this.namespace) {
-        this.namespace = Giraffe.Router.defaultNamespace;
-      }
       this._routes = {};
       this._bindTriggers();
       Router.__super__.constructor.apply(this, arguments);
     }
 
-    Router.defaultNamespace = '';
+    Router.prototype.namespace = '';
 
     Router.prototype._fullNamespace = function() {
       if (this.parentRouter) {
@@ -1454,7 +1469,14 @@
   })(Backbone.Router);
 
   /*
-  * __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add lifecycle management and `appEvents` support. To add lifecycle management to an arbitrary object, simply give it a `dispose` method and add it to a view via `addChild`. To use this functionality in your own objects, see [`Giraffe.dispose`](#dispose) and [`Giraffe.bindEventMap`](#bindEventMap).
+  * __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add
+  * lifecycle management and `appEvents` support. To add lifecycle management to
+  * an arbitrary object, simply give it a `dispose` method and add it to a view
+  * via `addChild`. To use this functionality in your own objects, see
+  * [`Giraffe.dispose`](#dispose) and [`Giraffe.bindEventMap`](#bindEventMap).
+  *
+  * Like all __Giraffe__ objects, __Giraffe.Model__ and __Giraffe.Collection__
+  * extend each instance with every property in `options`.
   *
   * @param {Object} [attributes]
   * @param {Object} [options]
@@ -1465,7 +1487,10 @@
     __extends(Model, _super);
 
     function Model(attributes, options) {
-      this.app || (this.app = (options != null ? options.app : void 0) || Giraffe.app);
+      _.extend(this, options);
+      if (this.app == null) {
+        this.app = Giraffe.app;
+      }
       Giraffe.bindEventMap(this, this.app, this.appEvents);
       Model.__super__.constructor.apply(this, arguments);
     }
@@ -1507,7 +1532,10 @@
     Collection.prototype.model = Giraffe.Model;
 
     function Collection(models, options) {
-      this.app || (this.app = (options != null ? options.app : void 0) || Giraffe.app);
+      _.extend(this, options);
+      if (this.app == null) {
+        this.app = Giraffe.app;
+      }
       Giraffe.bindEventMap(this, this.app, this.appEvents);
       Collection.__super__.constructor.apply(this, arguments);
     }
@@ -1520,7 +1548,8 @@
     Collection.prototype.appEvents = null;
 
     /*
-    * Removes event listeners and disposes of all models, which removes them from the collection.
+    * Removes event listeners and disposes of all models, which removes them from
+    * the collection.
     */
 
 
@@ -1542,7 +1571,10 @@
   })(Backbone.Collection);
 
   /*
-  * Disposes of a object. Calls `Backbone.Events#stopListening` and sets `obj.app` to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before and after the disposal. Takes an optional `fn` argument to do additional work, and optional `args` that are passed through to the events and `fn`.
+  * Disposes of a object. Calls `Backbone.Events#stopListening` and sets `obj.app`
+  * to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before
+  * and after the disposal. Takes an optional `fn` argument to do additional work,
+  * and optional `args` that are passed through to the events and `fn`.
   *
   * @param {Object} obj The object to dispose.
   * @param {Function} [fn] A callback to perform additional work in between the `'disposing'` and `'disposed'` events.
@@ -1570,7 +1602,9 @@
   };
 
   /*
-  * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on `targetObj` with the callback `cb`, which can be a function or the string name of a method on `contextObj`.
+  * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
+  * `targetObj` with the callback `cb`, which can be a function or the string name
+  * of a method on `contextObj`.
   *
   * @param {Backbone.Events} contextObj The object doing the listening.
   * @param {Backbone.Events} targetObj The object to listen to.
@@ -1602,7 +1636,9 @@
   };
 
   /*
-  * Makes `contextObj` listen to `targetObj` for the events of `eventMap` in the form `eventName: method`, where `method` is a function or the name of a function on `contextObj`.
+  * Makes `contextObj` listen to `targetObj` for the events of `eventMap` in the
+  * form `eventName: method`, where `method` is a function or the name of a
+  * function on `contextObj`.
   *
   *     Giraffe.bindEventMap(this, this.app, this.appEvents);
   *

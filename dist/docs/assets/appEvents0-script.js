@@ -10,7 +10,7 @@ var ChildView = Giraffe.View.extend({
   className: 'child-view',
   template: '#child-template',
   initialize: function() {
-    this.$el.css('background-color', this.options.color);
+    this.$el.css('background-color', this.color);
   },
 
   appEvents: {
@@ -22,7 +22,7 @@ var ChildView = Giraffe.View.extend({
     'click button': 'colorChildViews'
   },
   colorChildViews: function() {
-    this.app.trigger('setColor', this.options.color);
+    this.app.trigger('setColor', this.color);
   }
 });
 

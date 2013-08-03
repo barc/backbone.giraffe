@@ -109,7 +109,7 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
   },
 
   onToggleCache: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">this</span>.options.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
+    <span class="keyword">this</span>.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
   },
 
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
@@ -189,7 +189,7 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== <span class="number">0</span>,
       showMoveDownButton: parentIsChildView || index !== $parentChildren.length - <span class="number">1</span>,
-      checkedAttr: <span class="keyword">this</span>.options.disposeOnDetach ? <span class="string">''</span> : <span class="string">"checked='checked'"</span>,
+      checkedAttr: <span class="keyword">this</span>.disposeOnDetach ? <span class="string">''</span> : <span class="string">"checked='checked'"</span>,
       renderCount: <span class="keyword">this</span>.renderCount,
       cid: <span class="keyword">this</span>.cid
     };
@@ -214,9 +214,9 @@ app2.attachTo(<span class="string">'body'</span>);</code></pre>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
   <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
@@ -300,9 +300,9 @@ more child views.</p>
 });</code></pre>
 <p>Here&#39;s the app&#39;s template:</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"parent-app-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
   <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"render"</span>&gt;</span>Reset <span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <div class='note'>
 The attribute <code>data-gf-click</code> is an convenient way to assign a view method as
@@ -320,13 +320,13 @@ its <code>children</code> via the <code>onAddChild</code> method.</p>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView(), {el: <span class="keyword">this</span>.$(<span class="string">'.child-views:first'</span>)});
   },</code></pre>
 <p>By default, <strong>Giraffe</strong> recreates child views every <code>render</code>, but this is often
-not desired. <code>options.disposeOnDetach</code> tells <strong>Giraffe</strong> whether or not to cache
+not desired. <code>disposeOnDetach</code> tells <strong>Giraffe</strong> whether or not to cache
 a view. By default, <code>disposeOnDetach</code> is true, and child views are disposed when
 their <code>parent</code> detaches them before a <code>render</code>. If you set a view&#39;s
 <code>disposeOnDetach</code> option to false, it is preserved when its <code>parent</code> renders.
 In this example, the <code>ChildView</code> has a checkbox to toggle this caching behavior.</p>
 <pre><code class="js">  onToggleCache: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">this</span>.options.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
+    <span class="keyword">this</span>.disposeOnDetach = !$(e.target).is(<span class="string">':checked'</span>);
   },</code></pre>
 <p>Cached child views will be in <code>children</code> after rendering the <code>parent</code>. Uncached
 child views have already been disposed of by this point which removes them from
@@ -425,7 +425,7 @@ attaches all child views.
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== <span class="number">0</span>,
       showMoveDownButton: parentIsChildView || index !== $parentChildren.length - <span class="number">1</span>,
-      checkedAttr: <span class="keyword">this</span>.options.disposeOnDetach ? <span class="string">''</span> : <span class="string">"checked='checked'"</span>,
+      checkedAttr: <span class="keyword">this</span>.disposeOnDetach ? <span class="string">''</span> : <span class="string">"checked='checked'"</span>,
       renderCount: <span class="keyword">this</span>.renderCount,
       cid: <span class="keyword">this</span>.cid
     };

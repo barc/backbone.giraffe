@@ -58,6 +58,12 @@ each other using the app as an event aggregator.</p>
     <span class="keyword">this</span>.attach(<span class="keyword">new</span> ChildView({color: <span class="string">'#99e'</span>, text: <span class="string">'blue'</span>}));
   }
 });</code></pre>
+<div class="note">
+All <strong>Giraffe</strong> objects extend their instances with everything in <code>options</code>.
+This allows for full customization of behavior for every instance.
+In this example, <code>color</code> and <code>text</code> are available directly on each view.
+</div>
+
 <p>This example has a <code>ChildView</code> class with a particular color and a button. When
 the button is clicked, it sends a message to all other child views via
 <code>appEvents</code> to color them its color.</p>
@@ -65,12 +71,12 @@ the button is clicked, it sends a message to all other child views via
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
   initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
+    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.color);
   },</code></pre>
 <p>Here&#39;s the <code>ChildView</code> template with the button. The default <code>serialize</code>
 function passes the view to the template.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <div class="note">
 These examples use <strong>Giraffe</strong>&#39;s templating default, <strong>Underscore</strong> templates,
@@ -98,7 +104,7 @@ event on <code>this.app</code>, all views listening to <code>appEvents</code> wi
     <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
   colorChildViews: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
+    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.color);
   }
 });</code></pre>
 <p>Like all <strong>Giraffe</strong> objects, <strong>Giraffe.App</strong> can listen to its own <code>appEvents</code>.
@@ -157,7 +163,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
   className: <span class="string">'child-view'</span>,
   template: <span class="string">'#child-template'</span>,
   initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.options.color);
+    <span class="keyword">this</span>.$el.css(<span class="string">'background-color'</span>, <span class="keyword">this</span>.color);
   },
 
   appEvents: {
@@ -171,7 +177,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
     <span class="string">'click button'</span>: <span class="string">'colorChildViews'</span>
   },
   colorChildViews: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.options.color);
+    <span class="keyword">this</span>.app.trigger(<span class="string">'setColor'</span>, <span class="keyword">this</span>.color);
   }
 });
 
@@ -192,7 +198,7 @@ app.attachTo(<span class="string">'body'</span>);</code></pre>
   <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
   <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= options.text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">button</span>&gt;</span>Color the views <span class="javascript">&lt;%= text %&gt;</span>!<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>

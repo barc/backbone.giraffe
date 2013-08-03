@@ -1,0 +1,30 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link rel="stylesheet" href="mocha.css" />
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+  <script src="../backbone.giraffe.js"></script>
+
+
+  <script src="mocha.js"></script>
+  <script src="chai.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="appTest.js"></script>
+  <script>
+    mocha.checkLeaks();
+    mocha.globals([
+      'jQuery*',
+      'Giraffe',
+      'Backbone'
+    ]);
+    mocha.run();
+  </script>
+</body>
+</html>

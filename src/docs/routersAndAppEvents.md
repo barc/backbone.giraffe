@@ -108,7 +108,7 @@ ChildView = Giraffe.View.extend({
 
 ```html
 <script id="child-template" type="text/template">
-  <h2>child view <%= options.name %></h2>
+  <h2>child view <%= name %></h2>
 </script>
 ```
 

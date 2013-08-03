@@ -122,7 +122,7 @@ name and a color.</p>
   }
 });</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-loading-the-app'>Loading the App</h2>
 <p>It&#39;s time to create and attach the app.</p>
@@ -252,7 +252,7 @@ console.log(app.router.getRoute(<span class="string">'route:childView'</span>, <
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= options.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h2</span>&gt;</span>child view <span class="javascript">&lt;%= name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>

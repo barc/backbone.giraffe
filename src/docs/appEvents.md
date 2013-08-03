@@ -17,6 +17,12 @@ var App = Giraffe.App.extend({
 });
 ```
 
+<div class="note">
+All __Giraffe__ objects extend their instances with everything in `options`.
+This allows for full customization of behavior for every instance.
+In this example, `color` and `text` are available directly on each view.
+</div>
+
 This example has a `ChildView` class with a particular color and a button. When
 the button is clicked, it sends a message to all other child views via
 `appEvents` to color them its color.
@@ -26,7 +32,7 @@ var ChildView = Giraffe.View.extend({
   className: 'child-view',
   template: '#child-template',
   initialize: function() {
-    this.$el.css('background-color', this.options.color);
+    this.$el.css('background-color', this.color);
   },
 ```
 
@@ -35,7 +41,7 @@ function passes the view to the template.
 
 ```html
 <script id="child-template" type="text/template">
-  <button>Color the views <%= options.text %>!</button>
+  <button>Color the views <%= text %>!</button>
 </script>
 ```
 
@@ -71,7 +77,7 @@ event on `this.app`, all views listening to `appEvents` will hear it.
     'click button': 'colorChildViews'
   },
   colorChildViews: function() {
-    this.app.trigger('setColor', this.options.color);
+    this.app.trigger('setColor', this.color);
   }
 });
 ```

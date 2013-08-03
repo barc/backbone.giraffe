@@ -33,9 +33,9 @@ Here's the app's template:
 
 ```html
 <script id="parent-app-template" type="text/template">
-  <h2><%= options.name %></h2>
+  <h2><%= name %></h2>
   <h3><%= cid %></h3>
-  <button data-gf-click="render">Reset <%= options.name %></button>
+  <button data-gf-click="render">Reset <%= name %></button>
 </script>
 ```
 
@@ -80,7 +80,7 @@ its `children` via the `onAddChild` method.
 ```
 
 By default, __Giraffe__ recreates child views every `render`, but this is often
-not desired. `options.disposeOnDetach` tells __Giraffe__ whether or not to cache
+not desired. `disposeOnDetach` tells __Giraffe__ whether or not to cache
 a view. By default, `disposeOnDetach` is true, and child views are disposed when
 their `parent` detaches them before a `render`. If you set a view's
 `disposeOnDetach` option to false, it is preserved when its `parent` renders.
@@ -88,7 +88,7 @@ In this example, the `ChildView` has a checkbox to toggle this caching behavior.
 
 ```js
   onToggleCache: function(e) {
-    this.options.disposeOnDetach = !$(e.target).is(':checked');
+    this.disposeOnDetach = !$(e.target).is(':checked');
   },
 ```
 
@@ -212,7 +212,7 @@ Here's the child view's `serialize` function and `template`:
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== 0,
       showMoveDownButton: parentIsChildView || index !== $parentChildren.length - 1,
-      checkedAttr: this.options.disposeOnDetach ? '' : "checked='checked'",
+      checkedAttr: this.disposeOnDetach ? '' : "checked='checked'",
       renderCount: this.renderCount,
       cid: this.cid
     };

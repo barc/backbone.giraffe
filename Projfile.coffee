@@ -1,5 +1,6 @@
 fs = require('fs')
 async = require('async')
+pkg = require('./package.json')
 
 exports.server =
   dirname: 'dist/'
@@ -9,6 +10,7 @@ exports.project = (pm) ->
   {f, $, Utils} = pm
   $.registerExecutable 'git'
   pm.filters require('pm-tutdown')
+  pm.load require('./Projtest.coffee'), ns: 'test'
 
   changeToDist = f.tap (asset) ->
     asset.filename = asset.filename.replace(/^src/, 'dist')
@@ -17,12 +19,15 @@ exports.project = (pm) ->
     return f.tap (asset) ->
       asset.filename = Utils.changeExtname(asset.filename, extname)
 
-  all: ['clean', 'giraffe', 'miniGiraffe', 'docs', 'stylesheets', 'staticFiles']
+  updateVersion = f.tap (asset) -> asset.text = asset.text.replace('{{VERSION}}', pkg.version)
+
+  all: ['clean', 'giraffe', 'miniGiraffe', 'docs', 'stylesheets', 'staticFiles', 'test:all']
 
   giraffe:
     desc: 'Builds Giraffe'
     files: 'src/backbone*.coffee'
     dev: [
+      updateVersion
       f.coffee
       f.writeFile _filename: {replace: [/^src/, 'dist']}
       f.writeFile _filename: {replace: [/^dist/, 'dist/docs']}
@@ -32,6 +37,7 @@ exports.project = (pm) ->
     desc: 'Builds Minified Giraffe'
     files: 'src/backbone*.coffee'
     dev: [
+      updateVersion
       f.coffee
       f.uglify
       f.tap (asset) ->
@@ -72,6 +78,7 @@ exports.project = (pm) ->
       '!src/docs/_toc.md'
     ]
     dev: [
+      updateVersion
       f.tutdown
         templates:
           example: fs.readFileSync('src/docs/_example.mustache', 'utf8')
@@ -132,7 +139,6 @@ exports.project = (pm) ->
 
   clean: ->
     $.rm '-rf', 'dist'
-
 
   "gh-pages":
     desc: "Creates/updates gh-pages branch"

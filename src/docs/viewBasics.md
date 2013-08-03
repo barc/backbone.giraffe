@@ -90,7 +90,7 @@ passes the view to the template function.
 
 ```html
 <script id="child-template" type="text/template">
-  <%= options.name %>
+  <%= name %>
 </script>
 ```
 

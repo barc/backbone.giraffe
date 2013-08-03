@@ -1,4 +1,5 @@
-Contrib = Giraffe.Contrib = {}
+Contrib = Giraffe.Contrib =
+  version: '{{VERSION}}'
 
 ###
 * `Backbone.Giraffe.Contrib` is a collection of officially supported classes that are

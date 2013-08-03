@@ -142,7 +142,7 @@ state, like speed.
 ## The ContentItemView
 
 The `ContentItemView` displays the name of the content. Because these are
-created with `options.saveScrollPosition` set to `true`, they save their scroll
+created with `saveScrollPosition` set to `true`, they save their scroll
 position when detached and apply it when attached.
 
 ```js
