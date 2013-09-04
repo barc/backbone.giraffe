@@ -1244,7 +1244,8 @@ class Giraffe.Router extends Backbone.Router
 * [`Giraffe.dispose`](#dispose) and [`Giraffe.bindEventMap`](#bindEventMap).
 *
 * Like all __Giraffe__ objects, __Giraffe.Model__ and __Giraffe.Collection__
-* extend each instance with every property in `options`.
+* extend each instance with every property in `options` except `parse` which
+* is problematic per issue 7.
 *
 * @param {Object} [attributes]
 * @param {Object} [options]
@@ -1253,7 +1254,7 @@ class Giraffe.Model extends Backbone.Model
 
 
   constructor: (attributes, options) ->
-    _.extend @, options
+    _.extend @, _.omit(options, 'parse')
     @app ?= Giraffe.app
     Giraffe.bindEventMap @, @app, @appEvents
     super
@@ -1287,7 +1288,7 @@ class Giraffe.Collection extends Backbone.Collection
 
 
   constructor: (models, options) ->
-    _.extend @, options
+    _.extend @, _.omit(options, 'parse')
     @app ?= Giraffe.app
     Giraffe.bindEventMap @, @app, @appEvents
     super

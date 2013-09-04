@@ -3,7 +3,7 @@
   "file": "appTest.js",
   "sourceRoot": "",
   "sources": [
-    "..\..\src\tests\appTest.coffee"
+    "../../src/tests/appTest.coffee"
   ],
   "names": [],
   "mappings": "AAAA;CAAA,KAAA;;CAAA,CAAC,CAAU,GAAX;;CAAA,CAEA,CAAwB,KAAxB,CAAwB,IAAxB;CAEE,CAAA,CAAmB,CAAnB,KAAmB,KAAnB;CACE,EAAA,OAAA;AAAM,CAAN,EAAA,GAAA,CAAiB;CACV,CAAP,CAAA,GAAM,OAAN;CAFF,IAAmB;CAIhB,CAAH,CAA8B,CAAA,KAAC,EAA/B,cAAA;CACE,KAAA;;;;;;;;;CAAA,IAAA;CAAA,EAAA,OAAA;AAUM,CAVN,EAUA,EAVA,CAUA;CACI,EAAD,EAAH,QAAA;CAZF,IAA8B;CANhC,EAAwB;CAFxB"

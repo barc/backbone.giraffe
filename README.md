@@ -41,7 +41,7 @@ __Giraffe__ was created by the needs of our team as we built
 much, others added too many layers, and others performed poorly.
 
 __Giraffe__ does not have all the bells and whistles of the larger frameworks.
-We found the effort to customize them for our needs was more effort than simply 
+We found the effort to customize them for our needs was more effort than simply
 building upon __Backbone__ with a minimalist approach. For example, there is no
 concept of specialized containers like regions or layouts, as any view in
 __Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
@@ -85,7 +85,7 @@ __AngularJS__)
 
 ## Download
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _57.0k_ __(version 0.1.1)__
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _57.0k_ __({{VERSION}})__
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.0k_
 
