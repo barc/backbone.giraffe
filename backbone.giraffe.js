@@ -6,7 +6,7 @@
     __slice = [].slice;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.1.1',
+    version: '0.1.2',
     app: null,
     apps: {},
     views: {}
@@ -1476,7 +1476,8 @@
   * [`Giraffe.dispose`](#dispose) and [`Giraffe.bindEventMap`](#bindEventMap).
   *
   * Like all __Giraffe__ objects, __Giraffe.Model__ and __Giraffe.Collection__
-  * extend each instance with every property in `options`.
+  * extend each instance with every property in `options` except `parse` which
+  * is problematic per issue 7.
   *
   * @param {Object} [attributes]
   * @param {Object} [options]
@@ -1487,7 +1488,7 @@
     __extends(Model, _super);
 
     function Model(attributes, options) {
-      _.extend(this, options);
+      _.extend(this, _.omit(options, 'parse'));
       if (this.app == null) {
         this.app = Giraffe.app;
       }
@@ -1532,7 +1533,7 @@
     Collection.prototype.model = Giraffe.Model;
 
     function Collection(models, options) {
-      _.extend(this, options);
+      _.extend(this, _.omit(options, 'parse'));
       if (this.app == null) {
         this.app = Giraffe.app;
       }
