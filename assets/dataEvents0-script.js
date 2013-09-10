@@ -1,26 +1,25 @@
 var View = Giraffe.View.extend({
 
   initialize: function() {
-    this.collection = new Backbone.Collection();
+    this.collection = new Giraffe.Collection();
   },
 
   dataEvents: {
     'add remove collection': 'render'
-    // 'someOtherEvent someOtherEventsObject': function() { ... }
-    // 'anEventTriggeredOnThisView this': 'someMethodName'
+    // 'someEvent anotherEvent someBackboneEventsObject': function() { ... }
+    // 'anEventTriggeredOnThisView this': 'someMethodName' // listen to self
+    // 'sameEventAsAbove @': 'sameMethodAsAbove'
   },
 
   template: '#view-template',
 
   onAddModel: function(e) {
-    this.modelCount = this.modelCount || 0;
-    this.modelCount += 1;
-    this.collection.add({name: this.modelCount});
+    this.collection.add({});
   },
 
   onRemoveModel: function(e) {
     var cid = $(e.target).data('cid');
-    this.collection.remove(this.collection.get(cid));
+    this.collection.remove(cid);
   }
 });
 
