@@ -21,7 +21,17 @@ exports.project = (pm) ->
 
   updateVersion = f.tap (asset) -> asset.text = asset.text.replace('{{VERSION}}', pkg.version)
 
-  all: ['clean', 'giraffe', 'miniGiraffe', 'docs', 'stylesheets', 'staticFiles', 'test:all']
+  getFileSize = (path) ->
+    file = fs.statSync(path)
+    (Math.round(file.size / 100) / 10) + 'k'
+
+  updateFileSize = f.tap (asset) ->
+    fileSize = getFileSize('dist/backbone.giraffe.js') # use variable and change other builds to direct paths?
+    fileSizeMin = getFileSize('dist/backbone.giraffe.min.js')
+    asset.text = asset.text.replace('{{FILE_SIZE}}', fileSize)
+    asset.text = asset.text.replace('{{FILE_SIZE_MIN}}', fileSizeMin)
+
+  all: ['clean', 'giraffe', 'miniGiraffe', 'readme', 'docs', 'stylesheets', 'staticFiles', 'test:all']
 
   giraffe:
     desc: 'Builds Giraffe'
@@ -45,6 +55,15 @@ exports.project = (pm) ->
         asset.basename = asset.basename.replace(/\.js$/, '.min.js')
       f.writeFile _filename: {replace: [/^src/, 'dist']}
       f.writeFile _filename: {replace: [/^dist/, 'dist/docs']}
+    ]
+
+  readme:
+    desc: 'Builds README.md'
+    files: '_README.md'
+    dev: [
+      updateVersion
+      updateFileSize
+      f.writeFile _filename: {replace: [/\_/, '']}
     ]
 
   # _docs
@@ -79,6 +98,7 @@ exports.project = (pm) ->
     ]
     dev: [
       updateVersion
+      updateFileSize
       f.tutdown
         templates:
           example: fs.readFileSync('src/docs/_example.mustache', 'utf8')
@@ -139,6 +159,7 @@ exports.project = (pm) ->
 
   clean: ->
     $.rm '-rf', 'dist'
+    $.rm '-f', 'README.md'
 
   "gh-pages":
     desc: "Creates/updates gh-pages branch"

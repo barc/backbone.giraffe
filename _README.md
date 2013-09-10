@@ -1,8 +1,11 @@
+[![Backbone.Giraffe](https://raw.github.com/barc/backbone.giraffe/master/src/docs/img/logo.png)](http://barc.github.io/backbone.giraffe)
+
 # Backbone.Giraffe
 
 ## Introduction
 
-__Backbone.Giraffe__ is a light and flexible library that extends
+[__Backbone.Giraffe__](http://barc.github.io/backbone.giraffe)
+is a light and flexible library that extends
 [__Backbone.js__](http://documentcloud.github.com/backbone/) to new heights.
 __Giraffe__'s goal is to follow the __Backbone__ philosophy of unopinionated
 simplicity to provide commonly needed features with few assumptions. It differs
@@ -29,7 +32,7 @@ __Giraffe__'s lifecycle management and app events.
 
 ## Documentation
 
-Read the [__API docs__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html) and
+Read the [__API docs__](http://barc.github.io/backbone.giraffe/api.html) and
 check out our [__live examples__](http://barc.github.io/backbone.giraffe/viewBasics.html).
 
 ## How Giraffe is Different
@@ -56,7 +59,7 @@ features to make you more productive with __Backbone__.
 instead of being tied to functions. This makes it extremely simple for a deeply
 nested view to act on a route.
 
-- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html.html#Router)
+- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html#Router)
 provide a way to trigger routes in the application using app events without
 having to know a URL path.
 
@@ -65,7 +68,7 @@ special view that acts as an event hub to help your app communicate and respond
 to routes, and all __Giraffe__ objects have convenient `appEvents` bindings
 inspired by `Backbone.View#events`.
 
-- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#View-attachTo)
+- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/api.html#View-attachTo)
 allows views to move anywhere on the DOM without clobbering each other's events,
 and it automatically sets up parent-child relationships for memory management.
 
@@ -85,15 +88,15 @@ __AngularJS__)
 
 __Version {{VERSION}}__
 
-<p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">{{FILE_SIZE}}</em>
-</p>
-<p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">{{FILE_SIZE_MIN}}</em>
-</p>
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _{{FILE_SIZE}}_
 
-[Giraffe on Github](https://github.com/barc/backbone.giraffe)
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _{{FILE_SIZE_MIN}}_
 
+## Building
+
+    npm install projmate-cli@0.1.0-dev -g
+    npm install -d
+    pm run all
 
 ## License
 

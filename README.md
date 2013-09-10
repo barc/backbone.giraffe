@@ -4,7 +4,8 @@
 
 ## Introduction
 
-__Backbone.Giraffe__ is a light and flexible library that extends
+[__Backbone.Giraffe__](http://barc.github.io/backbone.giraffe)
+is a light and flexible library that extends
 [__Backbone.js__](http://documentcloud.github.com/backbone/) to new heights.
 __Giraffe__'s goal is to follow the __Backbone__ philosophy of unopinionated
 simplicity to provide commonly needed features with few assumptions. It differs
@@ -85,9 +86,11 @@ __AngularJS__)
 
 ## Download
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _57.0k_ __({{VERSION}})__
+__Version 0.1.2__
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.0k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _56.8k_
+
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.4k_
 
 ## Building
 
