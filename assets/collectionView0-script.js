@@ -13,8 +13,8 @@ var Fruits = Giraffe.Collection.extend({
     var comparator = this.comparator;
 
     // Reverse string order isn't as simple as prefixing with '-'. See
-    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a good
-    // idea neither as the collection would not sort properly on add/remove.
+    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a
+    // good idea as the collection would not sort properly on add/remove.
     if (typeof comparator === 'string') {
       comparator = function(fruit) {
         return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),

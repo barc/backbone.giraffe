@@ -766,12 +766,10 @@
       return Giraffe.views[cid];
     };
 
-    View.to$El = function(el, $parent) {
-      var $el;
-      if ($parent != null) {
-        $parent = Giraffe.View.to$El($parent);
-      }
-      if ($parent) {
+    View.to$El = function(el, parent) {
+      var $el, $parent;
+      if (parent) {
+        $parent = Giraffe.View.to$El(parent);
         $el = Giraffe.View.to$El(el);
         return $parent.find($el);
       } else if (el != null ? el.$el : void 0) {
@@ -1572,7 +1570,7 @@
   })(Backbone.Collection);
 
   /*
-  * Disposes of a object. Calls `Backbone.Events#stopListening` and sets `obj.app`
+  * Disposes of an object. Calls `Backbone.Events#stopListening` and sets `obj.app`
   * to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before
   * and after the disposal. Takes an optional `fn` argument to do additional work,
   * and optional `args` that are passed through to the events and `fn`.
