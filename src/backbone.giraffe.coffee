@@ -650,10 +650,9 @@ class Giraffe.View extends Backbone.View
 
   # Gets a jQuery object from a selector, element, jQuery object, or Giraffe.View,
   # scoped by an optional `$parent`.
-  @to$El: (el, $parent) ->
-    if $parent?
-      $parent = Giraffe.View.to$El($parent)
-    if $parent
+  @to$El: (el, parent) ->
+    if parent
+      $parent = Giraffe.View.to$El(parent)
       $el = Giraffe.View.to$El(el)
       $parent.find($el)
     else if el?.$el
@@ -1311,7 +1310,7 @@ class Giraffe.Collection extends Backbone.Collection
 
 
 ###
-* Disposes of a object. Calls `Backbone.Events#stopListening` and sets `obj.app`
+* Disposes of an object. Calls `Backbone.Events#stopListening` and sets `obj.app`
 * to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before
 * and after the disposal. Takes an optional `fn` argument to do additional work,
 * and optional `args` that are passed through to the events and `fn`.

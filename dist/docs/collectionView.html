@@ -100,8 +100,8 @@ single collection view named <code>FruitsView</code>.</p>
     <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
 
     <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a good</span>
-    <span class="comment">// idea neither as the collection would not sort properly on add/remove.</span>
+    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a</span>
+    <span class="comment">// good idea as the collection would not sort properly on add/remove.</span>
     <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
       comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
         <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
@@ -252,8 +252,8 @@ of using <strong>Giraffe.Model</strong> is the addition of a few methods such as
     <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
 
     <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a good</span>
-    <span class="comment">// idea neither as the collection would not sort properly on add/remove.</span>
+    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a</span>
+    <span class="comment">// good idea as the collection would not sort properly on add/remove.</span>
     <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
       comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
         <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
