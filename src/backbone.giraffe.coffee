@@ -472,13 +472,26 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * The `ui` object maps names to selectors, e.g.
-  * `{$someName: '#some-selector'}`. If a view defines `ui`, the __jQuery__
-  * objects it names will be cached and updated every `render`. For example,
-  * declaring `this.ui = {$button: '#button'}` in a view makes `this.$button`
-  * always available once `render` has been called. Typically the selector
-  * value is a string, but if it's function, its return value will be assigned,
-  * and if it's neither a string or a function, the value itself is assigned.
+  * `ui` is an optional view property that helps DRY up DOM references in views.
+  * It provides a convenient way to cache __jQuery__ objects after every `render`,
+  * and the names given to these objects can be used in `Backbone.View#events`.
+  * Declaring `this.ui = {$button: '#button'}` in a view makes `this.$button`
+  * always available once `render` has been called. Typically the `ui` value is
+  * a string which is then searched for inside `this.$el`, but if it's a
+  * function, its return value will be assigned. If it's neither a string nor a
+  * function, the value itself is assigned.
+  *
+  *     Giraffe.View.extend({
+  *       ui: {
+  *         $someButton: '#some-button-selector'
+  *       },
+  *       afterRender: {
+  *         this.$someButton; // just got cached
+  *       },
+  *       events: {
+  *         '#click $someButton': 'onClickSomeButton' // ui names work here
+  *       }
+  *     });
   ###
   ui: null
 
