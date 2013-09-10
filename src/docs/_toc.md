@@ -9,6 +9,7 @@
 - [Routers and App Events](routersAndAppEvents.html)
 - [App Initialization](appInitialization.html)
 - [View Document Events](documentEvents.html)
+- [View Data Events](dataEvents.html)
 - [View UI](viewUI.html)
 - [Menu Example](menuExample.html)
 - [View Flexibility](viewFlexibility.html)

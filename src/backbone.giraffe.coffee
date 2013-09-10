@@ -532,6 +532,36 @@ class Giraffe.View extends Backbone.View
       eventKey
 
 
+  ###
+  * Inspired by `Backbone.View#events`, `dataEvents` binds a space-separated
+  * list of events ending with the target object to methods on a view.
+  * It is a shorthand way of calling `view.listenTo(targetObj, event, cb)`.
+  * In this example `collection` is used, but any object on the view that
+  * implements __Backbone.Events__ is a valid target object. To have a view
+  * listen to itself, the keywords `'this'` and `'@'` can be used.
+  *
+  *     Giraffe.View.extend({
+  *       dataEvents: {
+  *         'add remove change collection': 'render',
+  *         'event anotherEvent targetObj': function() {},
+  *         'eventOnThisView @': 'methodName'
+  *       }
+  *     });
+  *
+  * As a result of using `listenTo`, `dataEvents` accepts multiple events per
+  * definition, handlers are called in the context of the view, and
+  * bindings are cleaned up in `dispose` via `stopListening`.
+  *
+  * There are some unfortunate restrictions to `dataEvents`. Objects created
+  * after `initialize` will not be bound to, and events fired during the
+  * `constructor` and `initialize` will not be heard. We advocate using
+  * `Backbone.Events#listenTo` directly in these circumstances.
+  *
+  * See the [__Data Events__ example](dataEvents.html) for more.
+  ###
+  dataEvents: null
+
+
   # Binds the `dataEvents` hash that allows any arbitrary instance property of the view to be bound to easily.
   # Expects the form {'event targetObj': 'handler'}
   _bindDataEvents: ->
@@ -545,7 +575,7 @@ class Giraffe.View extends Backbone.View
       targetObj = pieces.pop()
       targetObj = if targetObj is 'this' or targetObj is '@' then @ else @[targetObj] # allow listening to self
       if !targetObj
-        error "Unknown taget object #{targetObj} for data event", eventKey
+        error "view.#{targetObj} not found for data event", eventKey
         continue
       eventName = pieces.join(' ')
       Giraffe.bindEvent @, targetObj, eventName, cb

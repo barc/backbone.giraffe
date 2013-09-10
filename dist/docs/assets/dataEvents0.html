@@ -7,9 +7,9 @@
   <body>
     <script id="view-template" type="text/template">
   <button data-gf-click="onAddModel">add model</button>
-  <% _.each(collection.models, function(model) { %>
+  <% collection.each(function(model, index) { %>
     <button data-gf-click="onRemoveModel" data-cid="<%= model.cid %>">
-      remove model <%= model.get("name") %>
+      remove model <%= model.cid %>
     </button>
   <% }); %>
 </script>
