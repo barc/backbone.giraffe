@@ -51,8 +51,8 @@ var ChildView = Giraffe.View.extend({
   },
 
   getPreviousView: function() {
-    var $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
     if (index > 0)
       return Giraffe.View.getClosestView($parentChildren[index - 1]);
     else
@@ -70,8 +70,8 @@ var ChildView = Giraffe.View.extend({
   },
 
   getNextView: function() {
-    var $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
     if (index < $parentChildren.length - 1)
       return Giraffe.View.getClosestView($parentChildren[index + 1]);
     else
@@ -90,10 +90,9 @@ var ChildView = Giraffe.View.extend({
   template: '#child-template',
 
   serialize: function() {
-    var
-      $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el),
-      parentIsChildView = this.parent instanceof ChildView;
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
+    var parentIsChildView = this.parent instanceof ChildView;
     return {
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== 0,

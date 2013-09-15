@@ -214,20 +214,21 @@
 
 
     View.prototype.attach = function(view, options) {
-      var childEl, el;
+      var childEl, el, target;
+      target = null;
       if (options != null ? options.el : void 0) {
-        el = Giraffe.View.to$El(options.el);
-        childEl = this.$el.find(el);
+        el = options.el;
+        childEl = Giraffe.View.to$El(el, this.$el, true);
         if (childEl.length) {
-          view.attachTo(childEl, options);
-        } else if (this.$el.is(el)) {
-          view.attachTo(this.$el, options);
+          target = childEl;
         } else {
           error('Attempting to attach to an element that doesn\'t exist inside this view!', options, view, this);
+          return this;
         }
       } else {
-        view.attachTo(this.$el, options);
+        target = this.$el;
       }
+      view.attachTo(target, options);
       return this;
     };
 
@@ -810,12 +811,21 @@
       return Giraffe.views[cid];
     };
 
-    View.to$El = function(el, parent) {
-      var $el, $parent;
+    View.to$El = function(el, parent, allowParentMatch) {
+      var $parent;
+      if (allowParentMatch == null) {
+        allowParentMatch = false;
+      }
       if (parent) {
         $parent = Giraffe.View.to$El(parent);
-        $el = Giraffe.View.to$El(el);
-        return $parent.find($el);
+        if (el != null ? el.$el : void 0) {
+          el = el.$el;
+        }
+        if (allowParentMatch && $parent.is(el)) {
+          return $parent;
+        } else {
+          return $parent.find(el);
+        }
       } else if (el != null ? el.$el : void 0) {
         return el.$el;
       } else if (el instanceof $) {
@@ -1068,10 +1078,12 @@
       }
       Giraffe.apps[this.cid] = this;
       if (this.routes) {
-        this.router = new Giraffe.Router({
-          app: this,
-          triggers: this.routes
-        });
+        if (this.router == null) {
+          this.router = new Giraffe.Router({
+            app: this,
+            triggers: this.routes
+          });
+        }
       }
       $(window).on("unload", this._onUnload);
       return App.__super__._cache.apply(this, arguments);

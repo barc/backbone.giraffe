@@ -139,8 +139,8 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
   },
 
   getPreviousView: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
     <span class="keyword">if</span> (index &gt; <span class="number">0</span>)
       <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index - <span class="number">1</span>]);
     <span class="keyword">else</span>
@@ -160,8 +160,8 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
   },
 
   getNextView: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
     <span class="keyword">if</span> (index &lt; $parentChildren.length - <span class="number">1</span>)
       <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index + <span class="number">1</span>]);
     <span class="keyword">else</span>
@@ -182,10 +182,9 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
   template: <span class="string">'#child-template'</span>,
 
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span>
-    $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el),
-      parentIsChildView = <span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView;
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> parentIsChildView = <span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView;
     <span class="keyword">return</span> {
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== <span class="number">0</span>,
@@ -221,7 +220,7 @@ app2.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;% cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
 
   <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveUpButton) { %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
@@ -370,8 +369,8 @@ because we don&#39;t want to dispose of uncached views just to update the arrows
   },
 
   getPreviousView: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
     <span class="keyword">if</span> (index &gt; <span class="number">0</span>)
       <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index - <span class="number">1</span>]);
     <span class="keyword">else</span>
@@ -389,8 +388,8 @@ because we don&#39;t want to dispose of uncached views just to update the arrows
   },
 
   getNextView: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
     <span class="keyword">if</span> (index &lt; $parentChildren.length - <span class="number">1</span>)
       <span class="keyword">return</span> Giraffe.View.getClosestView($parentChildren[index + <span class="number">1</span>]);
     <span class="keyword">else</span>
@@ -418,10 +417,9 @@ attaches all child views.
 <pre><code class="js">  template: <span class="string">'#child-template'</span>,
 
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span>
-      $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>),
-      index = $parentChildren.index(<span class="keyword">this</span>.$el),
-      parentIsChildView = <span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView;
+    <span class="keyword">var</span> $parentChildren = <span class="keyword">this</span>.$el.parent().find(<span class="string">'&gt; .child-view'</span>);
+    <span class="keyword">var</span> index = $parentChildren.index(<span class="keyword">this</span>.$el);
+    <span class="keyword">var</span> parentIsChildView = <span class="keyword">this</span>.parent <span class="keyword">instanceof</span> ChildView;
     <span class="keyword">return</span> {
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== <span class="number">0</span>,
@@ -433,7 +431,7 @@ attaches all child views.
   }
 });</code></pre>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">"child-template"</span> <span class="attribute">type</span>=<span class="value">"text/template"</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;% cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h3</span>&gt;</span><span class="javascript">&lt;%= cid %&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
 
   <span class="javascript">&lt;% <span class="keyword">if</span> (showMoveUpButton) { %&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">"onMoveUp"</span>&gt;</span>&amp;#9650;<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
