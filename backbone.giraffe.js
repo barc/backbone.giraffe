@@ -142,7 +142,7 @@
     * `options.forceRender` and `options.suppressRender`. See the
     * [_View Basics_ example](viewBasics.html) for more.
     *
-    * @param {String/Element/jQuery/View} el A view, selector, or DOM element to attach `view.$el` to.
+    * @param {String/Element/$/Giraffe.View} el A view, selector, or DOM element to attach `view.$el` to.
     * @param {Object} [options]
     *     {String} method The jQuery method used to put this view in `el`. Accepts `'append'`, `'prepend'`, `'html'`, `'after'`, and `'before'`. Defaults to `'append'`.
     *     {Boolean} forceRender Calls `render` when attached, even if the view has already been rendered.
@@ -214,11 +214,10 @@
 
 
     View.prototype.attach = function(view, options) {
-      var childEl, el, target;
+      var childEl, target;
       target = null;
       if (options != null ? options.el : void 0) {
-        el = options.el;
-        childEl = Giraffe.View.to$El(el, this.$el, true);
+        childEl = Giraffe.View.to$El(options.el, this.$el, true);
         if (childEl.length) {
           target = childEl;
         } else {
@@ -765,7 +764,7 @@
     * in `attachTo`. Uses the `data-view-cid` attribute to match DOM nodes to view
     * instances.
     *
-    * @param {String/Element/Giraffe.View} el
+    * @param {String/Element/$/Giraffe.View} el
     * @param {Boolean} [preserve]
     */
 
@@ -789,7 +788,7 @@
     * __Giraffe.View__. Uses the `data-view-cid` attribute to match DOM nodes to
     * view instances.
     *
-    * @param {String/Element/Giraffe.View} el
+    * @param {String/Element/$/Giraffe.View} el
     */
 
 
@@ -810,6 +809,18 @@
     View.getByCid = function(cid) {
       return Giraffe.views[cid];
     };
+
+    /*
+    * Gets a __jQuery__ object from `el`, which can be a selector, element,
+    * __jQuery__ object, or __Giraffe.View__, scoped by an optional `parent`,
+    * which has the same available types as `el`. If the third parameter is
+    * truthy, `el` can be the same element as `parent`.
+    *
+    * @param {String/Element/$/Giraffe.View} el
+    * @param {String/Element/$/Giraffe.View} [parent] Opitional. Scopes `el` if provided.
+    * @param {Boolean} [allowParentMatch] Optional. If truthy, `el` can be `parent`.
+    */
+
 
     View.to$El = function(el, parent, allowParentMatch) {
       var $parent;
