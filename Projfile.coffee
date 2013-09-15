@@ -61,6 +61,7 @@ exports.project = (pm) ->
     desc: 'Builds README.md'
     files: '_README.md'
     dev: [
+      f.preproc root: process.cwd()
       updateVersion
       updateFileSize
       f.writeFile _filename: {replace: [/\_/, '']}
@@ -97,6 +98,7 @@ exports.project = (pm) ->
       '!src/docs/_toc.md'
     ]
     dev: [
+      f.preproc root: process.cwd()
       updateVersion
       updateFileSize
       f.tutdown
