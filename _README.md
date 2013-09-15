@@ -32,7 +32,7 @@ __Giraffe__'s lifecycle management and app events.
 
 ## Documentation
 
-Read the [__API docs__](http://barc.github.io/backbone.giraffe/api.html) and
+Read the [__API docs__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html) and
 check out our [__live examples__](http://barc.github.io/backbone.giraffe/viewBasics.html).
 
 ## How Giraffe is Different
@@ -59,7 +59,7 @@ features to make you more productive with __Backbone__.
 instead of being tied to functions. This makes it extremely simple for a deeply
 nested view to act on a route.
 
-- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/api.html#Router)
+- [__Reverse routes with arguments__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#Router)
 provide a way to trigger routes in the application using app events without
 having to know a URL path.
 
@@ -68,7 +68,7 @@ special view that acts as an event hub to help your app communicate and respond
 to routes, and all __Giraffe__ objects have convenient `appEvents` bindings
 inspired by `Backbone.View#events`.
 
-- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/api.html#View-attachTo)
+- [__`Giraffe.View#attachTo(someElement)`__](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#View-attachTo)
 allows views to move anywhere on the DOM without clobbering each other's events,
 and it automatically sets up parent-child relationships for memory management.
 
@@ -97,6 +97,7 @@ __Version {{VERSION}}__
     npm install projmate-cli@0.1.0-dev -g
     npm install -d
     pm run all
+    pm run all -ws // watch for file changes and run local server at local.projmate.com:1080
 
 ## License
 
