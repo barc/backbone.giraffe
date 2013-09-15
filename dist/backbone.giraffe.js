@@ -6,7 +6,7 @@
     __slice = [].slice;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.1.2',
+    version: '0.1.3',
     app: null,
     apps: {},
     views: {}
