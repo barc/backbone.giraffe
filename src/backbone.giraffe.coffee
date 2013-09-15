@@ -153,7 +153,7 @@ class Giraffe.View extends Backbone.View
   * `options.forceRender` and `options.suppressRender`. See the
   * [_View Basics_ example](viewBasics.html) for more.
   *
-  * @param {String/Element/jQuery/View} el A view, selector, or DOM element to attach `view.$el` to.
+  * @param {String/Element/$/Giraffe.View} el A view, selector, or DOM element to attach `view.$el` to.
   * @param {Object} [options]
   *     {String} method The jQuery method used to put this view in `el`. Accepts `'append'`, `'prepend'`, `'html'`, `'after'`, and `'before'`. Defaults to `'append'`.
   *     {Boolean} forceRender Calls `render` when attached, even if the view has already been rendered.
@@ -229,8 +229,7 @@ class Giraffe.View extends Backbone.View
   attach: (view, options) ->
     target = null
     if options?.el
-      el = options.el
-      childEl = Giraffe.View.to$El(el, @$el, true)
+      childEl = Giraffe.View.to$El(options.el, @$el, true)
       if childEl.length
         target = childEl
       else
@@ -658,7 +657,7 @@ class Giraffe.View extends Backbone.View
   * in `attachTo`. Uses the `data-view-cid` attribute to match DOM nodes to view
   * instances.
   *
-  * @param {String/Element/Giraffe.View} el
+  * @param {String/Element/$/Giraffe.View} el
   * @param {Boolean} [preserve]
   ###
   @detachByEl: (el, preserve = false) ->
@@ -675,7 +674,7 @@ class Giraffe.View extends Backbone.View
   * __Giraffe.View__. Uses the `data-view-cid` attribute to match DOM nodes to
   * view instances.
   *
-  * @param {String/Element/Giraffe.View} el
+  * @param {String/Element/$/Giraffe.View} el
   ###
   @getClosestView: (el) ->
     $el = Giraffe.View.to$El(el)
@@ -692,8 +691,16 @@ class Giraffe.View extends Backbone.View
     Giraffe.views[cid]
 
 
-  # Gets a jQuery object from a selector, element, jQuery object, or Giraffe.View,
-  # scoped by an optional `$parent`.
+  ###
+  * Gets a __jQuery__ object from `el`, which can be a selector, element,
+  * __jQuery__ object, or __Giraffe.View__, scoped by an optional `parent`,
+  * which has the same available types as `el`. If the third parameter is
+  * truthy, `el` can be the same element as `parent`.
+  *
+  * @param {String/Element/$/Giraffe.View} el
+  * @param {String/Element/$/Giraffe.View} [parent] Opitional. Scopes `el` if provided.
+  * @param {Boolean} [allowParentMatch] Optional. If truthy, `el` can be `parent`.
+  ###
   @to$El: (el, parent, allowParentMatch = false) ->
     if parent
       $parent = Giraffe.View.to$El(parent)
