@@ -227,17 +227,18 @@ class Giraffe.View extends Backbone.View
   * @caption parentView.attach(childView, [options])
   ###
   attach: (view, options) ->
+    target = null
     if options?.el
-      el = Giraffe.View.to$El(options.el)
-      childEl = @$el.find(el)
+      el = options.el
+      childEl = Giraffe.View.to$El(el, @$el, true)
       if childEl.length
-        view.attachTo childEl, options
-      else if @$el.is(el)
-        view.attachTo @$el, options
+        target = childEl
       else
         error 'Attempting to attach to an element that doesn\'t exist inside this view!', options, view, @
+        return @
     else
-      view.attachTo @$el, options
+      target = @$el
+    view.attachTo target, options
     @
 
 
@@ -693,11 +694,14 @@ class Giraffe.View extends Backbone.View
 
   # Gets a jQuery object from a selector, element, jQuery object, or Giraffe.View,
   # scoped by an optional `$parent`.
-  @to$El: (el, parent) ->
+  @to$El: (el, parent, allowParentMatch = false) ->
     if parent
       $parent = Giraffe.View.to$El(parent)
-      $el = Giraffe.View.to$El(el)
-      $parent.find($el)
+      el = el.$el if el?.$el
+      if allowParentMatch and $parent.is(el)
+        $parent
+      else
+        $parent.find(el)
     else if el?.$el
       el.$el
     else if el instanceof $
@@ -901,7 +905,7 @@ class Giraffe.App extends Giraffe.View
     Giraffe.app ?= @ # for convenience, store the first created app as a global
     Giraffe.apps[@cid] = @
     if @routes
-      @router = new Giraffe.Router(app: @, triggers: @routes)
+      @router ?= new Giraffe.Router(app: @, triggers: @routes)
     $(window).on "unload", @_onUnload
     super
 

@@ -144,8 +144,8 @@ because we don't want to dispose of uncached views just to update the arrows.
   },
 
   getPreviousView: function() {
-    var $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
     if (index > 0)
       return Giraffe.View.getClosestView($parentChildren[index - 1]);
     else
@@ -163,8 +163,8 @@ because we don't want to dispose of uncached views just to update the arrows.
   },
 
   getNextView: function() {
-    var $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el);
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
     if (index < $parentChildren.length - 1)
       return Giraffe.View.getClosestView($parentChildren[index + 1]);
     else
@@ -204,10 +204,9 @@ Here's the child view's `serialize` function and `template`:
   template: '#child-template',
 
   serialize: function() {
-    var
-      $parentChildren = this.$el.parent().find('> .child-view'),
-      index = $parentChildren.index(this.$el),
-      parentIsChildView = this.parent instanceof ChildView;
+    var $parentChildren = this.$el.parent().find('> .child-view');
+    var index = $parentChildren.index(this.$el);
+    var parentIsChildView = this.parent instanceof ChildView;
     return {
       parentIsChildView: parentIsChildView,
       showMoveUpButton: parentIsChildView || index !== 0,
@@ -222,7 +221,7 @@ Here's the child view's `serialize` function and `template`:
 
 ```html
 <script id="child-template" type="text/template">
-  <h3><% cid %></h3>
+  <h3><%= cid %></h3>
 
   <% if (showMoveUpButton) { %>
     <button data-gf-click="onMoveUp">&#9650;</button>
