@@ -1,7 +1,9 @@
 # Giraffe.Contrib.CollectionView
 
-This example details how to use `Giraffe.Contrib` to implement views for a
-collection of fruits with the CollectionView and ItemView design pattern.
+This example details how to use 
+[`Giraffe.Contrib`](https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js)
+to implement views for a collection of fruits with the CollectionView
+and ItemView design pattern.
 
 :::BEGIN Example
 
@@ -199,10 +201,13 @@ hr {
 
 :::< common.md --raw
 
-We need to source the  `Backbone.Giraffe.Contrib` library which defines `Giraffe.CollectionView`.
+We need to source the  `Backbone.Giraffe.Contrib` library which defines
+`Giraffe.Contrib.CollectionView`.
 
 <div class='note'>
-None-core goodies are added to `Backbone.Giraffe.Contrib`, short for contributions.
+None-core goodies are added to 
+[`Backbone.Giraffe.Contrib`](https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js),
+short for contributions.
 </div>
 
 ```html

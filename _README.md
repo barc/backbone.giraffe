@@ -15,7 +15,7 @@ __Version {{VERSION}}__
     npm install projmate-cli@0.1.0-dev -g
     npm install -d
     pm run all
-    pm run all -ws // watch for file changes and run local server at local.projmate.com:1080
+    pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## License
 

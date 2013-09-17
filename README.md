@@ -46,9 +46,10 @@ We found the effort to customize them for our needs was more effort than simply
 building upon __Backbone__ with a minimalist approach. For example, there is no
 concept of specialized containers like regions or layouts, as any view in
 __Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
-has no CollectionView or ItemView, but we are open to suggestions to make
-__Giraffe__ as useful as possible to __Backbone__ developers who want an
-extension library with few opinions.
+has no CollectionView or ItemView
+(see [__Giraffe.Contrib.CollectionView__](http://barc.github.io/backbone.giraffe/collectionView.html)),
+but we are open to suggestions to make __Giraffe__ as useful as possible to
+__Backbone__ developers who want an extension library with few opinions.
 
 Is this framework for you? It depends. We feel __Giraffe__ adds essential
 features to make you more productive with __Backbone__.
@@ -97,7 +98,7 @@ __Version 0.1.3__
     npm install projmate-cli@0.1.0-dev -g
     npm install -d
     pm run all
-    pm run all -ws // watch for file changes and run local server at local.projmate.com:1080
+    pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## License
 
