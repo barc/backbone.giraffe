@@ -174,8 +174,9 @@ class Giraffe.View extends Backbone.View
 
     $el = Giraffe.View.to$El(el)
 
-    if !$el
-      error 'No such `el` to attach to', el
+    # Make sure we're attaching to a single element
+    if $el.length isnt 1
+      error('Expected to render to a single element but found ' + $el.length, el)
       return @
 
     # $el and $container differ for jQuery methods that operate on siblings
@@ -184,11 +185,6 @@ class Giraffe.View extends Backbone.View
     # The methods 'insertAfter' and 'insertBefore' become 'after' and 'before' because we always call $el[method] @$el
     method = 'after' if method is 'insertAfter'
     method = 'before' if method is 'insertBefore'
-
-    # Make sure we're attaching to a single element
-    if $el.length isnt 1
-      error('Expected to render to a single element but found ' + $el.length, el)
-      return @
 
     # Detach the view so it can move around freely, preserving it so it's not disposed.
     @detach true
@@ -504,7 +500,7 @@ class Giraffe.View extends Backbone.View
           when 'string'
             @$(selector)
           when 'function'
-            selector()
+            selector.call @
           else
             selector
     @
@@ -521,8 +517,8 @@ class Giraffe.View extends Backbone.View
   # Inserts the `ui` names into `events`.
   _createEventsFromUIElements: ->
     return @ unless @events and @ui
-    @ui = @ui() if typeof @ui is 'function'
-    @events = @events() if typeof @events is 'function'
+    @ui = @ui.call(@) if typeof @ui is 'function'
+    @events = @events.call(@) if typeof @events is 'function'
     for eventKey, method of @events
       newEventKey = @_getEventKeyFromUIElements(eventKey)
       if newEventKey isnt eventKey
@@ -577,10 +573,10 @@ class Giraffe.View extends Backbone.View
 
   # Binds the `dataEvents` hash that allows any arbitrary instance property of the view to be bound to easily.
   # Expects the form {'event targetObj': 'handler'}
-  _bindDataEvents: ->
-    return @ unless @dataEvents
-    @dataEvents = @dataEvents() if typeof @dataEvents is 'function'
-    for eventKey, cb of @dataEvents
+  _bindDataEvents: (dataEvents = @dataEvents) ->
+    return @ unless dataEvents
+    dataEvents = dataEvents.call(@) if typeof dataEvents is 'function'
+    for eventKey, cb of dataEvents
       pieces = eventKey.split(' ')
       if pieces.length < 2
         error 'Data event must specify target object, ex: {\'change collection\': \'handler\'}'
@@ -1084,8 +1080,7 @@ class Giraffe.Router extends Backbone.Router
     @app.addChild @ # disposes of the router when its app is removed
     Giraffe.bindEventMap @, @app, @appEvents
 
-    if typeof @triggers is 'function'
-      @triggers = @triggers()
+    @triggers = @triggers.call(@) if typeof @triggers is 'function'
     if !@triggers
       return error 'Giraffe routers require a `triggers` map of routes to app events.'
 
@@ -1449,8 +1444,7 @@ _setEventBindings = (contextObj, targetObj, eventName, cb, bindOrUnbindFnName) -
 
 
 _setEventMapBindings = (contextObj, targetObj, eventMap, bindOrUnbindFnName) ->
-  if typeof eventMap is 'function'
-    eventMap = eventMap()
+  eventMap = eventMap.call(contextObj) if typeof eventMap is 'function'
   return unless eventMap
   for eventName, cb of eventMap
     _setEventBindings contextObj, targetObj, eventName, cb, bindOrUnbindFnName
