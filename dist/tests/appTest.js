@@ -82,7 +82,7 @@
       assertNotNested(child, parent);
       return assertDisposed(child);
     });
-    return it('should not dispose of a cached view', function() {
+    it('should not dispose of a cached view', function() {
       var child, grandchild, parent;
       parent = new Giraffe.View;
       child = new Giraffe.View;
@@ -95,6 +95,52 @@
       assertNested(child, parent);
       assertNested(grandchild, child);
       return assertNotDisposed(grandchild);
+    });
+    it('should add and remove some children', function() {
+      var a, b, c, parent;
+      parent = new Giraffe.View;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      c = new Giraffe.View;
+      parent.attach(a);
+      parent.attach(b);
+      parent.attach(c);
+      assertNested(a, parent);
+      assertNested(b, parent);
+      assertNested(c, parent);
+      assert.equal(3, parent.children.length);
+      c.dispose();
+      assertDisposed(c);
+      assert.equal(2, parent.children.length);
+      parent.removeChild(a);
+      assertNotNested(a, parent);
+      assertNotDisposed(a, parent);
+      assert.equal(1, parent.children.length);
+      parent.render();
+      assertNotNested(c, parent);
+      assertDisposed(c, parent);
+      return assert.equal(0, parent.children.length);
+    });
+    it('should invoke a method up the view hierarchy', function(done) {
+      var child, parent;
+      parent = new Giraffe.View({
+        done: done
+      });
+      child = new Giraffe.View;
+      child.attachTo(parent);
+      return child.invoke("done");
+    });
+    return it('should listen for data events', function(done) {
+      var parent;
+      parent = new Giraffe.View({
+        view: new Giraffe.View,
+        dataEvents: {
+          "disposed view": function() {
+            return done();
+          }
+        }
+      });
+      return parent.view.dispose();
     });
   });
 

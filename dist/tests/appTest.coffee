@@ -71,3 +71,27 @@ describe 'Giraffe.App', ->
     assertNested child, parent
     assertNested grandchild, child
     assertNotDisposed grandchild
+
+  it 'should add and remove some children', ->
+    parent = new Giraffe.View
+    a = new Giraffe.View
+    b = new Giraffe.View
+    c = new Giraffe.View
+    parent.attach a
+    parent.attach b
+    parent.attach c
+    assertNested a, parent
+    assertNested b, parent
+    assertNested c, parent
+    assert.equal 3, parent.children.length
+    c.dispose()
+    assertDisposed c
+    assert.equal 2, parent.children.length
+    parent.removeChild a
+    assertNotNested a
+    assertNotDisposed a
+    assert.equal 1, parent.children.length
+    parent.render()
+    assertNotNested c
+    assertDisposed c
+    assert.equal 0, parent.children.length
