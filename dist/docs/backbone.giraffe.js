@@ -164,8 +164,8 @@
         method = 'append';
       }
       $el = Giraffe.View.to$El(el);
-      if (!$el) {
-        error('No such `el` to attach to', el);
+      if ($el.length !== 1) {
+        error('Expected to render to a single element but found ' + $el.length, el);
         return this;
       }
       $container = _.contains(this._siblingAttachMethods, method) ? $el.parent() : $el;
@@ -174,10 +174,6 @@
       }
       if (method === 'insertBefore') {
         method = 'before';
-      }
-      if ($el.length !== 1) {
-        error('Expected to render to a single element but found ' + $el.length, el);
-        return this;
       }
       this.detach(true);
       this.setParent(Giraffe.View.getClosestView($container));
@@ -571,7 +567,7 @@
               case 'string':
                 return this.$(selector);
               case 'function':
-                return selector();
+                return selector.call(this);
               default:
                 return selector;
             }
@@ -600,10 +596,10 @@
         return this;
       }
       if (typeof this.ui === 'function') {
-        this.ui = this.ui();
+        this.ui = this.ui.call(this);
       }
       if (typeof this.events === 'function') {
-        this.events = this.events();
+        this.events = this.events.call(this);
       }
       _ref = this.events;
       for (eventKey in _ref) {
@@ -665,17 +661,19 @@
 
     View.prototype.dataEvents = null;
 
-    View.prototype._bindDataEvents = function() {
-      var cb, eventKey, eventName, pieces, targetObj, _ref;
-      if (!this.dataEvents) {
+    View.prototype._bindDataEvents = function(dataEvents) {
+      var cb, eventKey, eventName, pieces, targetObj;
+      if (dataEvents == null) {
+        dataEvents = this.dataEvents;
+      }
+      if (!dataEvents) {
         return this;
       }
-      if (typeof this.dataEvents === 'function') {
-        this.dataEvents = this.dataEvents();
+      if (typeof dataEvents === 'function') {
+        dataEvents = dataEvents.call(this);
       }
-      _ref = this.dataEvents;
-      for (eventKey in _ref) {
-        cb = _ref[eventKey];
+      for (eventKey in dataEvents) {
+        cb = dataEvents[eventKey];
         pieces = eventKey.split(' ');
         if (pieces.length < 2) {
           error('Data event must specify target object, ex: {\'change collection\': \'handler\'}');
@@ -1292,7 +1290,7 @@
       this.app.addChild(this);
       Giraffe.bindEventMap(this, this.app, this.appEvents);
       if (typeof this.triggers === 'function') {
-        this.triggers = this.triggers();
+        this.triggers = this.triggers.call(this);
       }
       if (!this.triggers) {
         return error('Giraffe routers require a `triggers` map of routes to app events.');
@@ -1752,7 +1750,7 @@
   _setEventMapBindings = function(contextObj, targetObj, eventMap, bindOrUnbindFnName) {
     var cb, eventName;
     if (typeof eventMap === 'function') {
-      eventMap = eventMap();
+      eventMap = eventMap.call(contextObj);
     }
     if (!eventMap) {
       return;
