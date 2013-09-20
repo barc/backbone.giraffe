@@ -1,7 +1,11 @@
 (function() {
-  var assert, assertAttached, assertDisposed, assertNested, assertNotDisposed, assertNotNested;
+  var $newEl, assert, assertAttached, assertDisposed, assertNested, assertNotDisposed, assertNotNested;
 
   assert = chai.assert;
+
+  $newEl = function() {
+    return $('<div class="test-div"></div>').appendTo('body');
+  };
 
   assertNested = function(child, parent) {
     assert.ok(_.contains(parent.children, child));
@@ -17,42 +21,57 @@
     return assert.equal(1, parent.$el.children(child.$el).length);
   };
 
-  assertDisposed = function(obj) {
-    return obj.app === null;
+  assertDisposed = function(view) {
+    return assert.ok(!view.$el);
   };
 
-  assertNotDisposed = function(obj) {
-    return !!obj.app;
+  assertNotDisposed = function(view) {
+    return assert.ok(!!view.$el);
   };
 
-  describe('Giraffe.App', function() {
+  describe('Giraffe.View', function() {
     it('should be OK', function() {
-      var app;
-      app = new Giraffe.App;
-      return assert.ok(app);
+      var view;
+      view = new Giraffe.View;
+      return assert.ok(view);
     });
-    it('should accept appEvents on extended class', function(done) {
-      var MyApp, app;
-      MyApp = Giraffe.App.extend({
-        appEvents: {
-          'app:initialized': function() {
-            return done();
-          }
-        }
-      });
-      app = new MyApp;
-      return app.start();
+    it('should attach a view to the DOM', function() {
+      var $el, a;
+      a = new Giraffe.View;
+      $el = $newEl();
+      a.attachTo($el);
+      return assert.ok(a.isAttached());
     });
-    it('should accept appEvents as an option', function(done) {
-      var app;
-      app = new Giraffe.App({
-        appEvents: {
-          'app:initialized': function() {
-            return done();
-          }
-        }
+    it('should insert a view before another', function() {
+      var a, b;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      b.attachTo($newEl());
+      a.attachTo(b, {
+        method: 'before'
       });
-      return app.start();
+      return assert.equal(a.$el.next()[0], b.$el[0]);
+    });
+    it('should insert a view after another', function() {
+      var a, b;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      a.attachTo($newEl());
+      b.attachTo(a, {
+        method: 'after'
+      });
+      return assert.equal(a.$el.next()[0], b.$el[0]);
+    });
+    it('should insert a view and replace the current contents', function() {
+      var $el, a, b;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      $el = $newEl();
+      a.attachTo($el);
+      b.attachTo($el, {
+        method: 'html'
+      });
+      return assert.ok(!a.isAttached());
     });
     it('should nest a view with attach', function() {
       var child, parent;
@@ -75,7 +94,7 @@
       parent = new Giraffe.View;
       child = new Giraffe.View;
       parent.attach(child);
-      child.on("disposed", function() {
+      child.on('disposed', function() {
         return done();
       });
       parent.render();
@@ -110,15 +129,16 @@
       assertNested(c, parent);
       assert.equal(3, parent.children.length);
       c.dispose();
+      assertNotNested(c, parent);
       assertDisposed(c);
       assert.equal(2, parent.children.length);
       parent.removeChild(a);
       assertNotNested(a, parent);
-      assertNotDisposed(a, parent);
+      assertDisposed(a);
       assert.equal(1, parent.children.length);
-      parent.render();
-      assertNotNested(c, parent);
-      assertDisposed(c, parent);
+      parent.removeChild(b, true);
+      assertNotNested(b, parent);
+      assertNotDisposed(b);
       return assert.equal(0, parent.children.length);
     });
     it('should invoke a method up the view hierarchy', function(done) {
@@ -128,19 +148,50 @@
       });
       child = new Giraffe.View;
       child.attachTo(parent);
-      return child.invoke("done");
+      return child.invoke('done');
     });
     return it('should listen for data events', function(done) {
       var parent;
       parent = new Giraffe.View({
         view: new Giraffe.View,
         dataEvents: {
-          "disposed view": function() {
+          'done view': function() {
             return done();
           }
         }
       });
-      return parent.view.dispose();
+      return parent.view.trigger('done');
+    });
+  });
+
+  describe('Giraffe.App', function() {
+    it('should be OK', function() {
+      var app;
+      app = new Giraffe.App;
+      return assert.ok(app);
+    });
+    it('should accept appEvents on extended class', function(done) {
+      var MyApp, app;
+      MyApp = Giraffe.App.extend({
+        appEvents: {
+          'app:initialized': function() {
+            return done();
+          }
+        }
+      });
+      app = new MyApp;
+      return app.start();
+    });
+    return it('should accept appEvents as an option', function(done) {
+      var app;
+      app = new Giraffe.App({
+        appEvents: {
+          'app:initialized': function() {
+            return done();
+          }
+        }
+      });
+      return app.start();
     });
   });
 

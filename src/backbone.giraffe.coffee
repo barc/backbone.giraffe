@@ -643,7 +643,7 @@ class Giraffe.View extends Backbone.View
         @remove()
         @$el = null
       else
-        error "Disposed of a view that has already been disposed", @
+        error 'Disposed of a view that has already been disposed', @
 
 
   ###
@@ -909,7 +909,7 @@ class Giraffe.App extends Giraffe.View
     Giraffe.apps[@cid] = @
     if @routes
       @router ?= new Giraffe.Router(app: @, triggers: @routes)
-    $(window).on "unload", @_onUnload
+    $(window).on 'unload', @_onUnload
     super
 
 
@@ -917,7 +917,7 @@ class Giraffe.App extends Giraffe.View
     Giraffe.app = null if Giraffe.app is @
     delete Giraffe.apps[@cid]
     @router = null if @router
-    $(window).off "unload", @_onUnload
+    $(window).off 'unload', @_onUnload
     super
 
 

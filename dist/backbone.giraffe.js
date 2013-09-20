@@ -750,7 +750,7 @@
           this.remove();
           return this.$el = null;
         } else {
-          return error("Disposed of a view that has already been disposed", this);
+          return error('Disposed of a view that has already been disposed', this);
         }
       });
     };
@@ -1094,7 +1094,7 @@
           });
         }
       }
-      $(window).on("unload", this._onUnload);
+      $(window).on('unload', this._onUnload);
       return App.__super__._cache.apply(this, arguments);
     };
 
@@ -1106,7 +1106,7 @@
       if (this.router) {
         this.router = null;
       }
-      $(window).off("unload", this._onUnload);
+      $(window).off('unload', this._onUnload);
       return App.__super__._uncache.apply(this, arguments);
     };
 

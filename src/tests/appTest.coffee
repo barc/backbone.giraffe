@@ -1,6 +1,10 @@
 {assert} = chai
 
 
+$newEl = ->
+  $('<div class="test-div"></div>').appendTo('body')
+
+
 assertNested = (child, parent) ->
   assert.ok _.contains(parent.children, child)
   assert.equal parent, child.parent
@@ -12,31 +16,46 @@ assertNotNested = (child, parent) ->
 assertAttached = (child, parent) ->
   assert.equal 1, parent.$el.children(child.$el).length
 
-assertDisposed = (obj) ->
-  obj.app is null
+assertDisposed = (view) ->
+  assert.ok !view.$el
 
-assertNotDisposed = (obj) ->
-  !!obj.app
+assertNotDisposed = (view) ->
+  assert.ok !!view.$el
 
 
-describe 'Giraffe.App', ->
+describe 'Giraffe.View', ->
 
   it 'should be OK', ->
-    app = new Giraffe.App
-    assert.ok app
+    view = new Giraffe.View
+    assert.ok view
 
-  it 'should accept appEvents on extended class', (done) ->
-    MyApp = Giraffe.App.extend
-      appEvents:
-        'app:initialized': -> done()
-    app = new MyApp
-    app.start()
+  it 'should attach a view to the DOM', ->
+    a = new Giraffe.View
+    $el = $newEl()
+    a.attachTo $el
+    assert.ok a.isAttached()
 
-  it 'should accept appEvents as an option', (done) ->
-    app = new Giraffe.App
-      appEvents:
-        'app:initialized': -> done()
-    app.start()
+  it 'should insert a view before another', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    b.attachTo $newEl()
+    a.attachTo b, method: 'before'
+    assert.equal a.$el.next()[0], b.$el[0]
+
+  it 'should insert a view after another', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    a.attachTo $newEl()
+    b.attachTo a, method: 'after'
+    assert.equal a.$el.next()[0], b.$el[0]
+
+  it 'should insert a view and replace the current contents', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    $el = $newEl()
+    a.attachTo $el
+    b.attachTo $el, method: 'html'
+    assert.ok !a.isAttached()
 
   it 'should nest a view with attach', ->
     parent = new Giraffe.View
@@ -56,7 +75,7 @@ describe 'Giraffe.App', ->
     parent = new Giraffe.View
     child = new Giraffe.View
     parent.attach child
-    child.on "disposed", -> done()
+    child.on 'disposed', -> done()
     parent.render()
     assertNotNested child, parent
     assertDisposed child
@@ -77,34 +96,60 @@ describe 'Giraffe.App', ->
     a = new Giraffe.View
     b = new Giraffe.View
     c = new Giraffe.View
+
     parent.attach a
     parent.attach b
     parent.attach c
+
     assertNested a, parent
     assertNested b, parent
     assertNested c, parent
     assert.equal 3, parent.children.length
+
     c.dispose()
+    assertNotNested c, parent
     assertDisposed c
     assert.equal 2, parent.children.length
+
     parent.removeChild a
     assertNotNested a, parent
-    assertNotDisposed a, parent
+    assertDisposed a
     assert.equal 1, parent.children.length
-    parent.render()
-    assertNotNested c, parent
-    assertDisposed c, parent
+
+    parent.removeChild b, true
+    assertNotNested b, parent
+    assertNotDisposed b
     assert.equal 0, parent.children.length
 
   it 'should invoke a method up the view hierarchy', (done) ->
     parent = new Giraffe.View({done})
     child = new Giraffe.View
     child.attachTo parent
-    child.invoke "done"
+    child.invoke 'done'
 
   it 'should listen for data events', (done) ->
     parent = new Giraffe.View
       view: new Giraffe.View
       dataEvents:
-        "disposed view": -> done()
-    parent.view.dispose()
+        'done view': -> done()
+    parent.view.trigger 'done'
+
+
+describe 'Giraffe.App', ->
+
+  it 'should be OK', ->
+    app = new Giraffe.App
+    assert.ok app
+
+  it 'should accept appEvents on extended class', (done) ->
+    MyApp = Giraffe.App.extend
+      appEvents:
+        'app:initialized': -> done()
+    app = new MyApp
+    app.start()
+
+  it 'should accept appEvents as an option', (done) ->
+    app = new Giraffe.App
+      appEvents:
+        'app:initialized': -> done()
+    app.start()
