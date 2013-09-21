@@ -1,7 +1,7 @@
 {assert} = chai
 
 
-$newEl = ->
+getEl = ->
   $('<div class="test-div"></div>').appendTo('body')
 
 
@@ -14,16 +14,38 @@ assertNotNested = (child, parent) ->
   assert.notEqual parent, child.parent
 
 assertAttached = (child, parent) ->
-  assert.ok child.isAttached(parent)
+  if parent instanceof $
+    assert.lengthOf parent.find(child.$el or child), 1
+  else if _.isArray(child)
+    assert.ok _.every(child.children, (v) -> v.isAttached(parent))
+  else
+    assert.ok child.isAttached(parent)
 
 assertNotAttached = (child, parent) ->
   assert.ok !child.isAttached(parent)
 
 assertDisposed = (view) ->
   assert.ok !view.$el
+  assert.ok !view.isAttached()
 
 assertNotDisposed = (view) ->
   assert.ok !!view.$el
+
+assertSiblings = (a, b) ->
+  bEl = b.$el[0]
+  assert.fail() if !bEl
+  assert.equal a.$el.next()[0], bEl
+
+assertRendered = (view) ->
+  assert.ok view._renderedOnce
+
+assertNotRendered = (view) ->
+  assert.ok !view._renderedOnce
+
+assertHasText = (view, text, className) ->
+  $content = view.$('.' + className)
+  assert.lengthOf $content, 1
+  assert.equal text, $content.text().trim()
 
 
 describe 'Giraffe.View', ->
@@ -32,65 +54,126 @@ describe 'Giraffe.View', ->
     view = new Giraffe.View
     assert.ok view
 
+  it 'should render a view', ->
+    a = new Giraffe.View
+    a.render()
+    assertRendered a
+
   it 'should attach a view to the DOM', ->
     a = new Giraffe.View
-    $el = $newEl()
+    $el = getEl()
     a.attachTo $el
     assert.ok a.isAttached()
-
-  it 'should insert a view before another with method "before"', ->
-    a = new Giraffe.View
-    b = new Giraffe.View
-    b.attachTo $newEl()
-    a.attachTo b, method: 'before'
-    assert.equal a.$el.next()[0], b.$el[0]
-
-  it 'should insert a view after another with method "after"', ->
-    a = new Giraffe.View
-    b = new Giraffe.View
-    a.attachTo $newEl()
-    b.attachTo a, method: 'after'
-    assert.equal a.$el.next()[0], b.$el[0]
+    assertAttached a, $el
 
   it 'should insert a view and replace the current contents with method "html"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = $newEl()
+    $el = getEl()
     a.attachTo $el
     b.attachTo $el, method: 'html'
     assert.ok !a.isAttached()
+    assert.ok b.isAttached()
+
+  it 'should insert a view before another with method "before"', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    b.attachTo getEl()
+    a.attachTo b, method: 'before'
+    assertSiblings a, b
+
+  it 'should insert a view after another with method "after"', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    a.attachTo getEl()
+    b.attachTo a, method: 'after'
+    assertSiblings a, b
 
   it 'should insert a view at the end of the target\'s children with "append"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = $newEl()
+    $el = getEl()
     a.attachTo $el
     b.attachTo $el, method: 'append'
-    assert.ok a.$el.next().is(b.$el)
+    assertSiblings a, b
 
   it 'should insert a view at the beginning of the target\'s children with "prepend"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = $newEl()
+    $el = getEl()
     b.attachTo $el
     a.attachTo $el, method: 'prepend'
-    assert.ok a.$el.next().is(b.$el)
+    assertSiblings a, b
 
-  it 'should render a view when attached', (done) ->
+  it 'should render a view when attached and call `afterRender`', (done) ->
     a = new Giraffe.View
       afterRender: -> done()
-    a.attachTo $newEl()
+    a.attachTo getEl()
+    assertRendered a
 
-  it 'should suppress render on a view when attached using `attachTo`', ->
+  it 'should suppress render on a view when attached', ->
     a = new Giraffe.View
       afterRender: -> assert.fail()
-    a.attachTo $newEl(), suppressRender: true
+    a.attachTo getEl(), suppressRender: true
+    assertNotRendered a
 
-  it 'should suppress render on a view when attached using `attach`', ->
-    a = new Giraffe.View
-      afterRender: -> assert.fail()
-    b = new Giraffe.View
-    b.attach a, suppressRender: true
+  it 'should render content into a view using the default "underscore-template-selector" strategy', ->
+    $el = getEl()
+    templateId = 'my-render-test-template'
+    className = 'render-test'
+    text = 'hello world'
+    $el.append """
+      <script type='text/template' id='#{templateId}'>
+        <div class='#{className}'><%= text %></div>
+      </script>
+    """
+    a = new Giraffe.View {
+      template: '#' + templateId
+      text
+    }
+    a.render()
+    assertHasText a, text, className
+
+  it 'should render content into a view by overriding `templateStrategy`', ->
+    $el = getEl()
+    className = 'render-test'
+    text = 'hello world'
+    a = new Giraffe.View {
+      templateStrategy: -> """
+        <div class='#{className}'>#{@text}</div>
+      """
+      text
+    }
+    a.render()
+    assertHasText a, text, className
+
+  it 'should render content into a view using the "jst" strategy', ->
+    $el = getEl()
+    className = 'render-test'
+    text = 'hello world'
+    a = new Giraffe.View {
+      template: -> """
+        <div class='#{className}'>#{@text}</div>
+      """
+      templateStrategy: 'jst'
+      text
+    }
+    a.render()
+    assertHasText a, text, className
+
+  it 'should render content into a view using the "underscore-template" strategy', ->
+    $el = getEl()
+    className = 'render-test'
+    text = 'hello world'
+    a = new Giraffe.View {
+      template: -> """
+        <div class='#{className}'><%= text %></div>
+      """
+      templateStrategy: 'underscore-template'
+      text
+    }
+    a.render()
+    assertHasText a, text, className
 
   it 'should dispose of a view', ->
     a = new Giraffe.View
@@ -99,34 +182,36 @@ describe 'Giraffe.View', ->
 
   it 'should remove the view from the DOM on dispose', ->
     a = new Giraffe.View
-    $el = $newEl()
+    $el = getEl()
     a.attachTo $el
     assertAttached a, $el
     a.dispose()
     assertDisposed a
-    assert.ok !a.isAttached()
 
   it 'should fire the event "disposed" when disposed', (done) ->
     a = new Giraffe.View
-    a.on "disposed", -> done()
+    a.on 'disposed', -> done()
     a.dispose()
 
-  it 'should detach a view, disposing of it', ->
+  it 'should detach a view, removing it from the DOM and disposing of it', ->
     a = new Giraffe.View
-    a.attachTo $newEl()
+    a.attachTo getEl()
     a.detach()
+    assert.ok !a.isAttached()
     assertDisposed a
 
   it 'should detach a view and not dispose it due to passing `true` to `detach`', ->
     a = new Giraffe.View
-    a.attachTo $newEl()
+    a.attachTo getEl()
     a.detach true
+    assert.ok !a.isAttached()
     assertNotDisposed a
 
   it 'should detach a view and not dispose due to passing `disposeOnDetach` to the view', ->
     a = new Giraffe.View(disposeOnDetach: false)
-    a.attachTo $newEl()
+    a.attachTo getEl()
     a.detach()
+    assert.ok !a.isAttached()
     assertNotDisposed a
 
   it 'should nest a view with attach', ->
@@ -152,7 +237,7 @@ describe 'Giraffe.View', ->
     parent.removeChildren()
     assertDisposed child1
     assertDisposed child2
-    assert.equal 0, parent.children.length
+    assert.lengthOf parent.children, 0
 
   it 'should remove children but not dispose them when preserved', ->
     parent = new Giraffe.View
@@ -163,7 +248,7 @@ describe 'Giraffe.View', ->
     parent.removeChildren true
     assertNotDisposed child1
     assertNotDisposed child2
-    assert.equal 0, parent.children.length
+    assert.lengthOf parent.children, 0
 
   it 'should dispose the child view when the parent renders', (done) ->
     parent = new Giraffe.View
@@ -198,22 +283,22 @@ describe 'Giraffe.View', ->
     assertNested a, parent
     assertNested b, parent
     assertNested c, parent
-    assert.equal 3, parent.children.length
+    assert.lengthOf parent.children, 3
 
     c.dispose()
     assertNotNested c, parent
     assertDisposed c
-    assert.equal 2, parent.children.length
+    assert.lengthOf parent.children, 2
 
     parent.removeChild a
     assertNotNested a, parent
     assertDisposed a
-    assert.equal 1, parent.children.length
+    assert.lengthOf parent.children, 1
 
     parent.removeChild b, true
     assertNotNested b, parent
     assertNotDisposed b
-    assert.equal 0, parent.children.length
+    assert.lengthOf parent.children, 0
 
   it 'should invoke a method up the view hierarchy', (done) ->
     parent = new Giraffe.View({done})
@@ -234,8 +319,12 @@ describe 'Giraffe.View', ->
 describe 'Giraffe.App', ->
 
   it 'should be OK', ->
-    app = new Giraffe.App
-    assert.ok app
+    assert.ok new Giraffe.App
+
+  it 'should add an initializer and call it on `start`', (done) ->
+    a = new Giraffe.App
+    a.addInitializer -> done()
+    a.start()
 
   it 'should accept appEvents on extended class', (done) ->
     MyApp = Giraffe.App.extend
@@ -254,26 +343,123 @@ describe 'Giraffe.App', ->
 describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should be OK', ->
-    a = new Giraffe.Contrib.CollectionView
-    assert.ok !!a
+    assert.ok new Giraffe.Contrib.CollectionView
 
-  it 'should render child views', ->
+  it 'should render model views passed to the constructor', ->
     collection = new Giraffe.Collection([{}, {}])
     a = new Giraffe.Contrib.CollectionView({collection})
-    a.attachTo $newEl()
-    assert.equal 2, a.children.length
-    assertAttached a.children[0], a
-    assertAttached a.children[1], a
+    a.attachTo getEl()
+    assert.lengthOf a.children, 2
+    [child1, child2] = a.children
+    assertAttached child1, a.$el
+    assertAttached child2, a.$el
+    assertRendered child1
+    assertRendered child2
+    assertSiblings child1, child2
 
-  it 'should keep child views sorted', ->
-    collection = new Giraffe.Collection([{foo:1}, {foo:0}], comparator: "foo")
+  it 'should render model views added after initialization', ->
+    collection = new Giraffe.Collection
     a = new Giraffe.Contrib.CollectionView({collection})
-    a.attachTo $newEl()
-    assert.equal 0, a.children[0].model.get("foo")
-    assert.equal 1, a.children[1].model.get("foo")
-    assert.ok a.children[0].$el.next().is(a.children[1].$el)
-    a.children[0].model.set "foo", 2
+    a.attachTo getEl()
+    assert.lengthOf a.children, 0
+    a.addOne {}
+    assert.lengthOf a.children, 1
+    child = a.children[0]
+    assertAttached child, a.$el
+    assertRendered child
+
+  it 'should render models views when extended', ->
+    collection = new Giraffe.Collection([{}, {}])
+    A = Giraffe.Contrib.CollectionView.extend({collection})
+    a = new A
+    a.attachTo getEl()
+    assert.lengthOf a.children, 2
+    assertAttached a.children[0], a.$el
+    assertAttached a.children[1], a.$el
+
+  it 'should sync when the collection is reset', ->
+    collection = new Giraffe.Collection([{}])
+    a = new Giraffe.Contrib.CollectionView({collection})
+    a.attachTo getEl()
+    assert.lengthOf a.children, 1
+    modelView = a.children[0]
+    assertAttached modelView, a.$el
+    collection.reset([{}, {}])
+    assertDisposed modelView
+    assert.lengthOf a.children, 2
+
+  it 'should sync when a model is added to the collection', ->
+    a = new Giraffe.Contrib.CollectionView
+    a.attachTo getEl()
+    a.collection.add {}
+    assert.lengthOf a.children, 1
+    assertAttached a.children
+
+  it 'should sync when a model is added via addOne', ->
+    a = new Giraffe.Contrib.CollectionView
+    a.attachTo getEl()
+    a.collection.add {}
+    assert.lengthOf a.children, 1
+    assertAttached a.children
+
+  it 'should sync when a model is removed', ->
+    a = new Giraffe.Contrib.CollectionView
+    a.attachTo getEl()
+    a.collection.add {}
+    assert.lengthOf a.children, 1
+    modelView = a.children[0]
+    assert.ok modelView
+    assert.ok modelView.isAttached()
+    a.collection.remove a.collection.at(0)
+    assert.lengthOf a.children, 0
+    assertDisposed modelView
+
+  it 'should keep model views sorted when a value changes', ->
+    collection = new Giraffe.Collection([{foo: 1}, {foo: 0}], comparator: 'foo')
+    a = new Giraffe.Contrib.CollectionView({collection})
+    a.attachTo getEl()
+    [child1, child2] = a.children
+    assert.equal 0, child1.model.get('foo')
+    assert.equal 1, child2.model.get('foo')
+    assertSiblings child1, child2
+    a.children[0].model.set 'foo', 2
     collection.sort() # TODO should this be automated from teh comparator?
-    assert.equal 1, a.children[0].model.get("foo")
-    assert.equal 2, a.children[1].model.get("foo")
-    assert.ok a.children[0].$el.next().is(a.children[1].$el)
+    [child1, child2] = a.children
+    assert.equal 1, child1.model.get('foo')
+    assert.equal 2, child2.model.get('foo')
+    assertSiblings child1, child2
+    assertAttached a.children
+
+  it 'should keep model views sorted when a new model is added', ->
+    collection = new Giraffe.Collection([{foo: 0}, {foo: 2}], comparator: 'foo')
+    a = new Giraffe.Contrib.CollectionView({collection})
+    a.addOne foo: 1
+    [child1, child2, child3] = a.children
+    assertSiblings child1, child2
+    assertSiblings child2, child3
+    assertAttached a.children
+
+  it 'should use the `modelView` option to construct the views', ->
+    MyModelView = Giraffe.View.extend(foo: 'bar')
+    a = new Giraffe.Contrib.CollectionView
+      modelView: MyModelView
+    a.addOne {}
+    child = a.children[0]
+    assert.ok child instanceof MyModelView
+    assert.equal 'bar', child.foo
+    
+  it 'should pass `modelViewArgs` to the model views', ->
+    a = new Giraffe.Contrib.CollectionView
+      modelViewArgs: [foo: 'bar']
+    a.addOne {}
+    child = a.children[0]
+    assert.equal 'bar', child.foo
+
+  it 'should insert the model views in `modelViewEl` if provided', ->
+    className = 'my-model-view-container'
+    a = new Giraffe.Contrib.CollectionView
+      modelViewEl: '.' + className
+      templateStrategy: -> "<div class='#{className}'></div>"
+    a.addOne {}
+    child = a.children[0]
+    assertAttached child, a.$('.' + className)

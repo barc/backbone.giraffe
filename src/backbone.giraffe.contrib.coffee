@@ -7,18 +7,20 @@ Contrib = Giraffe.Contrib =
 ###
 
 ###
-* A __CollectionView__ draws observes a `Collection` rendering each item using
-* a provider item view.
+* A __CollectionView__ draws observes a `Collection` rendering each model using
+* a provider model view.
 *
 * @param {Object} options
 *
-* - itemView
-* - collection
+* - collection - {Collection} The collection instance for the `CollectionView`. Defaults to a new __Giraffe.Collection__.
+* - modelView - {ViewClass} The view created per model in `collection.models`. Defaults to __Giraffe.View__.
+* - modelViewArgs - {Array} The arguments passed to the `modelView` constructor. Can be a function returning an array.
+* - modelViewEl - {Selector,Giraffe.View#ui} The container for the model views. Can be a function returning the same. Defaults to `collectionView.$el`.
 *
 * @example
 *
 *  var FruitsView = Giraffe.Contrib.CollectionView.extend({
-*    itemView: FruitView,
+*    modelView: FruitView,
 *  });
 *
 *  var view = new FruitsView({
@@ -26,55 +28,84 @@ Contrib = Giraffe.Contrib =
 *   });
 ###
 class Contrib.CollectionView extends Giraffe.View
-  constructor: (options = {}) ->
-    _.defaults options,
-      itemView: Giraffe.View
-      collection: new Giraffe.Collection
-#ifdef DEBUG
-    throw new Error('`itemView` is required') unless options.itemView
-    throw new Error('`collection.model` is required') unless options.collection?.model
-#endif
-    @listenTo options.collection, 'add', @_onAdd
-    @listenTo options.collection, 'remove', @_onRemove
-    @listenTo options.collection, 'reset', @_onReset
-    @listenTo options.collection, 'sort', @_onSort
+
+
+  @getDefaults: ->
+    collection: new Giraffe.Collection
+    modelView: Giraffe.View
+    modelViewArgs: null # optional array of arguments passed to modelView constructor (or function returning the same)
+    modelViewEl: null # optional selector or Giraffe.View#ui name to contain the model views
+  
+
+  constructor: ->
     super
+    _.defaults @, @constructor.getDefaults()
+#ifdef DEBUG
+    throw new Error('`modelView` is required') unless @modelView
+    throw new Error('`collection.model` is required') unless @collection?.model
+#endif
+    @listenTo @collection, 'add', @addOne
+    @listenTo @collection, 'remove', @removeOne
+    @listenTo @collection, 'reset', @render
+    @listenTo @collection, 'sort', @render
+    @
 
 
-  _onAdd: (item) ->
-    options = @_calcAttachOptions(item)
-    itemView = new @itemView(model: item)
-    @attach itemView, options
-
-
-  _onRemove: (item) ->
-    itemView = _.findWhere(@children,  model: item)
-    itemView?.dispose()
-
-
-  _onReset: ->
-    @removeChildren()
-    @afterRender()
-
-
-  _onSort: ->
-    @removeChildren()
-    @afterRender()
-
-
-  _calcAttachOptions: (item) ->
+  _calcAttachOptions: (model) ->
     options =
+      el: null
       method: 'prepend'
-    index = @collection.indexOf(item)
-    if index > 0
-      options.method = 'after'
-      pred = this.collection.at(index - 1)
-      predView = _.findWhere(@children, model: pred)
-      options.el = predView
+    # Searches backwards for a modelView to insert after, falling back to prepend
+    index = @collection.indexOf(model)
+    i = 1
+    while prevModel = @collection.at(index - i)
+      prevView = _.findWhere(@children, model: prevModel)
+      if prevView?._isAttached # make sure the prev view has been attached
+        options.method = 'after'
+        options.el = prevView.$el
+        break
+      i++
+    if !options.el and @modelViewEl # lazy loaded for efficiency
+      options.el = @$(@modelViewEl)
+#ifdef DEBUG
+      throw new Error("`modelViewEl` not found in this view") if !options.el.length
+#endif
     options
 
-  afterRender: ->
-    my = @
-    @collection.each (item) ->
-      my._onAdd item
 
+  # TODO fails if deep clone is needed
+  _cloneModelViewArgs: ->
+    args = @modelViewArgs or [{}]
+    args = args.call(@) if _.isFunction("function")
+    args = _.clone(args)
+    args = [args] if !_.isArray(args)
+#ifdef DEBUG
+    throw new Error('`modelViewArgs` must be an array with an object as the first value') unless _.isArray(args) and _.isObject(args[0])
+#endif
+    args
+
+
+  # TODO If there was a "rendered" event this wouldn't need to implement afterRender (requiring super calls)
+  afterRender: ->
+    @collection.each @addOne
+    @
+
+
+  removeOne: (model) ->
+    modelView = _.findWhere(@children,  model: model)
+    modelView?.dispose()
+    @
+
+
+  addOne: (model) =>
+    if !@collection.contains(model)
+      @collection.add model # recurs back
+    else if !@_renderedOnce
+      @render() # recurs back
+    else
+      attachOptions = @_calcAttachOptions(model)
+      modelViewArgs = @_cloneModelViewArgs()
+      modelViewArgs[0].model = model
+      modelView = new @modelView(modelViewArgs...)
+      @attach modelView, attachOptions
+    @

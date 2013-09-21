@@ -723,7 +723,7 @@
         return view[methodName].apply(view, args);
       } else {
         error('No such method name in view hierarchy', methodName, args, this);
-        return true;
+        return false;
       }
     };
 
@@ -746,12 +746,14 @@
         this.removeChildren();
         this._uncacheUiElements();
         this._uncache();
+        this._isAttached = false;
         if (this.$el) {
           this.remove();
-          return this.$el = null;
+          this.$el = null;
         } else {
-          return error('Disposed of a view that has already been disposed', this);
+          error('Disposed of a view that has already been disposed', this);
         }
+        return this;
       });
     };
 
@@ -1680,7 +1682,8 @@
   Giraffe.bindEvent = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return _setEventBindings.apply(null, args.concat('listenTo'));
+    args.push('listenTo');
+    return _setEventBindings.apply(null, args);
   };
 
   /*
@@ -1696,7 +1699,8 @@
   Giraffe.unbindEvent = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return _setEventBindings.apply(null, args.concat('stopListening'));
+    args.push('stopListening');
+    return _setEventBindings.apply(null, args);
   };
 
   /*
@@ -1715,7 +1719,8 @@
   Giraffe.bindEventMap = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return _setEventMapBindings.apply(null, args.concat('listenTo'));
+    args.push('listenTo');
+    return _setEventMapBindings.apply(null, args);
   };
 
   /*
@@ -1730,7 +1735,8 @@
   Giraffe.unbindEventMap = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return _setEventMapBindings.apply(null, args.concat('stopListening'));
+    args.push('stopListening');
+    return _setEventMapBindings.apply(null, args);
   };
 
   _setEventBindings = function(contextObj, targetObj, eventName, cb, bindOrUnbindFnName) {

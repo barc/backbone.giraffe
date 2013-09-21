@@ -620,7 +620,7 @@ class Giraffe.View extends Backbone.View
       view[methodName].apply view, args
     else
       error 'No such method name in view hierarchy', methodName, args, @
-      true
+      false
 
 
   ###
@@ -639,11 +639,13 @@ class Giraffe.View extends Backbone.View
       @removeChildren()
       @_uncacheUiElements()
       @_uncache()
+      @_isAttached = false
       if @$el
         @remove()
         @$el = null
       else
         error 'Disposed of a view that has already been disposed', @
+      @
 
 
   ###
@@ -1389,7 +1391,8 @@ Giraffe.dispose = (obj, fn, args...) ->
 * @param {Function} cb The event's callback.
 ###
 Giraffe.bindEvent = (args...) ->
-  _setEventBindings.apply null, args.concat('listenTo')
+  args.push 'listenTo'
+  _setEventBindings args...
 
 
 # TODO accept partial params
@@ -1402,7 +1405,8 @@ Giraffe.bindEvent = (args...) ->
 * @param {Function} cb The event's callback.
 ###
 Giraffe.unbindEvent = (args...) ->
-  _setEventBindings.apply null, args.concat('stopListening')
+  args.push 'stopListening'
+  _setEventBindings args...
 
 
 ###
@@ -1417,7 +1421,8 @@ Giraffe.unbindEvent = (args...) ->
 * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
 ###
 Giraffe.bindEventMap = (args...) ->
-  _setEventMapBindings.apply null, args.concat('listenTo')
+  args.push 'listenTo'
+  _setEventMapBindings args...
 
 
 # TODO accept partial params
@@ -1429,7 +1434,8 @@ Giraffe.bindEventMap = (args...) ->
 * @param {Object} eventMap A map of events to callbacks in the form {eventName: methodName/methodFn} to listen to.
 ###
 Giraffe.unbindEventMap = (args...) ->
-  _setEventMapBindings.apply null, args.concat('stopListening')
+  args.push 'stopListening'
+  _setEventMapBindings args...
 
 
 # Event binding helpers

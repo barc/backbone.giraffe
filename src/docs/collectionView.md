@@ -3,7 +3,7 @@
 This example details how to use 
 [`Giraffe.Contrib`](https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js)
 to implement views for a collection of fruits with the CollectionView
-and ItemView design pattern.
+and ItemView/ModelView design pattern.
 
 :::BEGIN Example
 
@@ -120,7 +120,7 @@ instead of trying to add views manually.
 
 ```js
 var FruitsView = Giraffe.Contrib.CollectionView.extend({
-  itemView: FruitView
+  modelView: FruitView
 });
 ```
 
@@ -172,7 +172,7 @@ var MainView = Giraffe.View.extend({
   },
 
   afterRender: function() {
-    this.attach(fruitsView, {method: 'append'});
+    this.attach(fruitsView);
   }
 });
 

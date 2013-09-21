@@ -72,6 +72,8 @@ var View = Giraffe.View.extend({
   template: '<p>Using the \'<%= name %>\' strategy</p>',
   // or
   //template: $('#my-template-selector').html(),
+  // or
+  //template: function() { return '<p><%= name %></p>'; },
   serialize: function() {
     return {name: 'underscore-template'};
   }
@@ -104,8 +106,8 @@ p {
 :::BEGIN Example
 ## Template Strategy 'underscore-template-selector'
 
-This strategy expects a selector to a DOM element containing the template. This
-is the default template strategy because it is concise and a common choice of
+This strategy expects a selector to a DOM element containing the template. ___This
+is the default template strategy___ because it is concise and a common choice of
 __Backbone__ developers.
 
 In HTML page

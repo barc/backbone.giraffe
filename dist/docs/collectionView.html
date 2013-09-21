@@ -52,7 +52,7 @@
 <p>This example details how to use 
 <a href="https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js"><code>Giraffe.Contrib</code></a>
 to implement views for a collection of fruits with the CollectionView
-and ItemView design pattern.</p>
+and ItemView/ModelView design pattern.</p>
 <div class='section-example'><h2 id='h-live-example'>Live Example</h2>
 <p>Here is the live example detailed below. Each fruit is rendered using an
 item view named <code>FruitView</code>. The collection of fruits are children of a
@@ -143,7 +143,7 @@ single collection view named <code>FruitsView</code>.</p>
 });
 
 <span class="keyword">var</span> FruitsView = Giraffe.Contrib.CollectionView.extend({
-  itemView: FruitView
+  modelView: FruitView
 });
 
 <span class="keyword">var</span> savoryFruits = [{
@@ -178,9 +178,7 @@ single collection view named <code>FruitsView</code>.</p>
   },
 
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.attach(fruitsView, {
-      method: <span class="string">'append'</span>
-    });
+    <span class="keyword">this</span>.attach(fruitsView);
   }
 });
 
@@ -313,7 +311,7 @@ adds and removes item views to itself as it observes changes on its
 collection. It is good practice to <strong>always</strong> modify the collection
 instead of trying to add views manually.</p>
 <pre><code class="js"><span class="keyword">var</span> FruitsView = Giraffe.Contrib.CollectionView.extend({
-  itemView: FruitView
+  modelView: FruitView
 });</code></pre>
 <p>Now create some tasty fruits and create the collection to assign to  <code>FruitsView</code>.</p>
 <pre><code class="js"><span class="keyword">var</span> savoryFruits = [
@@ -352,7 +350,7 @@ easy one-way click binding.</p>
   },
 
   afterRender: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">this</span>.attach(fruitsView, {method: <span class="string">'append'</span>});
+    <span class="keyword">this</span>.attach(fruitsView);
   }
 });
 
