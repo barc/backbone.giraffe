@@ -6,6 +6,8 @@ var View = Giraffe.View.extend({
   template: '<p>Using the \'<%= name %>\' strategy</p>',
   // or
   //template: $('#my-template-selector').html(),
+  // or
+  //template: function() { return '<p><%= name %></p>'; },
   serialize: function() {
     return {name: 'underscore-template'};
   }

@@ -115,6 +115,8 @@ strings.</p>
   template: <span class="string">'&lt;p&gt;Using the \'&lt;%= name %&gt;\' strategy&lt;/p&gt;'</span>,
   <span class="comment">// or</span>
   <span class="comment">//template: $('#my-template-selector').html(),</span>
+  <span class="comment">// or</span>
+  <span class="comment">//template: function() { return '&lt;p&gt;&lt;%= name %&gt;&lt;/p&gt;'; },</span>
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {name: <span class="string">'underscore-template'</span>};
   }
@@ -156,6 +158,8 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
   template: <span class="string">'&lt;p&gt;Using the \'&lt;%= name %&gt;\' strategy&lt;/p&gt;'</span>,
   <span class="comment">// or</span>
   <span class="comment">//template: $('#my-template-selector').html(),</span>
+  <span class="comment">// or</span>
+  <span class="comment">//template: function() { return '&lt;p&gt;&lt;%= name %&gt;&lt;/p&gt;'; },</span>
   serialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
     <span class="keyword">return</span> {
       name: <span class="string">'underscore-template'</span>
@@ -188,8 +192,8 @@ view.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="rule">}</span></span></code></pre>
 </div>
 </div></div><div class='section-example'><h2 id='h-template-strategy-underscore-template-selector'>Template Strategy &#39;underscore-template-selector&#39;</h2>
-<p>This strategy expects a selector to a DOM element containing the template. This
-is the default template strategy because it is concise and a common choice of
+<p>This strategy expects a selector to a DOM element containing the template. <strong><em>This
+is the default template strategy</em></strong> because it is concise and a common choice of
 <strong>Backbone</strong> developers.</p>
 <p>In HTML page</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'hello-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>

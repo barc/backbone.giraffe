@@ -53,7 +53,7 @@ var FruitView = Giraffe.View.extend({
 });
 
 var FruitsView = Giraffe.Contrib.CollectionView.extend({
-  itemView: FruitView
+  modelView: FruitView
 });
 
 var savoryFruits = [
@@ -81,7 +81,7 @@ var MainView = Giraffe.View.extend({
   },
 
   afterRender: function() {
-    this.attach(fruitsView, {method: 'append'});
+    this.attach(fruitsView);
   }
 });
 
