@@ -39,13 +39,19 @@
 
     function CollectionView(options) {
       var _ref;
-      if (!this.itemView) {
+      if (options == null) {
+        options = {};
+      }
+      _.defaults(options, {
+        itemView: Giraffe.View,
+        collection: new Giraffe.Collection
+      });
+      if (!options.itemView) {
         throw new Error('`itemView` is required');
       }
-      if (!(options != null ? (_ref = options.collection) != null ? _ref.model : void 0 : void 0)) {
+      if (!((_ref = options.collection) != null ? _ref.model : void 0)) {
         throw new Error('`collection.model` is required');
       }
-      this.ItemView = this.itemView;
       this.listenTo(options.collection, 'add', this._onAdd);
       this.listenTo(options.collection, 'remove', this._onRemove);
       this.listenTo(options.collection, 'reset', this._onReset);
@@ -56,7 +62,7 @@
     CollectionView.prototype._onAdd = function(item) {
       var itemView, options;
       options = this._calcAttachOptions(item);
-      itemView = new this.ItemView({
+      itemView = new this.itemView({
         model: item
       });
       return this.attach(itemView, options);

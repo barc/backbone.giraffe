@@ -25,14 +25,15 @@ Contrib = Giraffe.Contrib =
 *    collection: [],
 *   });
 ###
-
 class Contrib.CollectionView extends Giraffe.View
-  constructor: (options) ->
+  constructor: (options = {}) ->
+    _.defaults options,
+      itemView: Giraffe.View
+      collection: new Giraffe.Collection
 #ifdef DEBUG
-    throw new Error('`itemView` is required') unless @itemView
-    throw new Error('`collection.model` is required') unless options?.collection?.model
+    throw new Error('`itemView` is required') unless options.itemView
+    throw new Error('`collection.model` is required') unless options.collection?.model
 #endif
-    @ItemView = @itemView
     @listenTo options.collection, 'add', @_onAdd
     @listenTo options.collection, 'remove', @_onRemove
     @listenTo options.collection, 'reset', @_onReset
@@ -42,7 +43,7 @@ class Contrib.CollectionView extends Giraffe.View
 
   _onAdd: (item) ->
     options = @_calcAttachOptions(item)
-    itemView = new @ItemView(model: item)
+    itemView = new @itemView(model: item)
     @attach itemView, options
 
 
