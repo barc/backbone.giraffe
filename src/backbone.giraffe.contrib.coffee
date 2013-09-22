@@ -48,6 +48,7 @@ class Contrib.CollectionView extends Giraffe.View
     @listenTo @collection, 'remove', @removeOne
     @listenTo @collection, 'reset', @render
     @listenTo @collection, 'sort', @render
+    @modelViewEl = @ui?[@modelViewEl] or @modelViewEl # accept a Giraffe.View#ui name or a selector
     @
 
 
@@ -66,7 +67,7 @@ class Contrib.CollectionView extends Giraffe.View
         break
       i++
     if !options.el and @modelViewEl # lazy loaded for efficiency
-      options.el = Giraffe.View.to$El(@modelViewEl, @$el, true)
+      options.el = @$el.find(@modelViewEl)
 #ifdef DEBUG
       throw new Error("`modelViewEl` not found in this view") if !options.el.length
 #endif
