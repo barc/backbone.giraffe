@@ -578,14 +578,11 @@
     };
 
     View.prototype._uncacheUiElements = function() {
-      var name, selector, _ref;
-      if (!this.ui) {
-        return this;
-      }
-      _ref = this.ui;
-      for (name in _ref) {
-        selector = _ref[name];
-        delete this[name];
+      var name;
+      if (this.ui) {
+        for (name in this.ui) {
+          delete this[name];
+        }
       }
       return this;
     };
