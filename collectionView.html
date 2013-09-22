@@ -98,29 +98,29 @@ single collection view named <code>FruitsView</code>.</p>
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: <span class="string">'name'</span>,
-
-  toggleSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
-
-    <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a</span>
-    <span class="comment">// good idea as the collection would not sort properly on add/remove.</span>
-    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
-      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
-          <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>
-            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
-          }
-        ));
-      }
-    } <span class="keyword">else</span> {
-      comparator = <span class="string">'name'</span>;
-    }
-    <span class="keyword">this</span>.comparator = comparator;
-    <span class="keyword">this</span>.sort();
-  }
+  comparator: <span class="string">'name'</span>
 });
+
+Fruits.prototype.toggleSort = <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+  <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
+
+  <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
+  <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a</span>
+  <span class="comment">// good idea as the collection would not sort properly on add/remove.</span>
+  <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
+    comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
+      <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
+        <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>
+          <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
+        }
+      ));
+    }
+  } <span class="keyword">else</span> {
+    comparator = <span class="string">'name'</span>;
+  }
+  <span class="keyword">this</span>.comparator = comparator;
+  <span class="keyword">this</span>.sort();
+};
 
 <span class="keyword">var</span> FruitView = Giraffe.View.extend({
   template: <span class="string">'#fruit-template'</span>,
@@ -263,28 +263,7 @@ of using <strong>Giraffe.Model</strong> is the addition of a few methods such as
 
 <span class="keyword">var</span> Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: <span class="string">'name'</span>,
-
-  toggleSort: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    <span class="keyword">var</span> comparator = <span class="keyword">this</span>.comparator;
-
-    <span class="comment">// Reverse string order isn't as simple as prefixing with '-'. See</span>
-    <span class="comment">// http://stackoverflow.com/a/5639070. Collection.reverse() is not a</span>
-    <span class="comment">// good idea as the collection would not sort properly on add/remove.</span>
-    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator === <span class="string">'string'</span>) {
-      comparator = <span class="function"><span class="keyword">function</span><span class="params">(fruit)</span> {</span>
-        <span class="keyword">return</span> String.fromCharCode.apply(String, _.map(fruit.get(<span class="string">"name"</span>).split(<span class="string">""</span>),
-          <span class="function"><span class="keyword">function</span> <span class="params">(c)</span> {</span>
-            <span class="keyword">return</span> <span class="number">0xffff</span> - c.charCodeAt();
-          }
-        ));
-      }
-    } <span class="keyword">else</span> {
-      comparator = <span class="string">'name'</span>;
-    }
-    <span class="keyword">this</span>.comparator = comparator;
-    <span class="keyword">this</span>.sort();
-  }
+  comparator: <span class="string">'name'</span>
 });</code></pre>
 <h2 id='h-item-view'>Item View</h2>
 <p>Instead of generating markup for each fruit in a single view, it is more

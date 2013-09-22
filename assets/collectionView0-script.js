@@ -7,29 +7,29 @@ var Fruit = Giraffe.Model.extend({
 
 var Fruits = Giraffe.Collection.extend({
   model: Fruit,
-  comparator: 'name',
-
-  toggleSort: function() {
-    var comparator = this.comparator;
-
-    // Reverse string order isn't as simple as prefixing with '-'. See
-    // http://stackoverflow.com/a/5639070. Collection.reverse() is not a
-    // good idea as the collection would not sort properly on add/remove.
-    if (typeof comparator === 'string') {
-      comparator = function(fruit) {
-        return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),
-          function (c) {
-            return 0xffff - c.charCodeAt();
-          }
-        ));
-      }
-    } else {
-      comparator = 'name';
-    }
-    this.comparator = comparator;
-    this.sort();
-  }
+  comparator: 'name'
 });
+
+Fruits.prototype.toggleSort = function() {
+  var comparator = this.comparator;
+
+  // Reverse string order isn't as simple as prefixing with '-'. See
+  // http://stackoverflow.com/a/5639070. Collection.reverse() is not a
+  // good idea as the collection would not sort properly on add/remove.
+  if (typeof comparator === 'string') {
+    comparator = function(fruit) {
+      return String.fromCharCode.apply(String, _.map(fruit.get("name").split(""),
+        function (c) {
+          return 0xffff - c.charCodeAt();
+        }
+      ));
+    }
+  } else {
+    comparator = 'name';
+  }
+  this.comparator = comparator;
+  this.sort();
+};
 
 var FruitView = Giraffe.View.extend({
   template: '#fruit-template',
