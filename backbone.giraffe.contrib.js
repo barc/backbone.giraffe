@@ -44,8 +44,8 @@
       return {
         collection: ctx.collection ? null : new Giraffe.Collection,
         modelView: Giraffe.View,
-        modelViewArgs: null,
-        modelViewEl: null
+        modelViewEl: null,
+        modelViewArgs: null
       };
     };
 
@@ -87,7 +87,7 @@
         i++;
       }
       if (!options.el && this.modelViewEl) {
-        options.el = this.$(this.modelViewEl);
+        options.el = Giraffe.View.to$El(this.modelViewEl, this.$el, true);
         if (!options.el.length) {
           throw new Error("`modelViewEl` not found in this view");
         }
@@ -98,13 +98,13 @@
     CollectionView.prototype._cloneModelViewArgs = function() {
       var args;
       args = this.modelViewArgs || [{}];
-      if (_.isFunction("function")) {
+      if (_.isFunction(args)) {
         args = args.call(this);
       }
-      args = _.clone(args);
       if (!_.isArray(args)) {
         args = [args];
       }
+      args = _.map(args, _.clone);
       if (!(_.isArray(args) && _.isObject(args[0]))) {
         throw new Error('`modelViewArgs` must be an array with an object as the first value');
       }
