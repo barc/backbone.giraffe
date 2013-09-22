@@ -40,9 +40,9 @@
   Contrib.CollectionView = (function(_super) {
     __extends(CollectionView, _super);
 
-    CollectionView.getDefaults = function() {
+    CollectionView.getDefaults = function(ctx) {
       return {
-        collection: new Giraffe.Collection,
+        collection: ctx.collection ? null : new Giraffe.Collection,
         modelView: Giraffe.View,
         modelViewArgs: null,
         modelViewEl: null
@@ -53,7 +53,7 @@
       this.addOne = __bind(this.addOne, this);
       var _ref;
       CollectionView.__super__.constructor.apply(this, arguments);
-      _.defaults(this, this.constructor.getDefaults());
+      _.defaults(this, this.constructor.getDefaults(this));
       if (!this.modelView) {
         throw new Error('`modelView` is required');
       }
