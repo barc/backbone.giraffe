@@ -51,7 +51,7 @@
 
     function CollectionView() {
       this.addOne = __bind(this.addOne, this);
-      var _ref;
+      var _ref, _ref1;
       CollectionView.__super__.constructor.apply(this, arguments);
       _.defaults(this, this.constructor.getDefaults(this));
       if (!this.modelView) {
@@ -64,6 +64,7 @@
       this.listenTo(this.collection, 'remove', this.removeOne);
       this.listenTo(this.collection, 'reset', this.render);
       this.listenTo(this.collection, 'sort', this.render);
+      this.modelViewEl = ((_ref1 = this.ui) != null ? _ref1[this.modelViewEl] : void 0) || this.modelViewEl;
       this;
     }
 
@@ -87,7 +88,7 @@
         i++;
       }
       if (!options.el && this.modelViewEl) {
-        options.el = Giraffe.View.to$El(this.modelViewEl, this.$el, true);
+        options.el = this.$el.find(this.modelViewEl);
         if (!options.el.length) {
           throw new Error("`modelViewEl` not found in this view");
         }
