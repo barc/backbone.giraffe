@@ -53,14 +53,17 @@ var FruitView = Giraffe.View.extend({
 });
 
 var FruitsView = Giraffe.Contrib.CollectionView.extend({
-  modelView: FruitView
+  modelView: FruitView,
+  modelViewEl: '#fruits-list',
+  modelViewArgs: [{optional: 'arguments passed to modelView constructor'}],
+  template: '#fruits-template'
 });
 
 var savoryFruits = [
-    {name: 'Orange', color: '#FF7F00'},
-    {name: 'Pink Grapefruit', color: '#C5363A'},
-    {name: 'Apple', color: '#0F0'},
-    {name: 'Banana', color: '#FF0'},
+  {name: 'Orange', color: '#FF7F00'},
+  {name: 'Pink Grapefruit', color: '#C5363A'},
+  {name: 'Apple', color: '#0F0'},
+  {name: 'Banana', color: '#FF0'},
 ];
 
 var fruits = new Fruits(savoryFruits);

@@ -49,13 +49,14 @@
           <img id="logo" src="img/logo.png" />
         </a>
         <h1 id='h-giraffecontribcollectionview'>Giraffe.Contrib.CollectionView</h1>
-<p>This example details how to use 
+<p>This example details how to use the
 <a href="https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js"><code>Giraffe.Contrib</code></a>
 to implement views for a collection of fruits with the CollectionView
-and ItemView/ModelView design pattern.</p>
+and ModelView design pattern.</p>
 <div class='section-example'><h2 id='h-live-example'>Live Example</h2>
-<p>Here is the live example detailed below. Each fruit is rendered using an
-item view named <code>FruitView</code>. The collection of fruits are children of a
+<p>Here is the live example. Each fruit is rendered using an
+item view named <code>FruitView</code> which inherits directly from <code>Giraffe.View</code>.
+The collection of fruits are children of a
 single collection view named <code>FruitsView</code>.</p>
 <ul>
 <li><code>clone</code> button creates a duplicate of the fruit</li>
@@ -86,7 +87,7 @@ single collection view named <code>FruitsView</code>.</p>
 </div>
 <div id="collectionview0_tabs_content" class="tabs_content">
   <div id="collectionview0result-tab" class="tab_content">
-  <iframe id="collectionview0" src="assets/collectionView0.html" class="result"  style='height: 375px'></iframe>
+  <iframe id="collectionview0" src="assets/collectionView0.html" class="result"  style='height: 410px'></iframe>
 </div><div id="collectionview0scriptjs-tab" class="tab_content">
   <pre><code class="language-js"><span class="keyword">var</span> Fruit = Giraffe.Model.extend({
   defaults: {
@@ -143,7 +144,12 @@ single collection view named <code>FruitsView</code>.</p>
 });
 
 <span class="keyword">var</span> FruitsView = Giraffe.Contrib.CollectionView.extend({
-  modelView: FruitView
+  modelView: FruitView,
+  modelViewEl: <span class="string">'#fruits-list'</span>,
+  modelViewArgs: [{
+    optional: <span class="string">'arguments passed to modelView constructor'</span>
+  }],
+  template: <span class="string">'#fruits-template'</span>
 });
 
 <span class="keyword">var</span> savoryFruits = [{
@@ -201,11 +207,18 @@ mainView.attachTo(<span class="string">'body'</span>);</code></pre>
   <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruits-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h1</span>&gt;</span>Fruits<span class="tag">&lt;/<span class="title">h1</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">id</span>=<span class="value">'fruits-list'</span>&gt;</span>
+    <span class="comment">&lt;!-- FruitView instances are inserted here --&gt;</span>
+  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'main-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClickReset'</span>&gt;</span>reset<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClickSort'</span>&gt;</span>sort<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;<span class="title">hr</span> /&gt;</span>
-  <span class="comment">&lt;!-- fruits view is appended here in afterRender --&gt;</span>
+  <span class="comment">&lt;!-- FruitsView is appended here in afterRender --&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://code.jquery.com/jquery-1.9.1.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
@@ -219,7 +232,10 @@ mainView.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
 </div><div id="collectionview0stylecss-tab" class="tab_content">
-  <pre><code class="language-css"><span class="tag">h2</span> <span class="rules">{
+  <pre><code class="language-css"><span class="tag">h1</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">36</span>px</span></span>;
+<span class="rule">}</span></span>
+<span class="tag">h2</span> <span class="rules">{
   <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px</span></span>;
 <span class="rule">}</span></span>
 <span class="class">.fruit-view</span> <span class="rules">{
@@ -306,19 +322,30 @@ collection.</p>
   <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <h2 id='h-collection-view'>Collection View</h2>
-<p><code>Giraffe.Contrib</code> contains a <code>CollectionView</code> class . The <code>CollectionView</code>
-adds and removes item views to itself as it observes changes on its
-collection. It is good practice to <strong>always</strong> modify the collection
+<p><code>Giraffe.Contrib</code> contains a <code>CollectionView</code> class that syncs a view per
+model in its <code>collection</code> by reacting to add/remove/sort/reset events.
+It is good practice to <strong>always</strong> modify the collection
 instead of trying to add views manually.</p>
 <pre><code class="js"><span class="keyword">var</span> FruitsView = Giraffe.Contrib.CollectionView.extend({
-  modelView: FruitView
+  modelView: FruitView,
+  modelViewEl: <span class="string">'#fruits-list'</span>,
+  modelViewArgs: [{optional: <span class="string">'arguments passed to modelView constructor'</span>}],
+  template: <span class="string">'#fruits-template'</span>
 });</code></pre>
+<p>The <code>CollectionView</code> property <code>modelViewEl</code> can be used to specify
+where to insert model views.</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruits-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">h1</span>&gt;</span>Fruits<span class="tag">&lt;/<span class="title">h1</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">id</span>=<span class="value">'fruits-list'</span>&gt;</span>
+    <span class="comment">&lt;!-- FruitView instances are inserted here --&gt;</span>
+  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <p>Now create some tasty fruits and create the collection to assign to  <code>FruitsView</code>.</p>
 <pre><code class="js"><span class="keyword">var</span> savoryFruits = [
-    {name: <span class="string">'Orange'</span>, color: <span class="string">'#FF7F00'</span>},
-    {name: <span class="string">'Pink Grapefruit'</span>, color: <span class="string">'#C5363A'</span>},
-    {name: <span class="string">'Apple'</span>, color: <span class="string">'#0F0'</span>},
-    {name: <span class="string">'Banana'</span>, color: <span class="string">'#FF0'</span>},
+  {name: <span class="string">'Orange'</span>, color: <span class="string">'#FF7F00'</span>},
+  {name: <span class="string">'Pink Grapefruit'</span>, color: <span class="string">'#C5363A'</span>},
+  {name: <span class="string">'Apple'</span>, color: <span class="string">'#0F0'</span>},
+  {name: <span class="string">'Banana'</span>, color: <span class="string">'#FF0'</span>},
 ];
 
 <span class="keyword">var</span> fruits = <span class="keyword">new</span> Fruits(savoryFruits);
@@ -336,7 +363,7 @@ easy one-way click binding.</p>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClickReset'</span>&gt;</span>reset<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClickSort'</span>&gt;</span>sort<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;<span class="title">hr</span> /&gt;</span>
-  <span class="comment">&lt;!-- fruits view is appended here in afterRender --&gt;</span>
+  <span class="comment">&lt;!-- FruitsView is appended here in afterRender --&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <pre><code class="js"><span class="keyword">var</span> MainView = Giraffe.View.extend({
   template: <span class="string">'#main-template'</span>,

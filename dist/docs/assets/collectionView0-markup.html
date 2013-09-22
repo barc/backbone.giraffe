@@ -6,11 +6,18 @@
   </div>
 </script>
 
+<script id='fruits-template' type='text/template'>
+  <h1>Fruits</h1>
+  <ul id='fruits-list'>
+    <!-- FruitView instances are inserted here -->
+  </ul>
+</script>
+
 <script id='main-template' type='text/template'>
   <button data-gf-click='onClickReset'>reset</button>
   <button data-gf-click='onClickSort'>sort</button>
   <hr />
-  <!-- fruits view is appended here in afterRender -->
+  <!-- FruitsView is appended here in afterRender -->
 </script>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>

@@ -33,8 +33,8 @@ class Contrib.CollectionView extends Giraffe.View
   @getDefaults: (ctx) ->
     collection: if ctx.collection then null else new Giraffe.Collection # lazy lood for efficiency
     modelView: Giraffe.View
-    modelViewArgs: null # optional array of arguments passed to modelView constructor (or function returning the same)
     modelViewEl: null # optional selector or Giraffe.View#ui name to contain the model views
+    modelViewArgs: null # optional array of arguments passed to modelView constructor (or function returning the same)
   
 
   constructor: ->
@@ -66,7 +66,7 @@ class Contrib.CollectionView extends Giraffe.View
         break
       i++
     if !options.el and @modelViewEl # lazy loaded for efficiency
-      options.el = @$(@modelViewEl)
+      options.el = Giraffe.View.to$El(@modelViewEl, @$el, true)
 #ifdef DEBUG
       throw new Error("`modelViewEl` not found in this view") if !options.el.length
 #endif
@@ -76,9 +76,9 @@ class Contrib.CollectionView extends Giraffe.View
   # TODO fails if deep clone is needed
   _cloneModelViewArgs: ->
     args = @modelViewArgs or [{}]
-    args = args.call(@) if _.isFunction("function")
-    args = _.clone(args)
+    args = args.call(@) if _.isFunction(args)
     args = [args] if !_.isArray(args)
+    args = _.map(args, _.clone)
 #ifdef DEBUG
     throw new Error('`modelViewArgs` must be an array with an object as the first value') unless _.isArray(args) and _.isObject(args[0])
 #endif
@@ -99,9 +99,9 @@ class Contrib.CollectionView extends Giraffe.View
 
   addOne: (model) =>
     if !@collection.contains(model)
-      @collection.add model # recurs back
+      @collection.add model # falls through
     else if !@_renderedOnce
-      @render() # recurs back
+      @render() # falls through
     else
       attachOptions = @_calcAttachOptions(model)
       modelViewArgs = @_cloneModelViewArgs()

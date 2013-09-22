@@ -1,16 +1,17 @@
 # Giraffe.Contrib.CollectionView
 
-This example details how to use 
+This example details how to use the
 [`Giraffe.Contrib`](https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js)
 to implement views for a collection of fruits with the CollectionView
-and ItemView/ModelView design pattern.
+and ModelView design pattern.
 
 :::BEGIN Example
 
 ## Live Example
 
-Here is the live example detailed below. Each fruit is rendered using an
-item view named `FruitView`. The collection of fruits are children of a
+Here is the live example. Each fruit is rendered using an
+item view named `FruitView` which inherits directly from `Giraffe.View`.
+The collection of fruits are children of a
 single collection view named `FruitsView`.
 
 - `clone` button creates a duplicate of the fruit
@@ -18,7 +19,7 @@ single collection view named `FruitsView`.
 - `sort` button toggles ascending/descending sort
 - `reset` button resets the collection to its original state
 
-{{{EXAMPLE style='height: 375px'}}}
+{{{EXAMPLE style='height: 410px'}}}
 
 ## Collection and Model
 
@@ -113,25 +114,41 @@ collection.
 
 ## Collection View
 
-`Giraffe.Contrib` contains a `CollectionView` class . The `CollectionView`
-adds and removes item views to itself as it observes changes on its
-collection. It is good practice to __always__ modify the collection
+`Giraffe.Contrib` contains a `CollectionView` class that syncs a view per
+model in its `collection` by reacting to add/remove/sort/reset events.
+It is good practice to __always__ modify the collection
 instead of trying to add views manually.
 
 ```js
 var FruitsView = Giraffe.Contrib.CollectionView.extend({
-  modelView: FruitView
+  modelView: FruitView,
+  modelViewEl: '#fruits-list',
+  modelViewArgs: [{optional: 'arguments passed to modelView constructor'}],
+  template: '#fruits-template'
 });
 ```
+
+The `CollectionView` property `modelViewEl` can be used to specify
+where to insert model views.
+
+```html
+<script id='fruits-template' type='text/template'>
+  <h1>Fruits</h1>
+  <ul id='fruits-list'>
+    <!-- FruitView instances are inserted here -->
+  </ul>
+</script>
+```
+
 
 Now create some tasty fruits and create the collection to assign to  `FruitsView`.
 
 ```js
 var savoryFruits = [
-    {name: 'Orange', color: '#FF7F00'},
-    {name: 'Pink Grapefruit', color: '#C5363A'},
-    {name: 'Apple', color: '#0F0'},
-    {name: 'Banana', color: '#FF0'},
+  {name: 'Orange', color: '#FF7F00'},
+  {name: 'Pink Grapefruit', color: '#C5363A'},
+  {name: 'Apple', color: '#0F0'},
+  {name: 'Banana', color: '#FF0'},
 ];
 
 var fruits = new Fruits(savoryFruits);
@@ -155,7 +172,7 @@ easy one-way click binding.
   <button data-gf-click='onClickReset'>reset</button>
   <button data-gf-click='onClickSort'>sort</button>
   <hr />
-  <!-- fruits view is appended here in afterRender -->
+  <!-- FruitsView is appended here in afterRender -->
 </script>
 ```
 
@@ -184,6 +201,9 @@ mainView.attachTo('body');
 :::@ --hide
 
 ```css
+h1 {
+  font-size: 36px;
+}
 h2 {
   font-size: 24px;
 }
