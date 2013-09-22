@@ -30,8 +30,8 @@ Contrib = Giraffe.Contrib =
 class Contrib.CollectionView extends Giraffe.View
 
 
-  @getDefaults: ->
-    collection: new Giraffe.Collection
+  @getDefaults: (ctx) ->
+    collection: if ctx.collection then null else new Giraffe.Collection # lazy lood for efficiency
     modelView: Giraffe.View
     modelViewArgs: null # optional array of arguments passed to modelView constructor (or function returning the same)
     modelViewEl: null # optional selector or Giraffe.View#ui name to contain the model views
@@ -39,7 +39,7 @@ class Contrib.CollectionView extends Giraffe.View
 
   constructor: ->
     super
-    _.defaults @, @constructor.getDefaults()
+    _.defaults @, @constructor.getDefaults(@)
 #ifdef DEBUG
     throw new Error('`modelView` is required') unless @modelView
     throw new Error('`collection.model` is required') unless @collection?.model
