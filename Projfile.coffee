@@ -25,11 +25,14 @@ exports.project = (pm) ->
     file = fs.statSync(path)
     (Math.round(file.size / 100) / 10) + 'k'
 
+  replaceFileSize = (asset, match, file) ->
+    asset.text = asset.text.replace(match, getFileSize('dist/' + file))
+
   updateFileSize = f.tap (asset) ->
-    fileSize = getFileSize('dist/backbone.giraffe.js') # use variable and change other builds to direct paths?
-    fileSizeMin = getFileSize('dist/backbone.giraffe.min.js')
-    asset.text = asset.text.replace('{{FILE_SIZE}}', fileSize)
-    asset.text = asset.text.replace('{{FILE_SIZE_MIN}}', fileSizeMin)
+    replaceFileSize asset, /\{\{FILE_SIZE_CONTRIB_MIN\}\}/g, 'backbone.giraffe.contrib.min.js'
+    replaceFileSize asset, /\{\{FILE_SIZE_CONTRIB\}\}/g, 'backbone.giraffe.contrib.js'
+    replaceFileSize asset, /\{\{FILE_SIZE_MIN\}\}/g, 'backbone.giraffe.min.js'
+    replaceFileSize asset, /\{\{FILE_SIZE\}\}/g, 'backbone.giraffe.js'
 
   all: ['clean', 'giraffe', 'miniGiraffe', 'readme', 'docs', 'stylesheets', 'staticFiles', 'test:all']
 

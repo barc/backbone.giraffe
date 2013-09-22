@@ -10,6 +10,10 @@ __Version {{VERSION}}__
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _{{FILE_SIZE_MIN}}_
 
+[backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _{{FILE_SIZE_CONTRIB}}_
+
+[backbone.giraffe.contrib.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.min.js) _{{FILE_SIZE_CONTRIB_MIN}}_
+
 ## Building
 
     npm install projmate-cli@0.1.0-dev -g
