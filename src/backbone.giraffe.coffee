@@ -508,9 +508,9 @@ class Giraffe.View extends Backbone.View
 
   # Removes references to the elements cached from the @ui {name: selector} map..
   _uncacheUiElements: ->
-    return @ unless @ui
-    for name, selector of @ui
-      delete @[name]
+    if @ui
+      for name of @ui
+        delete @[name]
     @
 
 

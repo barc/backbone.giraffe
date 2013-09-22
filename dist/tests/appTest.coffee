@@ -461,5 +461,9 @@ describe 'Giraffe.Contrib.CollectionView', ->
       modelViewEl: '.' + className
       templateStrategy: -> "<div class='#{className}'></div>"
     a.addOne {}
-    child = a.children[0]
-    assertAttached child, a.$('.' + className)
+    child1 = a.children[0]
+    assertAttached child1, a.$('.' + className)
+    a.addOne {}
+    child2 = a.children[1]
+    assertAttached child2, a.$('.' + className)
+    assertSiblings child1, child2

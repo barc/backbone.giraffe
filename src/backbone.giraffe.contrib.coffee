@@ -67,7 +67,7 @@ class Contrib.CollectionView extends Giraffe.View
         break
       i++
     if !options.el and @modelViewEl # lazy loaded for efficiency
-      options.el = @$el.find(@modelViewEl)
+      options.el = @$(@modelViewEl)
 #ifdef DEBUG
       throw new Error("`modelViewEl` not found in this view") if !options.el.length
 #endif

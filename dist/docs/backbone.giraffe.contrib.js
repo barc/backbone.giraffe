@@ -88,7 +88,7 @@
         i++;
       }
       if (!options.el && this.modelViewEl) {
-        options.el = this.$el.find(this.modelViewEl);
+        options.el = this.$(this.modelViewEl);
         if (!options.el.length) {
           throw new Error("`modelViewEl` not found in this view");
         }

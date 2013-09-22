@@ -588,9 +588,9 @@
       child = a.children[0];
       return assert.equal('bar', child.foo);
     });
-    return it('should insert the model views in `modelViewEl` if provided', function() {
-      var a, child, className;
-      className = 'my-model-view-container';
+    it('should insert the model views in `modelViewEl` if provided', function() {
+      var a, child1, child2, className;
+      className = 'my-model-view-el';
       a = new Giraffe.Contrib.CollectionView({
         modelViewEl: '.' + className,
         templateStrategy: function() {
@@ -598,8 +598,28 @@
         }
       });
       a.addOne({});
+      child1 = a.children[0];
+      assertAttached(child1, a.$('.' + className));
+      a.addOne({});
+      child2 = a.children[1];
+      assertAttached(child2, a.$('.' + className));
+      return assertSiblings(child1, child2);
+    });
+    return it('should accept View#ui names for `modelViewEl`', function() {
+      var a, child, className;
+      className = 'my-model-view-el';
+      a = new Giraffe.Contrib.CollectionView({
+        ui: {
+          $myModelViewEl: '.' + className
+        },
+        modelViewEl: '$myModelViewEl',
+        templateStrategy: function() {
+          return "<div class='" + className + "'></div>";
+        }
+      });
+      a.addOne({});
       child = a.children[0];
-      return assertAttached(child, a.$('.' + className));
+      return assertAttached(child, a.$myModelViewEl);
     });
   });
 

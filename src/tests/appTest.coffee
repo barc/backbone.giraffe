@@ -456,10 +456,25 @@ describe 'Giraffe.Contrib.CollectionView', ->
     assert.equal 'bar', child.foo
 
   it 'should insert the model views in `modelViewEl` if provided', ->
-    className = 'my-model-view-container'
+    className = 'my-model-view-el'
     a = new Giraffe.Contrib.CollectionView
       modelViewEl: '.' + className
       templateStrategy: -> "<div class='#{className}'></div>"
     a.addOne {}
+    child1 = a.children[0]
+    assertAttached child1, a.$('.' + className)
+    a.addOne {}
+    child2 = a.children[1]
+    assertAttached child2, a.$('.' + className)
+    assertSiblings child1, child2
+
+  it 'should accept View#ui names for `modelViewEl`', ->
+    className = 'my-model-view-el'
+    a = new Giraffe.Contrib.CollectionView
+      ui:
+        $myModelViewEl: '.' + className
+      modelViewEl: '$myModelViewEl'
+      templateStrategy: -> "<div class='#{className}'></div>"
+    a.addOne {}
     child = a.children[0]
-    assertAttached child, a.$('.' + className)
+    assertAttached child, a.$myModelViewEl
