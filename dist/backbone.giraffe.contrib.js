@@ -178,22 +178,20 @@
   * The __FastCollectionView__ (__FCV__ from here on) does not use views for its
   * models, and as a result the __FCV__ cannot be certain of what its contents are
   * unless you and it make an agreement about how you'll handle things. One of the
-  * best solutions found so far is to agree that `modelTemplate` must put
+  * best solutions found so far is to agree that each model's template must put
   * `data-model-cid` on all top-level DOM elements.
-  * on this node. So if you want __FCV__, here are the rules:
   *
-  * 0. `modelTemplate` must return HTML wrapped up inside a single node
-  * 0. you must put the attribute `data-model-cid` on the top level node returned from `modelTemplate`
-  *
-  * Be aware that the first rendered template is _appended_ to `modelEl`.
+  * The option `modelEl` can be used to specify where to insert the model html.
+  * It defaults to `view.$el` and currently cannot contain any elemenets other
+  * than those automatically created per model by the `FastCollectionView`.
   *
   * @param {Object} options
   *
   * - [collection] - {Collection} The collection instance for the `FastCollectionView`. Defaults to a new __Giraffe.Collection__.
-  * - modelTemplate - {String,Function} Required. The template for each model.
+  * - modelTemplate - {String,Function} Required. The template for each model. Is actually not required if `modelTemplateStrategy` is a function, signaling circumvention of Giraffe's templating help.
   * - [modelTemplateStrategy] - {String} The template strategy used for the `modelTemplate`. Can be a function returning a string of HTML to override the need for `modelTemplate` and `modelSerialize`. Defaults to inheriting from the view.
   * - [modelSerialize] - {Function} Used to get the data passed to `modelTemplate`. Returns the model by default. Customize by passing as an option or override globally at `Giraffe.Contrib.FastCollectionView.prototype.modelSerialize`.
-  * - [modelEl] - {Selector,Giraffe.View#ui} The selector or Giraffe.View#ui name for the model template container. Can be a function returning the same. Defaults to `fastCollectionView.$el`.
+  * - [modelEl] - {Selector,Giraffe.View#ui} The selector or Giraffe.View#ui name for the model template container. Can be a function returning the same. Do not put html in here manually with the current design. Defaults to `view.$el`.
   *
   * @example
   *
@@ -260,6 +258,11 @@
       return this;
     };
 
+    /*
+    * Removes `model` from the collection if present and removes its DOM elements.
+    */
+
+
     FastCollectionView.prototype.removeOne = function(model) {
       if (this.collection.contains(model)) {
         this.collection.remove(model);
@@ -287,6 +290,11 @@
       return this;
     };
 
+    /*
+    * Adds all of the models to the DOM at once. Is destructive to `modelEl`.
+    */
+
+
     FastCollectionView.prototype.addAll = function() {
       var html, model, _i, _len, _ref;
       html = '';
@@ -298,6 +306,11 @@
       this.$modelEl.empty().html(html);
       return this;
     };
+
+    /*
+    * Removes children of `modelEl` by data-model-cid.
+    */
+
 
     FastCollectionView.prototype.removeByCid = function(cid) {
       var $el;
@@ -357,10 +370,20 @@
       return this.model;
     };
 
+    /*
+    * Generates a model's html string using `modelTemplateCtx` and its options.
+    */
+
+
     FastCollectionView.prototype._renderModel = function(model) {
       this.modelTemplateCtx.model = model;
       return this.modelTemplateCtx.templateStrategy();
     };
+
+    /*
+    * Inserts a model's html into the DOM smart-like.
+    */
+
 
     FastCollectionView.prototype._insertModel = function(html, model) {
       var $existingEl, $nextModel, nextModel;

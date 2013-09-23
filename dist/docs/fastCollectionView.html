@@ -129,7 +129,7 @@ Fruits.prototype.toggleSort = <span class="function"><span class="keyword">funct
   <span class="comment">// Options specific to the `FastCollectionView`</span>
   modelTemplate: <span class="string">'#fruit-template'</span>, <span class="comment">// required - used to get the html per model</span>
   modelEl: <span class="string">'#fruits-list'</span>, <span class="comment">// optional - el to insert result of `modelTemplate`</span>
-  <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options are not shown</span>
+  <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options not shown</span>
 
   onDelete: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
@@ -143,7 +143,10 @@ Fruits.prototype.toggleSort = <span class="function"><span class="keyword">funct
 
   onClone: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target);
-    <span class="keyword">this</span>.collection.add(model.clone());
+    <span class="keyword">var</span> newModel = model.clone();
+    <span class="keyword">this</span>.collection.add(newModel);
+    <span class="comment">// or</span>
+    <span class="comment">// this.addOne(newModel); // `FastCollectionView` method</span>
   }
 });
 
@@ -271,7 +274,7 @@ per model in its <code>collection</code> by reacting to add/remove/sort/reset ev
   <span class="comment">// Options specific to the `FastCollectionView`</span>
   modelTemplate: <span class="string">'#fruit-template'</span>, <span class="comment">// required - used to get the html per model</span>
   modelEl: <span class="string">'#fruits-list'</span>, <span class="comment">// optional - el to insert result of `modelTemplate`</span>
-  <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options are not shown</span>
+  <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options not shown</span>
 
   onDelete: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
@@ -285,7 +288,10 @@ per model in its <code>collection</code> by reacting to add/remove/sort/reset ev
 
   onClone: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
     <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target);
-    <span class="keyword">this</span>.collection.add(model.clone());
+    <span class="keyword">var</span> newModel = model.clone();
+    <span class="keyword">this</span>.collection.add(newModel);
+    <span class="comment">// or</span>
+    <span class="comment">// this.addOne(newModel); // `FastCollectionView` method</span>
   }
 });</code></pre>
 <p>The <code>FastCollectionView</code> property <code>modelEl</code> designates where to insert the

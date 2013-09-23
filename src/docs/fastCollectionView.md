@@ -79,7 +79,7 @@ var FruitsView = Giraffe.Contrib.FastCollectionView.extend({
   // Options specific to the `FastCollectionView`
   modelTemplate: '#fruit-template', // required - used to get the html per model
   modelEl: '#fruits-list', // optional - el to insert result of `modelTemplate`
-  // `modelSerialize` and `modelTemplateStrategy` options are not shown
+  // `modelSerialize` and `modelTemplateStrategy` options not shown
   
   onDelete: function(e) {
     var model = this.getModelByEl(e.target); // `FastCollectionView` method
@@ -93,7 +93,10 @@ var FruitsView = Giraffe.Contrib.FastCollectionView.extend({
   
   onClone: function(e) {
     var model = this.getModelByEl(e.target);
-    this.collection.add(model.clone());
+    var newModel = model.clone();
+    this.collection.add(newModel);
+    // or
+    // this.addOne(newModel); // `FastCollectionView` method
   }
 });
 ```
