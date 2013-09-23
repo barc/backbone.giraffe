@@ -14,4 +14,5 @@
 - [Menu Example](menuExample.html)
 - [View Flexibility](viewFlexibility.html)
 - [Collection View](collectionView.html)
+- [Fast Collection View](fastCollectionView.html)
 - [_TodoMVC on Github_](http://iamthe35th.github.io/todomvc/labs/architecture-examples/backbone.giraffe/index.html)

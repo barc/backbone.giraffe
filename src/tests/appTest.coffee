@@ -1,8 +1,16 @@
 {assert} = chai
 
 
-getEl = ->
-  $('<div class="test-div"></div>').appendTo('body')
+getEl = (el) ->
+  $('<div class="test-div"></div>').appendTo(el or 'body')
+
+areSiblings = (a, b) ->
+  $a = a.$el or if a instanceof $ then a else $(a)
+  bEl = b.$el?[0] or if b instanceof $ then b[0] else b
+  $a.next()[0] is bEl and !!bEl
+
+hasText = ($el, text) ->
+  text is $el.text().trim()
 
 
 assertNested = (child, parent) ->
@@ -32,9 +40,7 @@ assertNotDisposed = (view) ->
   assert.ok !!view.$el
 
 assertSiblings = (a, b) ->
-  bEl = b.$el[0]
-  assert.fail() if !bEl
-  assert.equal a.$el.next()[0], bEl
+  assert.ok areSiblings(a, b)
 
 assertRendered = (view) ->
   assert.ok view._renderedOnce
@@ -43,9 +49,55 @@ assertNotRendered = (view) ->
   assert.ok !view._renderedOnce
 
 assertHasText = (view, text, className) ->
-  $content = view.$('.' + className)
-  assert.lengthOf $content, 1
-  assert.equal text, $content.text().trim()
+  if className
+    $el = view.$('.' + className)
+  else
+    $el = view.$el
+  assert.ok $el.length
+  assert.ok hasText($el, text)
+
+
+describe 'Assert Helpers', ->
+
+  it 'should get a new element', ->
+    $el1 = getEl()
+    $el2 = getEl()
+    assert.notEqual $el1[0], $el2[0]
+    assert.lengthOf $el1, 1
+    assert.lengthOf $el2, 1
+
+  it 'should test a nested relationship', ->
+    parent = {}
+    child1 = {parent}
+    child2 = {parent}
+    parent.children = [child1, child2]
+    assertNested child1, parent
+    assertNested child2, parent
+    assertNotNested parent, child1
+    assertNotNested child1, child2
+
+  it 'should test an ordered sibling relationship', ->
+    $el = getEl()
+    $a = getEl($el)
+    $b = getEl($el)
+    $c = getEl($el)
+    assertSiblings $a, $b
+    assertSiblings $b, $c
+    assertSiblings $a[0], $b[0]
+    assertSiblings $b[0], $c[0]
+    assert.ok areSiblings($a, $b)
+    assert.ok !areSiblings($b, $a)
+    assert.ok !areSiblings($c, $a)
+    assert.ok !areSiblings($c, $b)
+    assert.ok !areSiblings($a, $a)
+
+  it 'should detect if a view or el contains text', ->
+    a = new Giraffe.View
+    a.$el.append '<div class="my-class">;)</div>'
+    assertHasText a, ';)', 'my-class'
+    assert.ok hasText(a.$el.find('.my-class'), ';)')
+    assert.ok hasText(a.$el, ';)')
+    assert.ok !hasText(a.$el, ';(')
 
 
 describe 'Giraffe.View', ->
@@ -214,6 +266,17 @@ describe 'Giraffe.View', ->
     assert.ok !a.isAttached()
     assertNotDisposed a
 
+  it 'should dispose the replaced view when using method "html"', ->
+    a = new Giraffe.View
+    b = new Giraffe.View
+    $el = getEl()
+    a.attachTo $el
+    b.attachTo $el, method: 'html'
+    assert.ok !a.isAttached()
+    assert.ok b.isAttached()
+    assertDisposed a
+    assertNotDisposed b
+
   it 'should nest a view with attach', ->
     parent = new Giraffe.View
     child = new Giraffe.View
@@ -227,6 +290,24 @@ describe 'Giraffe.View', ->
     child.attachTo parent
     assertNested child, parent
     assertAttached child, parent
+
+  it 'should propagate dispose to deeply nested views', ->
+    parent = new Giraffe.View
+    child = new Giraffe.View
+    grandchild = new Giraffe.View
+    greatgrandchild = new Giraffe.View
+    parent.attach child
+    child.attach grandchild
+    grandchild.attach greatgrandchild
+    assertNotDisposed parent
+    assertNotDisposed child
+    assertNotDisposed grandchild
+    assertNotDisposed greatgrandchild
+    parent.dispose()
+    assertDisposed parent
+    assertDisposed child
+    assertDisposed grandchild
+    assertDisposed greatgrandchild
 
   it 'should dispose the child views when the parent removes them', ->
     parent = new Giraffe.View
@@ -259,7 +340,7 @@ describe 'Giraffe.View', ->
     assertNotNested child, parent
     assertDisposed child
 
-  it 'should not dispose of a cached view', ->
+  it 'should not dispose of a cached child view when the parent renders', ->
     parent = new Giraffe.View
     child = new Giraffe.View
     grandchild = new Giraffe.View(disposeOnDetach: false)
@@ -268,9 +349,24 @@ describe 'Giraffe.View', ->
     child.render()
     assertNested child, parent
     assertNested grandchild, child
+    assertAttached child, parent.$el
+    assertNotAttached grandchild, child.$el
     assertNotDisposed grandchild
 
-  it 'should add and remove some children', ->
+  it 'should not dispose of a child view when the parent renders if `preserve` is `true`', ->
+    parent = new Giraffe.View
+    child = new Giraffe.View
+    grandchild = new Giraffe.View
+    parent.attach child
+    child.attach grandchild
+    child.render preserve: true
+    assertNested child, parent
+    assertNested grandchild, child
+    assertAttached child, parent.$el
+    assertNotAttached grandchild, child.$el
+    assertNotDisposed grandchild
+
+  it 'should add and remove several children as siblings', ->
     parent = new Giraffe.View
     a = new Giraffe.View
     b = new Giraffe.View
@@ -340,14 +436,17 @@ describe 'Giraffe.App', ->
     app.start()
 
 
+
 describe 'Giraffe.Contrib.CollectionView', ->
 
+  CollectionView = Giraffe.Contrib.CollectionView
+
   it 'should be OK', ->
-    assert.ok new Giraffe.Contrib.CollectionView
+    assert.ok new CollectionView
 
   it 'should render model views passed to the constructor', ->
     collection = new Giraffe.Collection([{}, {}])
-    a = new Giraffe.Contrib.CollectionView({collection})
+    a = new CollectionView({collection})
     a.attachTo getEl()
     assert.lengthOf a.children, 2
     [child1, child2] = a.children
@@ -359,7 +458,7 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should render model views added after initialization', ->
     collection = new Giraffe.Collection
-    a = new Giraffe.Contrib.CollectionView({collection})
+    a = new CollectionView({collection})
     a.attachTo getEl()
     assert.lengthOf a.children, 0
     a.addOne {}
@@ -370,7 +469,7 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should render models views when extended', ->
     collection = new Giraffe.Collection([{}, {}])
-    A = Giraffe.Contrib.CollectionView.extend({collection})
+    A = CollectionView.extend({collection})
     a = new A
     a.attachTo getEl()
     assert.lengthOf a.children, 2
@@ -379,51 +478,77 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should sync when the collection is reset', ->
     collection = new Giraffe.Collection([{}])
-    a = new Giraffe.Contrib.CollectionView({collection})
+    a = new CollectionView({collection})
     a.attachTo getEl()
     assert.lengthOf a.children, 1
     modelView = a.children[0]
     assertAttached modelView, a.$el
-    collection.reset([{}, {}])
+    collection.reset [{}, {}]
     assertDisposed modelView
     assert.lengthOf a.children, 2
 
-  it 'should sync when a model is added to the collection', ->
-    a = new Giraffe.Contrib.CollectionView
+  it 'should sync when models are added to the collection', ->
+    a = new CollectionView
     a.attachTo getEl()
     a.collection.add {}
     assert.lengthOf a.children, 1
+    a.collection.add {}
+    assert.lengthOf a.children, 2
     assertAttached a.children
 
-  it 'should sync when a model is added via addOne', ->
-    a = new Giraffe.Contrib.CollectionView
+  it 'should sync when models are added via `addOne`', ->
+    a = new CollectionView
     a.attachTo getEl()
-    a.collection.add {}
+    a.addOne {}
     assert.lengthOf a.children, 1
+    a.addOne {}
+    assert.lengthOf a.children, 2
     assertAttached a.children
 
-  it 'should sync when a model is removed', ->
-    a = new Giraffe.Contrib.CollectionView
+  it 'should sync when models are removed from the collection', ->
+    a = new CollectionView
     a.attachTo getEl()
-    a.collection.add {}
+    a.collection.add [{}, {}]
+    assert.lengthOf a.children, 2
+    [modelView1, modelView2] = a.children
+    assert.ok modelView1 and modelView2
+    assert.ok modelView1.isAttached()
+    assert.ok modelView2.isAttached()
+    a.collection.remove a.collection.at(0)
     assert.lengthOf a.children, 1
-    modelView = a.children[0]
-    assert.ok modelView
-    assert.ok modelView.isAttached()
+    assertDisposed modelView1
+    assertNotDisposed modelView2
     a.collection.remove a.collection.at(0)
     assert.lengthOf a.children, 0
-    assertDisposed modelView
+    assertDisposed modelView2
+
+  it 'should sync when models are removed via `removeOne`', ->
+    a = new CollectionView
+    a.attachTo getEl()
+    a.collection.add [{}, {}]
+    assert.lengthOf a.children, 2
+    [modelView1, modelView2] = a.children
+    assert.ok modelView1 and modelView2
+    assert.ok modelView1.isAttached()
+    assert.ok modelView2.isAttached()
+    a.removeOne a.collection.at(0)
+    assert.lengthOf a.children, 1
+    assertDisposed modelView1
+    assertNotDisposed modelView2
+    a.removeOne a.collection.at(0)
+    assert.lengthOf a.children, 0
+    assertDisposed modelView2
 
   it 'should keep model views sorted when a value changes', ->
     collection = new Giraffe.Collection([{foo: 1}, {foo: 0}], comparator: 'foo')
-    a = new Giraffe.Contrib.CollectionView({collection})
+    a = new CollectionView({collection})
     a.attachTo getEl()
     [child1, child2] = a.children
     assert.equal 0, child1.model.get('foo')
     assert.equal 1, child2.model.get('foo')
     assertSiblings child1, child2
     a.children[0].model.set 'foo', 2
-    collection.sort() # TODO should this be automated from teh comparator?
+    collection.sort() # TODO should this be automated from the comparator?
     [child1, child2] = a.children
     assert.equal 1, child1.model.get('foo')
     assert.equal 2, child2.model.get('foo')
@@ -432,7 +557,7 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should keep model views sorted when a new model is added', ->
     collection = new Giraffe.Collection([{foo: 0}, {foo: 2}], comparator: 'foo')
-    a = new Giraffe.Contrib.CollectionView({collection})
+    a = new CollectionView({collection})
     a.addOne foo: 1
     [child1, child2, child3] = a.children
     assertSiblings child1, child2
@@ -441,15 +566,15 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should use the `modelView` option to construct the views', ->
     MyModelView = Giraffe.View.extend(foo: 'bar')
-    a = new Giraffe.Contrib.CollectionView
+    a = new CollectionView
       modelView: MyModelView
     a.addOne {}
     child = a.children[0]
     assert.ok child instanceof MyModelView
     assert.equal 'bar', child.foo
-    
+
   it 'should pass `modelViewArgs` to the model views', ->
-    a = new Giraffe.Contrib.CollectionView
+    a = new CollectionView
       modelViewArgs: [foo: 'bar']
     a.addOne {}
     child = a.children[0]
@@ -457,7 +582,7 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should insert the model views in `modelViewEl` if provided', ->
     className = 'my-model-view-el'
-    a = new Giraffe.Contrib.CollectionView
+    a = new CollectionView
       modelViewEl: '.' + className
       templateStrategy: -> "<div class='#{className}'></div>"
     a.addOne {}
@@ -470,7 +595,7 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should accept View#ui names for `modelViewEl`', ->
     className = 'my-model-view-el'
-    a = new Giraffe.Contrib.CollectionView
+    a = new CollectionView
       ui:
         $myModelViewEl: '.' + className
       modelViewEl: '$myModelViewEl'
@@ -478,3 +603,162 @@ describe 'Giraffe.Contrib.CollectionView', ->
     a.addOne {}
     child = a.children[0]
     assertAttached child, a.$myModelViewEl
+
+
+describe 'Giraffe.Contrib.FastCollectionView', ->
+
+  FastCollectionView = Giraffe.Contrib.FastCollectionView
+
+  fcvDefaults =
+    modelTemplate: '<li data-model-cid="<%= cid %>"></li>'
+    modelTemplateStrategy: 'underscore-template'
+
+  it 'should be OK', ->
+    assert.ok new FastCollectionView(fcvDefaults)
+
+  it 'should render els for models passed to the constructor', ->
+    collection = new Giraffe.Collection([{}, {}])
+    a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
+    assert.lengthOf a.$el.children(), 0
+    a.render()
+    assert.lengthOf a.children, 0
+    assert.lengthOf a.$el.children(), 2
+
+  it 'should render models views when extended', ->
+    collection = new Giraffe.Collection([{}, {}])
+    A = FastCollectionView.extend(_.defaults({collection}, fcvDefaults))
+    a = new A
+    a.attachTo getEl()
+    assert.lengthOf a.$el.children(), 2
+
+  it 'should sync when the collection is reset', ->
+    a = new FastCollectionView(fcvDefaults)
+    a.attachTo getEl()
+    a.addOne {}
+    assert.lengthOf a.$el.children(), 1
+    a.collection.reset [{}, {}]
+    assert.lengthOf a.$el.children(), 2
+
+  it 'should sync when models are added to the collection', ->
+    a = new FastCollectionView(fcvDefaults)
+    a.attachTo getEl()
+    assert.lengthOf a.$el.children(), 0
+    a.collection.add {}
+    assert.lengthOf a.$el.children(), 1
+    a.collection.add [{}, {}]
+    assert.lengthOf a.$el.children(), 3
+
+  it 'should sync when models are added via `addOne`', ->
+    a = new FastCollectionView(fcvDefaults)
+    a.attachTo getEl()
+    a.addOne {}
+    assert.lengthOf a.$el.children(), 1
+    a.addOne {}
+    assert.lengthOf a.$el.children(), 2
+    a.addOne {}
+    assert.lengthOf a.$el.children(), 3
+
+  it 'should sync when models are removed from the collection', ->
+    a = new FastCollectionView(fcvDefaults)
+    a.attachTo getEl()
+    a.collection.add {}
+    assert.lengthOf a.$el.children(), 1
+    a.collection.add {}
+    assert.lengthOf a.$el.children(), 2
+    a.collection.remove a.collection.at(1)
+    assert.lengthOf a.$el.children(), 1
+    a.collection.remove a.collection.at(0)
+    assert.lengthOf a.$el.children(), 0
+
+  it 'should sync when models are removed via `removeOne`', ->
+    a = new FastCollectionView(fcvDefaults)
+    a.attachTo getEl()
+    a.collection.add {}
+    assert.lengthOf a.$el.children(), 1
+    a.collection.add {}
+    assert.lengthOf a.$el.children(), 2
+    a.removeOne a.collection.at(1)
+    assert.lengthOf a.$el.children(), 1
+    a.removeOne a.collection.at(0)
+    assert.lengthOf a.$el.children(), 0
+
+  it 'should keep model views sorted when a value changes', ->
+    collection = new Giraffe.Collection([{foo: 1}, {foo: 0}], comparator: 'foo')
+    a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
+    a.attachTo getEl()
+    [model1, model2] = a.collection.models
+    assert.equal 0, model1.get('foo')
+    assert.equal 1, model2.get('foo')
+    el1 = a.getElByCid(model1.cid)
+    el2 = a.getElByCid(model2.cid)
+    assertSiblings el1, el2
+    model1.set 'foo', 2
+    collection.sort() # TODO should this be automated from the comparator?
+    [model1, model2] = a.collection.models
+    assert.equal 1, model1.get('foo')
+    assert.equal 2, model2.get('foo')
+    el1 = a.getElByCid(model1.cid)
+    el2 = a.getElByCid(model2.cid)
+    assertSiblings el1, el2
+
+  it 'should keep model views sorted when a new model is added', ->
+    collection = new Giraffe.Collection([{foo: 0}, {foo: 2}], comparator: 'foo')
+    a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
+    a.addOne foo: 1
+    [model1, model2, model3] = collection.models
+    el1 = a.getElByCid(model1.cid)
+    el2 = a.getElByCid(model2.cid)
+    el3 = a.getElByCid(model3.cid)
+    assertSiblings el1, el2
+    assertSiblings el2, el3
+
+  it 'should use the `modelTemplate` option to construct the DOM', ->
+    a = new FastCollectionView
+      collection: new Giraffe.Collection(foo: 'bar')
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
+      modelTemplateStrategy: 'underscore-template'
+    $children = a.$el.children()
+    assert.lengthOf $children, 0
+    a.render()
+    $children = a.$el.children()
+    assert.lengthOf $children, 1
+    a.addOne foo: 'baz'
+    $children = a.$el.children()
+    assert.lengthOf $children, 2
+    assert.equal 'bar', $children.first().text()
+    assert.equal 'baz', $children.last().text()
+
+  it 'should use `modelSerialize` to send custom data to the template', ->
+    a = new FastCollectionView
+      collection: new Giraffe.Collection(foo: 'bar')
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= foo %></li>'
+      modelTemplateStrategy: 'underscore-template'
+      modelSerialize: -> # called with this == `fcv.modelTemplateCtx`
+        data = @model.toJSON()
+        data.cid = @model.cid
+        data
+    assert.ok !a.$el.text()
+    a.render()
+    assert.equal 'bar', a.$el.text()
+
+  it 'should insert the model views in `modelEl` if provided', ->
+    className = 'my-model-view-el'
+    a = new FastCollectionView
+      modelEl: '.' + className
+      templateStrategy: -> "<ul class='#{className}'></ul>"
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
+      modelTemplateStrategy: 'underscore-template'
+    a.addOne foo: 'bar'
+    assertHasText a, 'bar', className
+
+  it 'should accept View#ui names for `modelEl`', ->
+    className = 'my-model-view-el'
+    a = new FastCollectionView
+      ui:
+        $myModelEl: '.' + className
+      modelEl: '$myModelEl'
+      templateStrategy: -> "<div class='#{className}'></div>"
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
+      modelTemplateStrategy: 'underscore-template'
+    a.addOne foo: 'bar'
+    assertHasText a, 'bar', className

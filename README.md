@@ -47,7 +47,8 @@ building upon __Backbone__ with a minimalist approach. For example, there is no
 concept of specialized containers like regions or layouts, as any view in
 __Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
 has no CollectionView or ItemView
-(see [__Giraffe.Contrib.CollectionView__](http://barc.github.io/backbone.giraffe/collectionView.html)),
+(see [__Giraffe.Contrib.CollectionView__](http://barc.github.io/backbone.giraffe/collectionView.html)
+and [__Giraffe.Contrib.FastCollectionView__](http://barc.github.io/backbone.giraffe/fastCollectionView.html)),
 but we are open to suggestions to make __Giraffe__ as useful as possible to
 __Backbone__ developers who want an extension library with few opinions.
 
@@ -89,13 +90,13 @@ __AngularJS__)
 
 __Version 0.1.3__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _59.5k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _59.4k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.5k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.4k_
 
-[backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _5.2k_
+[backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _13.1k_
 
-[backbone.giraffe.contrib.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.min.js) _2.3k_
+[backbone.giraffe.contrib.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.min.js) _5.1k_
 
 ## Building
 

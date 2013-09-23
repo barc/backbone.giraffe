@@ -1,10 +1,21 @@
 (function() {
-  var assert, assertAttached, assertDisposed, assertHasText, assertNested, assertNotAttached, assertNotDisposed, assertNotNested, assertNotRendered, assertRendered, assertSiblings, getEl;
+  var areSiblings, assert, assertAttached, assertDisposed, assertHasText, assertNested, assertNotAttached, assertNotDisposed, assertNotNested, assertNotRendered, assertRendered, assertSiblings, getEl, hasText;
 
   assert = chai.assert;
 
-  getEl = function() {
-    return $('<div class="test-div"></div>').appendTo('body');
+  getEl = function(el) {
+    return $('<div class="test-div"></div>').appendTo(el || 'body');
+  };
+
+  areSiblings = function(a, b) {
+    var $a, bEl, _ref;
+    $a = a.$el || (a instanceof $ ? a : $(a));
+    bEl = ((_ref = b.$el) != null ? _ref[0] : void 0) || (b instanceof $ ? b[0] : b);
+    return $a.next()[0] === bEl && !!bEl;
+  };
+
+  hasText = function($el, text) {
+    return text === $el.text().trim();
   };
 
   assertNested = function(child, parent) {
@@ -43,12 +54,7 @@
   };
 
   assertSiblings = function(a, b) {
-    var bEl;
-    bEl = b.$el[0];
-    if (!bEl) {
-      assert.fail();
-    }
-    return assert.equal(a.$el.next()[0], bEl);
+    return assert.ok(areSiblings(a, b));
   };
 
   assertRendered = function(view) {
@@ -60,11 +66,66 @@
   };
 
   assertHasText = function(view, text, className) {
-    var $content;
-    $content = view.$('.' + className);
-    assert.lengthOf($content, 1);
-    return assert.equal(text, $content.text().trim());
+    var $el;
+    if (className) {
+      $el = view.$('.' + className);
+    } else {
+      $el = view.$el;
+    }
+    assert.ok($el.length);
+    return assert.ok(hasText($el, text));
   };
+
+  describe('Assert Helpers', function() {
+    it('should get a new element', function() {
+      var $el1, $el2;
+      $el1 = getEl();
+      $el2 = getEl();
+      assert.notEqual($el1[0], $el2[0]);
+      assert.lengthOf($el1, 1);
+      return assert.lengthOf($el2, 1);
+    });
+    it('should test a nested relationship', function() {
+      var child1, child2, parent;
+      parent = {};
+      child1 = {
+        parent: parent
+      };
+      child2 = {
+        parent: parent
+      };
+      parent.children = [child1, child2];
+      assertNested(child1, parent);
+      assertNested(child2, parent);
+      assertNotNested(parent, child1);
+      return assertNotNested(child1, child2);
+    });
+    it('should test an ordered sibling relationship', function() {
+      var $a, $b, $c, $el;
+      $el = getEl();
+      $a = getEl($el);
+      $b = getEl($el);
+      $c = getEl($el);
+      assertSiblings($a, $b);
+      assertSiblings($b, $c);
+      assertSiblings($a[0], $b[0]);
+      assertSiblings($b[0], $c[0]);
+      assert.ok(areSiblings($a, $b));
+      assert.ok(!areSiblings($b, $a));
+      assert.ok(!areSiblings($c, $a));
+      assert.ok(!areSiblings($c, $b));
+      return assert.ok(!areSiblings($a, $a));
+    });
+    return it('should detect if a view or el contains text', function() {
+      var a;
+      a = new Giraffe.View;
+      a.$el.append('<div class="my-class">;)</div>');
+      assertHasText(a, ';)', 'my-class');
+      assert.ok(hasText(a.$el.find('.my-class'), ';)'));
+      assert.ok(hasText(a.$el, ';)'));
+      return assert.ok(!hasText(a.$el, ';('));
+    });
+  });
 
   describe('Giraffe.View', function() {
     it('should be OK', function() {
@@ -269,6 +330,20 @@
       assert.ok(!a.isAttached());
       return assertNotDisposed(a);
     });
+    it('should dispose the replaced view when using method "html"', function() {
+      var $el, a, b;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      $el = getEl();
+      a.attachTo($el);
+      b.attachTo($el, {
+        method: 'html'
+      });
+      assert.ok(!a.isAttached());
+      assert.ok(b.isAttached());
+      assertDisposed(a);
+      return assertNotDisposed(b);
+    });
     it('should nest a view with attach', function() {
       var child, parent;
       parent = new Giraffe.View;
@@ -284,6 +359,25 @@
       child.attachTo(parent);
       assertNested(child, parent);
       return assertAttached(child, parent);
+    });
+    it('should propagate dispose to deeply nested views', function() {
+      var child, grandchild, greatgrandchild, parent;
+      parent = new Giraffe.View;
+      child = new Giraffe.View;
+      grandchild = new Giraffe.View;
+      greatgrandchild = new Giraffe.View;
+      parent.attach(child);
+      child.attach(grandchild);
+      grandchild.attach(greatgrandchild);
+      assertNotDisposed(parent);
+      assertNotDisposed(child);
+      assertNotDisposed(grandchild);
+      assertNotDisposed(greatgrandchild);
+      parent.dispose();
+      assertDisposed(parent);
+      assertDisposed(child);
+      assertDisposed(grandchild);
+      return assertDisposed(greatgrandchild);
     });
     it('should dispose the child views when the parent removes them', function() {
       var child1, child2, parent;
@@ -323,7 +417,7 @@
       assertNotNested(child, parent);
       return assertDisposed(child);
     });
-    it('should not dispose of a cached view', function() {
+    it('should not dispose of a cached child view when the parent renders', function() {
       var child, grandchild, parent;
       parent = new Giraffe.View;
       child = new Giraffe.View;
@@ -335,9 +429,27 @@
       child.render();
       assertNested(child, parent);
       assertNested(grandchild, child);
+      assertAttached(child, parent.$el);
+      assertNotAttached(grandchild, child.$el);
       return assertNotDisposed(grandchild);
     });
-    it('should add and remove some children', function() {
+    it('should not dispose of a child view when the parent renders if `preserve` is `true`', function() {
+      var child, grandchild, parent;
+      parent = new Giraffe.View;
+      child = new Giraffe.View;
+      grandchild = new Giraffe.View;
+      parent.attach(child);
+      child.attach(grandchild);
+      child.render({
+        preserve: true
+      });
+      assertNested(child, parent);
+      assertNested(grandchild, child);
+      assertAttached(child, parent.$el);
+      assertNotAttached(grandchild, child.$el);
+      return assertNotDisposed(grandchild);
+    });
+    it('should add and remove several children as siblings', function() {
       var a, b, c, parent;
       parent = new Giraffe.View;
       a = new Giraffe.View;
@@ -426,13 +538,15 @@
   });
 
   describe('Giraffe.Contrib.CollectionView', function() {
+    var CollectionView;
+    CollectionView = Giraffe.Contrib.CollectionView;
     it('should be OK', function() {
-      return assert.ok(new Giraffe.Contrib.CollectionView);
+      return assert.ok(new CollectionView);
     });
     it('should render model views passed to the constructor', function() {
       var a, child1, child2, collection, _ref;
       collection = new Giraffe.Collection([{}, {}]);
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         collection: collection
       });
       a.attachTo(getEl());
@@ -447,7 +561,7 @@
     it('should render model views added after initialization', function() {
       var a, child, collection;
       collection = new Giraffe.Collection;
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         collection: collection
       });
       a.attachTo(getEl());
@@ -461,7 +575,7 @@
     it('should render models views when extended', function() {
       var A, a, collection;
       collection = new Giraffe.Collection([{}, {}]);
-      A = Giraffe.Contrib.CollectionView.extend({
+      A = CollectionView.extend({
         collection: collection
       });
       a = new A;
@@ -473,7 +587,7 @@
     it('should sync when the collection is reset', function() {
       var a, collection, modelView;
       collection = new Giraffe.Collection([{}]);
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         collection: collection
       });
       a.attachTo(getEl());
@@ -484,34 +598,61 @@
       assertDisposed(modelView);
       return assert.lengthOf(a.children, 2);
     });
-    it('should sync when a model is added to the collection', function() {
+    it('should sync when models are added to the collection', function() {
       var a;
-      a = new Giraffe.Contrib.CollectionView;
+      a = new CollectionView;
       a.attachTo(getEl());
       a.collection.add({});
       assert.lengthOf(a.children, 1);
+      a.collection.add({});
+      assert.lengthOf(a.children, 2);
       return assertAttached(a.children);
     });
-    it('should sync when a model is added via addOne', function() {
+    it('should sync when models are added via `addOne`', function() {
       var a;
-      a = new Giraffe.Contrib.CollectionView;
+      a = new CollectionView;
       a.attachTo(getEl());
-      a.collection.add({});
+      a.addOne({});
       assert.lengthOf(a.children, 1);
+      a.addOne({});
+      assert.lengthOf(a.children, 2);
       return assertAttached(a.children);
     });
-    it('should sync when a model is removed', function() {
-      var a, modelView;
-      a = new Giraffe.Contrib.CollectionView;
+    it('should sync when models are removed from the collection', function() {
+      var a, modelView1, modelView2, _ref;
+      a = new CollectionView;
       a.attachTo(getEl());
-      a.collection.add({});
+      a.collection.add([{}, {}]);
+      assert.lengthOf(a.children, 2);
+      _ref = a.children, modelView1 = _ref[0], modelView2 = _ref[1];
+      assert.ok(modelView1 && modelView2);
+      assert.ok(modelView1.isAttached());
+      assert.ok(modelView2.isAttached());
+      a.collection.remove(a.collection.at(0));
       assert.lengthOf(a.children, 1);
-      modelView = a.children[0];
-      assert.ok(modelView);
-      assert.ok(modelView.isAttached());
+      assertDisposed(modelView1);
+      assertNotDisposed(modelView2);
       a.collection.remove(a.collection.at(0));
       assert.lengthOf(a.children, 0);
-      return assertDisposed(modelView);
+      return assertDisposed(modelView2);
+    });
+    it('should sync when models are removed via `removeOne`', function() {
+      var a, modelView1, modelView2, _ref;
+      a = new CollectionView;
+      a.attachTo(getEl());
+      a.collection.add([{}, {}]);
+      assert.lengthOf(a.children, 2);
+      _ref = a.children, modelView1 = _ref[0], modelView2 = _ref[1];
+      assert.ok(modelView1 && modelView2);
+      assert.ok(modelView1.isAttached());
+      assert.ok(modelView2.isAttached());
+      a.removeOne(a.collection.at(0));
+      assert.lengthOf(a.children, 1);
+      assertDisposed(modelView1);
+      assertNotDisposed(modelView2);
+      a.removeOne(a.collection.at(0));
+      assert.lengthOf(a.children, 0);
+      return assertDisposed(modelView2);
     });
     it('should keep model views sorted when a value changes', function() {
       var a, child1, child2, collection, _ref, _ref1;
@@ -524,7 +665,7 @@
       ], {
         comparator: 'foo'
       });
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         collection: collection
       });
       a.attachTo(getEl());
@@ -551,7 +692,7 @@
       ], {
         comparator: 'foo'
       });
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         collection: collection
       });
       a.addOne({
@@ -567,7 +708,7 @@
       MyModelView = Giraffe.View.extend({
         foo: 'bar'
       });
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         modelView: MyModelView
       });
       a.addOne({});
@@ -577,7 +718,7 @@
     });
     it('should pass `modelViewArgs` to the model views', function() {
       var a, child;
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         modelViewArgs: [
           {
             foo: 'bar'
@@ -591,7 +732,7 @@
     it('should insert the model views in `modelViewEl` if provided', function() {
       var a, child1, child2, className;
       className = 'my-model-view-el';
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         modelViewEl: '.' + className,
         templateStrategy: function() {
           return "<div class='" + className + "'></div>";
@@ -608,7 +749,7 @@
     return it('should accept View#ui names for `modelViewEl`', function() {
       var a, child, className;
       className = 'my-model-view-el';
-      a = new Giraffe.Contrib.CollectionView({
+      a = new CollectionView({
         ui: {
           $myModelViewEl: '.' + className
         },
@@ -620,6 +761,225 @@
       a.addOne({});
       child = a.children[0];
       return assertAttached(child, a.$myModelViewEl);
+    });
+  });
+
+  describe('Giraffe.Contrib.FastCollectionView', function() {
+    var FastCollectionView, fcvDefaults;
+    FastCollectionView = Giraffe.Contrib.FastCollectionView;
+    fcvDefaults = {
+      modelTemplate: '<li data-model-cid="<%= cid %>"></li>',
+      modelTemplateStrategy: 'underscore-template'
+    };
+    it('should be OK', function() {
+      return assert.ok(new FastCollectionView(fcvDefaults));
+    });
+    it('should render els for models passed to the constructor', function() {
+      var a, collection;
+      collection = new Giraffe.Collection([{}, {}]);
+      a = new FastCollectionView(_.defaults({
+        collection: collection
+      }, fcvDefaults));
+      assert.lengthOf(a.$el.children(), 0);
+      a.render();
+      assert.lengthOf(a.children, 0);
+      return assert.lengthOf(a.$el.children(), 2);
+    });
+    it('should render models views when extended', function() {
+      var A, a, collection;
+      collection = new Giraffe.Collection([{}, {}]);
+      A = FastCollectionView.extend(_.defaults({
+        collection: collection
+      }, fcvDefaults));
+      a = new A;
+      a.attachTo(getEl());
+      return assert.lengthOf(a.$el.children(), 2);
+    });
+    it('should sync when the collection is reset', function() {
+      var a;
+      a = new FastCollectionView(fcvDefaults);
+      a.attachTo(getEl());
+      a.addOne({});
+      assert.lengthOf(a.$el.children(), 1);
+      a.collection.reset([{}, {}]);
+      return assert.lengthOf(a.$el.children(), 2);
+    });
+    it('should sync when models are added to the collection', function() {
+      var a;
+      a = new FastCollectionView(fcvDefaults);
+      a.attachTo(getEl());
+      assert.lengthOf(a.$el.children(), 0);
+      a.collection.add({});
+      assert.lengthOf(a.$el.children(), 1);
+      a.collection.add([{}, {}]);
+      return assert.lengthOf(a.$el.children(), 3);
+    });
+    it('should sync when models are added via `addOne`', function() {
+      var a;
+      a = new FastCollectionView(fcvDefaults);
+      a.attachTo(getEl());
+      a.addOne({});
+      assert.lengthOf(a.$el.children(), 1);
+      a.addOne({});
+      assert.lengthOf(a.$el.children(), 2);
+      a.addOne({});
+      return assert.lengthOf(a.$el.children(), 3);
+    });
+    it('should sync when models are removed from the collection', function() {
+      var a;
+      a = new FastCollectionView(fcvDefaults);
+      a.attachTo(getEl());
+      a.collection.add({});
+      assert.lengthOf(a.$el.children(), 1);
+      a.collection.add({});
+      assert.lengthOf(a.$el.children(), 2);
+      a.collection.remove(a.collection.at(1));
+      assert.lengthOf(a.$el.children(), 1);
+      a.collection.remove(a.collection.at(0));
+      return assert.lengthOf(a.$el.children(), 0);
+    });
+    it('should sync when models are removed via `removeOne`', function() {
+      var a;
+      a = new FastCollectionView(fcvDefaults);
+      a.attachTo(getEl());
+      a.collection.add({});
+      assert.lengthOf(a.$el.children(), 1);
+      a.collection.add({});
+      assert.lengthOf(a.$el.children(), 2);
+      a.removeOne(a.collection.at(1));
+      assert.lengthOf(a.$el.children(), 1);
+      a.removeOne(a.collection.at(0));
+      return assert.lengthOf(a.$el.children(), 0);
+    });
+    it('should keep model views sorted when a value changes', function() {
+      var a, collection, el1, el2, model1, model2, _ref, _ref1;
+      collection = new Giraffe.Collection([
+        {
+          foo: 1
+        }, {
+          foo: 0
+        }
+      ], {
+        comparator: 'foo'
+      });
+      a = new FastCollectionView(_.defaults({
+        collection: collection
+      }, fcvDefaults));
+      a.attachTo(getEl());
+      _ref = a.collection.models, model1 = _ref[0], model2 = _ref[1];
+      assert.equal(0, model1.get('foo'));
+      assert.equal(1, model2.get('foo'));
+      el1 = a.getElByCid(model1.cid);
+      el2 = a.getElByCid(model2.cid);
+      assertSiblings(el1, el2);
+      model1.set('foo', 2);
+      collection.sort();
+      _ref1 = a.collection.models, model1 = _ref1[0], model2 = _ref1[1];
+      assert.equal(1, model1.get('foo'));
+      assert.equal(2, model2.get('foo'));
+      el1 = a.getElByCid(model1.cid);
+      el2 = a.getElByCid(model2.cid);
+      return assertSiblings(el1, el2);
+    });
+    it('should keep model views sorted when a new model is added', function() {
+      var a, collection, el1, el2, el3, model1, model2, model3, _ref;
+      collection = new Giraffe.Collection([
+        {
+          foo: 0
+        }, {
+          foo: 2
+        }
+      ], {
+        comparator: 'foo'
+      });
+      a = new FastCollectionView(_.defaults({
+        collection: collection
+      }, fcvDefaults));
+      a.addOne({
+        foo: 1
+      });
+      _ref = collection.models, model1 = _ref[0], model2 = _ref[1], model3 = _ref[2];
+      el1 = a.getElByCid(model1.cid);
+      el2 = a.getElByCid(model2.cid);
+      el3 = a.getElByCid(model3.cid);
+      assertSiblings(el1, el2);
+      return assertSiblings(el2, el3);
+    });
+    it('should use the `modelTemplate` option to construct the DOM', function() {
+      var $children, a;
+      a = new FastCollectionView({
+        collection: new Giraffe.Collection({
+          foo: 'bar'
+        }),
+        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplateStrategy: 'underscore-template'
+      });
+      $children = a.$el.children();
+      assert.lengthOf($children, 0);
+      a.render();
+      $children = a.$el.children();
+      assert.lengthOf($children, 1);
+      a.addOne({
+        foo: 'baz'
+      });
+      $children = a.$el.children();
+      assert.lengthOf($children, 2);
+      assert.equal('bar', $children.first().text());
+      return assert.equal('baz', $children.last().text());
+    });
+    it('should use `modelSerialize` to send custom data to the template', function() {
+      var a;
+      a = new FastCollectionView({
+        collection: new Giraffe.Collection({
+          foo: 'bar'
+        }),
+        modelTemplate: '<li data-model-cid="<%= cid %>"><%= foo %></li>',
+        modelTemplateStrategy: 'underscore-template',
+        modelSerialize: function() {
+          var data;
+          data = this.model.toJSON();
+          data.cid = this.model.cid;
+          return data;
+        }
+      });
+      assert.ok(!a.$el.text());
+      a.render();
+      return assert.equal('bar', a.$el.text());
+    });
+    it('should insert the model views in `modelEl` if provided', function() {
+      var a, className;
+      className = 'my-model-view-el';
+      a = new FastCollectionView({
+        modelEl: '.' + className,
+        templateStrategy: function() {
+          return "<ul class='" + className + "'></ul>";
+        },
+        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplateStrategy: 'underscore-template'
+      });
+      a.addOne({
+        foo: 'bar'
+      });
+      return assertHasText(a, 'bar', className);
+    });
+    return it('should accept View#ui names for `modelEl`', function() {
+      var a, className;
+      className = 'my-model-view-el';
+      a = new FastCollectionView({
+        ui: {
+          $myModelEl: '.' + className
+        },
+        modelEl: '$myModelEl',
+        templateStrategy: function() {
+          return "<div class='" + className + "'></div>";
+        },
+        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplateStrategy: 'underscore-template'
+      });
+      a.addOne({
+        foo: 'bar'
+      });
+      return assertHasText(a, 'bar', className);
     });
   });
 

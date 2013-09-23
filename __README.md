@@ -45,7 +45,8 @@ building upon __Backbone__ with a minimalist approach. For example, there is no
 concept of specialized containers like regions or layouts, as any view in
 __Giraffe__ can act as a parent of one or more child views. __Giraffe__ also
 has no CollectionView or ItemView
-(see [__Giraffe.Contrib.CollectionView__](http://barc.github.io/backbone.giraffe/collectionView.html)),
+(see [__Giraffe.Contrib.CollectionView__](http://barc.github.io/backbone.giraffe/collectionView.html)
+and [__Giraffe.Contrib.FastCollectionView__](http://barc.github.io/backbone.giraffe/fastCollectionView.html)),
 but we are open to suggestions to make __Giraffe__ as useful as possible to
 __Backbone__ developers who want an extension library with few opinions.
 

@@ -1,9 +1,9 @@
 # Giraffe.Contrib.CollectionView
 
-This example details how to use the
+This example details how to use
 [`Giraffe.Contrib`](https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js)
-to implement views for a collection of fruits with the CollectionView
-and ModelView design pattern.
+to implement views for a collection of fruits with the __Contrib.CollectionView__
+and `ModelView` design pattern.
 
 :::BEGIN Example
 
