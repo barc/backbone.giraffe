@@ -189,8 +189,8 @@ class Contrib.FastCollectionView extends Giraffe.View
   @getDefaults: (ctx) ->
     collection: if ctx.collection then null else new Giraffe.Collection # lazy lood for efficiency
     modelTemplate: null # either this or a `modelTemplateStrategy` function is required
+    modelSerialize: -> @model # function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
     modelTemplateStrategy: ctx.templateStrategy # inherited by default, can be overridden to directly provide a string without using `template` and `serialize`
-    modelSerialize: ctx.modelSerialize # default defined on prototype returns `this.model`; is function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
     modelEl: null # optional selector or Giraffe.View#ui name to contain the model html
   
 
@@ -303,18 +303,12 @@ class Contrib.FastCollectionView extends Giraffe.View
 
 
   ###
-  * Default serialize function for the model template.
-  ###
-  modelSerialize: ->
-    @model
-
-
-  ###
   * Generates a model's html string using `modelTemplateCtx` and its options.
   ###
   _renderModel: (model) ->
     @modelTemplateCtx.model = model
     @modelTemplateCtx.templateStrategy()
+    @
 
 
   ###
