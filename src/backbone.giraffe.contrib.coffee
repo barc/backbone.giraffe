@@ -31,7 +31,7 @@ Contrib = Giraffe.Contrib =
 *
 *  view.children.length; // => 1
 *
-*  view.collection.addOne({name: 'banana'});
+*  view.collection.add({name: 'banana'});
 *
 *  view.children.length; // => 2
 ###
@@ -96,7 +96,7 @@ class Contrib.CollectionView extends Giraffe.View
 
   # TODO If there was a "rendered" event this wouldn't need to implement afterRender (requiring super calls)
   afterRender: ->
-    @collection.each @addOne
+    @addOne m for m in @collection.models
     @
 
 
@@ -109,7 +109,7 @@ class Contrib.CollectionView extends Giraffe.View
     @
 
 
-  addOne: (model) =>
+  addOne: (model) ->
     if !@collection.contains(model)
       @collection.add model # falls through
     else if !@_renderedOnce # TODO a better way, perhaps add to Giraffe API?
@@ -128,23 +128,34 @@ class Contrib.CollectionView extends Giraffe.View
 * per model_. Performance should generally be improved, especially when the
 * entire collection must be rendered, as string concatenation is used to touch
 * the DOM once. [Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
-* 
 *
 * The option `modelEl` can be used to specify where to insert the model html.
-* It defaults to `view.$el` and currently cannot contain any elemenets other
+* It defaults to `view.$el` and cannot contain any DOM elemenets other
 * than those automatically created per model by the `FastCollectionView`.
+*
+* The option `modelTemplate` is the only required one and it is used to create
+* the html per model. ___`modelTemplate` must return a single top-level DOM node
+* per call.___ The __FVC__ uses a similar templating system to the
+* __Giraffe.View__, but instead of defining `template` and an optional 
+* `serialize` and templateStrategy`, __FVC__ takes  `modelTemplate` and optional
+* `modelSerialize` and `modelTemplateStrategy`. As in __Giraffe.View__,
+* setting `modelTemplateStrategy` to a function bypasses Giraffe's usage
+* of `modelTemplate` and `modelSerialize`.
+*
+* The __FVC__ reacts to the events `'add'`, `'remove'`, `'reset`', and `'sort'`.
+* It should keep `modelEl` in sync wih the collection with a template per model.
+* The __FVC__ API also exposes a shortcut to manipulating the collection with 
+* `addOne` and `removeOne`.
 *
 * @param {Object} options
 *
 * - [collection] - {Collection} The collection instance for the `FastCollectionView`. Defaults to a new __Giraffe.Collection__.
-* - modelTemplate - {String,Function} Required. The template for each model. Is actually not required if `modelTemplateStrategy` is a function, signaling circumvention of Giraffe's templating help.
+* - modelTemplate - {String,Function} Required. The template for each model. Must return exactly 1 top level DOM element per call. Is actually not required if `modelTemplateStrategy` is a function, signaling circumvention of Giraffe's templating help.
 * - [modelTemplateStrategy] - {String} The template strategy used for the `modelTemplate`. Can be a function returning a string of HTML to override the need for `modelTemplate` and `modelSerialize`. Defaults to inheriting from the view.
 * - [modelSerialize] - {Function} Used to get the data passed to `modelTemplate`. Returns the model by default. Customize by passing as an option or override globally at `Giraffe.Contrib.FastCollectionView.prototype.modelSerialize`.
 * - [modelEl] - {Selector,Giraffe.View#ui} The selector or Giraffe.View#ui name for the model template container. Can be a function returning the same. Do not put html in here manually with the current design. Defaults to `view.$el`.
 *
 * @example
-*
-*  var FruitView = Giraffe.View.extend({});
 *
 *  var FruitsView = Giraffe.Contrib.CollectionView.extend({
 *    modelTemplate: 'my-fcv-template-id'
@@ -154,11 +165,21 @@ class Contrib.CollectionView extends Giraffe.View
 *    collection: [{name: 'apple'}],
 *  });
 *
-*  view.children.length; // => 1
+*  view.$el.children().length; // => 1
 *
-*  view.collection.addOne({name: 'banana'});
+*  var banana = new Backbone.Model({name: 'banana'});
 *
-*  view.children.length; // => 2
+*  view.collection.add(banana);
+*  // or
+*  // view.addOne(banana);
+*
+*  view.$el.children().length; // => 2
+*
+*  view.collection.remove(banana);
+*  // or
+*  // view.removeOne(banana);
+*
+*  view.$el.children().length; // => 1
 ###
 class Contrib.FastCollectionView extends Giraffe.View
 
@@ -167,7 +188,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     collection: if ctx.collection then null else new Giraffe.Collection # lazy lood for efficiency
     modelTemplate: null # either this or a `modelTemplateStrategy` function is required
     modelTemplateStrategy: ctx.templateStrategy # inherited by default, can be overridden to directly provide a string without using `template` and `serialize`
-    modelSerialize: null # default defined on prototype returns `this.model`; is function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
+    modelSerialize: ctx.modelSerialize # default defined on prototype returns `this.model`; is function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
     modelEl: null # optional selector or Giraffe.View#ui name to contain the model html
   
 
@@ -179,8 +200,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     _.defaults @, @constructor.getDefaults(@)
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
-    @listenTo @collection, 'reset', @render
-    @listenTo @collection, 'sort', @render
+    @listenTo @collection, 'reset sort', @render
     @modelEl = @ui?[@modelEl] or @modelEl if @modelEl # accept a Giraffe.View#ui name or a selector
     @modelTemplateCtx =
       serialize: @modelSerialize
@@ -214,7 +234,7 @@ class Contrib.FastCollectionView extends Giraffe.View
   ###
   * Adds `model` to the collection if not present and renders it to the DOM.
   ###
-  addOne: (model) => # TODO could rename this `add` and take an array or object
+  addOne: (model) ->
     if !@collection.contains(model)
       @collection.add model # falls through
     else if !@_renderedOnce # TODO a better way, perhaps add to Giraffe API?
@@ -295,7 +315,7 @@ class Contrib.FastCollectionView extends Giraffe.View
 
 
   ###
-  * Inserts a model's html into the DOM by index.
+  * Inserts a model's html into the DOM.
   ###
   _insertModelHTML: (html, model) ->
     $children = @$modelEl.children()

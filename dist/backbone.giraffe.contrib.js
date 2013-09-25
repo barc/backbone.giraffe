@@ -1,6 +1,5 @@
 (function() {
   var Contrib,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -39,7 +38,7 @@
   *
   *  view.children.length; // => 1
   *
-  *  view.collection.addOne({name: 'banana'});
+  *  view.collection.add({name: 'banana'});
   *
   *  view.children.length; // => 2
   */
@@ -58,7 +57,6 @@
     };
 
     function CollectionView() {
-      this.addOne = __bind(this.addOne, this);
       var _ref, _ref1;
       CollectionView.__super__.constructor.apply(this, arguments);
       _.defaults(this, this.constructor.getDefaults(this));
@@ -123,7 +121,12 @@
     };
 
     CollectionView.prototype.afterRender = function() {
-      this.collection.each(this.addOne);
+      var m, _i, _len, _ref;
+      _ref = this.collection.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        m = _ref[_i];
+        this.addOne(m);
+      }
       return this;
     };
 
@@ -171,23 +174,34 @@
   * per model_. Performance should generally be improved, especially when the
   * entire collection must be rendered, as string concatenation is used to touch
   * the DOM once. [Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
-  * 
   *
   * The option `modelEl` can be used to specify where to insert the model html.
-  * It defaults to `view.$el` and currently cannot contain any elemenets other
+  * It defaults to `view.$el` and cannot contain any DOM elemenets other
   * than those automatically created per model by the `FastCollectionView`.
+  *
+  * The option `modelTemplate` is the only required one and it is used to create
+  * the html per model. ___`modelTemplate` must return a single top-level DOM node
+  * per call.___ The __FVC__ uses a similar templating system to the
+  * __Giraffe.View__, but instead of defining `template` and an optional 
+  * `serialize` and templateStrategy`, __FVC__ takes  `modelTemplate` and optional
+  * `modelSerialize` and `modelTemplateStrategy`. As in __Giraffe.View__,
+  * setting `modelTemplateStrategy` to a function bypasses Giraffe's usage
+  * of `modelTemplate` and `modelSerialize`.
+  *
+  * The __FVC__ reacts to the events `'add'`, `'remove'`, `'reset`', and `'sort'`.
+  * It should keep `modelEl` in sync wih the collection with a template per model.
+  * The __FVC__ API also exposes a shortcut to manipulating the collection with 
+  * `addOne` and `removeOne`.
   *
   * @param {Object} options
   *
   * - [collection] - {Collection} The collection instance for the `FastCollectionView`. Defaults to a new __Giraffe.Collection__.
-  * - modelTemplate - {String,Function} Required. The template for each model. Is actually not required if `modelTemplateStrategy` is a function, signaling circumvention of Giraffe's templating help.
+  * - modelTemplate - {String,Function} Required. The template for each model. Must return exactly 1 top level DOM element per call. Is actually not required if `modelTemplateStrategy` is a function, signaling circumvention of Giraffe's templating help.
   * - [modelTemplateStrategy] - {String} The template strategy used for the `modelTemplate`. Can be a function returning a string of HTML to override the need for `modelTemplate` and `modelSerialize`. Defaults to inheriting from the view.
   * - [modelSerialize] - {Function} Used to get the data passed to `modelTemplate`. Returns the model by default. Customize by passing as an option or override globally at `Giraffe.Contrib.FastCollectionView.prototype.modelSerialize`.
   * - [modelEl] - {Selector,Giraffe.View#ui} The selector or Giraffe.View#ui name for the model template container. Can be a function returning the same. Do not put html in here manually with the current design. Defaults to `view.$el`.
   *
   * @example
-  *
-  *  var FruitView = Giraffe.View.extend({});
   *
   *  var FruitsView = Giraffe.Contrib.CollectionView.extend({
   *    modelTemplate: 'my-fcv-template-id'
@@ -197,11 +211,21 @@
   *    collection: [{name: 'apple'}],
   *  });
   *
-  *  view.children.length; // => 1
+  *  view.$el.children().length; // => 1
   *
-  *  view.collection.addOne({name: 'banana'});
+  *  var banana = new Backbone.Model({name: 'banana'});
   *
-  *  view.children.length; // => 2
+  *  view.collection.add(banana);
+  *  // or
+  *  // view.addOne(banana);
+  *
+  *  view.$el.children().length; // => 2
+  *
+  *  view.collection.remove(banana);
+  *  // or
+  *  // view.removeOne(banana);
+  *
+  *  view.$el.children().length; // => 1
   */
 
 
@@ -213,13 +237,12 @@
         collection: ctx.collection ? null : new Giraffe.Collection,
         modelTemplate: null,
         modelTemplateStrategy: ctx.templateStrategy,
-        modelSerialize: null,
+        modelSerialize: ctx.modelSerialize,
         modelEl: null
       };
     };
 
     function FastCollectionView() {
-      this.addOne = __bind(this.addOne, this);
       var _ref;
       FastCollectionView.__super__.constructor.apply(this, arguments);
       if ((this.modelTemplate == null) && !_.isFunction(this.modelTemplateStrategy)) {
@@ -228,8 +251,7 @@
       _.defaults(this, this.constructor.getDefaults(this));
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
-      this.listenTo(this.collection, 'reset', this.render);
-      this.listenTo(this.collection, 'sort', this.render);
+      this.listenTo(this.collection, 'reset sort', this.render);
       if (this.modelEl) {
         this.modelEl = ((_ref = this.ui) != null ? _ref[this.modelEl] : void 0) || this.modelEl;
       }
@@ -374,7 +396,7 @@
     };
 
     /*
-    * Inserts a model's html into the DOM by index.
+    * Inserts a model's html into the DOM.
     */
 
 
