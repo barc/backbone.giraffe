@@ -205,8 +205,7 @@ mainView.attachTo(<span class="string">'body'</span>);</code></pre>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruit-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">'fruit'</span> <span class="attribute">data-model-cid</span>=<span class="value">'&lt;%= cid %&gt;'</span>
-      <span class="attribute">style</span>=<span class="value">'background-color: &lt;%= attributes.color %&gt;;'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">'fruit'</span> <span class="attribute">style</span>=<span class="value">'background-color: &lt;%= attributes.color %&gt;;'</span>&gt;</span>
     <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= attributes.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onDelete'</span>&gt;</span>delete<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClone'</span>&gt;</span>clone<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
@@ -295,9 +294,11 @@ per model in its <code>collection</code> by reacting to add/remove/sort/reset ev
   }
 });</code></pre>
 <p>The <code>FastCollectionView</code> property <code>modelEl</code> designates where to insert the
-models&#39; html. It defaults to <code>view.$el</code>. As specified in <code>FruitsView</code>,
-<code>&#39;#fruits-list&#39;</code> contains the fruits. Here&#39;s the template that creates this
-<code>modelEl</code>:</p>
+models&#39; html. It defaults to <code>view.$el</code>. It is important to not put any other
+elements inside <code>modelEl</code>, as <strong>Giraffe</strong> makes this assumption to be able to
+enable its automated features without creating views. As specified in
+<code>FruitsView</code>, <code>&#39;#fruits-list&#39;</code> contains the fruits. Here&#39;s the template that
+creates this <code>modelEl</code>:</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruits-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
   <span class="tag">&lt;<span class="title">h1</span>&gt;</span>Fruits<span class="tag">&lt;/<span class="title">h1</span>&gt;</span>
   <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">id</span>=<span class="value">'fruits-list'</span>&gt;</span> <span class="comment">&lt;!-- matches `modelEl` --&gt;</span>
@@ -305,37 +306,21 @@ models&#39; html. It defaults to <code>view.$el</code>. As specified in <code>Fr
   <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 <div class="note">
-At the moment, to maximize performance, the <code>FastCollectionView</code> is destructive
+To maximize performance, the <code>FastCollectionView</code> is destructive
 to its <code>modelEl</code> when the collection is fully re-rendered, which currently
 occurs on <code>render</code> and the <code>&#39;reset&#39;</code> and <code>&#39;sort&#39;</code> events.
-Your feedback is welcome - perhaps destroying by model cid rather than emptying
-the entire container should be an option if you wish to render additional
-content in <code>modelEl</code>. Or perhaps full control over the contents of <code>modelEl</code> is
-something the <code>FastCollectionView</code> <em>should</em> assume, as it does now.
 </div>
 
 <p>The template rendered per model, <code>modelTemplate</code>, <code>&#39;#fruit-template&#39;</code> in this
 example, is the only required option of the <code>FastCollectionView</code>.
-The speed of <code>FastCollectionView</code> unfortunately has its price - 
-<strong>the attribute <code>data-model-cid</code> is required to be present on the top-level
-element(s) returned from  <code>modelTemplate</code>.</strong> Without <code>data-model-cid</code>, the
-collection view doesn&#39;t know how to map its collection to and from the DOM.
 Let&#39;s add delete and clone buttons to let users visually modify the collection.</p>
 <pre><code class="html"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">id</span>=<span class="value">'fruit-template'</span> <span class="attribute">type</span>=<span class="value">'text/template'</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">'fruit'</span> <span class="attribute">data-model-cid</span>=<span class="value">'&lt;%= cid %&gt;'</span>
-      <span class="attribute">style</span>=<span class="value">'background-color: &lt;%= attributes.color %&gt;;'</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">'fruit'</span> <span class="attribute">style</span>=<span class="value">'background-color: &lt;%= attributes.color %&gt;;'</span>&gt;</span>
     <span class="tag">&lt;<span class="title">h2</span>&gt;</span><span class="javascript">&lt;%= attributes.name %&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onDelete'</span>&gt;</span>delete<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
     <span class="tag">&lt;<span class="title">button</span> <span class="attribute">data-gf-click</span>=<span class="value">'onClone'</span>&gt;</span>clone<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
   <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<div class="note">
-The <code>data-model-cid</code> attribute is required on the top-level elements returned
-from <code>modelTemplate</code> so the <code>FastCollectionView</code> can be aware of what&#39;s where.
-The <code>CollectionView</code> has no such restriction and may be preferred in cases
-where performance is not critical.
-</div>
-
 <p>Now create some tasty fruits and create the collection to assign to  <code>FruitsView</code>.</p>
 <pre><code class="js"><span class="keyword">var</span> savoryFruits = [
   {name: <span class="string">'Orange'</span>, color: <span class="string">'#FF7F00'</span>},
