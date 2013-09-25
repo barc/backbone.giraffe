@@ -768,7 +768,7 @@
     var FastCollectionView, fcvDefaults;
     FastCollectionView = Giraffe.Contrib.FastCollectionView;
     fcvDefaults = {
-      modelTemplate: '<li data-model-cid="<%= cid %>"></li>',
+      modelTemplate: '<li></li>',
       modelTemplateStrategy: 'underscore-template'
     };
     it('should be OK', function() {
@@ -911,7 +911,7 @@
         collection: new Giraffe.Collection({
           foo: 'bar'
         }),
-        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplate: '<li><%= attributes.foo %></li>',
         modelTemplateStrategy: 'underscore-template'
       });
       $children = a.$el.children();
@@ -933,7 +933,7 @@
         collection: new Giraffe.Collection({
           foo: 'bar'
         }),
-        modelTemplate: '<li data-model-cid="<%= cid %>"><%= foo %></li>',
+        modelTemplate: '<li><%= foo %></li>',
         modelTemplateStrategy: 'underscore-template',
         modelSerialize: function() {
           var data;
@@ -954,7 +954,7 @@
         templateStrategy: function() {
           return "<ul class='" + className + "'></ul>";
         },
-        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplate: '<li><%= attributes.foo %></li>',
         modelTemplateStrategy: 'underscore-template'
       });
       a.addOne({
@@ -973,7 +973,7 @@
         templateStrategy: function() {
           return "<div class='" + className + "'></div>";
         },
-        modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>',
+        modelTemplate: '<li><%= attributes.foo %></li>',
         modelTemplateStrategy: 'underscore-template'
       });
       a.addOne({
