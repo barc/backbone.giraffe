@@ -127,16 +127,8 @@ class Contrib.CollectionView extends Giraffe.View
 * A __FastCollectionView__ is a __CollectionView__ that _doesn't create a view
 * per model_. Performance should generally be improved, especially when the
 * entire collection must be rendered, as string concatenation is used to touch
-* the DOM once.
-*
-* There are however some caveats as opposed to the regular __CollectionView__.
-*
-* Normally, __Giraffe__ uses `data-view-cid` to link DOM nodes to view instances.
-* The __FastCollectionView__ (__FCV__ from here on) does not use views for its
-* models, and as a result the __FCV__ cannot be certain of what its contents are
-* unless you and it make an agreement about how you'll handle things. One of the
-* best solutions found so far is to agree to not put anything else inside the
-* element that __Giraffe__ put model HTML into, `modelEl`. 
+* the DOM once. [Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
+* 
 *
 * The option `modelEl` can be used to specify where to insert the model html.
 * It defaults to `view.$el` and currently cannot contain any elemenets other
@@ -321,5 +313,3 @@ class Contrib.FastCollectionView extends Giraffe.View
       else
         @$modelEl.append html
     @
-
-    # http://jsperf.com/collection-views-in-giraffe-and-marionette

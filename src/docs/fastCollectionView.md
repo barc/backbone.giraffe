@@ -199,7 +199,8 @@ The `FastCollectionView` should be especially fast when re-rendering the entire
 collection as on `'reset'` and `'sort'` events, because it concatenates all of
 the html for each model into one string. However this may not always be the
 optimal behavior. This class is a work in progress and smarter
-rendering is something to look into. A jsPerf is forthcoming.
+rendering is something to look into. 
+[Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
 </div>
 
 :::@ --hide

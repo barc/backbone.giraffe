@@ -610,7 +610,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
   FastCollectionView = Giraffe.Contrib.FastCollectionView
 
   fcvDefaults =
-    modelTemplate: '<li></li>'
+    modelTemplate: '<li data-model-cid="<%= cid %>"></li>'
     modelTemplateStrategy: 'underscore-template'
 
   it 'should be OK', ->
@@ -715,7 +715,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
   it 'should use the `modelTemplate` option to construct the DOM', ->
     a = new FastCollectionView
       collection: new Giraffe.Collection(foo: 'bar')
-      modelTemplate: '<li><%= attributes.foo %></li>'
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
       modelTemplateStrategy: 'underscore-template'
     $children = a.$el.children()
     assert.lengthOf $children, 0
@@ -731,7 +731,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
   it 'should use `modelSerialize` to send custom data to the template', ->
     a = new FastCollectionView
       collection: new Giraffe.Collection(foo: 'bar')
-      modelTemplate: '<li><%= foo %></li>'
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= foo %></li>'
       modelTemplateStrategy: 'underscore-template'
       modelSerialize: -> # called with this == `fcv.modelTemplateCtx`
         data = @model.toJSON()
@@ -746,7 +746,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     a = new FastCollectionView
       modelEl: '.' + className
       templateStrategy: -> "<ul class='#{className}'></ul>"
-      modelTemplate: '<li><%= attributes.foo %></li>'
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
       modelTemplateStrategy: 'underscore-template'
     a.addOne foo: 'bar'
     assertHasText a, 'bar', className
@@ -758,7 +758,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
         $myModelEl: '.' + className
       modelEl: '$myModelEl'
       templateStrategy: -> "<div class='#{className}'></div>"
-      modelTemplate: '<li><%= attributes.foo %></li>'
+      modelTemplate: '<li data-model-cid="<%= cid %>"><%= attributes.foo %></li>'
       modelTemplateStrategy: 'underscore-template'
     a.addOne foo: 'bar'
     assertHasText a, 'bar', className
