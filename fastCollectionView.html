@@ -54,6 +54,10 @@
 <a href="https://github.com/barc/backbone.giraffe/blob/master/dist/backbone.giraffe.contrib.js"><code>Giraffe.Contrib</code></a>
 to implement a view for a collection of fruits with the <strong>Contrib.FastCollectionView</strong>,
 a class that efficiently renders a collection with a single view.</p>
+<p>The goal of this class is to render a collection as efficiently as possible. It
+has yet to be optimized much, but when re-rendering the entire collection on a
+<code>&#39;sort&#39;</code> or <code>&#39;reset&#39;</code> event it is very fast. 
+<a href="http://jsperf.com/collection-views-in-giraffe-and-marionette/2">Here&#39;s a jsPerf with more.</a></p>
 <div class='section-example'><h2 id='h-live-example'>Live Example</h2>
 <p>Here is the final result.
 The fruits are rendered inside a shared instance of <code>FruitsView</code>, which inherits
