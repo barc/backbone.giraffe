@@ -1,9 +1,9 @@
 (function() {
-  var areSiblings, assert, assertAttached, assertDisposed, assertHasText, assertNested, assertNotAttached, assertNotDisposed, assertNotNested, assertNotRendered, assertRendered, assertSiblings, getEl, hasText;
+  var assert, ut;
 
   assert = chai.assert;
 
-  getEl = ut.getEl, areSiblings = ut.areSiblings, hasText = ut.hasText, assertNested = ut.assertNested, assertNotNested = ut.assertNotNested, assertAttached = ut.assertAttached, assertNotAttached = ut.assertNotAttached, assertDisposed = ut.assertDisposed, assertNotDisposed = ut.assertNotDisposed, assertSiblings = ut.assertSiblings, assertRendered = ut.assertRendered, assertNotRendered = ut.assertNotRendered, assertHasText = ut.assertHasText;
+  ut = window.ut;
 
   describe('Giraffe.View', function() {
     it('should be OK', function() {
@@ -15,21 +15,21 @@
       var a;
       a = new Giraffe.View;
       a.render();
-      return assertRendered(a);
+      return ut.assert.rendered(a);
     });
     it('should attach a view to the DOM', function() {
       var $el, a;
       a = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       a.attachTo($el);
       assert.ok(a.isAttached());
-      return assertAttached(a, $el);
+      return ut.assert.attached(a, $el);
     });
     it('should insert a view and replace the current contents with method "html"', function() {
       var $el, a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       a.attachTo($el);
       b.attachTo($el, {
         method: 'html'
@@ -41,43 +41,43 @@
       var a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      b.attachTo(getEl());
+      b.attachTo(ut.getEl());
       a.attachTo(b, {
         method: 'before'
       });
-      return assertSiblings(a, b);
+      return ut.assert.siblings(a, b);
     });
     it('should insert a view after another with method "after"', function() {
       var a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      a.attachTo(getEl());
+      a.attachTo(ut.getEl());
       b.attachTo(a, {
         method: 'after'
       });
-      return assertSiblings(a, b);
+      return ut.assert.siblings(a, b);
     });
     it('should insert a view at the end of the target\'s children with "append"', function() {
       var $el, a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       a.attachTo($el);
       b.attachTo($el, {
         method: 'append'
       });
-      return assertSiblings(a, b);
+      return ut.assert.siblings(a, b);
     });
     it('should insert a view at the beginning of the target\'s children with "prepend"', function() {
       var $el, a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       b.attachTo($el);
       a.attachTo($el, {
         method: 'prepend'
       });
-      return assertSiblings(a, b);
+      return ut.assert.siblings(a, b);
     });
     it('should render a view when attached and call `afterRender`', function(done) {
       var a;
@@ -86,8 +86,8 @@
           return done();
         }
       });
-      a.attachTo(getEl());
-      return assertRendered(a);
+      a.attachTo(ut.getEl());
+      return ut.assert.rendered(a);
     });
     it('should suppress render on a view when attached', function() {
       var a;
@@ -96,14 +96,14 @@
           return assert.fail();
         }
       });
-      a.attachTo(getEl(), {
+      a.attachTo(ut.getEl(), {
         suppressRender: true
       });
-      return assertNotRendered(a);
+      return ut.assert.notRendered(a);
     });
     it('should render content into a view using the default "underscore-template-selector" strategy', function() {
       var $el, a, className, templateId, text;
-      $el = getEl();
+      $el = ut.getEl();
       templateId = 'my-render-test-template';
       className = 'render-test';
       text = 'hello world';
@@ -113,11 +113,11 @@
         text: text
       });
       a.render();
-      return assertHasText(a, text, className);
+      return ut.assert.hasText(a, text, className);
     });
     it('should render content into a view by overriding `templateStrategy`', function() {
       var $el, a, className, text;
-      $el = getEl();
+      $el = ut.getEl();
       className = 'render-test';
       text = 'hello world';
       a = new Giraffe.View({
@@ -127,11 +127,11 @@
         text: text
       });
       a.render();
-      return assertHasText(a, text, className);
+      return ut.assert.hasText(a, text, className);
     });
     it('should render content into a view using the "jst" strategy', function() {
       var $el, a, className, text;
-      $el = getEl();
+      $el = ut.getEl();
       className = 'render-test';
       text = 'hello world';
       a = new Giraffe.View({
@@ -142,11 +142,11 @@
         text: text
       });
       a.render();
-      return assertHasText(a, text, className);
+      return ut.assert.hasText(a, text, className);
     });
     it('should render content into a view using the "underscore-template" strategy', function() {
       var $el, a, className, text;
-      $el = getEl();
+      $el = ut.getEl();
       className = 'render-test';
       text = 'hello world';
       a = new Giraffe.View({
@@ -157,22 +157,22 @@
         text: text
       });
       a.render();
-      return assertHasText(a, text, className);
+      return ut.assert.hasText(a, text, className);
     });
     it('should dispose of a view', function() {
       var a;
       a = new Giraffe.View;
       a.dispose();
-      return assertDisposed(a);
+      return ut.assert.disposed(a);
     });
     it('should remove the view from the DOM on dispose', function() {
       var $el, a;
       a = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       a.attachTo($el);
-      assertAttached(a, $el);
+      ut.assert.attached(a, $el);
       a.dispose();
-      return assertDisposed(a);
+      return ut.assert.disposed(a);
     });
     it('should fire the event "disposed" when disposed', function(done) {
       var a;
@@ -185,58 +185,58 @@
     it('should detach a view, removing it from the DOM and disposing of it', function() {
       var a;
       a = new Giraffe.View;
-      a.attachTo(getEl());
+      a.attachTo(ut.getEl());
       a.detach();
       assert.ok(!a.isAttached());
-      return assertDisposed(a);
+      return ut.assert.disposed(a);
     });
     it('should detach a view and not dispose it due to passing `true` to `detach`', function() {
       var a;
       a = new Giraffe.View;
-      a.attachTo(getEl());
+      a.attachTo(ut.getEl());
       a.detach(true);
       assert.ok(!a.isAttached());
-      return assertNotDisposed(a);
+      return ut.assert.notDisposed(a);
     });
     it('should detach a view and not dispose due to passing `disposeOnDetach` to the view', function() {
       var a;
       a = new Giraffe.View({
         disposeOnDetach: false
       });
-      a.attachTo(getEl());
+      a.attachTo(ut.getEl());
       a.detach();
       assert.ok(!a.isAttached());
-      return assertNotDisposed(a);
+      return ut.assert.notDisposed(a);
     });
     it('should dispose the replaced view when using method "html"', function() {
       var $el, a, b;
       a = new Giraffe.View;
       b = new Giraffe.View;
-      $el = getEl();
+      $el = ut.getEl();
       a.attachTo($el);
       b.attachTo($el, {
         method: 'html'
       });
       assert.ok(!a.isAttached());
       assert.ok(b.isAttached());
-      assertDisposed(a);
-      return assertNotDisposed(b);
+      ut.assert.disposed(a);
+      return ut.assert.notDisposed(b);
     });
     it('should nest a view with attach', function() {
       var child, parent;
       parent = new Giraffe.View;
       child = new Giraffe.View;
       parent.attach(child);
-      assertNested(child, parent);
-      return assertAttached(child, parent);
+      ut.assert.nested(child, parent);
+      return ut.assert.attached(child, parent);
     });
     it('should nest a view with attachTo', function() {
       var child, parent;
       parent = new Giraffe.View;
       child = new Giraffe.View;
       child.attachTo(parent);
-      assertNested(child, parent);
-      return assertAttached(child, parent);
+      ut.assert.nested(child, parent);
+      return ut.assert.attached(child, parent);
     });
     it('should propagate dispose to deeply nested views', function() {
       var child, grandchild, greatgrandchild, parent;
@@ -247,15 +247,15 @@
       parent.attach(child);
       child.attach(grandchild);
       grandchild.attach(greatgrandchild);
-      assertNotDisposed(parent);
-      assertNotDisposed(child);
-      assertNotDisposed(grandchild);
-      assertNotDisposed(greatgrandchild);
+      ut.assert.notDisposed(parent);
+      ut.assert.notDisposed(child);
+      ut.assert.notDisposed(grandchild);
+      ut.assert.notDisposed(greatgrandchild);
       parent.dispose();
-      assertDisposed(parent);
-      assertDisposed(child);
-      assertDisposed(grandchild);
-      return assertDisposed(greatgrandchild);
+      ut.assert.disposed(parent);
+      ut.assert.disposed(child);
+      ut.assert.disposed(grandchild);
+      return ut.assert.disposed(greatgrandchild);
     });
     it('should dispose the child views when the parent removes them', function() {
       var child1, child2, parent;
@@ -267,8 +267,8 @@
       parent.attach(child1);
       parent.attach(child2);
       parent.removeChildren();
-      assertDisposed(child1);
-      assertDisposed(child2);
+      ut.assert.disposed(child1);
+      ut.assert.disposed(child2);
       return assert.lengthOf(parent.children, 0);
     });
     it('should remove children but not dispose them when preserved', function() {
@@ -279,8 +279,8 @@
       parent.attach(child1);
       parent.attach(child2);
       parent.removeChildren(true);
-      assertNotDisposed(child1);
-      assertNotDisposed(child2);
+      ut.assert.notDisposed(child1);
+      ut.assert.notDisposed(child2);
       return assert.lengthOf(parent.children, 0);
     });
     it('should dispose the child view when the parent renders', function(done) {
@@ -292,8 +292,8 @@
         return done();
       });
       parent.render();
-      assertNotNested(child, parent);
-      return assertDisposed(child);
+      ut.assert.notNested(child, parent);
+      return ut.assert.disposed(child);
     });
     it('should not dispose of a cached child view when the parent renders', function() {
       var child, grandchild, parent;
@@ -305,11 +305,11 @@
       parent.attach(child);
       child.attach(grandchild);
       child.render();
-      assertNested(child, parent);
-      assertNested(grandchild, child);
-      assertAttached(child, parent.$el);
-      assertNotAttached(grandchild, child.$el);
-      return assertNotDisposed(grandchild);
+      ut.assert.nested(child, parent);
+      ut.assert.nested(grandchild, child);
+      ut.assert.attached(child, parent.$el);
+      ut.assert.notAttached(grandchild, child.$el);
+      return ut.assert.notDisposed(grandchild);
     });
     it('should not dispose of a child view when the parent renders if `preserve` is `true`', function() {
       var child, grandchild, parent;
@@ -321,11 +321,11 @@
       child.render({
         preserve: true
       });
-      assertNested(child, parent);
-      assertNested(grandchild, child);
-      assertAttached(child, parent.$el);
-      assertNotAttached(grandchild, child.$el);
-      return assertNotDisposed(grandchild);
+      ut.assert.nested(child, parent);
+      ut.assert.nested(grandchild, child);
+      ut.assert.attached(child, parent.$el);
+      ut.assert.notAttached(grandchild, child.$el);
+      return ut.assert.notDisposed(grandchild);
     });
     it('should add and remove several children as siblings', function() {
       var a, b, c, parent;
@@ -336,21 +336,21 @@
       parent.attach(a);
       parent.attach(b);
       parent.attach(c);
-      assertNested(a, parent);
-      assertNested(b, parent);
-      assertNested(c, parent);
+      ut.assert.nested(a, parent);
+      ut.assert.nested(b, parent);
+      ut.assert.nested(c, parent);
       assert.lengthOf(parent.children, 3);
       c.dispose();
-      assertNotNested(c, parent);
-      assertDisposed(c);
+      ut.assert.notNested(c, parent);
+      ut.assert.disposed(c);
       assert.lengthOf(parent.children, 2);
       parent.removeChild(a);
-      assertNotNested(a, parent);
-      assertDisposed(a);
+      ut.assert.notNested(a, parent);
+      ut.assert.disposed(a);
       assert.lengthOf(parent.children, 1);
       parent.removeChild(b, true);
-      assertNotNested(b, parent);
-      assertNotDisposed(b);
+      ut.assert.notNested(b, parent);
+      ut.assert.notDisposed(b);
       return assert.lengthOf(parent.children, 0);
     });
     it('should dispose of objects added to the view via `addChild`', function(done) {
@@ -375,7 +375,7 @@
       return grandchild.invoke('done');
     });
     it('should accept `appEvents` as an option', function() {
-      return ut.assertAppEventsOption(Giraffe.View);
+      return ut.assert.appEventsOption(Giraffe.View);
     });
     return it('should listen for data events', function(done) {
       var parent;

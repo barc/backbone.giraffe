@@ -1,7 +1,9 @@
 (function() {
-  var assert;
+  var assert, ut;
 
   assert = chai.assert;
+
+  ut = window.ut;
 
   describe('Giraffe.Contrib.FastCollectionView', function() {
     var FastCollectionView, fcvDefaults;
@@ -121,7 +123,7 @@
       assert.equal(1, model2.get('foo'));
       el1 = a.getElByModel(model1);
       el2 = a.getElByModel(model2);
-      ut.assertSiblings(el1, el2);
+      ut.assert.siblings(el1, el2);
       model1.set('foo', 2);
       collection.sort();
       _ref1 = a.collection.models, model1 = _ref1[0], model2 = _ref1[1];
@@ -129,7 +131,7 @@
       assert.equal(2, model2.get('foo'));
       el1 = a.getElByModel(model1);
       el2 = a.getElByModel(model2);
-      return ut.assertSiblings(el1, el2);
+      return ut.assert.siblings(el1, el2);
     });
     it('should keep model views sorted when a new model is added', function() {
       var a, collection, el1, el2, el3, model1, model2, model3, _ref;
@@ -152,8 +154,8 @@
       el1 = a.getElByModel(model1);
       el2 = a.getElByModel(model2);
       el3 = a.getElByModel(model3);
-      ut.assertSiblings(el1, el2);
-      return ut.assertSiblings(el2, el3);
+      ut.assert.siblings(el1, el2);
+      return ut.assert.siblings(el2, el3);
     });
     it('should use the `modelTemplate` option to construct the DOM', function() {
       var $children, a;
@@ -210,7 +212,7 @@
       a.addOne({
         foo: 'bar'
       });
-      return ut.assertHasText(a, 'bar', className);
+      return ut.assert.hasText(a, 'bar', className);
     });
     it('should accept View#ui names for `modelEl`', function() {
       var a, className;
@@ -229,10 +231,10 @@
       a.addOne({
         foo: 'bar'
       });
-      return ut.assertHasText(a, 'bar', className);
+      return ut.assert.hasText(a, 'bar', className);
     });
     return it('should accept `appEvents` as an option', function() {
-      return ut.assertAppEventsOption(FastCollectionView, 0, fcvDefaults);
+      return ut.assert.appEventsOption(FastCollectionView, 0, fcvDefaults);
     });
   });
 

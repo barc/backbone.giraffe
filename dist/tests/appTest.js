@@ -1,7 +1,9 @@
 (function() {
-  var assert;
+  var assert, ut;
 
   assert = chai.assert;
+
+  ut = window.ut;
 
   describe('Giraffe.App', function() {
     it('should be OK', function() {

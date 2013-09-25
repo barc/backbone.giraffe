@@ -1,4 +1,5 @@
 {assert} = chai
+{ut} = window
 
 
 ut = window.ut = {} # TODO commonJS
@@ -15,16 +16,17 @@ ut.areSiblings = (a, b) ->
 ut.hasText = ($el, text) ->
   text is $el.text().trim()
 
+ut.assert = {}
 
-ut.assertNested = (child, parent) ->
+ut.assert.nested = (child, parent) ->
   assert.ok _.contains(parent.children, child)
   assert.equal parent, child.parent
 
-ut.assertNotNested = (child, parent) ->
+ut.assert.notNested = (child, parent) ->
   assert.ok !_.contains(parent.children, child)
   assert.notEqual parent, child.parent
 
-ut.assertAttached = (child, parent) ->
+ut.assert.attached = (child, parent) ->
   if parent instanceof $
     assert.lengthOf parent.find(child.$el or child), 1
   else if _.isArray(child)
@@ -32,26 +34,26 @@ ut.assertAttached = (child, parent) ->
   else
     assert.ok child.isAttached(parent)
 
-ut.assertNotAttached = (child, parent) ->
+ut.assert.notAttached = (child, parent) ->
   assert.ok !child.isAttached(parent)
 
-ut.assertDisposed = (view) ->
+ut.assert.disposed = (view) ->
   assert.ok !view.$el
   assert.ok !view.isAttached()
 
-ut.assertNotDisposed = (view) ->
+ut.assert.notDisposed = (view) ->
   assert.ok !!view.$el
 
-ut.assertSiblings = (a, b) ->
+ut.assert.siblings = (a, b) ->
   assert.ok ut.areSiblings(a, b)
 
-ut.assertRendered = (view) ->
+ut.assert.rendered = (view) ->
   assert.ok view._renderedOnce
 
-ut.assertNotRendered = (view) ->
+ut.assert.notRendered = (view) ->
   assert.ok !view._renderedOnce
 
-ut.assertHasText = (view, text, className) ->
+ut.assert.hasText = (view, text, className) ->
   if className
     $el = view.$('.' + className)
   else
@@ -59,7 +61,7 @@ ut.assertHasText = (view, text, className) ->
   assert.ok $el.length
   assert.ok ut.hasText($el, text)
 
-ut.assertAppEventsOption = (ctor, optionsArgIndex, args) ->
+ut.assert.appEventsOption = (ctor, optionsArgIndex, args) ->
   worked = false
   optionsArgIndex ?= 0
   args ?= undefined for i in [0..optionsArgIndex]
@@ -86,20 +88,20 @@ describe 'Test helper utils', ->
     child1 = {parent}
     child2 = {parent}
     parent.children = [child1, child2]
-    ut.assertNested child1, parent
-    ut.assertNested child2, parent
-    ut.assertNotNested parent, child1
-    ut.assertNotNested child1, child2
+    ut.assert.nested child1, parent
+    ut.assert.nested child2, parent
+    ut.assert.notNested parent, child1
+    ut.assert.notNested child1, child2
 
   it 'should test an ordered sibling relationship', ->
     $el = ut.getEl()
     $a = ut.getEl($el)
     $b = ut.getEl($el)
     $c = ut.getEl($el)
-    ut.assertSiblings $a, $b
-    ut.assertSiblings $b, $c
-    ut.assertSiblings $a[0], $b[0]
-    ut.assertSiblings $b[0], $c[0]
+    ut.assert.siblings $a, $b
+    ut.assert.siblings $b, $c
+    ut.assert.siblings $a[0], $b[0]
+    ut.assert.siblings $b[0], $c[0]
     assert.ok ut.areSiblings($a, $b)
     assert.ok !ut.areSiblings($b, $a)
     assert.ok !ut.areSiblings($c, $a)
@@ -109,7 +111,7 @@ describe 'Test helper utils', ->
   it 'should detect if a view or el contains text', ->
     a = new Giraffe.View
     a.$el.append '<div class="my-class">;)</div>'
-    ut.assertHasText a, ';)', 'my-class'
+    ut.assert.hasText a, ';)', 'my-class'
     assert.ok ut.hasText(a.$el.find('.my-class'), ';)')
     assert.ok ut.hasText(a.$el, ';)')
     assert.ok !ut.hasText(a.$el, ';(')

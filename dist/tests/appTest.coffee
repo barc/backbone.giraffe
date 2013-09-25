@@ -1,4 +1,5 @@
 {assert} = chai
+{ut} = window
 
 
 describe 'Giraffe.App', ->

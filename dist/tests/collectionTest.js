@@ -1,14 +1,16 @@
 (function() {
-  var assert;
+  var assert, ut;
 
   assert = chai.assert;
+
+  ut = window.ut;
 
   describe('Giraffe.Collection', function() {
     it('should be OK', function() {
       return assert.ok(new Giraffe.Collection);
     });
     it('should accept `appEvents` as an option', function() {
-      return ut.assertAppEventsOption(Giraffe.Collection, 1);
+      return ut.assert.appEventsOption(Giraffe.Collection, 1);
     });
     it('should create instances of `Giraffe.Model` from a plain array passed to the constructor', function() {
       var collection;

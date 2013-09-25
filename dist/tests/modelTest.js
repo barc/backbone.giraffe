@@ -1,14 +1,16 @@
 (function() {
-  var assert;
+  var assert, ut;
 
   assert = chai.assert;
+
+  ut = window.ut;
 
   describe('Giraffe.Model', function() {
     it('should be OK', function() {
       return assert.ok(new Giraffe.Model);
     });
     return it('should accept `appEvents` as an option', function() {
-      return ut.assertAppEventsOption(Giraffe.Model, 1);
+      return ut.assert.appEventsOption(Giraffe.Model, 1);
     });
   });
 

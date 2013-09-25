@@ -1,20 +1,5 @@
 {assert} = chai
-
-{
-  getEl
-  areSiblings
-  hasText
-  assertNested
-  assertNotNested
-  assertAttached
-  assertNotAttached
-  assertDisposed
-  assertNotDisposed
-  assertSiblings
-  assertRendered
-  assertNotRendered
-  assertHasText
-} = ut
+{ut} = window
 
 
 describe 'Giraffe.View', ->
@@ -26,19 +11,19 @@ describe 'Giraffe.View', ->
   it 'should render a view', ->
     a = new Giraffe.View
     a.render()
-    assertRendered a
+    ut.assert.rendered a
 
   it 'should attach a view to the DOM', ->
     a = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     a.attachTo $el
     assert.ok a.isAttached()
-    assertAttached a, $el
+    ut.assert.attached a, $el
 
   it 'should insert a view and replace the current contents with method "html"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     a.attachTo $el
     b.attachTo $el, method: 'html'
     assert.ok !a.isAttached()
@@ -47,47 +32,47 @@ describe 'Giraffe.View', ->
   it 'should insert a view before another with method "before"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    b.attachTo getEl()
+    b.attachTo ut.getEl()
     a.attachTo b, method: 'before'
-    assertSiblings a, b
+    ut.assert.siblings a, b
 
   it 'should insert a view after another with method "after"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    a.attachTo getEl()
+    a.attachTo ut.getEl()
     b.attachTo a, method: 'after'
-    assertSiblings a, b
+    ut.assert.siblings a, b
 
   it 'should insert a view at the end of the target\'s children with "append"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     a.attachTo $el
     b.attachTo $el, method: 'append'
-    assertSiblings a, b
+    ut.assert.siblings a, b
 
   it 'should insert a view at the beginning of the target\'s children with "prepend"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     b.attachTo $el
     a.attachTo $el, method: 'prepend'
-    assertSiblings a, b
+    ut.assert.siblings a, b
 
   it 'should render a view when attached and call `afterRender`', (done) ->
     a = new Giraffe.View
       afterRender: -> done()
-    a.attachTo getEl()
-    assertRendered a
+    a.attachTo ut.getEl()
+    ut.assert.rendered a
 
   it 'should suppress render on a view when attached', ->
     a = new Giraffe.View
       afterRender: -> assert.fail()
-    a.attachTo getEl(), suppressRender: true
-    assertNotRendered a
+    a.attachTo ut.getEl(), suppressRender: true
+    ut.assert.notRendered a
 
   it 'should render content into a view using the default "underscore-template-selector" strategy', ->
-    $el = getEl()
+    $el = ut.getEl()
     templateId = 'my-render-test-template'
     className = 'render-test'
     text = 'hello world'
@@ -101,10 +86,10 @@ describe 'Giraffe.View', ->
       text
     }
     a.render()
-    assertHasText a, text, className
+    ut.assert.hasText a, text, className
 
   it 'should render content into a view by overriding `templateStrategy`', ->
-    $el = getEl()
+    $el = ut.getEl()
     className = 'render-test'
     text = 'hello world'
     a = new Giraffe.View {
@@ -114,10 +99,10 @@ describe 'Giraffe.View', ->
       text
     }
     a.render()
-    assertHasText a, text, className
+    ut.assert.hasText a, text, className
 
   it 'should render content into a view using the "jst" strategy', ->
-    $el = getEl()
+    $el = ut.getEl()
     className = 'render-test'
     text = 'hello world'
     a = new Giraffe.View {
@@ -128,10 +113,10 @@ describe 'Giraffe.View', ->
       text
     }
     a.render()
-    assertHasText a, text, className
+    ut.assert.hasText a, text, className
 
   it 'should render content into a view using the "underscore-template" strategy', ->
-    $el = getEl()
+    $el = ut.getEl()
     className = 'render-test'
     text = 'hello world'
     a = new Giraffe.View {
@@ -142,20 +127,20 @@ describe 'Giraffe.View', ->
       text
     }
     a.render()
-    assertHasText a, text, className
+    ut.assert.hasText a, text, className
 
   it 'should dispose of a view', ->
     a = new Giraffe.View
     a.dispose()
-    assertDisposed a
+    ut.assert.disposed a
 
   it 'should remove the view from the DOM on dispose', ->
     a = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     a.attachTo $el
-    assertAttached a, $el
+    ut.assert.attached a, $el
     a.dispose()
-    assertDisposed a
+    ut.assert.disposed a
 
   it 'should fire the event "disposed" when disposed', (done) ->
     a = new Giraffe.View
@@ -164,49 +149,49 @@ describe 'Giraffe.View', ->
 
   it 'should detach a view, removing it from the DOM and disposing of it', ->
     a = new Giraffe.View
-    a.attachTo getEl()
+    a.attachTo ut.getEl()
     a.detach()
     assert.ok !a.isAttached()
-    assertDisposed a
+    ut.assert.disposed a
 
   it 'should detach a view and not dispose it due to passing `true` to `detach`', ->
     a = new Giraffe.View
-    a.attachTo getEl()
+    a.attachTo ut.getEl()
     a.detach true
     assert.ok !a.isAttached()
-    assertNotDisposed a
+    ut.assert.notDisposed a
 
   it 'should detach a view and not dispose due to passing `disposeOnDetach` to the view', ->
     a = new Giraffe.View(disposeOnDetach: false)
-    a.attachTo getEl()
+    a.attachTo ut.getEl()
     a.detach()
     assert.ok !a.isAttached()
-    assertNotDisposed a
+    ut.assert.notDisposed a
 
   it 'should dispose the replaced view when using method "html"', ->
     a = new Giraffe.View
     b = new Giraffe.View
-    $el = getEl()
+    $el = ut.getEl()
     a.attachTo $el
     b.attachTo $el, method: 'html'
     assert.ok !a.isAttached()
     assert.ok b.isAttached()
-    assertDisposed a
-    assertNotDisposed b
+    ut.assert.disposed a
+    ut.assert.notDisposed b
 
   it 'should nest a view with attach', ->
     parent = new Giraffe.View
     child = new Giraffe.View
     parent.attach child
-    assertNested child, parent
-    assertAttached child, parent
+    ut.assert.nested child, parent
+    ut.assert.attached child, parent
 
   it 'should nest a view with attachTo', ->
     parent = new Giraffe.View
     child = new Giraffe.View
     child.attachTo parent
-    assertNested child, parent
-    assertAttached child, parent
+    ut.assert.nested child, parent
+    ut.assert.attached child, parent
 
   it 'should propagate dispose to deeply nested views', ->
     parent = new Giraffe.View
@@ -216,15 +201,15 @@ describe 'Giraffe.View', ->
     parent.attach child
     child.attach grandchild
     grandchild.attach greatgrandchild
-    assertNotDisposed parent
-    assertNotDisposed child
-    assertNotDisposed grandchild
-    assertNotDisposed greatgrandchild
+    ut.assert.notDisposed parent
+    ut.assert.notDisposed child
+    ut.assert.notDisposed grandchild
+    ut.assert.notDisposed greatgrandchild
     parent.dispose()
-    assertDisposed parent
-    assertDisposed child
-    assertDisposed grandchild
-    assertDisposed greatgrandchild
+    ut.assert.disposed parent
+    ut.assert.disposed child
+    ut.assert.disposed grandchild
+    ut.assert.disposed greatgrandchild
 
   it 'should dispose the child views when the parent removes them', ->
     parent = new Giraffe.View
@@ -233,8 +218,8 @@ describe 'Giraffe.View', ->
     parent.attach child1
     parent.attach child2
     parent.removeChildren()
-    assertDisposed child1
-    assertDisposed child2
+    ut.assert.disposed child1
+    ut.assert.disposed child2
     assert.lengthOf parent.children, 0
 
   it 'should remove children but not dispose them when preserved', ->
@@ -244,8 +229,8 @@ describe 'Giraffe.View', ->
     parent.attach child1
     parent.attach child2
     parent.removeChildren true
-    assertNotDisposed child1
-    assertNotDisposed child2
+    ut.assert.notDisposed child1
+    ut.assert.notDisposed child2
     assert.lengthOf parent.children, 0
 
   it 'should dispose the child view when the parent renders', (done) ->
@@ -254,8 +239,8 @@ describe 'Giraffe.View', ->
     parent.attach child
     child.on 'disposed', -> done()
     parent.render()
-    assertNotNested child, parent
-    assertDisposed child
+    ut.assert.notNested child, parent
+    ut.assert.disposed child
 
   it 'should not dispose of a cached child view when the parent renders', ->
     parent = new Giraffe.View
@@ -264,11 +249,11 @@ describe 'Giraffe.View', ->
     parent.attach child
     child.attach grandchild
     child.render()
-    assertNested child, parent
-    assertNested grandchild, child
-    assertAttached child, parent.$el
-    assertNotAttached grandchild, child.$el
-    assertNotDisposed grandchild
+    ut.assert.nested child, parent
+    ut.assert.nested grandchild, child
+    ut.assert.attached child, parent.$el
+    ut.assert.notAttached grandchild, child.$el
+    ut.assert.notDisposed grandchild
 
   it 'should not dispose of a child view when the parent renders if `preserve` is `true`', ->
     parent = new Giraffe.View
@@ -277,11 +262,11 @@ describe 'Giraffe.View', ->
     parent.attach child
     child.attach grandchild
     child.render preserve: true
-    assertNested child, parent
-    assertNested grandchild, child
-    assertAttached child, parent.$el
-    assertNotAttached grandchild, child.$el
-    assertNotDisposed grandchild
+    ut.assert.nested child, parent
+    ut.assert.nested grandchild, child
+    ut.assert.attached child, parent.$el
+    ut.assert.notAttached grandchild, child.$el
+    ut.assert.notDisposed grandchild
 
   it 'should add and remove several children as siblings', ->
     parent = new Giraffe.View
@@ -293,24 +278,24 @@ describe 'Giraffe.View', ->
     parent.attach b
     parent.attach c
 
-    assertNested a, parent
-    assertNested b, parent
-    assertNested c, parent
+    ut.assert.nested a, parent
+    ut.assert.nested b, parent
+    ut.assert.nested c, parent
     assert.lengthOf parent.children, 3
 
     c.dispose()
-    assertNotNested c, parent
-    assertDisposed c
+    ut.assert.notNested c, parent
+    ut.assert.disposed c
     assert.lengthOf parent.children, 2
 
     parent.removeChild a
-    assertNotNested a, parent
-    assertDisposed a
+    ut.assert.notNested a, parent
+    ut.assert.disposed a
     assert.lengthOf parent.children, 1
 
     parent.removeChild b, true
-    assertNotNested b, parent
-    assertNotDisposed b
+    ut.assert.notNested b, parent
+    ut.assert.notDisposed b
     assert.lengthOf parent.children, 0
 
   it 'should dispose of objects added to the view via `addChild`', (done) ->
@@ -329,7 +314,7 @@ describe 'Giraffe.View', ->
     grandchild.invoke 'done'
 
   it 'should accept `appEvents` as an option', ->
-    ut.assertAppEventsOption Giraffe.View
+    ut.assert.appEventsOption Giraffe.View
 
   it 'should listen for data events', (done) ->
     parent = new Giraffe.View

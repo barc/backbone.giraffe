@@ -1,4 +1,5 @@
 {assert} = chai
+{ut} = window
 
 
 describe 'Giraffe.Contrib.FastCollectionView', ->
@@ -95,7 +96,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     assert.equal 1, model2.get('foo')
     el1 = a.getElByModel(model1)
     el2 = a.getElByModel(model2)
-    ut.assertSiblings el1, el2
+    ut.assert.siblings el1, el2
     model1.set 'foo', 2
     collection.sort() # TODO should this be automated from the comparator?
     [model1, model2] = a.collection.models
@@ -103,7 +104,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     assert.equal 2, model2.get('foo')
     el1 = a.getElByModel(model1)
     el2 = a.getElByModel(model2)
-    ut.assertSiblings el1, el2
+    ut.assert.siblings el1, el2
 
   it 'should keep model views sorted when a new model is added', ->
     collection = new Giraffe.Collection([{foo: 0}, {foo: 2}], comparator: 'foo')
@@ -113,8 +114,8 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     el1 = a.getElByModel(model1)
     el2 = a.getElByModel(model2)
     el3 = a.getElByModel(model3)
-    ut.assertSiblings el1, el2
-    ut.assertSiblings el2, el3
+    ut.assert.siblings el1, el2
+    ut.assert.siblings el2, el3
 
   it 'should use the `modelTemplate` option to construct the DOM', ->
     a = new FastCollectionView
@@ -153,7 +154,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
       modelTemplate: '<li><%= attributes.foo %></li>'
       modelTemplateStrategy: 'underscore-template'
     a.addOne foo: 'bar'
-    ut.assertHasText a, 'bar', className
+    ut.assert.hasText a, 'bar', className
 
   it 'should accept View#ui names for `modelEl`', ->
     className = 'my-model-view-el'
@@ -165,7 +166,7 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
       modelTemplate: '<li><%= attributes.foo %></li>'
       modelTemplateStrategy: 'underscore-template'
     a.addOne foo: 'bar'
-    ut.assertHasText a, 'bar', className
+    ut.assert.hasText a, 'bar', className
 
   it 'should accept `appEvents` as an option', ->
-    ut.assertAppEventsOption FastCollectionView, 0, fcvDefaults
+    ut.assert.appEventsOption FastCollectionView, 0, fcvDefaults

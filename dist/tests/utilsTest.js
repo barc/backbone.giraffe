@@ -3,6 +3,8 @@
 
   assert = chai.assert;
 
+  ut = window.ut;
+
   ut = window.ut = {};
 
   ut.getEl = function(el) {
@@ -20,17 +22,19 @@
     return text === $el.text().trim();
   };
 
-  ut.assertNested = function(child, parent) {
+  ut.assert = {};
+
+  ut.assert.nested = function(child, parent) {
     assert.ok(_.contains(parent.children, child));
     return assert.equal(parent, child.parent);
   };
 
-  ut.assertNotNested = function(child, parent) {
+  ut.assert.notNested = function(child, parent) {
     assert.ok(!_.contains(parent.children, child));
     return assert.notEqual(parent, child.parent);
   };
 
-  ut.assertAttached = function(child, parent) {
+  ut.assert.attached = function(child, parent) {
     if (parent instanceof $) {
       return assert.lengthOf(parent.find(child.$el || child), 1);
     } else if (_.isArray(child)) {
@@ -42,32 +46,32 @@
     }
   };
 
-  ut.assertNotAttached = function(child, parent) {
+  ut.assert.notAttached = function(child, parent) {
     return assert.ok(!child.isAttached(parent));
   };
 
-  ut.assertDisposed = function(view) {
+  ut.assert.disposed = function(view) {
     assert.ok(!view.$el);
     return assert.ok(!view.isAttached());
   };
 
-  ut.assertNotDisposed = function(view) {
+  ut.assert.notDisposed = function(view) {
     return assert.ok(!!view.$el);
   };
 
-  ut.assertSiblings = function(a, b) {
+  ut.assert.siblings = function(a, b) {
     return assert.ok(ut.areSiblings(a, b));
   };
 
-  ut.assertRendered = function(view) {
+  ut.assert.rendered = function(view) {
     return assert.ok(view._renderedOnce);
   };
 
-  ut.assertNotRendered = function(view) {
+  ut.assert.notRendered = function(view) {
     return assert.ok(!view._renderedOnce);
   };
 
-  ut.assertHasText = function(view, text, className) {
+  ut.assert.hasText = function(view, text, className) {
     var $el;
     if (className) {
       $el = view.$('.' + className);
@@ -78,7 +82,7 @@
     return assert.ok(ut.hasText($el, text));
   };
 
-  ut.assertAppEventsOption = function(ctor, optionsArgIndex, args) {
+  ut.assert.appEventsOption = function(ctor, optionsArgIndex, args) {
     var arg, i, obj, worked, _i;
     worked = false;
     if (optionsArgIndex == null) {
@@ -131,10 +135,10 @@
         parent: parent
       };
       parent.children = [child1, child2];
-      ut.assertNested(child1, parent);
-      ut.assertNested(child2, parent);
-      ut.assertNotNested(parent, child1);
-      return ut.assertNotNested(child1, child2);
+      ut.assert.nested(child1, parent);
+      ut.assert.nested(child2, parent);
+      ut.assert.notNested(parent, child1);
+      return ut.assert.notNested(child1, child2);
     });
     it('should test an ordered sibling relationship', function() {
       var $a, $b, $c, $el;
@@ -142,10 +146,10 @@
       $a = ut.getEl($el);
       $b = ut.getEl($el);
       $c = ut.getEl($el);
-      ut.assertSiblings($a, $b);
-      ut.assertSiblings($b, $c);
-      ut.assertSiblings($a[0], $b[0]);
-      ut.assertSiblings($b[0], $c[0]);
+      ut.assert.siblings($a, $b);
+      ut.assert.siblings($b, $c);
+      ut.assert.siblings($a[0], $b[0]);
+      ut.assert.siblings($b[0], $c[0]);
       assert.ok(ut.areSiblings($a, $b));
       assert.ok(!ut.areSiblings($b, $a));
       assert.ok(!ut.areSiblings($c, $a));
@@ -156,7 +160,7 @@
       var a;
       a = new Giraffe.View;
       a.$el.append('<div class="my-class">;)</div>');
-      ut.assertHasText(a, ';)', 'my-class');
+      ut.assert.hasText(a, ';)', 'my-class');
       assert.ok(ut.hasText(a.$el.find('.my-class'), ';)'));
       assert.ok(ut.hasText(a.$el, ';)'));
       return assert.ok(!ut.hasText(a.$el, ';('));

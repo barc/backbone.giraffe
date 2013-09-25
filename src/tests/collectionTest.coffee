@@ -1,4 +1,5 @@
 {assert} = chai
+{ut} = window
 
 
 describe 'Giraffe.Collection', ->
@@ -7,7 +8,7 @@ describe 'Giraffe.Collection', ->
     assert.ok new Giraffe.Collection
 
   it 'should accept `appEvents` as an option', ->
-    ut.assertAppEventsOption Giraffe.Collection, 1
+    ut.assert.appEventsOption Giraffe.Collection, 1
 
   it 'should create instances of `Giraffe.Model` from a plain array passed to the constructor', ->
     collection = new Giraffe.Collection([{}, {}])

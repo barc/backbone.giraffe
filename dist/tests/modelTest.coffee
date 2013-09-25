@@ -1,4 +1,5 @@
 {assert} = chai
+{ut} = window
 
 
 describe 'Giraffe.Model', ->
@@ -7,4 +8,4 @@ describe 'Giraffe.Model', ->
     assert.ok new Giraffe.Model
 
   it 'should accept `appEvents` as an option', ->
-    ut.assertAppEventsOption Giraffe.Model, 1
+    ut.assert.appEventsOption Giraffe.Model, 1
