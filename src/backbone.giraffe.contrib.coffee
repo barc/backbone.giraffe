@@ -100,7 +100,7 @@ class Contrib.CollectionView extends Giraffe.View
     @
 
 
-  removeOne: (model) ->
+  removeOne: (model, options) ->
     if @collection.contains(model)
       @collection.remove model # falls through
     else
@@ -135,8 +135,8 @@ class Contrib.CollectionView extends Giraffe.View
 * The __FastCollectionView__ (__FCV__ from here on) does not use views for its
 * models, and as a result the __FCV__ cannot be certain of what its contents are
 * unless you and it make an agreement about how you'll handle things. One of the
-* best solutions found so far is to agree that each model's template must put
-* `data-model-cid` on all top-level DOM elements.
+* best solutions found so far is to agree to not put anything else inside the
+* element that __Giraffe__ put model HTML into, `modelEl`. 
 *
 * The option `modelEl` can be used to specify where to insert the model html.
 * It defaults to `view.$el` and currently cannot contain any elemenets other
@@ -210,11 +210,12 @@ class Contrib.FastCollectionView extends Giraffe.View
   ###
   * Removes `model` from the collection if present and removes its DOM elements.
   ###
-  removeOne: (model) ->
+  removeOne: (model, collection, options) ->
     if @collection.contains(model)
       @collection.remove model # falls through
     else
-      @removeByCid model.cid
+      index = options?.index ? options
+      @removeByIndex index
     @
 
 
@@ -228,7 +229,7 @@ class Contrib.FastCollectionView extends Giraffe.View
       @render() # falls through
     else
       html = @_renderModel(model)
-      @_insertModel html, model
+      @_insertModelHTML html, model
     @
 
 
@@ -239,20 +240,40 @@ class Contrib.FastCollectionView extends Giraffe.View
     html = ''
     for model in @collection.models
       html += @_renderModel(model)
-    @$modelEl.empty().html html # TODO could less efficiently detach only data-model-cid, preserving other elements in `modelEl`
+    @$modelEl.empty().html html
     @
 
 
   ###
-  * Removes children of `modelEl` by data-model-cid.
+  * Removes children of `modelEl` by index.
+  *
+  * @param {Integer} index
   ###
-  removeByCid: (cid) ->
-    $el = @getElByCid(cid)
+  removeByIndex: (index) ->
+    $el = @getElByIndex(index)
 #ifdef DEBUG
-    throw new Error('Unable to find el with cid ' + cid) if !$el.length
+    throw new Error('Unable to find el with index ' + index) if !$el.length
 #endif
     $el.remove()
     @
+
+
+  ###
+  * Gets the element for `model`.
+  *
+  * @param {Model} model
+  ###
+  getElByModel: (model) ->
+    @getElByIndex @collection.indexOf(model)
+
+
+  ###
+  * Gets the element inside `modelEl` at `index`.
+  *
+  * @param {Integer} index
+  ###
+  getElByIndex: (index) ->
+    $(@$modelEl.children()[index])
 
 
   ###
@@ -262,27 +283,8 @@ class Contrib.FastCollectionView extends Giraffe.View
   * @param {String/Element/$/Giraffe.View} el
   ###
   getModelByEl: (el) ->
-    cid = @getCidByEl(el)
-    @collection.get cid
-
-
-  ###
-  * Gets the cid of the model corresponding to `el`.
-  ###
-  getCidByEl: (el) -> # TODO test with nested collection views
-    $el = Giraffe.View.to$El(el, @$modelEl).closest('[data-model-cid]')
-    $found = @$modelEl.children($el)
-    if $found.length
-      $el.data('model-cid')
-    else
-      @getCidByEl $el
-
-
-  ###
-  * Gets a __jQuery__ object with the el for the model with `cid`.
-  ###
-  getElByCid: (cid) ->
-    @$modelEl.children("[data-model-cid='#{cid}']")
+    index = $(el).closest(@$modelEl.children()).index()
+    @collection.at index
 
 
   ###
@@ -301,20 +303,23 @@ class Contrib.FastCollectionView extends Giraffe.View
 
 
   ###
-  * Inserts a model's html into the DOM smart-like.
+  * Inserts a model's html into the DOM by index.
   ###
-  _insertModel: (html, model) ->
-    $existingEl = @getElByCid(model.cid)
-    if $existingEl.length
+  _insertModelHTML: (html, model) ->
+    $children = @$modelEl.children()
+    numChildren = $children.length
+    index = @collection.indexOf(model)
+    if numChildren is @collection.length
+      $existingEl = $($children[index])
       $existingEl.replaceWith html
+    else if index >= numChildren
+      @$modelEl.append html
     else
-      nextModel = @collection.at(@collection.indexOf(model) + 1)
-      if nextModel
-        $nextModel = @getElByCid(nextModel.cid)
-        if $nextModel.length
-          $nextModel.before html
-        else
-          @$modelEl.append html
+      $prevModel = $($children[index - 1])
+      if $prevModel.length
+        $prevModel.after html
       else
         @$modelEl.append html
     @
+
+    # http://jsperf.com/collection-views-in-giraffe-and-marionette

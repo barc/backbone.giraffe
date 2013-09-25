@@ -102,9 +102,11 @@ var FruitsView = Giraffe.Contrib.FastCollectionView.extend({
 ```
 
 The `FastCollectionView` property `modelEl` designates where to insert the
-models' html. It defaults to `view.$el`. As specified in `FruitsView`,
-`'#fruits-list'` contains the fruits. Here's the template that creates this
-`modelEl`:
+models' html. It defaults to `view.$el`. It is important to not put any other
+elements inside `modelEl`, as __Giraffe__ makes this assumption to be able to
+enable its automated features without creating views. As specified in
+`FruitsView`, `'#fruits-list'` contains the fruits. Here's the template that
+creates this `modelEl`:
 
 ```html
 <script id='fruits-template' type='text/template'>
@@ -116,40 +118,24 @@ models' html. It defaults to `view.$el`. As specified in `FruitsView`,
 ```
 
 <div class="note">
-At the moment, to maximize performance, the `FastCollectionView` is destructive
+To maximize performance, the `FastCollectionView` is destructive
 to its `modelEl` when the collection is fully re-rendered, which currently
 occurs on `render` and the `'reset'` and `'sort'` events.
-Your feedback is welcome - perhaps destroying by model cid rather than emptying
-the entire container should be an option if you wish to render additional
-content in `modelEl`. Or perhaps full control over the contents of `modelEl` is
-something the `FastCollectionView` _should_ assume, as it does now.
 </div>
 
 The template rendered per model, `modelTemplate`, `'#fruit-template'` in this
 example, is the only required option of the `FastCollectionView`.
-The speed of `FastCollectionView` unfortunately has its price - 
-__the attribute `data-model-cid` is required to be present on the top-level
-element(s) returned from  `modelTemplate`.__ Without `data-model-cid`, the
-collection view doesn't know how to map its collection to and from the DOM.
 Let's add delete and clone buttons to let users visually modify the collection.
 
 ```html
 <script id='fruit-template' type='text/template'>
-  <li class='fruit' data-model-cid='<%= cid %>'
-      style='background-color: <%= attributes.color %>;'>
+  <li class='fruit' style='background-color: <%= attributes.color %>;'>
     <h2><%= attributes.name %></h2>
     <button data-gf-click='onDelete'>delete</button>
     <button data-gf-click='onClone'>clone</button>
   </li>
 </script>
 ```
-
-<div class="note">
-The `data-model-cid` attribute is required on the top-level elements returned
-from `modelTemplate` so the `FastCollectionView` can be aware of what's where.
-The `CollectionView` has no such restriction and may be preferred in cases
-where performance is not critical.
-</div>
 
 Now create some tasty fruits and create the collection to assign to  `FruitsView`.
 

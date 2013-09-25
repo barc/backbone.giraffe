@@ -869,16 +869,16 @@
       _ref = a.collection.models, model1 = _ref[0], model2 = _ref[1];
       assert.equal(0, model1.get('foo'));
       assert.equal(1, model2.get('foo'));
-      el1 = a.getElByCid(model1.cid);
-      el2 = a.getElByCid(model2.cid);
+      el1 = a.getElByModel(model1);
+      el2 = a.getElByModel(model2);
       assertSiblings(el1, el2);
       model1.set('foo', 2);
       collection.sort();
       _ref1 = a.collection.models, model1 = _ref1[0], model2 = _ref1[1];
       assert.equal(1, model1.get('foo'));
       assert.equal(2, model2.get('foo'));
-      el1 = a.getElByCid(model1.cid);
-      el2 = a.getElByCid(model2.cid);
+      el1 = a.getElByModel(model1);
+      el2 = a.getElByModel(model2);
       return assertSiblings(el1, el2);
     });
     it('should keep model views sorted when a new model is added', function() {
@@ -899,9 +899,9 @@
         foo: 1
       });
       _ref = collection.models, model1 = _ref[0], model2 = _ref[1], model3 = _ref[2];
-      el1 = a.getElByCid(model1.cid);
-      el2 = a.getElByCid(model2.cid);
-      el3 = a.getElByCid(model3.cid);
+      el1 = a.getElByModel(model1);
+      el2 = a.getElByModel(model2);
+      el3 = a.getElByModel(model3);
       assertSiblings(el1, el2);
       return assertSiblings(el2, el3);
     });

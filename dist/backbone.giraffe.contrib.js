@@ -127,7 +127,7 @@
       return this;
     };
 
-    CollectionView.prototype.removeOne = function(model) {
+    CollectionView.prototype.removeOne = function(model, options) {
       var modelView;
       if (this.collection.contains(model)) {
         this.collection.remove(model);
@@ -178,8 +178,8 @@
   * The __FastCollectionView__ (__FCV__ from here on) does not use views for its
   * models, and as a result the __FCV__ cannot be certain of what its contents are
   * unless you and it make an agreement about how you'll handle things. One of the
-  * best solutions found so far is to agree that each model's template must put
-  * `data-model-cid` on all top-level DOM elements.
+  * best solutions found so far is to agree to not put anything else inside the
+  * element that __Giraffe__ put model HTML into, `modelEl`. 
   *
   * The option `modelEl` can be used to specify where to insert the model html.
   * It defaults to `view.$el` and currently cannot contain any elemenets other
@@ -263,11 +263,13 @@
     */
 
 
-    FastCollectionView.prototype.removeOne = function(model) {
+    FastCollectionView.prototype.removeOne = function(model, collection, options) {
+      var index, _ref;
       if (this.collection.contains(model)) {
         this.collection.remove(model);
       } else {
-        this.removeByCid(model.cid);
+        index = (_ref = options != null ? options.index : void 0) != null ? _ref : options;
+        this.removeByIndex(index);
       }
       return this;
     };
@@ -285,7 +287,7 @@
         this.render();
       } else {
         html = this._renderModel(model);
-        this._insertModel(html, model);
+        this._insertModelHTML(html, model);
       }
       return this;
     };
@@ -308,18 +310,42 @@
     };
 
     /*
-    * Removes children of `modelEl` by data-model-cid.
+    * Removes children of `modelEl` by index.
+    *
+    * @param {Integer} index
     */
 
 
-    FastCollectionView.prototype.removeByCid = function(cid) {
+    FastCollectionView.prototype.removeByIndex = function(index) {
       var $el;
-      $el = this.getElByCid(cid);
+      $el = this.getElByIndex(index);
       if (!$el.length) {
-        throw new Error('Unable to find el with cid ' + cid);
+        throw new Error('Unable to find el with index ' + index);
       }
       $el.remove();
       return this;
+    };
+
+    /*
+    * Gets the element for `model`.
+    *
+    * @param {Model} model
+    */
+
+
+    FastCollectionView.prototype.getElByModel = function(model) {
+      return this.getElByIndex(this.collection.indexOf(model));
+    };
+
+    /*
+    * Gets the element inside `modelEl` at `index`.
+    *
+    * @param {Integer} index
+    */
+
+
+    FastCollectionView.prototype.getElByIndex = function(index) {
+      return $(this.$modelEl.children()[index]);
     };
 
     /*
@@ -331,34 +357,9 @@
 
 
     FastCollectionView.prototype.getModelByEl = function(el) {
-      var cid;
-      cid = this.getCidByEl(el);
-      return this.collection.get(cid);
-    };
-
-    /*
-    * Gets the cid of the model corresponding to `el`.
-    */
-
-
-    FastCollectionView.prototype.getCidByEl = function(el) {
-      var $el, $found;
-      $el = Giraffe.View.to$El(el, this.$modelEl).closest('[data-model-cid]');
-      $found = this.$modelEl.children($el);
-      if ($found.length) {
-        return $el.data('model-cid');
-      } else {
-        return this.getCidByEl($el);
-      }
-    };
-
-    /*
-    * Gets a __jQuery__ object with the el for the model with `cid`.
-    */
-
-
-    FastCollectionView.prototype.getElByCid = function(cid) {
-      return this.$modelEl.children("[data-model-cid='" + cid + "']");
+      var index;
+      index = $(el).closest(this.$modelEl.children()).index();
+      return this.collection.at(index);
     };
 
     /*
@@ -381,24 +382,24 @@
     };
 
     /*
-    * Inserts a model's html into the DOM smart-like.
+    * Inserts a model's html into the DOM by index.
     */
 
 
-    FastCollectionView.prototype._insertModel = function(html, model) {
-      var $existingEl, $nextModel, nextModel;
-      $existingEl = this.getElByCid(model.cid);
-      if ($existingEl.length) {
+    FastCollectionView.prototype._insertModelHTML = function(html, model) {
+      var $children, $existingEl, $prevModel, index, numChildren;
+      $children = this.$modelEl.children();
+      numChildren = $children.length;
+      index = this.collection.indexOf(model);
+      if (numChildren === this.collection.length) {
+        $existingEl = $($children[index]);
         $existingEl.replaceWith(html);
+      } else if (index >= numChildren) {
+        this.$modelEl.append(html);
       } else {
-        nextModel = this.collection.at(this.collection.indexOf(model) + 1);
-        if (nextModel) {
-          $nextModel = this.getElByCid(nextModel.cid);
-          if ($nextModel.length) {
-            $nextModel.before(html);
-          } else {
-            this.$modelEl.append(html);
-          }
+        $prevModel = $($children[index - 1]);
+        if ($prevModel.length) {
+          $prevModel.after(html);
         } else {
           this.$modelEl.append(html);
         }

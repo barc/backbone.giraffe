@@ -689,16 +689,16 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     [model1, model2] = a.collection.models
     assert.equal 0, model1.get('foo')
     assert.equal 1, model2.get('foo')
-    el1 = a.getElByCid(model1.cid)
-    el2 = a.getElByCid(model2.cid)
+    el1 = a.getElByModel(model1)
+    el2 = a.getElByModel(model2)
     assertSiblings el1, el2
     model1.set 'foo', 2
     collection.sort() # TODO should this be automated from the comparator?
     [model1, model2] = a.collection.models
     assert.equal 1, model1.get('foo')
     assert.equal 2, model2.get('foo')
-    el1 = a.getElByCid(model1.cid)
-    el2 = a.getElByCid(model2.cid)
+    el1 = a.getElByModel(model1)
+    el2 = a.getElByModel(model2)
     assertSiblings el1, el2
 
   it 'should keep model views sorted when a new model is added', ->
@@ -706,9 +706,9 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
     a.addOne foo: 1
     [model1, model2, model3] = collection.models
-    el1 = a.getElByCid(model1.cid)
-    el2 = a.getElByCid(model2.cid)
-    el3 = a.getElByCid(model3.cid)
+    el1 = a.getElByModel(model1)
+    el2 = a.getElByModel(model2)
+    el3 = a.getElByModel(model3)
     assertSiblings el1, el2
     assertSiblings el2, el3
 
