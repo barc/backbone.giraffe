@@ -131,12 +131,14 @@ class Giraffe.View extends Backbone.View
       @_cacheUiElements()
 
       # Initialize the view
-      initialize.apply @, Array.prototype.slice.call(arguments, 1)
+      result = initialize.apply(@, Array.prototype.slice.call(arguments, 1))
 
       # Bind data events after initialize is called, so objects can be created during initialize to be bound to
       # The limits of this implementation include the fact that that events firing during `initialize`
       # won't be listened for, and any data objects created after `initialize` won't be bound to.
       @_bindDataEvents()
+
+      result
 
 
   _attachMethods: ['append', 'prepend', 'html', 'after', 'before', 'insertAfter', 'insertBefore']
@@ -251,7 +253,8 @@ class Giraffe.View extends Backbone.View
     @beforeRender.apply @, arguments
     @_renderedOnce = true
     @detachChildren options?.preserve
-    @$el.empty().html @templateStrategy() or ''
+    html = @templateStrategy.apply(@, arguments) or ''
+    @$el.empty().html html
     @_cacheUiElements()
     @afterRender.apply @, arguments
     @
@@ -354,11 +357,13 @@ class Giraffe.View extends Backbone.View
 
   _saveScrollPosition: ->
     @_scrollPosition = @_getScrollPositionEl().scrollTop()
+    @
 
 
   _loadScrollPosition: ->
     if @_scrollPosition?
       @_getScrollPositionEl().scrollTop @_scrollPosition
+    @
 
 
   _getScrollPositionEl: ->
@@ -1356,7 +1361,7 @@ class Giraffe.Collection extends Backbone.Collection
   ###
   dispose: ->
     Giraffe.dispose @, ->
-      model.dispose() for model in @models
+      model.dispose() for model in @models.slice() # slice because @models is modified
 
 
 

@@ -48,14 +48,14 @@ class Contrib.CollectionView extends Giraffe.View
   constructor: ->
     super
     _.defaults @, @constructor.getDefaults(@)
+    @collection = new Giraffe.Collection(@collection) if _.isArray(@collection) # accept a plain array as `collection`
 #ifdef DEBUG
     throw new Error('`modelView` is required') unless @modelView
     throw new Error('`collection.model` is required') unless @collection?.model
 #endif
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
-    @listenTo @collection, 'reset', @render
-    @listenTo @collection, 'sort', @render
+    @listenTo @collection, 'reset sort', @render
     @modelViewEl = @ui?[@modelViewEl] or @modelViewEl if @modelViewEl # accept a Giraffe.View#ui name or a selector
     @
 
@@ -96,7 +96,7 @@ class Contrib.CollectionView extends Giraffe.View
 
   # TODO If there was a "rendered" event this wouldn't need to implement afterRender (requiring super calls)
   afterRender: ->
-    @addOne m for m in @collection.models
+    @addOne model for model in @collection.models
     @
 
 
@@ -140,7 +140,7 @@ class Contrib.CollectionView extends Giraffe.View
 * `serialize` and templateStrategy`, __FVC__ takes  `modelTemplate` and optional
 * `modelSerialize` and `modelTemplateStrategy`. As in __Giraffe.View__,
 * setting `modelTemplateStrategy` to a function bypasses Giraffe's usage
-* of `modelTemplate` and `modelSerialize`.
+* of `modelTemplate` and `modelSerialize` to directly return a string of html.
 *
 * The __FVC__ reacts to the events `'add'`, `'remove'`, `'reset`', and `'sort'`.
 * It should keep `modelEl` in sync wih the collection with a template per model.
@@ -164,6 +164,8 @@ class Contrib.CollectionView extends Giraffe.View
 *  var view = new FruitsView({
 *    collection: [{name: 'apple'}],
 *  });
+*
+*  view.render();
 *
 *  view.$el.children().length; // => 1
 *
@@ -198,6 +200,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     throw new Error('`modelTemplate` or a `modelTemplateStrategy` function is required') if !@modelTemplate? and !_.isFunction(@modelTemplateStrategy)
 #endif
     _.defaults @, @constructor.getDefaults(@)
+    @collection = new Giraffe.Collection(@collection) if _.isArray(@collection) # accept a plain array as `collection`
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
     @listenTo @collection, 'reset sort', @render

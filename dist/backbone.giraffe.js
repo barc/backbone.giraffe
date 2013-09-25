@@ -119,12 +119,14 @@
     View.prototype._wrapInitialize = function() {
       var _this = this;
       return this.initialize = _.wrap(this.initialize, function(initialize) {
+        var result;
         _this._cache();
         _this.$el.attr('data-view-cid', _this.cid);
         _this.setParent(Giraffe.View.getClosestView(_this.$el));
         _this._cacheUiElements();
-        initialize.apply(_this, Array.prototype.slice.call(arguments, 1));
-        return _this._bindDataEvents();
+        result = initialize.apply(_this, Array.prototype.slice.call(arguments, 1));
+        _this._bindDataEvents();
+        return result;
       });
     };
 
@@ -240,10 +242,12 @@
 
 
     View.prototype.render = function(options) {
+      var html;
       this.beforeRender.apply(this, arguments);
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
-      this.$el.empty().html(this.templateStrategy() || '');
+      html = this.templateStrategy.apply(this, arguments) || '';
+      this.$el.empty().html(html);
       this._cacheUiElements();
       this.afterRender.apply(this, arguments);
       return this;
@@ -371,13 +375,15 @@
     };
 
     View.prototype._saveScrollPosition = function() {
-      return this._scrollPosition = this._getScrollPositionEl().scrollTop();
+      this._scrollPosition = this._getScrollPositionEl().scrollTop();
+      return this;
     };
 
     View.prototype._loadScrollPosition = function() {
       if (this._scrollPosition != null) {
-        return this._getScrollPositionEl().scrollTop(this._scrollPosition);
+        this._getScrollPositionEl().scrollTop(this._scrollPosition);
       }
+      return this;
     };
 
     View.prototype._getScrollPositionEl = function() {
@@ -1619,7 +1625,7 @@
     Collection.prototype.dispose = function() {
       return Giraffe.dispose(this, function() {
         var model, _i, _len, _ref, _results;
-        _ref = this.models;
+        _ref = this.models.slice();
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           model = _ref[_i];

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "modelTest.js",
+  "sourceRoot": "",
+  "sources": [
+    "..\..\src\tests\modelTest.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;CAAA,KAAA;;CAAA,CAAC,CAAU,GAAX;;CAAA,CAGA,CAA0B,KAA1B,CAA0B,MAA1B;CAEE,CAAA,CAAmB,CAAnB,KAAmB,KAAnB;AACY,CAAH,CAAP,CAAU,EAAV,CAAM,CAAe,MAArB;CADF,IAAmB;CAGhB,CAAH,CAA6C,MAAA,EAA7C,6BAAA;CACK,CAAD,GAAF,EAAgC,MAAhC,QAAA;CADF,IAA6C;CAL/C,EAA0B;CAH1B"
+}
