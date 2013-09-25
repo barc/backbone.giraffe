@@ -57,7 +57,6 @@ class Contrib.CollectionView extends Giraffe.View
     @listenTo @collection, 'remove', @removeOne
     @listenTo @collection, 'reset sort', @render
     @modelViewEl = @ui?[@modelViewEl] or @modelViewEl if @modelViewEl # accept a Giraffe.View#ui name or a selector
-    @
 
 
   _calcAttachOptions: (model) ->
@@ -189,8 +188,8 @@ class Contrib.FastCollectionView extends Giraffe.View
   @getDefaults: (ctx) ->
     collection: if ctx.collection then null else new Giraffe.Collection # lazy lood for efficiency
     modelTemplate: null # either this or a `modelTemplateStrategy` function is required
-    modelSerialize: -> @model # function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
-    modelTemplateStrategy: ctx.templateStrategy # inherited by default, can be overridden to directly provide a string without using `template` and `serialize`
+    modelSerialize: if ctx.modelSerialize then null else -> @model # function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
+    modelTemplateStrategy: ctx.templateStrategy # inherited by default, can be overridden to directly provide an html string without using `template` and `serialize`
     modelEl: null # optional selector or Giraffe.View#ui name to contain the model html
   
 
@@ -209,7 +208,6 @@ class Contrib.FastCollectionView extends Giraffe.View
       serialize: @modelSerialize
       template: @modelTemplate
     Giraffe.View.setTemplateStrategy @modelTemplateStrategy, @modelTemplateCtx
-    @
 
 
   # TODO If there was a "rendered" event this wouldn't need to implement afterRender (requiring super calls)
@@ -308,7 +306,6 @@ class Contrib.FastCollectionView extends Giraffe.View
   _renderModel: (model) ->
     @modelTemplateCtx.model = model
     @modelTemplateCtx.templateStrategy()
-    @
 
 
   ###
