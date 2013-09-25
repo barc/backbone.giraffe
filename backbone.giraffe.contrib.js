@@ -60,6 +60,9 @@
       var _ref, _ref1;
       CollectionView.__super__.constructor.apply(this, arguments);
       _.defaults(this, this.constructor.getDefaults(this));
+      if (_.isArray(this.collection)) {
+        this.collection = new Giraffe.Collection(this.collection);
+      }
       if (!this.modelView) {
         throw new Error('`modelView` is required');
       }
@@ -68,8 +71,7 @@
       }
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
-      this.listenTo(this.collection, 'reset', this.render);
-      this.listenTo(this.collection, 'sort', this.render);
+      this.listenTo(this.collection, 'reset sort', this.render);
       if (this.modelViewEl) {
         this.modelViewEl = ((_ref1 = this.ui) != null ? _ref1[this.modelViewEl] : void 0) || this.modelViewEl;
       }
@@ -121,11 +123,11 @@
     };
 
     CollectionView.prototype.afterRender = function() {
-      var m, _i, _len, _ref;
+      var model, _i, _len, _ref;
       _ref = this.collection.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        m = _ref[_i];
-        this.addOne(m);
+        model = _ref[_i];
+        this.addOne(model);
       }
       return this;
     };
@@ -186,7 +188,7 @@
   * `serialize` and templateStrategy`, __FVC__ takes  `modelTemplate` and optional
   * `modelSerialize` and `modelTemplateStrategy`. As in __Giraffe.View__,
   * setting `modelTemplateStrategy` to a function bypasses Giraffe's usage
-  * of `modelTemplate` and `modelSerialize`.
+  * of `modelTemplate` and `modelSerialize` to directly return a string of html.
   *
   * The __FVC__ reacts to the events `'add'`, `'remove'`, `'reset`', and `'sort'`.
   * It should keep `modelEl` in sync wih the collection with a template per model.
@@ -210,6 +212,8 @@
   *  var view = new FruitsView({
   *    collection: [{name: 'apple'}],
   *  });
+  *
+  *  view.render();
   *
   *  view.$el.children().length; // => 1
   *
@@ -249,6 +253,9 @@
         throw new Error('`modelTemplate` or a `modelTemplateStrategy` function is required');
       }
       _.defaults(this, this.constructor.getDefaults(this));
+      if (_.isArray(this.collection)) {
+        this.collection = new Giraffe.Collection(this.collection);
+      }
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
       this.listenTo(this.collection, 'reset sort', this.render);
