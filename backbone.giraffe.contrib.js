@@ -75,7 +75,6 @@
       if (this.modelViewEl) {
         this.modelViewEl = ((_ref1 = this.ui) != null ? _ref1[this.modelViewEl] : void 0) || this.modelViewEl;
       }
-      this;
     }
 
     CollectionView.prototype._calcAttachOptions = function(model) {
@@ -240,8 +239,10 @@
       return {
         collection: ctx.collection ? null : new Giraffe.Collection,
         modelTemplate: null,
+        modelSerialize: ctx.modelSerialize ? null : function() {
+          return this.model;
+        },
         modelTemplateStrategy: ctx.templateStrategy,
-        modelSerialize: ctx.modelSerialize,
         modelEl: null
       };
     };
@@ -267,7 +268,6 @@
         template: this.modelTemplate
       };
       Giraffe.View.setTemplateStrategy(this.modelTemplateStrategy, this.modelTemplateCtx);
-      this;
     }
 
     FastCollectionView.prototype.afterRender = function() {
@@ -381,15 +381,6 @@
       var index;
       index = $(el).closest(this.$modelEl.children()).index();
       return this.collection.at(index);
-    };
-
-    /*
-    * Default serialize function for the model template.
-    */
-
-
-    FastCollectionView.prototype.modelSerialize = function() {
-      return this.model;
     };
 
     /*
