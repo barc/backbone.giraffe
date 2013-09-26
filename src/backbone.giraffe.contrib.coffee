@@ -253,7 +253,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     html = ''
     for model in @collection.models
       html += @_renderModel(model)
-    @$modelEl.empty().html html
+    @$modelEl.empty()[0].innerHTML = html
     @
 
 
@@ -325,5 +325,5 @@ class Contrib.FastCollectionView extends Giraffe.View
       if $prevModel.length
         $prevModel.after html
       else
-        @$modelEl.append html
+        @$modelEl.prepend html
     @

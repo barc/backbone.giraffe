@@ -247,7 +247,7 @@
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
       html = this.templateStrategy.apply(this, arguments) || '';
-      this.$el.empty().html(html);
+      this.$el.empty()[0].innerHTML = html;
       this._cacheUiElements();
       this.afterRender.apply(this, arguments);
       return this;
@@ -1254,15 +1254,17 @@
   * Additionally, rather than building anchor links and window locations manually,
   * you can build routes from app events and optional parameters with
   * `Giraffe.Router#getRoute`.
-  *
+  *     
+  *     var myApp = new Giraffe.App;
   *     var myRouter = Giraffe.Router.extend({
   *       triggers: {
-  *         'post/:id': 'show:post' // triggers 'show:posts' on this.app
+  *         'post/:id': 'route:post'
   *       }
   *     });
-  *     myRouter.cause('show:post', 42); // goes to #post/42 and triggers 'show:post'
-  *     myRouter.isCaused('show:post', 42); // => true
-  *     myRouter.getRoute('show:post', 42); // => '#post/42'
+  *     myRouter.app === myApp; // => true
+  *     myRouter.cause('route:post', 42); // goes to `#post/42` and triggers 'route:post' on `myApp`
+  *     myRouter.isCaused('route:post', 42); // => true
+  *     myRouter.getRoute('route:post', 42); // => '#post/42'
   *
   * The __Giraffe.Router__ requires that a __Giraffe.App__ has been created on the
   * page so it can trigger events for your objects to listen to. For convenience,
