@@ -8,7 +8,7 @@ a class that efficiently renders a collection with a single view.
 The goal of this class is to render a collection as efficiently as possible. It
 has yet to be optimized much, but when re-rendering the entire collection on a
 `'sort'` or `'reset'` event it is very fast. 
-[Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
+[Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/5)
 
 :::BEGIN Example
 
@@ -205,7 +205,7 @@ collection as on `'reset'` and `'sort'` events, because it concatenates all of
 the html for each model into one string. However this may not always be the
 optimal behavior. This class is a work in progress and smarter
 rendering is something to look into. 
-[Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
+[Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/5)
 </div>
 
 :::@ --hide

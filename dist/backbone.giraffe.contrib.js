@@ -174,7 +174,7 @@
   * A __FastCollectionView__ is a __CollectionView__ that _doesn't create a view
   * per model_. Performance should generally be improved, especially when the
   * entire collection must be rendered, as string concatenation is used to touch
-  * the DOM once. [Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/2)
+  * the DOM once. [Here's a jsPerf with more.](http://jsperf.com/collection-views-in-giraffe-and-marionette/5)
   *
   * The option `modelEl` can be used to specify where to insert the model html.
   * It defaults to `view.$el` and cannot contain any DOM elemenets other
