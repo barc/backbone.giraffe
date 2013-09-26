@@ -170,14 +170,16 @@ app.addInitializer(<span class="function"><span class="keyword">function</span><
 app.start();
 </code></pre><h3 id="App-start">start<span class="caption">app.start([options])</span></h3><p>Starts the app by executing each initializer in the order it was added, passing <code>options</code> through the initializer queue. Triggers the <code>appEvents</code> <code>'app:initializing'</code> and <code>'app:initialized'</code>.</p><h3 id="App-dispose">dispose<span class="caption">app.dispose()</span></h3><p>See <a href="#View-dispose"><code>Giraffe.View#dispose</code></a>.</p></section><section><h2 id="Router">Router<span class="caption">new Giraffe.Router([options])</span></h2><p>The <strong>Giraffe.Router</strong> integrates with a <strong>Giraffe.App</strong> to decouple your router and route handlers and to provide programmatic encapsulation for your routes. Routes trigger <code>appEvents</code> on the router's instance of <strong>Giraffe.App</strong>. All <strong>Giraffe</strong> objects implement the <code>appEvents</code> hash as a shortcut. <code>Giraffe.Router#cause</code> triggers an app event and navigates to its route if one exists in <code>Giraffe.Router#triggers</code>, and you can ask the router if a given app event is currently caused via <code>Giraffe.Router#isCaused</code>. Additionally, rather than building anchor links and window locations manually, you can build routes from app events and optional parameters with <code>Giraffe.Router#getRoute</code>.</p>
 
-<pre><code><span class="keyword">var</span> myRouter = Giraffe.Router.extend({
+<pre><code><span class="keyword">var</span> myApp = <span class="keyword">new</span> Giraffe.App;
+<span class="keyword">var</span> myRouter = Giraffe.Router.extend({
   triggers: {
-    <span class="string">'post/:id'</span>: <span class="string">'show:post'</span> <span class="comment">// triggers 'show:posts' on this.app</span>
+    <span class="string">'post/:id'</span>: <span class="string">'route:post'</span>
   }
 });
-myRouter.cause(<span class="string">'show:post'</span>, <span class="number">42</span>); <span class="comment">// goes to #post/42 and triggers 'show:post'</span>
-myRouter.isCaused(<span class="string">'show:post'</span>, <span class="number">42</span>); <span class="comment">// =&gt; true</span>
-myRouter.getRoute(<span class="string">'show:post'</span>, <span class="number">42</span>); <span class="comment">// =&gt; '#post/42'</span>
+myRouter.app === myApp; <span class="comment">// =&gt; true</span>
+myRouter.cause(<span class="string">'route:post'</span>, <span class="number">42</span>); <span class="comment">// goes to `#post/42` and triggers 'route:post' on `myApp`</span>
+myRouter.isCaused(<span class="string">'route:post'</span>, <span class="number">42</span>); <span class="comment">// =&gt; true</span>
+myRouter.getRoute(<span class="string">'route:post'</span>, <span class="number">42</span>); <span class="comment">// =&gt; '#post/42'</span>
 </code></pre>
 
 <p>The <strong>Giraffe.Router</strong> requires that a <strong>Giraffe.App</strong> has been created on the page so it can trigger events for your objects to listen to. For convenience, if a <strong>Giraffe.App</strong> is created with a <code>routes</code> hash, it will automatically instantiate a router and set its <code>triggers</code> equal to the app's <code>routes</code>.</p>

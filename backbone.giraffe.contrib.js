@@ -326,7 +326,7 @@
         model = _ref[_i];
         html += this._renderModel(model);
       }
-      this.$modelEl.empty().html(html);
+      this.$modelEl.empty()[0].innerHTML = html;
       return this;
     };
 
@@ -413,7 +413,7 @@
         if ($prevModel.length) {
           $prevModel.after(html);
         } else {
-          this.$modelEl.append(html);
+          this.$modelEl.prepend(html);
         }
       }
       return this;
