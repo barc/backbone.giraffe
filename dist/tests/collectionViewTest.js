@@ -245,8 +245,49 @@
       child = a.children[0];
       return ut.assert.attached(child, a.$myModelViewEl);
     });
-    return it('should accept `appEvents` as an option', function() {
+    it('should accept `appEvents` as an option', function() {
       return ut.assert.appEventsOption(CollectionView);
+    });
+    it('should not re-render when a model changes by default', function() {
+      var a, model;
+      model = new Giraffe.Model({
+        foo: 'bar'
+      });
+      a = new CollectionView({
+        collection: [model],
+        modelViewArgs: [
+          {
+            templateStrategy: function() {
+              return "<div class='test'>" + (this.model.get("foo")) + "</div>";
+            }
+          }
+        ]
+      });
+      a.render();
+      ut.assert.hasText(a, 'bar');
+      model.set('foo', 'baz');
+      return ut.assert.hasText(a, 'bar');
+    });
+    return it('should re-render when a model changes if `renderOnChange` is true', function() {
+      var a, model;
+      model = new Giraffe.Model({
+        foo: 'bar'
+      });
+      a = new CollectionView({
+        collection: [model],
+        modelViewArgs: [
+          {
+            templateStrategy: function() {
+              return "<div class='test'>" + (this.model.get("foo")) + "</div>";
+            }
+          }
+        ],
+        renderOnChange: true
+      });
+      a.render();
+      ut.assert.hasText(a, 'bar');
+      model.set('foo', 'baz');
+      return ut.assert.hasText(a, 'baz');
     });
   });
 

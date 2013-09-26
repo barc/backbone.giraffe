@@ -15,6 +15,22 @@
     it('should be OK', function() {
       return assert.ok(new FastCollectionView(fcvDefaults));
     });
+    it('should be OK with a `modelTemplateStrategy` function', function() {
+      return assert.ok(new FastCollectionView({
+        modelTemplateStrategy: function() {
+          return '';
+        }
+      }));
+    });
+    it('should not be OK without a `modelTemplate` or `modelTemplateStrategy` function', function(done) {
+      var error;
+      try {
+        return new FastCollectionView;
+      } catch (_error) {
+        error = _error;
+        return done();
+      }
+    });
     it('should render els for a collection passed to the constructor', function() {
       var a, collection;
       collection = new Giraffe.Collection([{}, {}]);
@@ -121,16 +137,16 @@
       _ref = a.collection.models, model1 = _ref[0], model2 = _ref[1];
       assert.equal(0, model1.get('foo'));
       assert.equal(1, model2.get('foo'));
-      el1 = a.getElByModel(model1);
-      el2 = a.getElByModel(model2);
+      el1 = a.findElByModel(model1);
+      el2 = a.findElByModel(model2);
       ut.assert.siblings(el1, el2);
       model1.set('foo', 2);
       collection.sort();
       _ref1 = a.collection.models, model1 = _ref1[0], model2 = _ref1[1];
       assert.equal(1, model1.get('foo'));
       assert.equal(2, model2.get('foo'));
-      el1 = a.getElByModel(model1);
-      el2 = a.getElByModel(model2);
+      el1 = a.findElByModel(model1);
+      el2 = a.findElByModel(model2);
       return ut.assert.siblings(el1, el2);
     });
     it('should keep model views sorted when a new model is added', function() {
@@ -151,9 +167,9 @@
         foo: 1
       });
       _ref = collection.models, model1 = _ref[0], model2 = _ref[1], model3 = _ref[2];
-      el1 = a.getElByModel(model1);
-      el2 = a.getElByModel(model2);
-      el3 = a.getElByModel(model3);
+      el1 = a.findElByModel(model1);
+      el2 = a.findElByModel(model2);
+      el3 = a.findElByModel(model3);
       ut.assert.siblings(el1, el2);
       return ut.assert.siblings(el2, el3);
     });
@@ -233,8 +249,41 @@
       });
       return ut.assert.hasText(a, 'bar', className);
     });
-    return it('should accept `appEvents` as an option', function() {
+    it('should accept `appEvents` as an option', function() {
       return ut.assert.appEventsOption(FastCollectionView, 0, fcvDefaults);
+    });
+    it('should re-render when a model changes by default', function() {
+      var a, model;
+      model = new Giraffe.Model({
+        foo: 'bar'
+      });
+      a = new FastCollectionView({
+        collection: [model],
+        modelTemplateStrategy: function() {
+          return "<div class='test'>" + (model.get("foo")) + "</div>";
+        }
+      });
+      a.render();
+      ut.assert.hasText(a, 'bar');
+      model.set('foo', 'baz');
+      return ut.assert.hasText(a, 'baz');
+    });
+    return it('should not re-render when a model changes if `renderOnChange` is false', function() {
+      var a, model;
+      model = new Giraffe.Model({
+        foo: 'bar'
+      });
+      a = new FastCollectionView({
+        collection: [model],
+        modelTemplateStrategy: function() {
+          return "<div class='test'>" + (model.get("foo")) + "</div>";
+        },
+        renderOnChange: false
+      });
+      a.render();
+      ut.assert.hasText(a, 'bar');
+      model.set('foo', 'baz');
+      return ut.assert.hasText(a, 'bar');
     });
   });
 

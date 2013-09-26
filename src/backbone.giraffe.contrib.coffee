@@ -43,6 +43,7 @@ class Contrib.CollectionView extends Giraffe.View
     modelView: Giraffe.View
     modelViewArgs: null # optional array of arguments passed to modelView constructor (or function returning the same)
     modelViewEl: null # optional selector or Giraffe.View#ui name to contain the model views
+    renderOnChange: false
   
 
   constructor: ->
@@ -56,7 +57,20 @@ class Contrib.CollectionView extends Giraffe.View
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
     @listenTo @collection, 'reset sort', @render
+    @listenTo @collection, 'change', @_onChangeModel if @renderOnChange
     @modelViewEl = @ui?[@modelViewEl] or @modelViewEl if @modelViewEl # accept a Giraffe.View#ui name or a selector
+
+
+  _onChangeModel: (model) ->
+    view = @findByModel(model)
+    view.render()
+
+
+  findByModel: (model) ->
+    for view in @children
+      if view.model is model
+        return view
+    null
 
 
   _calcAttachOptions: (model) ->
@@ -67,7 +81,7 @@ class Contrib.CollectionView extends Giraffe.View
     index = @collection.indexOf(model)
     i = 1
     while prevModel = @collection.at(index - i)
-      prevView = _.findWhere(@children, model: prevModel)
+      prevView = @findByModel(prevModel)
       if prevView?._isAttached # TODO a better way, perhaps add to Giraffe API?
         options.method = 'after'
         options.el = prevView.$el
@@ -191,6 +205,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     modelSerialize: if ctx.modelSerialize then null else -> @model # function returning the data passed to `modelTemplate`; called in the context of `modelTemplateCtx`
     modelTemplateStrategy: ctx.templateStrategy # inherited by default, can be overridden to directly provide an html string without using `template` and `serialize`
     modelEl: null # optional selector or Giraffe.View#ui name to contain the model html
+    renderOnChange: true
   
 
   constructor: ->
@@ -203,6 +218,7 @@ class Contrib.FastCollectionView extends Giraffe.View
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
     @listenTo @collection, 'reset sort', @render
+    @listenTo @collection, 'change', @addOne if @renderOnChange
     @modelEl = @ui?[@modelEl] or @modelEl if @modelEl # accept a Giraffe.View#ui name or a selector
     @modelTemplateCtx =
       serialize: @modelSerialize
@@ -263,7 +279,7 @@ class Contrib.FastCollectionView extends Giraffe.View
   * @param {Integer} index
   ###
   removeByIndex: (index) ->
-    $el = @getElByIndex(index)
+    $el = @findElByIndex(index)
 #ifdef DEBUG
     throw new Error('Unable to find el with index ' + index) if !$el.length
 #endif
@@ -272,30 +288,30 @@ class Contrib.FastCollectionView extends Giraffe.View
 
 
   ###
-  * Gets the element for `model`.
+  * Finds the element for `model`.
   *
   * @param {Model} model
   ###
-  getElByModel: (model) ->
-    @getElByIndex @collection.indexOf(model)
+  findElByModel: (model) ->
+    @findElByIndex @collection.indexOf(model)
 
 
   ###
-  * Gets the element inside `modelEl` at `index`.
+  * Finds the element inside `modelEl` at `index`.
   *
   * @param {Integer} index
   ###
-  getElByIndex: (index) ->
+  findElByIndex: (index) ->
     $(@$modelEl.children()[index])
 
 
   ###
-  * Gets the corresponding model in the collection by a DOM element.
+  * Finds the corresponding model in the collection by a DOM element.
   * Is especially useful in DOM handlers - pass `event.target` to get the model.
   *
   * @param {String/Element/$/Giraffe.View} el
   ###
-  getModelByEl: (el) ->
+  findModelByEl: (el) ->
     index = $(el).closest(@$modelEl.children()).index()
     @collection.at index
 

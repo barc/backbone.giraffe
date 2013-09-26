@@ -13,6 +13,15 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
   it 'should be OK', ->
     assert.ok new FastCollectionView(fcvDefaults)
 
+  it 'should be OK with a `modelTemplateStrategy` function', ->
+    assert.ok new FastCollectionView(modelTemplateStrategy: -> '')
+
+  it 'should not be OK without a `modelTemplate` or `modelTemplateStrategy` function', (done) ->
+    try
+      new FastCollectionView
+    catch error
+      done()
+
   it 'should render els for a collection passed to the constructor', ->
     collection = new Giraffe.Collection([{}, {}])
     a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
@@ -94,16 +103,16 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     [model1, model2] = a.collection.models
     assert.equal 0, model1.get('foo')
     assert.equal 1, model2.get('foo')
-    el1 = a.getElByModel(model1)
-    el2 = a.getElByModel(model2)
+    el1 = a.findElByModel(model1)
+    el2 = a.findElByModel(model2)
     ut.assert.siblings el1, el2
     model1.set 'foo', 2
     collection.sort() # TODO should this be automated from the comparator?
     [model1, model2] = a.collection.models
     assert.equal 1, model1.get('foo')
     assert.equal 2, model2.get('foo')
-    el1 = a.getElByModel(model1)
-    el2 = a.getElByModel(model2)
+    el1 = a.findElByModel(model1)
+    el2 = a.findElByModel(model2)
     ut.assert.siblings el1, el2
 
   it 'should keep model views sorted when a new model is added', ->
@@ -111,9 +120,9 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     a = new FastCollectionView(_.defaults({collection}, fcvDefaults))
     a.addOne foo: 1
     [model1, model2, model3] = collection.models
-    el1 = a.getElByModel(model1)
-    el2 = a.getElByModel(model2)
-    el3 = a.getElByModel(model3)
+    el1 = a.findElByModel(model1)
+    el2 = a.findElByModel(model2)
+    el3 = a.findElByModel(model3)
     ut.assert.siblings el1, el2
     ut.assert.siblings el2, el3
 
@@ -170,3 +179,24 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
 
   it 'should accept `appEvents` as an option', ->
     ut.assert.appEventsOption FastCollectionView, 0, fcvDefaults
+
+  it 'should re-render when a model changes by default', ->
+    model = new Giraffe.Model(foo: 'bar')
+    a = new FastCollectionView
+      collection: [model]
+      modelTemplateStrategy: -> "<div class='test'>#{model.get("foo")}</div>"
+    a.render()
+    ut.assert.hasText a, 'bar'
+    model.set 'foo', 'baz'
+    ut.assert.hasText a, 'baz'
+
+  it 'should not re-render when a model changes if `renderOnChange` is false', ->
+    model = new Giraffe.Model(foo: 'bar')
+    a = new FastCollectionView
+      collection: [model]
+      modelTemplateStrategy: -> "<div class='test'>#{model.get("foo")}</div>"
+      renderOnChange: false
+    a.render()
+    ut.assert.hasText a, 'bar'
+    model.set 'foo', 'baz'
+    ut.assert.hasText a, 'bar'

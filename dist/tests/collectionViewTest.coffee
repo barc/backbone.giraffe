@@ -183,3 +183,28 @@ describe 'Giraffe.Contrib.CollectionView', ->
 
   it 'should accept `appEvents` as an option', ->
     ut.assert.appEventsOption CollectionView
+
+  it 'should not re-render when a model changes by default', ->
+    model = new Giraffe.Model(foo: 'bar')
+    a = new CollectionView
+      collection: [model]
+      modelViewArgs: [
+        templateStrategy: -> "<div class='test'>#{@model.get("foo")}</div>"
+      ]
+    a.render()
+    ut.assert.hasText a, 'bar'
+    model.set 'foo', 'baz'
+    ut.assert.hasText a, 'bar'
+
+  it 'should re-render when a model changes if `renderOnChange` is true', ->
+    model = new Giraffe.Model(foo: 'bar')
+    a = new CollectionView
+      collection: [model]
+      modelViewArgs: [
+        templateStrategy: -> "<div class='test'>#{@model.get("foo")}</div>"
+      ]
+      renderOnChange: true
+    a.render()
+    ut.assert.hasText a, 'bar'
+    model.set 'foo', 'baz'
+    ut.assert.hasText a, 'baz'

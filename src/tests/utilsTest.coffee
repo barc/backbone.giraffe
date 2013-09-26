@@ -57,7 +57,7 @@ ut.assert.hasText = (view, text, className) ->
   if className
     $el = view.$('.' + className)
   else
-    $el = view.$el
+    $el = view?.$el or view
   assert.ok $el.length
   assert.ok ut.hasText($el, text)
 

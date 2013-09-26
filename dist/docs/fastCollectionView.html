@@ -136,7 +136,7 @@ Fruits.prototype.toggleSort = <span class="function"><span class="keyword">funct
   <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options not shown</span>
 
   onDelete: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
+    <span class="keyword">var</span> model = <span class="keyword">this</span>.findModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
     <span class="comment">// `dispose` is a Giraffe method which also removes it from the collection</span>
     model.dispose();
     <span class="comment">// or</span>
@@ -146,7 +146,7 @@ Fruits.prototype.toggleSort = <span class="function"><span class="keyword">funct
   },
 
   onClone: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target);
+    <span class="keyword">var</span> model = <span class="keyword">this</span>.findModelByEl(e.target);
     <span class="keyword">var</span> newModel = model.clone();
     <span class="keyword">this</span>.collection.add(newModel);
     <span class="comment">// or</span>
@@ -280,7 +280,7 @@ per model in its <code>collection</code> by reacting to add/remove/sort/reset ev
   <span class="comment">// `modelSerialize` and `modelTemplateStrategy` options not shown</span>
 
   onDelete: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
+    <span class="keyword">var</span> model = <span class="keyword">this</span>.findModelByEl(e.target); <span class="comment">// `FastCollectionView` method</span>
     <span class="comment">// `dispose` is a Giraffe method which also removes it from the collection</span>
     model.dispose();
     <span class="comment">// or</span>
@@ -290,7 +290,7 @@ per model in its <code>collection</code> by reacting to add/remove/sort/reset ev
   },
 
   onClone: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
-    <span class="keyword">var</span> model = <span class="keyword">this</span>.getModelByEl(e.target);
+    <span class="keyword">var</span> model = <span class="keyword">this</span>.findModelByEl(e.target);
     <span class="keyword">var</span> newModel = model.clone();
     <span class="keyword">this</span>.collection.add(newModel);
     <span class="comment">// or</span>

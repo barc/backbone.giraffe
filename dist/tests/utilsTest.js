@@ -76,7 +76,7 @@
     if (className) {
       $el = view.$('.' + className);
     } else {
-      $el = view.$el;
+      $el = (view != null ? view.$el : void 0) || view;
     }
     assert.ok($el.length);
     return assert.ok(ut.hasText($el, text));
