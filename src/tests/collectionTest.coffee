@@ -23,3 +23,8 @@ describe 'Giraffe.Collection', ->
       model.on "disposed", -> disposeCount += 1
     collection.dispose()
     assert.equal 3, disposeCount
+
+  it 'should omit the \'parse\' option by default', ->
+    collection = new Giraffe.Collection([], parse: 'foo', bar: 'baz')
+    assert.notEqual 'foo', collection.parse
+    assert.equal 'baz', collection.bar

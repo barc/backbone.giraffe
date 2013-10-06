@@ -20,7 +20,7 @@
       });
       return assert.lengthOf(collection, 2);
     });
-    return it('should propagate `dispose` to all models', function() {
+    it('should propagate `dispose` to all models', function() {
       var collection, disposeCount;
       collection = new Giraffe.Collection([{}, {}, {}]);
       disposeCount = 0;
@@ -31,6 +31,15 @@
       });
       collection.dispose();
       return assert.equal(3, disposeCount);
+    });
+    return it('should omit the \'parse\' option by default', function() {
+      var collection;
+      collection = new Giraffe.Collection([], {
+        parse: 'foo',
+        bar: 'baz'
+      });
+      assert.notEqual('foo', collection.parse);
+      return assert.equal('baz', collection.bar);
     });
   });
 

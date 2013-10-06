@@ -83,3 +83,9 @@ asynchronous bootstrap data or a websocket connection before starting.
 - [__Declarative event handling__](http://barc.github.io/backbone.giraffe/documentEvents.html)
 in markup provides simple one-way binding. (does not try to be __Knockout__ or
 __AngularJS__)
+
+## Changelog
+
+# 0.1.3
+- Added the function `Giraffe.configure` that adds Giraffe features to any object.
+  It abstracts out common functionality and can be considered a mixin.

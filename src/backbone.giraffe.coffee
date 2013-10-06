@@ -75,17 +75,14 @@ class Giraffe.View extends Backbone.View
 
 
   @defaultOptions:
-    disposeOnDetach: true     # If true, disposes of the view when detached from the DOM.
-    alwaysRender: false       # If true, always renders on attach unless suppressRender is passed as an option.
-    saveScrollPosition: false # If true or a selector, saves the scroll position of `@$el` or `@$(selector)`, respectively, when detached to be automatically applied when reattached. Object selectors aren't scoped to the view, so `window` and `$('body')` are valid values.
-    documentTitle: null       # When the view is attached, the document.title will be set to this.
+    disposeOnDetach: true       # If true, disposes of the view when detached from the DOM.
+    # alwaysRender: false       # If true, always renders on attach unless suppressRender is passed as an option.
+    # saveScrollPosition: false # If true or a selector, saves the scroll position of `@$el` or `@$(selector)`, respectively, when detached to be automatically applied when reattached. Object selectors aren't scoped to the view, so `window` and `$('body')` are valid values.
+    # documentTitle: null       # When the view is attached, the document.title will be set to this.
 
 
   constructor: (options) ->
-    _.extend @, Giraffe.View.defaultOptions, options
-
-    @app ?= Giraffe.app
-    Giraffe.bindEventMap @, @app, @appEvents
+    Giraffe.configure @, options
 
     ###
     * When one view is attached to another, the child view is added to the
@@ -107,8 +104,6 @@ class Giraffe.View extends Backbone.View
 
     @_createEventsFromUIElements()
 
-    @_wrapInitialize()
-
     if typeof @templateStrategy is 'string'
       Giraffe.View.setTemplateStrategy @templateStrategy, @
 
@@ -116,29 +111,18 @@ class Giraffe.View extends Backbone.View
 
 
   # Pre-initialization to set `data-view-cid` is necessary to allow views to be attached in `initialize`.
-  _wrapInitialize: ->
-    @initialize = _.wrap @initialize, (initialize) =>
-      # Add the view to the global cache now that the view has a cid.
-      @_cache()
+  beforeInitialize: ->
+    # Add the view to the global cache now that the view has a cid.
+    @_cache()
 
-      # Set the data-view-cid attribute to link dom els to their view objects.
-      @$el.attr 'data-view-cid', @cid
+    # Set the data-view-cid attribute to link dom els to their view objects.
+    @$el.attr 'data-view-cid', @cid
 
-      # Set the initial parent -- needed only in cases where an existing `el` is given to the view.
-      @setParent Giraffe.View.getClosestView(@$el)
+    # Set the initial parent -- needed only in cases where an existing `el` is given to the view.
+    @setParent Giraffe.View.getClosestView(@$el)
 
-      # Cache any elements that might already be in `el`
-      @_cacheUiElements()
-
-      # Initialize the view
-      result = initialize.apply(@, Array.prototype.slice.call(arguments, 1))
-
-      # Bind data events after initialize is called, so objects can be created during initialize to be bound to
-      # The limits of this implementation include the fact that that events firing during `initialize`
-      # won't be listened for, and any data objects created after `initialize` won't be bound to.
-      @_bindDataEvents()
-
-      result
+    # Cache any elements that might already be in `el`
+    @_cacheUiElements()
 
 
   _attachMethods: ['append', 'prepend', 'html', 'after', 'before', 'insertAfter', 'insertBefore']
@@ -576,26 +560,6 @@ class Giraffe.View extends Backbone.View
   dataEvents: null
 
 
-  # Binds the `dataEvents` hash that allows any arbitrary instance property of the view to be bound to easily.
-  # Expects the form {'event targetObj': 'handler'}
-  _bindDataEvents: (dataEvents = @dataEvents) ->
-    return @ unless dataEvents
-    dataEvents = dataEvents.call(@) if typeof dataEvents is 'function'
-    for eventKey, cb of dataEvents
-      pieces = eventKey.split(' ')
-      if pieces.length < 2
-        error 'Data event must specify target object, ex: {\'change collection\': \'handler\'}'
-        continue
-      targetObj = pieces.pop()
-      targetObj = if targetObj is 'this' or targetObj is '@' then @ else @[targetObj] # allow listening to self
-      if !targetObj
-        error "view.#{targetObj} not found for data event", eventKey
-        continue
-      eventName = pieces.join(' ')
-      Giraffe.bindEvent @, targetObj, eventName, cb
-    @
-
-
   # Removes the view from the global cache.
   _uncache: ->
     delete Giraffe.views[@cid]
@@ -638,19 +602,18 @@ class Giraffe.View extends Backbone.View
   * Destroys a view, unbinding its events and freeing its resources. Calls
   * `Backbone.View#remove` and calls `dispose` on all `children`.
   ###
-  dispose: ->
-    Giraffe.dispose @, ->
-      @setParent null
-      @removeChildren()
-      @_uncacheUiElements()
-      @_uncache()
-      @_isAttached = false
-      if @$el
-        @remove()
-        @$el = null
-      else
-        error 'Disposed of a view that has already been disposed', @
-      @
+  beforeDispose: ->
+    @setParent null
+    @removeChildren()
+    @_uncacheUiElements()
+    @_uncache()
+    @_isAttached = false
+    if @$el
+      @remove()
+      @$el = null
+    else
+      error 'Disposed of a view that has already been disposed', @
+    @
 
 
   ###
@@ -1030,13 +993,6 @@ class Giraffe.App extends Giraffe.View
     @
 
 
-  ###
-  * See [`Giraffe.View#dispose`](#View-dispose).
-  ###
-  dispose: ->
-    super
-
-
 
 ###
 * The __Giraffe.Router__ integrates with a __Giraffe.App__ to decouple your
@@ -1081,13 +1037,11 @@ class Giraffe.Router extends Backbone.Router
 
   # Creates an instance of a Router.
   constructor: (options) ->
-    _.extend @, options
+    Giraffe.configure @, options
 
-    @app ?= Giraffe.app
     if !@app
       return error 'Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.'
     @app.addChild @ # disposes of the router when its app is removed
-    Giraffe.bindEventMap @, @app, @appEvents
 
     @triggers = @triggers.call(@) if typeof @triggers is 'function'
     if !@triggers
@@ -1287,9 +1241,8 @@ class Giraffe.Router extends Backbone.Router
   * Removes registered callbacks.
   *
   ###
-  dispose: ->
-    Giraffe.dispose @, ->
-      @_unbindTriggers()
+  beforeDispose: ->
+    @_unbindTriggers()
 
 
 
@@ -1310,10 +1263,12 @@ class Giraffe.Router extends Backbone.Router
 class Giraffe.Model extends Backbone.Model
 
 
+  @defaultOptions:
+    omittedOptions: 'parse'
+
+
   constructor: (attributes, options) ->
-    _.extend @, _.omit(options, 'parse')
-    @app ?= Giraffe.app
-    Giraffe.bindEventMap @, @app, @appEvents
+    Giraffe.configure @, options
     super
 
 
@@ -1326,9 +1281,8 @@ class Giraffe.Model extends Backbone.Model
   ###
   * Removes event listeners and removes this model from its collection.
   ###
-  dispose: ->
-    Giraffe.dispose @, ->
-      @collection?.remove @
+  beforeDispose: ->
+    @collection?.remove @
 
 
 
@@ -1341,13 +1295,15 @@ class Giraffe.Model extends Backbone.Model
 class Giraffe.Collection extends Backbone.Collection
 
 
+  @defaultOptions:
+    omittedOptions: 'parse'
+
+
   model: Giraffe.Model
 
 
   constructor: (models, options) ->
-    _.extend @, _.omit(options, 'parse')
-    @app ?= Giraffe.app
-    Giraffe.bindEventMap @, @app, @appEvents
+    Giraffe.configure @, options
     super
 
 
@@ -1361,33 +1317,155 @@ class Giraffe.Collection extends Backbone.Collection
   * Removes event listeners and disposes of all models, which removes them from
   * the collection.
   ###
-  dispose: ->
-    Giraffe.dispose @, ->
-      model.dispose() for model in @models.slice() # slice because @models is modified
-
+  beforeDispose: ->
+    model.dispose() for model in @models.slice() # slice because `@models` is modified
+    @
 
 
 ###
-* Disposes of an object. Calls `Backbone.Events#stopListening` and sets `obj.app`
-* to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before
-* and after the disposal. Takes an optional `fn` argument to do additional work,
-* and optional `args` that are passed through to the events and `fn`.
+* Disposes of an object, removing event listeners and freeing resources.
+* An instance method of `dispose` is added for
+* all objects passed through `Giraffe.configure`, and so you will normally
+* call `dispose` directly on your objects.
+*
+* Calls `Backbone.Events#stopListening` and sets
+* `obj.app` to null. Also triggers the `'disposing'` and `'disposed'` events
+* and calls the `beforeDispose` and `afterDispose` methods on `obj` before and
+* after the disposal. Takes optional `args` that are passed through to the
+* events and the function calls, which are empty methods for you to define on
+* your configured objects.
 *
 * @param {Object} obj The object to dispose.
-* @param {Function} [fn] A callback to perform additional work in between the `'disposing'` and `'disposed'` events.
 * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
 ###
-Giraffe.dispose = (obj, fn, args...) ->
+Giraffe.dispose = (obj, args...) ->
   obj.trigger? 'disposing', obj, args...
-  fn?.apply obj, args
-  obj.stopListening?()
+  obj.beforeDispose? args...
   obj.app = null
+  obj.stopListening?()
   obj.trigger? 'disposed', obj, args...
+  obj.afterDispose? args...
   obj
 
 
+###
+* Global default options extended to every configured object.
+* Setting `omittedOptions` here globally prevents those properties from being
+* extended onto every configured object. Has the generic `dipose` method.
+*
+* @caption Giraffe.defaultOptions
+###
+Giraffe.defaultOptions =
+  dispose: ->
+    Giraffe.dispose @
+  # omittedOptions: ["foo", "parse"] # commented out so it doesn't add this property to every configured object
+
 
 ###
+* Initializes an instance of a function/class with __Giraffe__'s features.
+* All __Giraffe__ objects use this method in their constructors.
+*
+* Features:
+*
+* - pulls option defaults from global, class, and instance `defaultOptions`
+* - extends the object with all options
+* - defaults `obj.dispose` to the generic version in `Giraffe.defaultOptions`
+* - defaults `obj.app` to `Giraffe.app`
+* - binds `appEvents` if `appEvents` and `app` are defined
+* - binds `dataEvents` if `obj` extends `Backbone.Events`
+* - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
+*
+* @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
+* @param {Obj} [opts] Extends `defaultOptions`
+###
+Giraffe.configure = (obj, opts) ->
+  ctor = obj?.constructor
+  return error('Only functions can be configured') if !ctor
+
+  options = _.extend {},
+    Giraffe.defaultOptions,
+    ctor.defaultOptions,
+    obj.defaultOptions,
+    opts
+
+  # Extend the object with `options` minus any omitted properties.
+  _.extend obj, _.omit(options, options.omittedOptions)
+
+  # Plug into `Giraffe.App` if one exists.
+  obj.app ?= Giraffe.app
+  Giraffe.bindAppEvents obj if obj.appEvents
+
+  # If the object has an `initialize` function, wrap it with `beforeInitialize`
+  # and `afterInitialize` and perform the necessary post-initialization.
+  if obj.initialize
+    Giraffe.wrapFn obj, 'initialize', null, _afterInitialize
+  else
+    _afterInitialize.call obj
+
+  obj
+
+
+# Is not a member of `Giraffe.defaultOptions` to make sure configured objects
+# can freely implement `afterInitialize` without calls to `super`.
+_afterInitialize = ->
+  # Bind data events after `initialize` to catch any objects created in `initialize`
+  Giraffe.bindDataEvents @ if @dataEvents
+
+
+###
+* Wraps `obj[fnName]` with `beforeFnName` and `afterFnName` invocations. Also
+* calls the optional arguments `beforeFn` and `afterFn`.
+*
+* @param {Object} obj
+* @param {String} fnName
+* @param {Function} [beforeFn]
+* @param {Function} [afterFn]
+###
+Giraffe.wrapFn = (obj, fnName, beforeFn, afterFn) ->
+  fn = obj[fnName]
+  return unless typeof fn is 'function'
+  capFnName = fnName[0].toUpperCase() + fnName.slice(1)
+  obj[fnName] = (args...) ->
+    beforeFn?.apply obj, args
+    obj['before' + capFnName]? args...
+    result = fn.apply(obj, args)
+    obj['after' + capFnName]? args...
+    afterFn?.apply obj, args
+    result
+
+
+###
+* Attempts to bind `appEvents` for an object. Called by `Giraffe.configure`.
+###
+Giraffe.bindAppEvents = (obj) ->
+  Giraffe.bindEventMap obj, obj.app, obj.appEvents
+
+
+###
+* Binds the `dataEvents` hash that allows any instance property of `obj` to
+* be bound to easily. Expects the form {'event1 event2 targetObj': 'handler'}.
+* Called by `Giraffe.configure`.
+###
+Giraffe.bindDataEvents = (obj) ->
+  dataEvents = obj.dataEvents
+  return unless dataEvents
+  dataEvents = obj.dataEvents() if typeof dataEvents is 'function'
+  for eventKey, cb of dataEvents
+    pieces = eventKey.split(' ')
+    if pieces.length < 2
+      error 'Data event must specify target object, ex: {\'change collection\': \'handler\'}'
+      continue
+    targetObj = pieces.pop()
+    targetObj = if targetObj is 'this' or targetObj is '@' then obj else obj[targetObj] # allow listening to self
+    if !targetObj
+      error "Target object not found for data event '#{eventKey}'", obj
+      continue
+    eventName = pieces.join(' ')
+    Giraffe.bindEvent obj, targetObj, eventName, cb
+  obj
+
+
+  ###
 * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
 * `targetObj` with the callback `cb`, which can be a function or the string name
 * of a method on `contextObj`.
@@ -1461,7 +1539,4 @@ _setEventMapBindings = (contextObj, targetObj, eventMap, bindOrUnbindFnName) ->
   return unless eventMap
   for eventName, cb of eventMap
     _setEventBindings contextObj, targetObj, eventName, cb, bindOrUnbindFnName
-  null
-
-
-
+  contextObj

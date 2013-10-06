@@ -1,6 +1,23 @@
 Contrib = Giraffe.Contrib =
   version: '{{VERSION}}'
 
+
+
+###
+* Demonstrates usage of `Giraffe.configure` which extends any function instance
+* with __Giraffe__'s features including lifecycle management, app events, etc.
+###
+class Contrib.Controller
+
+
+  _.extend @::, Backbone.Events
+
+
+  constructor: (options) ->
+    Giraffe.configure @, options
+
+
+
 ###
 * `Backbone.Giraffe.Contrib` is a collection of officially supported classes that are
 * built on top of `Backbone.Giraffe`. These classes should be considered

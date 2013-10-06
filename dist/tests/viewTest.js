@@ -374,20 +374,8 @@
       grandchild.attachTo(child);
       return grandchild.invoke('done');
     });
-    it('should accept `appEvents` as an option', function() {
+    return it('should accept `appEvents` as an option', function() {
       return ut.assert.appEventsOption(Giraffe.View);
-    });
-    return it('should listen for data events', function(done) {
-      var parent;
-      parent = new Giraffe.View({
-        view: new Giraffe.View,
-        dataEvents: {
-          'done view': function() {
-            return done();
-          }
-        }
-      });
-      return parent.view.trigger('done');
     });
   });
 

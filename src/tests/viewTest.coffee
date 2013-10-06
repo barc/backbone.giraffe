@@ -315,10 +315,3 @@ describe 'Giraffe.View', ->
 
   it 'should accept `appEvents` as an option', ->
     ut.assert.appEventsOption Giraffe.View
-
-  it 'should listen for data events', (done) ->
-    parent = new Giraffe.View
-      view: new Giraffe.View
-      dataEvents:
-        'done view': -> done()
-    parent.view.trigger 'done'
