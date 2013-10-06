@@ -7,7 +7,7 @@ describe 'Giraffe.configure', ->
   Foo = (options) ->
     Giraffe.configure @, options
 
-  _.extend Foo::, Backbone.Events # to enable `dataEvents`
+  _.extend Foo::, Backbone.Events # to enable `dataEvents` and `appEvents`
 
   it 'should be OK', ->
     assert.ok Giraffe.configure
