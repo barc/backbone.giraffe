@@ -206,7 +206,7 @@ myApp.router.triggers; <span class="comment">// =&gt; {'my/route': 'app:event'}<
 
 <ul>
 <li>pulls option defaults from global, class, and instance <code>defaultOptions</code></li>
-<li>extends the object with all options</li>
+<li>extends the object with all options minus <code>omittedOptions</code></li>
 <li>defaults <code>obj.dispose</code> to the generic version in <code>Giraffe.defaultOptions</code></li>
 <li>defaults <code>obj.app</code> to <code>Giraffe.app</code></li>
 <li>binds <code>appEvents</code> if <code>appEvents</code> and <code>app</code> are defined</li>

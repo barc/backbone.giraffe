@@ -1005,7 +1005,7 @@ class Giraffe.App extends Giraffe.View
 * Additionally, rather than building anchor links and window locations manually,
 * you can build routes from app events and optional parameters with
 * `Giraffe.Router#getRoute`.
-*     
+*
 *     var myApp = new Giraffe.App;
 *     var myRouter = Giraffe.Router.extend({
 *       triggers: {
@@ -1368,7 +1368,7 @@ Giraffe.defaultOptions =
 * Features:
 *
 * - pulls option defaults from global, class, and instance `defaultOptions`
-* - extends the object with all options
+* - extends the object with all options minus `omittedOptions`
 * - defaults `obj.dispose` to the generic version in `Giraffe.defaultOptions`
 * - defaults `obj.app` to `Giraffe.app`
 * - binds `appEvents` if `appEvents` and `app` are defined
