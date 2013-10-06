@@ -26,8 +26,8 @@ any object can listen for. It also has reverse routes to allow the construction
 of URLs using app events and arguments.
 
 - __Giraffe.Model__ and __Giraffe.Collection__ are thin wrappers that add
-__Giraffe__'s lifecycle management and app events. Any object can add
-this functionality via `Giraffe.configure`.
+__Giraffe__'s lifecycle management and app events. Any object can mix
+in this functionality via `Giraffe.configure`.
 
 ## Documentation
 
