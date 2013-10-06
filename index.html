@@ -148,14 +148,14 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 <h2 id='h-changelog'>Changelog</h2>
 <h3 id='h-014'>0.1.4</h3>
 <ul>
-<li><p>Added the function <code>Giraffe.configure</code> which adds <strong>Giraffe</strong> features to any
-object. It abstracts out common functionality and can be considered a mixin.</p>
+<li><p>Added the function <code>Giraffe.configure</code> which mixes <strong>Giraffe</strong> features into
+any function/class instance.</p>
 </li>
 <li><p><code>omittedOptions</code> can be used to prevent <code>Giraffe.configure</code> from extending
 particular properties</p>
 </li>
 <li><p><code>beforeDispose</code>, <code>afterDispose</code>, <code>beforeInitialize</code>, and <code>afterInitialize</code>
-are empty functions that can be filled in on configured object.
+are empty functions that can be filled in on a configured object.
 <code>Giraffe.wrapFn</code> adds before and after hooks to a function.</p>
 </li>
 </ul>
