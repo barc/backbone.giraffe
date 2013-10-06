@@ -87,12 +87,6 @@ asynchronous bootstrap data or a websocket connection before starting.
 in markup provides simple one-way binding. (does not try to be __Knockout__ or
 __AngularJS__)
 
-## Changelog
-
-# 0.1.3
-- Added the function `Giraffe.configure` that adds Giraffe features to any object.
-  It abstracts out common functionality and can be considered a mixin.
-
 ## Download
 
 __Version 0.1.4__
@@ -111,6 +105,20 @@ __Version 0.1.4__
     npm install -d
     pm run all
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
+
+## Changelog
+
+### 0.1.4
+
+- Added the function `Giraffe.configure` which adds __Giraffe__ features to any
+  object. It abstracts out common functionality and can be considered a mixin.
+
+- `omittedOptions` can be used to prevent `Giraffe.configure` from extending
+  particular properties
+
+- `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
+  are empty functions that can be filled in on configured object.
+  `Giraffe.wrapFn` adds before and after hooks to a function.
 
 ## License
 

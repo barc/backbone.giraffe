@@ -19,6 +19,7 @@ __Version {{VERSION}}__
 
 [Giraffe on Github](https://github.com/barc/backbone.giraffe)
 
+%include CHANGELOG.md
 
 ## License
 

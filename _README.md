@@ -21,6 +21,8 @@ __Version {{VERSION}}__
     pm run all
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
+%include CHANGELOG.md
+
 ## License
 
 Copyright (c) 2013 Barc Inc.
