@@ -1,12 +1,12 @@
 (function() {
-  var Giraffe, error, _setEventBindings, _setEventMapBindings,
+  var Giraffe, error, _afterInitialize, _setEventBindings, _setEventMapBindings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __slice = [].slice;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.1.3',
+    version: '0.1.4',
     app: null,
     apps: {},
     views: {}
@@ -78,19 +78,12 @@
     __extends(View, _super);
 
     View.defaultOptions = {
-      disposeOnDetach: true,
-      alwaysRender: false,
-      saveScrollPosition: false,
-      documentTitle: null
+      disposeOnDetach: true
     };
 
     function View(options) {
       this.render = __bind(this.render, this);
-      _.extend(this, Giraffe.View.defaultOptions, options);
-      if (this.app == null) {
-        this.app = Giraffe.app;
-      }
-      Giraffe.bindEventMap(this, this.app, this.appEvents);
+      Giraffe.configure(this, options);
       /*
       * When one view is attached to another, the child view is added to the
       * parent's `children` array. When `dispose` is called on a view, it disposes
@@ -109,25 +102,17 @@
       this._renderedOnce = false;
       this._isAttached = false;
       this._createEventsFromUIElements();
-      this._wrapInitialize();
       if (typeof this.templateStrategy === 'string') {
         Giraffe.View.setTemplateStrategy(this.templateStrategy, this);
       }
       View.__super__.constructor.apply(this, arguments);
     }
 
-    View.prototype._wrapInitialize = function() {
-      var _this = this;
-      return this.initialize = _.wrap(this.initialize, function(initialize) {
-        var result;
-        _this._cache();
-        _this.$el.attr('data-view-cid', _this.cid);
-        _this.setParent(Giraffe.View.getClosestView(_this.$el));
-        _this._cacheUiElements();
-        result = initialize.apply(_this, Array.prototype.slice.call(arguments, 1));
-        _this._bindDataEvents();
-        return result;
-      });
+    View.prototype.beforeInitialize = function() {
+      this._cache();
+      this.$el.attr('data-view-cid', this.cid);
+      this.setParent(Giraffe.View.getClosestView(this.$el));
+      return this._cacheUiElements();
     };
 
     View.prototype._attachMethods = ['append', 'prepend', 'html', 'after', 'before', 'insertAfter', 'insertBefore'];
@@ -664,36 +649,6 @@
 
     View.prototype.dataEvents = null;
 
-    View.prototype._bindDataEvents = function(dataEvents) {
-      var cb, eventKey, eventName, pieces, targetObj;
-      if (dataEvents == null) {
-        dataEvents = this.dataEvents;
-      }
-      if (!dataEvents) {
-        return this;
-      }
-      if (typeof dataEvents === 'function') {
-        dataEvents = dataEvents.call(this);
-      }
-      for (eventKey in dataEvents) {
-        cb = dataEvents[eventKey];
-        pieces = eventKey.split(' ');
-        if (pieces.length < 2) {
-          error('Data event must specify target object, ex: {\'change collection\': \'handler\'}');
-          continue;
-        }
-        targetObj = pieces.pop();
-        targetObj = targetObj === 'this' || targetObj === '@' ? this : this[targetObj];
-        if (!targetObj) {
-          error("view." + targetObj + " not found for data event", eventKey);
-          continue;
-        }
-        eventName = pieces.join(' ');
-        Giraffe.bindEvent(this, targetObj, eventName, cb);
-      }
-      return this;
-    };
-
     View.prototype._uncache = function() {
       delete Giraffe.views[this.cid];
       return this;
@@ -743,21 +698,19 @@
     */
 
 
-    View.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {
-        this.setParent(null);
-        this.removeChildren();
-        this._uncacheUiElements();
-        this._uncache();
-        this._isAttached = false;
-        if (this.$el) {
-          this.remove();
-          this.$el = null;
-        } else {
-          error('Disposed of a view that has already been disposed', this);
-        }
-        return this;
-      });
+    View.prototype.beforeDispose = function() {
+      this.setParent(null);
+      this.removeChildren();
+      this._uncacheUiElements();
+      this._uncache();
+      this._isAttached = false;
+      if (this.$el) {
+        this.remove();
+        this.$el = null;
+      } else {
+        error('Disposed of a view that has already been disposed', this);
+      }
+      return this;
     };
 
     /*
@@ -1230,15 +1183,6 @@
       return this;
     };
 
-    /*
-    * See [`Giraffe.View#dispose`](#View-dispose).
-    */
-
-
-    App.prototype.dispose = function() {
-      return App.__super__.dispose.apply(this, arguments);
-    };
-
     return App;
 
   })(Giraffe.View);
@@ -1287,15 +1231,11 @@
     __extends(Router, _super);
 
     function Router(options) {
-      _.extend(this, options);
-      if (this.app == null) {
-        this.app = Giraffe.app;
-      }
+      Giraffe.configure(this, options);
       if (!this.app) {
         return error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.');
       }
       this.app.addChild(this);
-      Giraffe.bindEventMap(this, this.app, this.appEvents);
       if (typeof this.triggers === 'function') {
         this.triggers = this.triggers.call(this);
       }
@@ -1528,10 +1468,8 @@
     */
 
 
-    Router.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {
-        return this._unbindTriggers();
-      });
+    Router.prototype.beforeDispose = function() {
+      return this._unbindTriggers();
     };
 
     return Router;
@@ -1557,12 +1495,12 @@
   Giraffe.Model = (function(_super) {
     __extends(Model, _super);
 
+    Model.defaultOptions = {
+      omittedOptions: 'parse'
+    };
+
     function Model(attributes, options) {
-      _.extend(this, _.omit(options, 'parse'));
-      if (this.app == null) {
-        this.app = Giraffe.app;
-      }
-      Giraffe.bindEventMap(this, this.app, this.appEvents);
+      Giraffe.configure(this, options);
       Model.__super__.constructor.apply(this, arguments);
     }
 
@@ -1578,11 +1516,9 @@
     */
 
 
-    Model.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {
-        var _ref;
-        return (_ref = this.collection) != null ? _ref.remove(this) : void 0;
-      });
+    Model.prototype.beforeDispose = function() {
+      var _ref;
+      return (_ref = this.collection) != null ? _ref.remove(this) : void 0;
     };
 
     return Model;
@@ -1600,14 +1536,14 @@
   Giraffe.Collection = (function(_super) {
     __extends(Collection, _super);
 
+    Collection.defaultOptions = {
+      omittedOptions: 'parse'
+    };
+
     Collection.prototype.model = Giraffe.Model;
 
     function Collection(models, options) {
-      _.extend(this, _.omit(options, 'parse'));
-      if (this.app == null) {
-        this.app = Giraffe.app;
-      }
-      Giraffe.bindEventMap(this, this.app, this.appEvents);
+      Giraffe.configure(this, options);
       Collection.__super__.constructor.apply(this, arguments);
     }
 
@@ -1624,17 +1560,14 @@
     */
 
 
-    Collection.prototype.dispose = function() {
-      return Giraffe.dispose(this, function() {
-        var model, _i, _len, _ref, _results;
-        _ref = this.models.slice();
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          model = _ref[_i];
-          _results.push(model.dispose());
-        }
-        return _results;
-      });
+    Collection.prototype.beforeDispose = function() {
+      var model, _i, _len, _ref;
+      _ref = this.models.slice();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        model = _ref[_i];
+        model.dispose();
+      }
+      return this;
     };
 
     return Collection;
@@ -1642,47 +1575,199 @@
   })(Backbone.Collection);
 
   /*
-  * Disposes of an object. Calls `Backbone.Events#stopListening` and sets `obj.app`
-  * to null. Also triggers `'disposing'` and `'disposed'` events on `obj` before
-  * and after the disposal. Takes an optional `fn` argument to do additional work,
-  * and optional `args` that are passed through to the events and `fn`.
+  * Disposes of an object, removing event listeners and freeing resources.
+  * An instance method of `dispose` is added for
+  * all objects passed through `Giraffe.configure`, and so you will normally
+  * call `dispose` directly on your objects.
+  *
+  * Calls `Backbone.Events#stopListening` and sets
+  * `obj.app` to null. Also triggers the `'disposing'` and `'disposed'` events
+  * and calls the `beforeDispose` and `afterDispose` methods on `obj` before and
+  * after the disposal. Takes optional `args` that are passed through to the
+  * events and the function calls, which are empty methods for you to define on
+  * your configured objects.
   *
   * @param {Object} obj The object to dispose.
-  * @param {Function} [fn] A callback to perform additional work in between the `'disposing'` and `'disposed'` events.
   * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
   */
 
 
   Giraffe.dispose = function() {
-    var args, fn, obj;
-    obj = arguments[0], fn = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+    var args, obj;
+    obj = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     if (typeof obj.trigger === "function") {
       obj.trigger.apply(obj, ['disposing', obj].concat(__slice.call(args)));
     }
-    if (fn != null) {
-      fn.apply(obj, args);
+    if (typeof obj.beforeDispose === "function") {
+      obj.beforeDispose.apply(obj, args);
     }
+    obj.app = null;
     if (typeof obj.stopListening === "function") {
       obj.stopListening();
     }
-    obj.app = null;
     if (typeof obj.trigger === "function") {
       obj.trigger.apply(obj, ['disposed', obj].concat(__slice.call(args)));
+    }
+    if (typeof obj.afterDispose === "function") {
+      obj.afterDispose.apply(obj, args);
     }
     return obj;
   };
 
   /*
-  * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
-  * `targetObj` with the callback `cb`, which can be a function or the string name
-  * of a method on `contextObj`.
+  * Global default options extended to every configured object.
+  * Setting `omittedOptions` here globally prevents those properties from being
+  * extended onto every configured object. Has the generic `dipose` method.
   *
-  * @param {Backbone.Events} contextObj The object doing the listening.
-  * @param {Backbone.Events} targetObj The object to listen to.
-  * @param {String/Function} eventName The name of the event to listen to.
-  * @param {Function} cb The event's callback.
+  * @caption Giraffe.defaultOptions
   */
 
+
+  Giraffe.defaultOptions = {
+    dispose: function() {
+      return Giraffe.dispose(this);
+    }
+  };
+
+  /*
+  * Initializes an instance of a function/class with __Giraffe__'s features.
+  * All __Giraffe__ objects use this method in their constructors.
+  *
+  * Features:
+  *
+  * - pulls option defaults from global, class, and instance `defaultOptions`
+  * - extends the object with all options
+  * - defaults `obj.dispose` to the generic version in `Giraffe.defaultOptions`
+  * - defaults `obj.app` to `Giraffe.app`
+  * - binds `appEvents` if `appEvents` and `app` are defined
+  * - binds `dataEvents` if `obj` extends `Backbone.Events`
+  * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
+  *
+  * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
+  * @param {Obj} [opts] Extends `defaultOptions`
+  */
+
+
+  Giraffe.configure = function(obj, opts) {
+    var ctor, options;
+    ctor = obj != null ? obj.constructor : void 0;
+    if (!ctor) {
+      return error('Only functions can be configured');
+    }
+    options = _.extend({}, Giraffe.defaultOptions, ctor.defaultOptions, obj.defaultOptions, opts);
+    _.extend(obj, _.omit(options, options.omittedOptions));
+    if (obj.app == null) {
+      obj.app = Giraffe.app;
+    }
+    if (obj.appEvents) {
+      Giraffe.bindAppEvents(obj);
+    }
+    if (obj.initialize) {
+      Giraffe.wrapFn(obj, 'initialize', null, _afterInitialize);
+    } else {
+      _afterInitialize.call(obj);
+    }
+    return obj;
+  };
+
+  _afterInitialize = function() {
+    if (this.dataEvents) {
+      return Giraffe.bindDataEvents(this);
+    }
+  };
+
+  /*
+  * Wraps `obj[fnName]` with `beforeFnName` and `afterFnName` invocations. Also
+  * calls the optional arguments `beforeFn` and `afterFn`.
+  *
+  * @param {Object} obj
+  * @param {String} fnName
+  * @param {Function} [beforeFn]
+  * @param {Function} [afterFn]
+  */
+
+
+  Giraffe.wrapFn = function(obj, fnName, beforeFn, afterFn) {
+    var capFnName, fn;
+    fn = obj[fnName];
+    if (typeof fn !== 'function') {
+      return;
+    }
+    capFnName = fnName[0].toUpperCase() + fnName.slice(1);
+    return obj[fnName] = function() {
+      var args, result, _name, _name1;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (beforeFn != null) {
+        beforeFn.apply(obj, args);
+      }
+      if (typeof obj[_name = 'before' + capFnName] === "function") {
+        obj[_name].apply(obj, args);
+      }
+      result = fn.apply(obj, args);
+      if (typeof obj[_name1 = 'after' + capFnName] === "function") {
+        obj[_name1].apply(obj, args);
+      }
+      if (afterFn != null) {
+        afterFn.apply(obj, args);
+      }
+      return result;
+    };
+  };
+
+  /*
+  * Attempts to bind `appEvents` for an object. Called by `Giraffe.configure`.
+  */
+
+
+  Giraffe.bindAppEvents = function(obj) {
+    return Giraffe.bindEventMap(obj, obj.app, obj.appEvents);
+  };
+
+  /*
+  * Binds the `dataEvents` hash that allows any instance property of `obj` to
+  * be bound to easily. Expects the form {'event1 event2 targetObj': 'handler'}.
+  * Called by `Giraffe.configure`.
+  */
+
+
+  Giraffe.bindDataEvents = function(obj) {
+    var cb, dataEvents, eventKey, eventName, pieces, targetObj;
+    dataEvents = obj.dataEvents;
+    if (!dataEvents) {
+      return;
+    }
+    if (typeof dataEvents === 'function') {
+      dataEvents = obj.dataEvents();
+    }
+    for (eventKey in dataEvents) {
+      cb = dataEvents[eventKey];
+      pieces = eventKey.split(' ');
+      if (pieces.length < 2) {
+        error('Data event must specify target object, ex: {\'change collection\': \'handler\'}');
+        continue;
+      }
+      targetObj = pieces.pop();
+      targetObj = targetObj === 'this' || targetObj === '@' ? obj : obj[targetObj];
+      if (!targetObj) {
+        error("Target object not found for data event '" + eventKey + "'", obj);
+        continue;
+      }
+      eventName = pieces.join(' ');
+      Giraffe.bindEvent(obj, targetObj, eventName, cb);
+    }
+    return obj;
+    /*
+    * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
+    * `targetObj` with the callback `cb`, which can be a function or the string name
+    * of a method on `contextObj`.
+    *
+    * @param {Backbone.Events} contextObj The object doing the listening.
+    * @param {Backbone.Events} targetObj The object to listen to.
+    * @param {String/Function} eventName The name of the event to listen to.
+    * @param {Function} cb The event's callback.
+    */
+
+  };
 
   Giraffe.bindEvent = function() {
     var args;
@@ -1770,7 +1855,7 @@
       cb = eventMap[eventName];
       _setEventBindings(contextObj, targetObj, eventName, cb, bindOrUnbindFnName);
     }
-    return null;
+    return contextObj;
   };
 
 }).call(this);

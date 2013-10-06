@@ -41,7 +41,7 @@ var FruitsView = Giraffe.Contrib.FastCollectionView.extend({
   // `modelSerialize` and `modelTemplateStrategy` options not shown
 
   onDelete: function(e) {
-    var model = this.getModelByEl(e.target); // `FastCollectionView` method
+    var model = this.findModelByEl(e.target); // `FastCollectionView` method
     // `dispose` is a Giraffe method which also removes it from the collection
     model.dispose();
     // or
@@ -51,7 +51,7 @@ var FruitsView = Giraffe.Contrib.FastCollectionView.extend({
   },
 
   onClone: function(e) {
-    var model = this.getModelByEl(e.target);
+    var model = this.findModelByEl(e.target);
     var newModel = model.clone();
     this.collection.add(newModel);
     // or

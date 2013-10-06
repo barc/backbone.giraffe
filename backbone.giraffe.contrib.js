@@ -4,8 +4,25 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Contrib = Giraffe.Contrib = {
-    version: '0.1.3'
+    version: '0.1.4'
   };
+
+  /*
+  * Demonstrates usage of `Giraffe.configure` which extends any function instance
+  * with __Giraffe__'s features including lifecycle management, app events, etc.
+  */
+
+
+  Contrib.Controller = (function() {
+    _.extend(Controller.prototype, Backbone.Events);
+
+    function Controller(options) {
+      Giraffe.configure(this, options);
+    }
+
+    return Controller;
+
+  })();
 
   /*
   * `Backbone.Giraffe.Contrib` is a collection of officially supported classes that are
@@ -52,7 +69,8 @@
         collection: ctx.collection ? null : new Giraffe.Collection,
         modelView: Giraffe.View,
         modelViewArgs: null,
-        modelViewEl: null
+        modelViewEl: null,
+        renderOnChange: false
       };
     };
 
@@ -72,10 +90,31 @@
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
       this.listenTo(this.collection, 'reset sort', this.render);
+      if (this.renderOnChange) {
+        this.listenTo(this.collection, 'change', this._onChangeModel);
+      }
       if (this.modelViewEl) {
         this.modelViewEl = ((_ref1 = this.ui) != null ? _ref1[this.modelViewEl] : void 0) || this.modelViewEl;
       }
     }
+
+    CollectionView.prototype._onChangeModel = function(model) {
+      var view;
+      view = this.findByModel(model);
+      return view.render();
+    };
+
+    CollectionView.prototype.findByModel = function(model) {
+      var view, _i, _len, _ref;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        if (view.model === model) {
+          return view;
+        }
+      }
+      return null;
+    };
 
     CollectionView.prototype._calcAttachOptions = function(model) {
       var i, index, options, prevModel, prevView;
@@ -86,9 +125,7 @@
       index = this.collection.indexOf(model);
       i = 1;
       while (prevModel = this.collection.at(index - i)) {
-        prevView = _.findWhere(this.children, {
-          model: prevModel
-        });
+        prevView = this.findByModel(prevModel);
         if (prevView != null ? prevView._isAttached : void 0) {
           options.method = 'after';
           options.el = prevView.$el;
@@ -243,7 +280,8 @@
           return this.model;
         },
         modelTemplateStrategy: ctx.templateStrategy,
-        modelEl: null
+        modelEl: null,
+        renderOnChange: true
       };
     };
 
@@ -260,6 +298,9 @@
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
       this.listenTo(this.collection, 'reset sort', this.render);
+      if (this.renderOnChange) {
+        this.listenTo(this.collection, 'change', this.addOne);
+      }
       if (this.modelEl) {
         this.modelEl = ((_ref = this.ui) != null ? _ref[this.modelEl] : void 0) || this.modelEl;
       }
@@ -339,7 +380,7 @@
 
     FastCollectionView.prototype.removeByIndex = function(index) {
       var $el;
-      $el = this.getElByIndex(index);
+      $el = this.findElByIndex(index);
       if (!$el.length) {
         throw new Error('Unable to find el with index ' + index);
       }
@@ -348,36 +389,36 @@
     };
 
     /*
-    * Gets the element for `model`.
+    * Finds the element for `model`.
     *
     * @param {Model} model
     */
 
 
-    FastCollectionView.prototype.getElByModel = function(model) {
-      return this.getElByIndex(this.collection.indexOf(model));
+    FastCollectionView.prototype.findElByModel = function(model) {
+      return this.findElByIndex(this.collection.indexOf(model));
     };
 
     /*
-    * Gets the element inside `modelEl` at `index`.
+    * Finds the element inside `modelEl` at `index`.
     *
     * @param {Integer} index
     */
 
 
-    FastCollectionView.prototype.getElByIndex = function(index) {
+    FastCollectionView.prototype.findElByIndex = function(index) {
       return $(this.$modelEl.children()[index]);
     };
 
     /*
-    * Gets the corresponding model in the collection by a DOM element.
+    * Finds the corresponding model in the collection by a DOM element.
     * Is especially useful in DOM handlers - pass `event.target` to get the model.
     *
     * @param {String/Element/$/Giraffe.View} el
     */
 
 
-    FastCollectionView.prototype.getModelByEl = function(el) {
+    FastCollectionView.prototype.findModelByEl = function(el) {
       var index;
       index = $(el).closest(this.$modelEl.children()).index();
       return this.collection.at(index);
