@@ -92,7 +92,7 @@ __AngularJS__)
 
 __Version 0.1.4__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _63.5k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _64k_
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.1k_
 
@@ -120,13 +120,15 @@ __Version 0.1.4__
 - `omittedOptions` can be used to prevent `Giraffe.configure` from extending
   particular properties. If the value is `true`, all properties are omitted.
 
-- The document event prefix `'data-gf'` is now configurable via
+- The document event prefix `'data-gf-'` is now configurable via
   `Giraffe.View.setDocumentEventPrefix` and as a parameter to 
   `Giraffe.View.setDocumentEvents` and `Giraffe.View.removeDocumentEvents`.
 
 - ___BREAKING CHANGE:___ `dispose` is now mixed into configured objects
   with a default function, and is only copied if it doesn't exist.
   As a result, calls to super in `dispose` no longer make sense.
+  Use `Giraffe.dispose` instead. If memory consumption is a concern, copy the
+  default `Giraffe.disposeThis` to your prototypes (or write your own).
 
 - `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
   are called if defined on all configured objects. Some are used by Giraffe

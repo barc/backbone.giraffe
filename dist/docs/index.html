@@ -132,7 +132,7 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 <h2 id='h-download'>Download</h2>
 <p><strong>Version 0.1.4</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">63.5k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">64k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.1k</em>
@@ -156,13 +156,15 @@ Used in the constructors of all Giraffe objects.</p>
 <li><p><code>omittedOptions</code> can be used to prevent <code>Giraffe.configure</code> from extending
 particular properties. If the value is <code>true</code>, all properties are omitted.</p>
 </li>
-<li><p>The document event prefix <code>&#39;data-gf&#39;</code> is now configurable via
+<li><p>The document event prefix <code>&#39;data-gf-&#39;</code> is now configurable via
 <code>Giraffe.View.setDocumentEventPrefix</code> and as a parameter to 
 <code>Giraffe.View.setDocumentEvents</code> and <code>Giraffe.View.removeDocumentEvents</code>.</p>
 </li>
 <li><p><strong><em>BREAKING CHANGE:</em></strong> <code>dispose</code> is now mixed into configured objects
 with a default function, and is only copied if it doesn&#39;t exist.
-As a result, calls to super in <code>dispose</code> no longer make sense.</p>
+As a result, calls to super in <code>dispose</code> no longer make sense.
+Use <code>Giraffe.dispose</code> instead. If memory consumption is a concern, copy the
+default <code>Giraffe.disposeThis</code> to your prototypes (or write your own).</p>
 </li>
 <li><p><code>beforeDispose</code>, <code>afterDispose</code>, <code>beforeInitialize</code>, and <code>afterInitialize</code>
 are called if defined on all configured objects. Some are used by Giraffe

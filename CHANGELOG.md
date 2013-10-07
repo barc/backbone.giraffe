@@ -11,13 +11,15 @@
 - `omittedOptions` can be used to prevent `Giraffe.configure` from extending
   particular properties. If the value is `true`, all properties are omitted.
 
-- The document event prefix `'data-gf'` is now configurable via
+- The document event prefix `'data-gf-'` is now configurable via
   `Giraffe.View.setDocumentEventPrefix` and as a parameter to 
   `Giraffe.View.setDocumentEvents` and `Giraffe.View.removeDocumentEvents`.
 
 - ___BREAKING CHANGE:___ `dispose` is now mixed into configured objects
   with a default function, and is only copied if it doesn't exist.
   As a result, calls to super in `dispose` no longer make sense.
+  Use `Giraffe.dispose` instead. If memory consumption is a concern, copy the
+  default `Giraffe.disposeThis` to your prototypes (or write your own).
 
 - `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
   are called if defined on all configured objects. Some are used by Giraffe
