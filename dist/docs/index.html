@@ -132,13 +132,13 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 <h2 id='h-download'>Download</h2>
 <p><strong>Version 0.1.4</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">62k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">63.6k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">16.8k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.1k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">15.4k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">16.1k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.min.js" class="big-button big-green-button">backbone.giraffe.contrib.min.js</a><em class="button-size-label">5.6k</em>
@@ -148,15 +148,29 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 <h2 id='h-changelog'>Changelog</h2>
 <h3 id='h-014'>0.1.4</h3>
 <ul>
-<li><p>Added the function <code>Giraffe.configure</code> which mixes <strong>Giraffe</strong> features into
-any function/class instance.</p>
+<li><p>Added the function <code>Giraffe.configure</code> which 
+<a href="http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure">mixes several Giraffe features</a>
+into any function/class instance.
+Used in the constructors of all Giraffe objects.</p>
 </li>
 <li><p><code>omittedOptions</code> can be used to prevent <code>Giraffe.configure</code> from extending
-particular properties</p>
+particular properties. If the value is <code>true</code>, all properties are omitted.</p>
+</li>
+<li><p>The document event prefix <code>&#39;data-gf&#39;</code> is now configurable via
+<code>Giraffe.View.setDocumentEventPrefix</code> and as a parameter to 
+<code>Giraffe.View.setDocumentEvents</code> and <code>Giraffe.View.removeDocumentEvents</code>.</p>
+</li>
+<li><p><strong><em>BREAKING CHANGE:</em></strong> <code>dispose</code> is now mixed into configured objects
+with a default function, and is only copied if it doesn&#39;t exist.
+As a result, calls to super in <code>dispose</code> no longer make sense.</p>
 </li>
 <li><p><code>beforeDispose</code>, <code>afterDispose</code>, <code>beforeInitialize</code>, and <code>afterInitialize</code>
-are empty functions that can be filled in on a configured object.
-<code>Giraffe.wrapFn</code> adds before and after hooks to a function.</p>
+are called if defined on all configured objects. Some are used by Giraffe
+objects so override with care.</p>
+</li>
+<li><p>Added <code>Giraffe.wrapFn</code> which calls &#39;beforeFnName&#39; and &#39;afterFnName&#39; versions
+of a function name on an object. Here&#39;s a reference for future development - 
+<a href="https://github.com/rhysbrettbowen/Backbone.Advice"><strong>Backbone.Advice</strong></a></p>
 </li>
 </ul>
 <h2 id='h-license'>License</h2>

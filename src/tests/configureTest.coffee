@@ -16,25 +16,29 @@ describe 'Giraffe.configure', ->
     foo = new Foo(bar: 'baz')
     assert.equal 'baz', foo.bar
 
+  it 'should not extend the object with `options` if `omittedOptions` is `true`', ->
+    foo = new Foo(bar: 'baz', omittedOptions: true)
+    assert.notEqual 'baz', foo.bar
+
   it 'should not extend the object with `omittedOptions`', ->
     foo = new Foo(bar: 'baz', omittedOptions: 'bar')
     assert.equal undefined, foo.bar
     assert.equal 'bar', foo.omittedOptions
 
   it 'should extend the object with the global `defaultOptions`', ->
-    Giraffe.defaultOptions.globalOption = true
+    Giraffe.defaultOptions.globalOption = 42
     foo = new Foo
-    assert.ok foo.globalOption
+    assert.equal 42, foo.globalOption
 
   it 'should extend the object with the constuctor\'s `defaultOptions`', ->
-    Foo.defaultOptions = ctorOption: true
+    Foo.defaultOptions = ctorOption: 42
     foo = new Foo
-    assert.ok foo.ctorOption
+    assert.equal 42, foo.ctorOption
 
   it 'should extend the object with the object\'s `defaultOptions`', ->
-    Foo::defaultOptions = protoOption: true
+    Foo::defaultOptions = protoOption: 42
     foo = new Foo
-    assert.ok foo.protoOption
+    assert.equal 42, foo.protoOption
 
   it 'should give proper precedence to the instance\'s `defaultOptions`', ->
     Giraffe.defaultOptions.option = 1

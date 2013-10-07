@@ -374,8 +374,93 @@
       grandchild.attachTo(child);
       return grandchild.invoke('done');
     });
-    return it('should accept `appEvents` as an option', function() {
+    it('should accept `appEvents` as an option', function() {
       return ut.assert.appEventsOption(Giraffe.View);
+    });
+    it('should listen for document events', function(done) {
+      var a;
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div data-gf-click='onClick'></div>";
+        },
+        onClick: function() {
+          return done();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').click();
+    });
+    it('should remove document events', function() {
+      var a;
+      Giraffe.View.removeDocumentEvents();
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div data-gf-click='onClick'></div>";
+        },
+        onClick: function() {
+          return fail();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').click();
+    });
+    it('should set custom document events', function(done) {
+      var a;
+      Giraffe.View.setDocumentEvents(['wat']);
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div data-gf-wat='onWat'></div>";
+        },
+        onWat: function() {
+          return done();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').trigger('wat');
+    });
+    it('should set a custom document event prefix', function(done) {
+      var a;
+      Giraffe.View.setDocumentEvents('click');
+      Giraffe.View.setDocumentEventPrefix('test-on-');
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div test-on-click='onClick'></div>";
+        },
+        onClick: function() {
+          return done();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').click();
+    });
+    it('should use the custom prefix from the function parameter to `setDocumentEvents`', function(done) {
+      var a;
+      Giraffe.View.setDocumentEvents('click', 'test-on-');
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div test-on-click='onClick'></div>";
+        },
+        onClick: function() {
+          return done();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').click();
+    });
+    return it('should allow a blank prefix', function(done) {
+      var a;
+      Giraffe.View.setDocumentEvents('click');
+      Giraffe.View.setDocumentEventPrefix('');
+      a = new Giraffe.View({
+        templateStrategy: function() {
+          return "<div click='onClick'></div>";
+        },
+        onClick: function() {
+          return done();
+        }
+      });
+      a.attachTo(ut.getEl());
+      return a.$('div').click();
     });
   });
 

@@ -21,6 +21,14 @@
       });
       return assert.equal('baz', foo.bar);
     });
+    it('should not extend the object with `options` if `omittedOptions` is `true`', function() {
+      var foo;
+      foo = new Foo({
+        bar: 'baz',
+        omittedOptions: true
+      });
+      return assert.notEqual('baz', foo.bar);
+    });
     it('should not extend the object with `omittedOptions`', function() {
       var foo;
       foo = new Foo({
@@ -32,25 +40,25 @@
     });
     it('should extend the object with the global `defaultOptions`', function() {
       var foo;
-      Giraffe.defaultOptions.globalOption = true;
+      Giraffe.defaultOptions.globalOption = 42;
       foo = new Foo;
-      return assert.ok(foo.globalOption);
+      return assert.equal(42, foo.globalOption);
     });
     it('should extend the object with the constuctor\'s `defaultOptions`', function() {
       var foo;
       Foo.defaultOptions = {
-        ctorOption: true
+        ctorOption: 42
       };
       foo = new Foo;
-      return assert.ok(foo.ctorOption);
+      return assert.equal(42, foo.ctorOption);
     });
     it('should extend the object with the object\'s `defaultOptions`', function() {
       var foo;
       Foo.prototype.defaultOptions = {
-        protoOption: true
+        protoOption: 42
       };
       foo = new Foo;
-      return assert.ok(foo.protoOption);
+      return assert.equal(42, foo.protoOption);
     });
     it('should give proper precedence to the instance\'s `defaultOptions`', function() {
       var foo;

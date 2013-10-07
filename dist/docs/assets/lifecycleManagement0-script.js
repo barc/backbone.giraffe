@@ -38,6 +38,7 @@ childView.once('disposed', function() {
 
 var someObject = {
   dispose: function() {
+    Giraffe.dispose(this);
     $('body').append('<p>someObject is disposed</p>');
   }
 };

@@ -120,6 +120,7 @@ method <strong>Giraffe</strong>&#39;s classes use, it&#39;s available at <code>G
 cleaned up.</p>
 <pre><code class="js"><span class="keyword">var</span> someObject = {
   dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    Giraffe.dispose(<span class="keyword">this</span>);
     $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;someObject is disposed&lt;/p&gt;'</span>);
   }
 };
@@ -190,6 +191,7 @@ childView.once(<span class="string">'disposed'</span>, <span class="function"><s
 
 <span class="keyword">var</span> someObject = {
   dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    Giraffe.dispose(<span class="keyword">this</span>);
     $(<span class="string">'body'</span>).append(<span class="string">'&lt;p&gt;someObject is disposed&lt;/p&gt;'</span>);
   }
 };

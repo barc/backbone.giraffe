@@ -4,11 +4,19 @@
 # Barc Permissive License
 #===============================================================================
 
+
+{$, _, Backbone} = window
+
+
 Backbone.Giraffe = window.Giraffe = Giraffe =
   version: '{{VERSION}}'
   app: null # stores the most recently created instance of App, so for simple cases with 1 app Giraffe objects don't need an app reference
   apps: {} # cache for all app views by `cid`
   views: {} # cache for all views by `cid`
+
+
+$window = $(window)
+$document = $(document)
 
 
 # A helper function for more helpful error messages.
@@ -440,7 +448,7 @@ class Giraffe.View extends Backbone.View
 
   ###
   * If `el` is `null` or `undefined`, tests if the view is somewhere on the DOM
-  * by calling `$(document).find(view.$el)`. If `el` is defined, tests if `el`
+  * by calling `$document.find(view.$el)`. If `el` is defined, tests if `el`
   * is the immediate parent of `view.$el`.
   *
   * @param {String} [el] Optional selector, DOM element, or view to test against the view's immediate parent.
@@ -453,7 +461,7 @@ class Giraffe.View extends Backbone.View
       else
         @$el.parent().is(el)
     else
-      $(document).find(@$el).length > 0
+      $document.find(@$el).length > 0
 
 
   ###
@@ -704,7 +712,8 @@ class Giraffe.View extends Backbone.View
   *
   * @param {Array/String} events An array or space-separated string of DOM events to bind to the document.
   ###
-  @setDocumentEvents: (events) ->
+  @setDocumentEvents: (events, prefix = Giraffe.View._documentEventPrefix) ->
+    prefix = prefix or ''
     if typeof events is 'string'
       events = events.split(' ')
     if !_.isArray(events)
@@ -713,24 +722,44 @@ class Giraffe.View extends Backbone.View
 
     Giraffe.View.removeDocumentEvents()
     Giraffe.View._currentDocumentEvents = events
+    Giraffe.View._documentEventPrefix = prefix
 
     for event in events
-      do (event) ->
-        $(document).on event, "[data-gf-#{event}]", (e) ->
-          $target = $(e.target).closest("[data-gf-#{event}]")
-          method = $target.attr("data-gf-#{event}")
+      attr = prefix + event
+      selector = '[' + attr + ']'
+      do (event, attr, selector) ->
+        $document.on event, selector, (e) ->
+          $target = $(e.target).closest(selector)
+          method = $target.attr(attr)
           view = Giraffe.View.getClosestView($target)
           view.invoke method, e
+
+    events
 
 
   ###
   * Equivalent to `Giraffe.View.setDocumentEvents(null)`.
   ###
-  @removeDocumentEvents: ->
-    return unless Giraffe.View._currentDocumentEvents?.length
-    for event in Giraffe.View._currentDocumentEvents
-      $(document).off event, "[data-gf-#{event}]"
+  @removeDocumentEvents: (prefix = Giraffe.View._documentEventPrefix) ->
+    prefix = prefix or ''
+    currentEvents = Giraffe.View._currentDocumentEvents
+    return unless currentEvents?.length
+    for event in currentEvents
+      selector = '[' + prefix + event + ']'
+      $document.off event, selector
     Giraffe.View._currentDocumentEvents = null
+
+
+  ###
+  * Sets the prefix for document events. Defaults to `data-gf-`,
+  * so to bind to `'click'` events, one would put the `data-gf-click`
+  * attribute on DOM elements with the name of a view method as the value.
+  *
+  * @param {String} prefix If `null` or `undefined`, defaults to the empty string.
+  ###
+  @setDocumentEventPrefix: (prefix = '') ->
+    Giraffe.View.setDocumentEvents Giraffe.View._currentDocumentEvents, prefix
+
 
 
   ###
@@ -824,12 +853,12 @@ class Giraffe.View extends Backbone.View
       Giraffe.View::templateStrategy = templateStrategy
 
 
-# Set the default template strategy
+# Initialize the default template strategy
 Giraffe.View.setTemplateStrategy 'underscore-template-selector'
 
 
-# Set the default document events
-Giraffe.View.setDocumentEvents ['click', 'change']
+# Initialize the default document events
+Giraffe.View.setDocumentEvents ['click', 'change'], 'data-gf-' # TODO consider a breaking change to default to 'data-on'
 
 
 
@@ -879,7 +908,7 @@ class Giraffe.App extends Giraffe.View
     Giraffe.apps[@cid] = @
     if @routes
       @router ?= new Giraffe.Router(app: @, triggers: @routes)
-    $(window).on 'unload', @_onUnload
+    $window.on 'unload', @_onUnload
     super
 
 
@@ -887,7 +916,7 @@ class Giraffe.App extends Giraffe.View
     Giraffe.app = null if Giraffe.app is @
     delete Giraffe.apps[@cid]
     @router = null if @router
-    $(window).off 'unload', @_onUnload
+    $window.off 'unload', @_onUnload
     super
 
 
@@ -1348,17 +1377,24 @@ Giraffe.dispose = (obj, args...) ->
   obj
 
 
+
+# Calls `Giraffe.dispose` on `this`.
+# Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure`
+# was added in v0.1.14.
+# Perhaps this function should be removed and `Giraffe.dispose` changed to operate on `this`.
+Giraffe.disposeThis = (args...) ->
+  Giraffe.dispose @, args...
+
+
 ###
 * Global default options extended to every configured object.
 * Setting `omittedOptions` here globally prevents those properties from being
-* extended onto every configured object. Has the generic `dipose` method.
+* extended onto every configured object. Empty by default.
 *
 * @caption Giraffe.defaultOptions
 ###
-Giraffe.defaultOptions =
-  dispose: ->
-    Giraffe.dispose @
-  # omittedOptions: ["foo", "parse"] # commented out so it doesn't add this property to every configured object
+Giraffe.defaultOptions = {}
+  # omittedOptions: ["foo", "parse"]
 
 
 ###
@@ -1369,14 +1405,14 @@ Giraffe.defaultOptions =
 *
 * - pulls option defaults from global, class, and instance `defaultOptions`
 * - extends the object with all options minus `omittedOptions`
-* - defaults `obj.dispose` to the generic version in `Giraffe.defaultOptions`
+* - defaults `obj.dispose` to `Giraffe.disposeThis`
 * - defaults `obj.app` to `Giraffe.app`
 * - binds `appEvents` if `appEvents` and `app` are defined
 * - binds `dataEvents` if `obj` extends `Backbone.Events`
 * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
 *
 * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
-* @param {Obj} [opts] Extends `defaultOptions`
+* @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
 ###
 Giraffe.configure = (obj, opts) ->
   ctor = obj?.constructor
@@ -1388,8 +1424,11 @@ Giraffe.configure = (obj, opts) ->
     obj.defaultOptions,
     opts
 
-  # Extend the object with `options` minus any omitted properties.
-  _.extend obj, _.omit(options, options.omittedOptions)
+  # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
+  if options.omittedOptions isnt true
+    _.extend obj, _.omit(options, options.omittedOptions)
+
+  obj.dispose ?= Giraffe.disposeThis
 
   # Plug into `Giraffe.App` if one exists.
   obj.app ?= Giraffe.app

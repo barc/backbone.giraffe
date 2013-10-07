@@ -315,3 +315,64 @@ describe 'Giraffe.View', ->
 
   it 'should accept `appEvents` as an option', ->
     ut.assert.appEventsOption Giraffe.View
+
+  it 'should listen for document events', (done) ->
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div data-gf-click='onClick'></div>
+      """
+      onClick: -> done()
+    a.attachTo ut.getEl()
+    a.$('div').click()
+
+  it 'should remove document events', ->
+    Giraffe.View.removeDocumentEvents()
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div data-gf-click='onClick'></div>
+      """
+      onClick: -> fail()
+    a.attachTo ut.getEl()
+    a.$('div').click()
+
+  it 'should set custom document events', (done) ->
+    Giraffe.View.setDocumentEvents ['wat']
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div data-gf-wat='onWat'></div>
+      """
+      onWat: -> done()
+    a.attachTo ut.getEl()
+    a.$('div').trigger('wat')
+
+  it 'should set a custom document event prefix', (done) ->
+    Giraffe.View.setDocumentEvents 'click'
+    Giraffe.View.setDocumentEventPrefix 'test-on-'
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div test-on-click='onClick'></div>
+      """
+      onClick: -> done()
+    a.attachTo ut.getEl()
+    a.$('div').click()
+
+  it 'should use the custom prefix from the function parameter to `setDocumentEvents`', (done) ->
+    Giraffe.View.setDocumentEvents 'click', 'test-on-'
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div test-on-click='onClick'></div>
+      """
+      onClick: -> done()
+    a.attachTo ut.getEl()
+    a.$('div').click()
+
+  it 'should allow a blank prefix', (done) ->
+    Giraffe.View.setDocumentEvents 'click'
+    Giraffe.View.setDocumentEventPrefix ''
+    a = new Giraffe.View
+      templateStrategy: -> """
+        <div click='onClick'></div>
+      """
+      onClick: -> done()
+    a.attachTo ut.getEl()
+    a.$('div').click()

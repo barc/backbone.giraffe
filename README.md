@@ -92,11 +92,11 @@ __AngularJS__)
 
 __Version 0.1.4__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _62k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _63.6k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _16.8k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.1k_
 
-[backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _15.4k_
+[backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _16.1k_
 
 [backbone.giraffe.contrib.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.min.js) _5.6k_
 
@@ -111,15 +111,30 @@ __Version 0.1.4__
 
 ### 0.1.4
 
-- Added the function `Giraffe.configure` which mixes __Giraffe__ features into
-  any function/class instance.
+
+- Added the function `Giraffe.configure` which 
+  [mixes several Giraffe features](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure)
+  into any function/class instance.
+  Used in the constructors of all Giraffe objects.
 
 - `omittedOptions` can be used to prevent `Giraffe.configure` from extending
-  particular properties
+  particular properties. If the value is `true`, all properties are omitted.
+
+- The document event prefix `'data-gf'` is now configurable via
+  `Giraffe.View.setDocumentEventPrefix` and as a parameter to 
+  `Giraffe.View.setDocumentEvents` and `Giraffe.View.removeDocumentEvents`.
+
+- ___BREAKING CHANGE:___ `dispose` is now mixed into configured objects
+  with a default function, and is only copied if it doesn't exist.
+  As a result, calls to super in `dispose` no longer make sense.
 
 - `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
-  are empty functions that can be filled in on a configured object.
-  `Giraffe.wrapFn` adds before and after hooks to a function.
+  are called if defined on all configured objects. Some are used by Giraffe
+  objects so override with care.
+
+- Added `Giraffe.wrapFn` which calls 'beforeFnName' and 'afterFnName' versions
+  of a function name on an object. Here's a reference for future development - 
+  [__Backbone.Advice__](https://github.com/rhysbrettbowen/Backbone.Advice)
 
 ## License
 
