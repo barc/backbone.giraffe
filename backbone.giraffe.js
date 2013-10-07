@@ -1711,8 +1711,7 @@
   * `obj.app` to null. Also triggers the `'disposing'` and `'disposed'` events
   * and calls the `beforeDispose` and `afterDispose` methods on `obj` before and
   * after the disposal. Takes optional `args` that are passed through to the
-  * events and the function calls, which are empty methods for you to define on
-  * your configured objects.
+  * events and the function calls.
   *
   * @param {Object} obj The object to dispose.
   * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
