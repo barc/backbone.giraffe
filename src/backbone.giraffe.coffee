@@ -761,7 +761,6 @@ class Giraffe.View extends Backbone.View
     Giraffe.View.setDocumentEvents Giraffe.View._currentDocumentEvents, prefix
 
 
-
   ###
   * Giraffe provides common strategies for templating.
   *
@@ -1407,8 +1406,8 @@ Giraffe.defaultOptions = {}
 * - extends the object with all options minus `omittedOptions`
 * - defaults `obj.dispose` to `Giraffe.disposeThis`
 * - defaults `obj.app` to `Giraffe.app`
-* - binds `appEvents` if `appEvents` and `app` are defined
-* - binds `dataEvents` if `obj` extends `Backbone.Events`
+* - binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
+* - binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
 * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
 *
 * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
@@ -1504,7 +1503,7 @@ Giraffe.bindDataEvents = (obj) ->
   obj
 
 
-  ###
+###
 * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
 * `targetObj` with the callback `cb`, which can be a function or the string name
 * of a method on `contextObj`.

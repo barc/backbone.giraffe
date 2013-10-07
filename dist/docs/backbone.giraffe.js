@@ -1675,8 +1675,8 @@
   * - extends the object with all options minus `omittedOptions`
   * - defaults `obj.dispose` to `Giraffe.disposeThis`
   * - defaults `obj.app` to `Giraffe.app`
-  * - binds `appEvents` if `appEvents` and `app` are defined
-  * - binds `dataEvents` if `obj` extends `Backbone.Events`
+  * - binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
+  * - binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
   * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
   *
   * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
@@ -1797,18 +1797,19 @@
       Giraffe.bindEvent(obj, targetObj, eventName, cb);
     }
     return obj;
-    /*
-    * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
-    * `targetObj` with the callback `cb`, which can be a function or the string name
-    * of a method on `contextObj`.
-    *
-    * @param {Backbone.Events} contextObj The object doing the listening.
-    * @param {Backbone.Events} targetObj The object to listen to.
-    * @param {String/Function} eventName The name of the event to listen to.
-    * @param {Function} cb The event's callback.
-    */
-
   };
+
+  /*
+  * Uses `Backbone.Events.listenTo` to make `contextObj` listen for `eventName` on
+  * `targetObj` with the callback `cb`, which can be a function or the string name
+  * of a method on `contextObj`.
+  *
+  * @param {Backbone.Events} contextObj The object doing the listening.
+  * @param {Backbone.Events} targetObj The object to listen to.
+  * @param {String/Function} eventName The name of the event to listen to.
+  * @param {Function} cb The event's callback.
+  */
+
 
   Giraffe.bindEvent = function() {
     var args;
