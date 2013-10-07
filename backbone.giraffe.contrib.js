@@ -8,8 +8,33 @@
   };
 
   /*
-  * Demonstrates usage of `Giraffe.configure` which extends any function instance
-  * with __Giraffe__'s features including lifecycle management, app events, etc.
+  * A __Controller__ is a simple evented class that can participate in appEvents.
+  * It demonstrates the usage of `Giraffe.configure` which extends any function
+  * instance with [features including lifecycle management, app events, and more.]
+  * (http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure)
+  *
+  * @param {Object} options
+  *
+  * - all options get merged into object like models and views.
+  *
+  * @example
+  *
+  *  var SfxController = Giraffe.Contrib.Controller.extend({
+  *    appEvents: {
+  *      'process:complete': 'playDingSound'
+  *    },
+  *
+  *    playDingSound: function() {
+  *      // Code for playing sound...
+  *    }
+  *  });
+  *
+  *  // Options get merged into object like views and models.
+  *  var sfxController = new SfxController({
+  *    basePath: 'media/audio',
+  *  });
+  *
+  * @author darthapo <github.com/darthapo>
   */
 
 

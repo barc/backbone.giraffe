@@ -1,9 +1,11 @@
 (function() {
-  var Giraffe, error, _afterInitialize, _setEventBindings, _setEventMapBindings,
+  var $, $document, $window, Backbone, Giraffe, error, _, _afterInitialize, _setEventBindings, _setEventMapBindings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __slice = [].slice;
+
+  $ = window.$, _ = window._, Backbone = window.Backbone;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
     version: '0.1.4',
@@ -11,6 +13,10 @@
     apps: {},
     views: {}
   };
+
+  $window = $(window);
+
+  $document = $(document);
 
   error = function() {
     var _ref, _ref1;
@@ -501,7 +507,7 @@
 
     /*
     * If `el` is `null` or `undefined`, tests if the view is somewhere on the DOM
-    * by calling `$(document).find(view.$el)`. If `el` is defined, tests if `el`
+    * by calling `$document.find(view.$el)`. If `el` is defined, tests if `el`
     * is the immediate parent of `view.$el`.
     *
     * @param {String} [el] Optional selector, DOM element, or view to test against the view's immediate parent.
@@ -517,7 +523,7 @@
           return this.$el.parent().is(el);
         }
       } else {
-        return $(document).find(this.$el).length > 0;
+        return $document.find(this.$el).length > 0;
       }
     };
 
@@ -825,8 +831,12 @@
     */
 
 
-    View.setDocumentEvents = function(events) {
-      var event, _i, _len, _results;
+    View.setDocumentEvents = function(events, prefix) {
+      var attr, event, selector, _fn, _i, _len;
+      if (prefix == null) {
+        prefix = Giraffe.View._documentEventPrefix;
+      }
+      prefix = prefix || '';
       if (typeof events === 'string') {
         events = events.split(' ');
       }
@@ -836,20 +846,23 @@
       events = _.compact(events);
       Giraffe.View.removeDocumentEvents();
       Giraffe.View._currentDocumentEvents = events;
-      _results = [];
+      Giraffe.View._documentEventPrefix = prefix;
+      _fn = function(event, attr, selector) {
+        return $document.on(event, selector, function(e) {
+          var $target, method, view;
+          $target = $(e.target).closest(selector);
+          method = $target.attr(attr);
+          view = Giraffe.View.getClosestView($target);
+          return view.invoke(method, e);
+        });
+      };
       for (_i = 0, _len = events.length; _i < _len; _i++) {
         event = events[_i];
-        _results.push((function(event) {
-          return $(document).on(event, "[data-gf-" + event + "]", function(e) {
-            var $target, method, view;
-            $target = $(e.target).closest("[data-gf-" + event + "]");
-            method = $target.attr("data-gf-" + event);
-            view = Giraffe.View.getClosestView($target);
-            return view.invoke(method, e);
-          });
-        })(event));
+        attr = prefix + event;
+        selector = '[' + attr + ']';
+        _fn(event, attr, selector);
       }
-      return _results;
+      return events;
     };
 
     /*
@@ -857,17 +870,38 @@
     */
 
 
-    View.removeDocumentEvents = function() {
-      var event, _i, _len, _ref, _ref1;
-      if (!((_ref = Giraffe.View._currentDocumentEvents) != null ? _ref.length : void 0)) {
+    View.removeDocumentEvents = function(prefix) {
+      var currentEvents, event, selector, _i, _len;
+      if (prefix == null) {
+        prefix = Giraffe.View._documentEventPrefix;
+      }
+      prefix = prefix || '';
+      currentEvents = Giraffe.View._currentDocumentEvents;
+      if (!(currentEvents != null ? currentEvents.length : void 0)) {
         return;
       }
-      _ref1 = Giraffe.View._currentDocumentEvents;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        event = _ref1[_i];
-        $(document).off(event, "[data-gf-" + event + "]");
+      for (_i = 0, _len = currentEvents.length; _i < _len; _i++) {
+        event = currentEvents[_i];
+        selector = '[' + prefix + event + ']';
+        $document.off(event, selector);
       }
       return Giraffe.View._currentDocumentEvents = null;
+    };
+
+    /*
+    * Sets the prefix for document events. Defaults to `data-gf-`,
+    * so to bind to `'click'` events, one would put the `data-gf-click`
+    * attribute on DOM elements with the name of a view method as the value.
+    *
+    * @param {String} prefix If `null` or `undefined`, defaults to the empty string.
+    */
+
+
+    View.setDocumentEventPrefix = function(prefix) {
+      if (prefix == null) {
+        prefix = '';
+      }
+      return Giraffe.View.setDocumentEvents(Giraffe.View._currentDocumentEvents, prefix);
     };
 
     /*
@@ -993,7 +1027,7 @@
 
   Giraffe.View.setTemplateStrategy('underscore-template-selector');
 
-  Giraffe.View.setDocumentEvents(['click', 'change']);
+  Giraffe.View.setDocumentEvents(['click', 'change'], 'data-gf-');
 
   /*
   * __Giraffe.App__ is a special __Giraffe.View__ that provides encapsulation for
@@ -1052,7 +1086,7 @@
           });
         }
       }
-      $(window).on('unload', this._onUnload);
+      $window.on('unload', this._onUnload);
       return App.__super__._cache.apply(this, arguments);
     };
 
@@ -1064,7 +1098,7 @@
       if (this.router) {
         this.router = null;
       }
-      $(window).off('unload', this._onUnload);
+      $window.off('unload', this._onUnload);
       return App.__super__._uncache.apply(this, arguments);
     };
 
@@ -1614,20 +1648,22 @@
     return obj;
   };
 
+  Giraffe.disposeThis = function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return Giraffe.dispose.apply(Giraffe, [this].concat(__slice.call(args)));
+  };
+
   /*
   * Global default options extended to every configured object.
   * Setting `omittedOptions` here globally prevents those properties from being
-  * extended onto every configured object. Has the generic `dipose` method.
+  * extended onto every configured object. Empty by default.
   *
   * @caption Giraffe.defaultOptions
   */
 
 
-  Giraffe.defaultOptions = {
-    dispose: function() {
-      return Giraffe.dispose(this);
-    }
-  };
+  Giraffe.defaultOptions = {};
 
   /*
   * Initializes an instance of a function/class with __Giraffe__'s features.
@@ -1637,14 +1673,14 @@
   *
   * - pulls option defaults from global, class, and instance `defaultOptions`
   * - extends the object with all options minus `omittedOptions`
-  * - defaults `obj.dispose` to the generic version in `Giraffe.defaultOptions`
+  * - defaults `obj.dispose` to `Giraffe.disposeThis`
   * - defaults `obj.app` to `Giraffe.app`
   * - binds `appEvents` if `appEvents` and `app` are defined
   * - binds `dataEvents` if `obj` extends `Backbone.Events`
   * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
   *
   * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
-  * @param {Obj} [opts] Extends `defaultOptions`
+  * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
   */
 
 
@@ -1655,7 +1691,12 @@
       return error('Only functions can be configured');
     }
     options = _.extend({}, Giraffe.defaultOptions, ctor.defaultOptions, obj.defaultOptions, opts);
-    _.extend(obj, _.omit(options, options.omittedOptions));
+    if (options.omittedOptions !== true) {
+      _.extend(obj, _.omit(options, options.omittedOptions));
+    }
+    if (obj.dispose == null) {
+      obj.dispose = Giraffe.disposeThis;
+    }
     if (obj.app == null) {
       obj.app = Giraffe.app;
     }
