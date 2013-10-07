@@ -1352,10 +1352,10 @@ class Giraffe.Collection extends Backbone.Collection
 
 
 ###
-* Initializes an instance of a function/class with many generic features.
-* All __Giraffe__ objects use this method in their constructors to gain much
+* Initializes an instance of a function/class with several generic features.
+* All __Giraffe__ objects call this function in their constructors to gain much
 * of their functionality.
-* Uses duck typing to add in features when dependencies are met.
+* Uses duck typing to initialize features when dependencies are met.
 *
 * Features:
 *
@@ -1382,7 +1382,7 @@ Giraffe.configure = (obj, opts) ->
 
   # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
   if options.omittedOptions isnt true
-    _.extend obj, _.omit(options, options.omittedOptions)
+    _.extend obj, _.omit(options, options.omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
 
   obj.dispose ?= Giraffe.disposeThis
 
@@ -1401,10 +1401,37 @@ Giraffe.configure = (obj, opts) ->
 
 
 ###
-* Global default options extended to every object passed to `Giraffe.configure`.
+* The global defaults extended to every object passed to `Giraffe.configure`.
+* Empty by default.
 * Setting `omittedOptions` here globally prevents those properties from being
 * copied over, and if its value is `true` extension is completely disabled.
-* Empty by default. Be aware that _the values are not cloned_ when copied.
+*
+*     function Foo() {
+*       Giraffe.configure(this);
+*     };
+*     Giraffe.defaultOptions = {bar: 'global'};
+*     var foo = new Foo();
+*     foo.bar; // => 'global'
+*
+* You can also define `defaultOptions` on a function constructor.
+* These override the global defaults.
+*
+*     Foo.defaultOptions = {bar: 'constructor'};
+*     foo = new Foo();
+*     foo.bar; // => 'constructor'
+*
+* The instance/prototype defaults take even higher precedence:
+*
+*     Foo.prototype.defaultOptions = {bar: 'instance/prototype'};
+*     foo = new Foo();
+*     foo.bar; // => 'instance/prototype'
+*
+* Options passed as arguments always override `defaultOptions`.
+*
+*     foo = new Foo({bar: 'option'});
+*     foo.bar; // => 'option'
+*
+* Be aware that the values of all `defaultOptions` are not cloned when copied over.
 *
 * @caption Giraffe.defaultOptions
 ###
