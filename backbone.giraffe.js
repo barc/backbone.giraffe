@@ -1609,6 +1609,72 @@
   })(Backbone.Collection);
 
   /*
+  * Initializes an instance of a function/class with many generic features.
+  * All __Giraffe__ objects use this method in their constructors to gain much
+  * of their functionality.
+  * Uses duck typing to add in features when dependencies are met.
+  *
+  * Features:
+  *
+  * - -pulls option defaults from the global `Giraffe.defaultOptions`, the static `obj.constructor.defaultOptions`, and the instance/prototype `obj.defaultOptions`
+  * - -extends the object with all options minus `omittedOptions` (omits all if `true`)
+  * - -defaults `obj.dispose` to `Giraffe.disposeThis`
+  * - -defaults `obj.app` to `Giraffe.app`
+  * - -binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
+  * - -binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
+  * - -wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
+  *
+  * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
+  * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
+  */
+
+
+  Giraffe.configure = function(obj, opts) {
+    var ctor, options;
+    ctor = obj != null ? obj.constructor : void 0;
+    if (!ctor) {
+      return error('Only functions can be configured');
+    }
+    options = _.extend({}, Giraffe.defaultOptions, ctor.defaultOptions, obj.defaultOptions, opts);
+    if (options.omittedOptions !== true) {
+      _.extend(obj, _.omit(options, options.omittedOptions));
+    }
+    if (obj.dispose == null) {
+      obj.dispose = Giraffe.disposeThis;
+    }
+    if (obj.app == null) {
+      obj.app = Giraffe.app;
+    }
+    if (obj.appEvents) {
+      Giraffe.bindAppEvents(obj);
+    }
+    if (obj.initialize) {
+      Giraffe.wrapFn(obj, 'initialize', null, _afterInitialize);
+    } else {
+      _afterInitialize.call(obj);
+    }
+    return obj;
+  };
+
+  /*
+  * Global default options extended to every object passed to `Giraffe.configure`.
+  * Setting `omittedOptions` here globally prevents those properties from being
+  * copied over, and if its value is `true` extension is completely disabled.
+  * Empty by default. Be aware that _the values are not cloned_ when copied.
+  *
+  * @caption Giraffe.defaultOptions
+  */
+
+
+  Giraffe.defaultOptions = {};
+
+  _afterInitialize = function() {
+    if (this.dataEvents) {
+      return Giraffe.bindDataEvents(this);
+    }
+  };
+
+  /*
   * Disposes of an object, removing event listeners and freeing resources.
   * An instance method of `dispose` is added for
   * all objects passed through `Giraffe.configure`, and so you will normally
@@ -1648,112 +1714,17 @@
     return obj;
   };
 
+  /*
+  * Calls `Giraffe.dispose` on `this`.
+  * Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure` was added in v0.1.14.
+  * Perhaps this function should be removed and `Giraffe.dispose` changed to operate on `this`.
+  */
+
+
   Giraffe.disposeThis = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     return Giraffe.dispose.apply(Giraffe, [this].concat(__slice.call(args)));
-  };
-
-  /*
-  * Global default options extended to every object passed to `Giraffe.configure`.
-  * Setting `omittedOptions` here globally prevents those properties from being
-  * copied over, and if its value is `true` extension is completely disabled.
-  * Empty by default. Be aware that _the values are not cloned_ when copied.
-  *
-  * @caption Giraffe.defaultOptions
-  */
-
-
-  Giraffe.defaultOptions = {};
-
-  /*
-  * Initializes an instance of a function/class with __Giraffe__'s features.
-  * All __Giraffe__ objects use this method in their constructors.
-  *
-  * Features:
-  *
-  * - pulls option defaults from global, class, and instance `defaultOptions`
-  * - extends the object with all options minus `omittedOptions`
-  * - defaults `obj.dispose` to `Giraffe.disposeThis`
-  * - defaults `obj.app` to `Giraffe.app`
-  * - binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
-  * - binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
-  * - wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
-  *
-  * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
-  * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
-  */
-
-
-  Giraffe.configure = function(obj, opts) {
-    var ctor, options;
-    ctor = obj != null ? obj.constructor : void 0;
-    if (!ctor) {
-      return error('Only functions can be configured');
-    }
-    options = _.extend({}, Giraffe.defaultOptions, ctor.defaultOptions, obj.defaultOptions, opts);
-    if (options.omittedOptions !== true) {
-      _.extend(obj, _.omit(options, options.omittedOptions));
-    }
-    if (obj.dispose == null) {
-      obj.dispose = Giraffe.disposeThis;
-    }
-    if (obj.app == null) {
-      obj.app = Giraffe.app;
-    }
-    if (obj.appEvents) {
-      Giraffe.bindAppEvents(obj);
-    }
-    if (obj.initialize) {
-      Giraffe.wrapFn(obj, 'initialize', null, _afterInitialize);
-    } else {
-      _afterInitialize.call(obj);
-    }
-    return obj;
-  };
-
-  _afterInitialize = function() {
-    if (this.dataEvents) {
-      return Giraffe.bindDataEvents(this);
-    }
-  };
-
-  /*
-  * Wraps `obj[fnName]` with `beforeFnName` and `afterFnName` invocations. Also
-  * calls the optional arguments `beforeFn` and `afterFn`.
-  *
-  * @param {Object} obj
-  * @param {String} fnName
-  * @param {Function} [beforeFn]
-  * @param {Function} [afterFn]
-  */
-
-
-  Giraffe.wrapFn = function(obj, fnName, beforeFn, afterFn) {
-    var capFnName, fn;
-    fn = obj[fnName];
-    if (typeof fn !== 'function') {
-      return;
-    }
-    capFnName = fnName[0].toUpperCase() + fnName.slice(1);
-    return obj[fnName] = function() {
-      var args, result, _name, _name1;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (beforeFn != null) {
-        beforeFn.apply(obj, args);
-      }
-      if (typeof obj[_name = 'before' + capFnName] === "function") {
-        obj[_name].apply(obj, args);
-      }
-      result = fn.apply(obj, args);
-      if (typeof obj[_name1 = 'after' + capFnName] === "function") {
-        obj[_name1].apply(obj, args);
-      }
-      if (afterFn != null) {
-        afterFn.apply(obj, args);
-      }
-      return result;
-    };
   };
 
   /*
@@ -1899,6 +1870,44 @@
       _setEventBindings(contextObj, targetObj, eventName, cb, bindOrUnbindFnName);
     }
     return contextObj;
+  };
+
+  /*
+  * Wraps `obj[fnName]` with `beforeFnName` and `afterFnName` invocations. Also
+  * calls the optional arguments `beforeFn` and `afterFn`.
+  *
+  * @param {Object} obj
+  * @param {String} fnName
+  * @param {Function} [beforeFn]
+  * @param {Function} [afterFn]
+  */
+
+
+  Giraffe.wrapFn = function(obj, fnName, beforeFn, afterFn) {
+    var capFnName, fn;
+    fn = obj[fnName];
+    if (typeof fn !== 'function') {
+      return;
+    }
+    capFnName = fnName[0].toUpperCase() + fnName.slice(1);
+    return obj[fnName] = function() {
+      var args, result, _name, _name1;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (beforeFn != null) {
+        beforeFn.apply(obj, args);
+      }
+      if (typeof obj[_name = 'before' + capFnName] === "function") {
+        obj[_name].apply(obj, args);
+      }
+      result = fn.apply(obj, args);
+      if (typeof obj[_name1 = 'after' + capFnName] === "function") {
+        obj[_name1].apply(obj, args);
+      }
+      if (afterFn != null) {
+        afterFn.apply(obj, args);
+      }
+      return result;
+    };
   };
 
 }).call(this);
