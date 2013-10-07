@@ -1473,7 +1473,7 @@ Giraffe.dispose = (obj, args...) ->
 
 ###
 * Calls `Giraffe.dispose` on `this`.
-* Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure` was added in v0.1.14.
+* Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure` was added in v0.1.4.
 * Perhaps this function should be removed and `Giraffe.dispose` changed to operate on `this`.
 ###
 Giraffe.disposeThis = (args...) ->
