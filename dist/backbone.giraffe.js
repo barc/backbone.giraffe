@@ -1655,9 +1655,10 @@
   };
 
   /*
-  * Global default options extended to every configured object.
+  * Global default options extended to every object passed to `Giraffe.configure`.
   * Setting `omittedOptions` here globally prevents those properties from being
-  * extended onto every configured object. Empty by default.
+  * copied over, and if its value is `true` extension is completely disabled.
+  * Empty by default. Be aware that _the values are not cloned_ when copied.
   *
   * @caption Giraffe.defaultOptions
   */
