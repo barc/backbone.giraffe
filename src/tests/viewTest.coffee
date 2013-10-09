@@ -316,63 +316,118 @@ describe 'Giraffe.View', ->
   it 'should accept `appEvents` as an option', ->
     ut.assert.appEventsOption Giraffe.View
 
-  it 'should listen for document events', (done) ->
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div data-gf-click='onClick'></div>
-      """
-      onClick: -> done()
-    a.attachTo ut.getEl()
-    a.$('div').click()
+  describe 'view document events', ->
 
-  it 'should remove document events', ->
-    Giraffe.View.removeDocumentEvents()
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div data-gf-click='onClick'></div>
-      """
-      onClick: -> fail()
-    a.attachTo ut.getEl()
-    a.$('div').click()
+    it 'should listen for document events', (done) ->
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div data-gf-click='onClick'></div>
+        """
+        onClick: -> done()
+      a.attachTo ut.getEl()
+      a.$('div').click()
 
-  it 'should set custom document events', (done) ->
-    Giraffe.View.setDocumentEvents ['wat']
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div data-gf-wat='onWat'></div>
-      """
-      onWat: -> done()
-    a.attachTo ut.getEl()
-    a.$('div').trigger('wat')
+    it 'should remove document events', ->
+      Giraffe.View.removeDocumentEvents()
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div data-gf-click='onClick'></div>
+        """
+        onClick: -> fail()
+      a.attachTo ut.getEl()
+      a.$('div').click()
 
-  it 'should set a custom document event prefix', (done) ->
-    Giraffe.View.setDocumentEvents 'click'
-    Giraffe.View.setDocumentEventPrefix 'test-on-'
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div test-on-click='onClick'></div>
-      """
-      onClick: -> done()
-    a.attachTo ut.getEl()
-    a.$('div').click()
+    it 'should set custom document events', (done) ->
+      Giraffe.View.setDocumentEvents ['wat']
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div data-gf-wat='onWat'></div>
+        """
+        onWat: -> done()
+      a.attachTo ut.getEl()
+      a.$('div').trigger('wat')
 
-  it 'should use the custom prefix from the function parameter to `setDocumentEvents`', (done) ->
-    Giraffe.View.setDocumentEvents 'click', 'test-on-'
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div test-on-click='onClick'></div>
-      """
-      onClick: -> done()
-    a.attachTo ut.getEl()
-    a.$('div').click()
+    it 'should set a custom document event prefix', (done) ->
+      Giraffe.View.setDocumentEvents 'click'
+      Giraffe.View.setDocumentEventPrefix 'test-on-'
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div test-on-click='onClick'></div>
+        """
+        onClick: -> done()
+      a.attachTo ut.getEl()
+      a.$('div').click()
 
-  it 'should allow a blank prefix', (done) ->
-    Giraffe.View.setDocumentEvents 'click'
-    Giraffe.View.setDocumentEventPrefix ''
-    a = new Giraffe.View
-      templateStrategy: -> """
-        <div click='onClick'></div>
-      """
-      onClick: -> done()
-    a.attachTo ut.getEl()
-    a.$('div').click()
+    it 'should use the custom prefix from the function parameter to `setDocumentEvents`', (done) ->
+      Giraffe.View.setDocumentEvents 'click', 'test-on-'
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div test-on-click='onClick'></div>
+        """
+        onClick: -> done()
+      a.attachTo ut.getEl()
+      a.$('div').click()
+
+    it 'should allow a blank document events prefix', (done) ->
+      Giraffe.View.setDocumentEvents 'click'
+      Giraffe.View.setDocumentEventPrefix ''
+      a = new Giraffe.View
+        templateStrategy: -> """
+          <div click='onClick'></div>
+        """
+        onClick: -> done()
+      a.attachTo ut.getEl()
+      a.$('div').click()
+
+  describe 'declarative view composition', ->
+
+    it 'should instantiate a view from a template', ->
+      MyView = Giraffe.View.extend
+        templateStrategy: -> 'foo'
+      parentView = new Giraffe.View
+        templateStrategy: -> '<div data-view-class="MyView"></div>'
+        viewClasses:
+          MyView: ->
+            new MyView
+          MyOtherView: -> # provider needs to be a function because we may want params or a cached view
+            new MyView(other: 'options')
+          MyCachedView: ->
+            @myCachedView ?= new MyView(disposeOnDetach: false)
+      parentView.viewClasses.MyView = -> # easy reflect on and mutate `viewClasses`
+        @myView ?= new MyView(disposeOnDetach: false) # called in context of `a`
+      parentView.render()
+      assert.lengthOf 1, parentView.children
+      assert.ok parentView.children[0] instanceof MyView
+      assert.equal 'foo', parentView.$el.text()
+
+      ###
+        pros
+          - gives the programmer control over provided classes at runtime via the mutable `viewClasses` hash
+        cons
+          - is a little more verbose
+          - requires more Giraffe code
+      ###
+
+    it 'should instantiate a view from a template', ->
+      a = new Giraffe.View
+        templateStrategy: -> '<div data-view-class="getViewMyView"></div>' # calls the function getViewMyView and puts the result in this div inside `a` after `a` renders
+        getViewMyView: ->
+          new MyView
+        getViewMyOtherView: -> # provider needs to be a function because we may want params or a cached view
+          new MyView(other: 'options')
+        getViewMyCachedView: ->
+          @myCachedView ?= new MyView(disposeOnDetach: false)
+      MyView = Giraffe.View.extend
+        templateStrategy: -> 'foo'
+      parentView.render()
+      assert.lengthOf 1, parentView.children
+      assert.ok parentView.children[0] instanceof MyView
+      assert.equal 'foo', parentView.$el.text()
+
+      ###
+        pros
+          - simple and straightforward
+          - reuses existing `Giraffe.view#invoke` pattern, same as the similar-looking document events feature
+        cons
+          - no automated way to reflect on provided functions (how often will this be needed? and how hard is it to replicate for the programmer? doesn't seem like much work)
+      ###

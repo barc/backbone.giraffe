@@ -377,90 +377,177 @@
     it('should accept `appEvents` as an option', function() {
       return ut.assert.appEventsOption(Giraffe.View);
     });
-    it('should listen for document events', function(done) {
-      var a;
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div data-gf-click='onClick'></div>";
-        },
-        onClick: function() {
-          return done();
-        }
+    describe('view document events', function() {
+      it('should listen for document events', function(done) {
+        var a;
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div data-gf-click='onClick'></div>";
+          },
+          onClick: function() {
+            return done();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').click();
       });
-      a.attachTo(ut.getEl());
-      return a.$('div').click();
+      it('should remove document events', function() {
+        var a;
+        Giraffe.View.removeDocumentEvents();
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div data-gf-click='onClick'></div>";
+          },
+          onClick: function() {
+            return fail();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').click();
+      });
+      it('should set custom document events', function(done) {
+        var a;
+        Giraffe.View.setDocumentEvents(['wat']);
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div data-gf-wat='onWat'></div>";
+          },
+          onWat: function() {
+            return done();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').trigger('wat');
+      });
+      it('should set a custom document event prefix', function(done) {
+        var a;
+        Giraffe.View.setDocumentEvents('click');
+        Giraffe.View.setDocumentEventPrefix('test-on-');
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div test-on-click='onClick'></div>";
+          },
+          onClick: function() {
+            return done();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').click();
+      });
+      it('should use the custom prefix from the function parameter to `setDocumentEvents`', function(done) {
+        var a;
+        Giraffe.View.setDocumentEvents('click', 'test-on-');
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div test-on-click='onClick'></div>";
+          },
+          onClick: function() {
+            return done();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').click();
+      });
+      return it('should allow a blank document events prefix', function(done) {
+        var a;
+        Giraffe.View.setDocumentEvents('click');
+        Giraffe.View.setDocumentEventPrefix('');
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return "<div click='onClick'></div>";
+          },
+          onClick: function() {
+            return done();
+          }
+        });
+        a.attachTo(ut.getEl());
+        return a.$('div').click();
+      });
     });
-    it('should remove document events', function() {
-      var a;
-      Giraffe.View.removeDocumentEvents();
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div data-gf-click='onClick'></div>";
-        },
-        onClick: function() {
-          return fail();
-        }
+    return describe('declarative view composition', function() {
+      it('should instantiate a view from a template', function() {
+        var MyView, parentView;
+        MyView = Giraffe.View.extend({
+          templateStrategy: function() {
+            return 'foo';
+          }
+        });
+        parentView = new Giraffe.View({
+          templateStrategy: function() {
+            return '<div data-view-class="MyView"></div>';
+          },
+          viewClasses: {
+            MyView: function() {
+              return new MyView;
+            },
+            MyOtherView: function() {
+              return new MyView({
+                other: 'options'
+              });
+            },
+            MyCachedView: function() {
+              return this.myCachedView != null ? this.myCachedView : this.myCachedView = new MyView({
+                disposeOnDetach: false
+              });
+            }
+          }
+        });
+        parentView.viewClasses.MyView = function() {
+          return this.myView != null ? this.myView : this.myView = new MyView({
+            disposeOnDetach: false
+          });
+        };
+        parentView.render();
+        assert.lengthOf(1, parentView.children);
+        assert.ok(parentView.children[0] instanceof MyView);
+        return assert.equal('foo', parentView.$el.text());
+        /*
+          pros
+            - gives the programmer control over provided classes at runtime via the mutable `viewClasses` hash
+          cons
+            - is a little more verbose
+            - requires more Giraffe code
+        */
+
       });
-      a.attachTo(ut.getEl());
-      return a.$('div').click();
-    });
-    it('should set custom document events', function(done) {
-      var a;
-      Giraffe.View.setDocumentEvents(['wat']);
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div data-gf-wat='onWat'></div>";
-        },
-        onWat: function() {
-          return done();
-        }
+      return it('should instantiate a view from a template', function() {
+        var MyView, a;
+        a = new Giraffe.View({
+          templateStrategy: function() {
+            return '<div data-view-class="getViewMyView"></div>';
+          },
+          getViewMyView: function() {
+            return new MyView;
+          },
+          getViewMyOtherView: function() {
+            return new MyView({
+              other: 'options'
+            });
+          },
+          getViewMyCachedView: function() {
+            return this.myCachedView != null ? this.myCachedView : this.myCachedView = new MyView({
+              disposeOnDetach: false
+            });
+          }
+        });
+        MyView = Giraffe.View.extend({
+          templateStrategy: function() {
+            return 'foo';
+          }
+        });
+        parentView.render();
+        assert.lengthOf(1, parentView.children);
+        assert.ok(parentView.children[0] instanceof MyView);
+        return assert.equal('foo', parentView.$el.text());
+        /*
+          pros
+            - simple and straightforward
+            - reuses existing `Giraffe.view#invoke` pattern, same as the similar-looking document events feature
+          cons
+            - no automated way to reflect on provided functions (how often will this be needed? and how hard is it to replicate for the programmer? doesn't seem like much work)
+        */
+
       });
-      a.attachTo(ut.getEl());
-      return a.$('div').trigger('wat');
-    });
-    it('should set a custom document event prefix', function(done) {
-      var a;
-      Giraffe.View.setDocumentEvents('click');
-      Giraffe.View.setDocumentEventPrefix('test-on-');
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div test-on-click='onClick'></div>";
-        },
-        onClick: function() {
-          return done();
-        }
-      });
-      a.attachTo(ut.getEl());
-      return a.$('div').click();
-    });
-    it('should use the custom prefix from the function parameter to `setDocumentEvents`', function(done) {
-      var a;
-      Giraffe.View.setDocumentEvents('click', 'test-on-');
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div test-on-click='onClick'></div>";
-        },
-        onClick: function() {
-          return done();
-        }
-      });
-      a.attachTo(ut.getEl());
-      return a.$('div').click();
-    });
-    return it('should allow a blank prefix', function(done) {
-      var a;
-      Giraffe.View.setDocumentEvents('click');
-      Giraffe.View.setDocumentEventPrefix('');
-      a = new Giraffe.View({
-        templateStrategy: function() {
-          return "<div click='onClick'></div>";
-        },
-        onClick: function() {
-          return done();
-        }
-      });
-      a.attachTo(ut.getEl());
-      return a.$('div').click();
     });
   });
 
