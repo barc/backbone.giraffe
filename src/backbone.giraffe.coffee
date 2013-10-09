@@ -1352,7 +1352,7 @@ class Giraffe.Collection extends Backbone.Collection
 
 
 ###
-* Initializes an instance of a function/class with several generic features.
+* Initializes an object with several generic features.
 * All __Giraffe__ objects call this function in their constructors to gain much
 * of their functionality.
 * Uses duck typing to initialize features when dependencies are met.
@@ -1367,22 +1367,24 @@ class Giraffe.Collection extends Backbone.Collection
 * - -binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
 * - -wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
 *
-* @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
+* @param {Object} obj Any object.
 * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
 ###
 Giraffe.configure = (obj, opts) ->
-  ctor = obj?.constructor
-  return error('Only functions can be configured') if !ctor
+  if !obj
+    error "Cannot configure obj", obj
+    return false
 
   options = _.extend {},
     Giraffe.defaultOptions,
-    ctor.defaultOptions,
+    obj.constructor?.defaultOptions,
     obj.defaultOptions,
     opts
 
   # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
-  if options.omittedOptions isnt true
-    _.extend obj, _.omit(options, options.omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
+  omittedOptions = options.omittedOptions ? obj.omittedOptions
+  if omittedOptions isnt true
+    _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
 
   obj.dispose ?= Giraffe.disposeThis
 
@@ -1571,7 +1573,6 @@ Giraffe.unbindEventMap = (args...) ->
 
 # Event binding helpers
 _setEventBindings = (contextObj, targetObj, eventName, cb, bindOrUnbindFnName) ->
-  return unless targetObj and contextObj and eventName and bindOrUnbindFnName
   if typeof cb is 'string'
     cb = contextObj[cb]
   if typeof cb isnt 'function'

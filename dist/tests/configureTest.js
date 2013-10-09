@@ -21,13 +21,41 @@
       });
       return assert.equal('baz', foo.bar);
     });
-    it('should not extend the object with `options` if `omittedOptions` is `true`', function() {
+    it('should extend the class with `options`', function() {
+      var F, f;
+      F = (function() {
+        function F() {}
+
+        F.prototype.bar = 'baz';
+
+        return F;
+
+      })();
+      f = new F;
+      return assert.equal('baz', f.bar);
+    });
+    it('should not extend the object with `options` if `options.omittedOptions` is `true`', function() {
       var foo;
       foo = new Foo({
         bar: 'baz',
         omittedOptions: true
       });
       return assert.notEqual('baz', foo.bar);
+    });
+    it('should not extend the object with `options` if `obj.omittedOptions` is `true`', function() {
+      var F, f;
+      F = (function() {
+        function F() {}
+
+        F.prototype.omittedOptions = true;
+
+        return F;
+
+      })();
+      f = new F({
+        bar: 'baz'
+      });
+      return assert.notEqual('baz', f.bar);
     });
     it('should not extend the object with `omittedOptions`', function() {
       var foo;
@@ -42,7 +70,8 @@
       var foo;
       Giraffe.defaultOptions.globalOption = 42;
       foo = new Foo;
-      return assert.equal(42, foo.globalOption);
+      assert.equal(42, foo.globalOption);
+      return delete Giraffe.defaultOptions.globalOption;
     });
     it('should extend the object with the constuctor\'s `defaultOptions`', function() {
       var foo;
@@ -50,7 +79,8 @@
         ctorOption: 42
       };
       foo = new Foo;
-      return assert.equal(42, foo.ctorOption);
+      assert.equal(42, foo.ctorOption);
+      return delete Foo.defaultOptions;
     });
     it('should extend the object with the object\'s `defaultOptions`', function() {
       var foo;
@@ -58,7 +88,8 @@
         protoOption: 42
       };
       foo = new Foo;
-      return assert.equal(42, foo.protoOption);
+      assert.equal(42, foo.protoOption);
+      return delete Foo.prototype.defaultOptions;
     });
     it('should give proper precedence to the instance\'s `defaultOptions`', function() {
       var foo;
@@ -72,7 +103,8 @@
         option: 3
       };
       foo = new Foo;
-      return assert.equal(3, foo.option);
+      assert.equal(3, foo.option);
+      return delete Giraffe.defaultOptions.option;
     });
     it('should wrap a function with `before` and `after` calls', function() {
       var count, foo;
@@ -122,6 +154,20 @@
       });
       return foo.model.trigger('done');
     });
+    it('should listen for data events on an object with `Backbone.Events`', function(done) {
+      var foo;
+      foo = {
+        model: new Backbone.Model,
+        dataEvents: {
+          'done model': function() {
+            return done();
+          }
+        }
+      };
+      _.extend(foo, Backbone.Events);
+      Giraffe.configure(foo);
+      return foo.model.trigger('done');
+    });
     it('should listen for data events on self', function() {
       var count, foo;
       count = 0;
@@ -138,7 +184,7 @@
       foo.trigger('done');
       return assert.equal(2, count);
     });
-    return it('should listen for data events on objects created during `initialize`', function(done) {
+    it('should listen for data events on objects created during `initialize`', function(done) {
       var foo;
       foo = new Giraffe.Model({}, {
         initialize: function() {
@@ -151,6 +197,25 @@
         }
       });
       return foo.model.trigger('done');
+    });
+    it('should configure a POJO', function() {
+      var foo;
+      foo = {};
+      Giraffe.configure(foo, {
+        bar: 'baz'
+      });
+      return assert.equal('baz', foo.bar);
+    });
+    return it('should override POJO properties with options', function() {
+      var foo;
+      foo = {
+        bar: 'boo'
+      };
+      Giraffe.configure(foo, {
+        bar: 'baz'
+      });
+      assert.equal('baz', foo.bar);
+      return console.log("FOO", foo);
     });
   });
 

@@ -1609,7 +1609,7 @@
   })(Backbone.Collection);
 
   /*
-  * Initializes an instance of a function/class with several generic features.
+  * Initializes an object with several generic features.
   * All __Giraffe__ objects call this function in their constructors to gain much
   * of their functionality.
   * Uses duck typing to initialize features when dependencies are met.
@@ -1624,20 +1624,21 @@
   * - -binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
   * - -wraps `initialize` with `beforeInitialize` and `afterInitialize` if it exists
   *
-  * @param {Object} obj Instance of a function/class, i.e. anything that's been `new`ed.
+  * @param {Object} obj Any object.
   * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
   */
 
 
   Giraffe.configure = function(obj, opts) {
-    var ctor, options;
-    ctor = obj != null ? obj.constructor : void 0;
-    if (!ctor) {
-      return error('Only functions can be configured');
+    var omittedOptions, options, _ref, _ref1;
+    if (!obj) {
+      error("Cannot configure obj", obj);
+      return false;
     }
-    options = _.extend({}, Giraffe.defaultOptions, ctor.defaultOptions, obj.defaultOptions, opts);
-    if (options.omittedOptions !== true) {
-      _.extend(obj, _.omit(options, options.omittedOptions));
+    options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
+    omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
+    if (omittedOptions !== true) {
+      _.extend(obj, _.omit(options, omittedOptions));
     }
     if (obj.dispose == null) {
       obj.dispose = Giraffe.disposeThis;
@@ -1870,9 +1871,6 @@
   };
 
   _setEventBindings = function(contextObj, targetObj, eventName, cb, bindOrUnbindFnName) {
-    if (!(targetObj && contextObj && eventName && bindOrUnbindFnName)) {
-      return;
-    }
     if (typeof cb === 'string') {
       cb = contextObj[cb];
     }

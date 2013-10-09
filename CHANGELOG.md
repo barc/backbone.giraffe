@@ -5,8 +5,7 @@
 
 - Added the function `Giraffe.configure` which 
   [mixes several Giraffe features](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure)
-  into any function/class instance.
-  Used in the constructors of all Giraffe objects.
+  into any object. Used in the constructors of all Giraffe objects.
 
 - `omittedOptions` can be used to prevent `Giraffe.configure` from extending
   particular properties. If the value is `true`, all properties are omitted.
