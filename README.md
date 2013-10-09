@@ -92,7 +92,7 @@ __AngularJS__)
 
 __Version 0.1.4__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _64.7k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _64.6k_
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.1k_
 
@@ -114,8 +114,7 @@ __Version 0.1.4__
 
 - Added the function `Giraffe.configure` which 
   [mixes several Giraffe features](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure)
-  into any function/class instance.
-  Used in the constructors of all Giraffe objects.
+  into any object. Used in the constructors of all Giraffe objects.
 
 - `omittedOptions` can be used to prevent `Giraffe.configure` from extending
   particular properties. If the value is `true`, all properties are omitted.
