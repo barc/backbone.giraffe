@@ -12,7 +12,7 @@ exports.project = (pm) ->
     description: 'Compiles test Coffee scripts'
     files: 'src/tests/**/*.coffee'
     dev: [
-      f.coffee sourceMap: true
+      f.coffee #sourceMap: true
       f.writeFile _filename: { replace: [/^src/, 'dist']}
     ]
 
@@ -20,7 +20,7 @@ exports.project = (pm) ->
     description: 'Copies static files'
     dev: ->
       $.xcopy 'src/tests/', 'dist/tests'
-      $.rm 'dist/tests/*coffee'
+      $.rm 'dist/tests/**/*.coffee'
 
   all: ['scripts', 'statics']
 

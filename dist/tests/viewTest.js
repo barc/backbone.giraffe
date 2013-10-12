@@ -374,9 +374,6 @@
       grandchild.attachTo(child);
       return grandchild.invoke('done');
     });
-    it('should accept `appEvents` as an option', function() {
-      return ut.assert.appEventsOption(Giraffe.View);
-    });
     it('should listen for document events', function(done) {
       var a;
       a = new Giraffe.View({
@@ -465,8 +462,3 @@
   });
 
 }).call(this);
-
-
-/*
-//@ sourceMappingURL=viewTest.map
-*/

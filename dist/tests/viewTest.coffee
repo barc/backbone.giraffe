@@ -313,9 +313,6 @@ describe 'Giraffe.View', ->
     grandchild.attachTo child
     grandchild.invoke 'done'
 
-  it 'should accept `appEvents` as an option', ->
-    ut.assert.appEventsOption Giraffe.View
-
   it 'should listen for document events', (done) ->
     a = new Giraffe.View
       templateStrategy: -> """

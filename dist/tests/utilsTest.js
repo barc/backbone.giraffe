@@ -82,40 +82,6 @@
     return assert.ok(ut.hasText($el, text));
   };
 
-  ut.assert.appEventsOption = function(ctor, optionsArgIndex, args) {
-    var arg, i, obj, worked, _i;
-    worked = false;
-    if (optionsArgIndex == null) {
-      optionsArgIndex = 0;
-    }
-    for (i = _i = 0; 0 <= optionsArgIndex ? _i <= optionsArgIndex : _i >= optionsArgIndex; i = 0 <= optionsArgIndex ? ++_i : --_i) {
-      if (args == null) {
-        args = void 0;
-      }
-    }
-    if (!_.isArray(args)) {
-      args = [args];
-    }
-    arg = args[optionsArgIndex] != null ? args[optionsArgIndex] : args[optionsArgIndex] = {};
-    if (arg.app == null) {
-      arg.app = new Giraffe.App;
-    }
-    if (arg.appEvents == null) {
-      arg.appEvents = {
-        'foo': function() {
-          return worked = true;
-        }
-      };
-    }
-    obj = (function(func, args, ctor) {
-      ctor.prototype = func.prototype;
-      var child = new ctor, result = func.apply(child, args);
-      return Object(result) === result ? result : child;
-    })(ctor, args, function(){});
-    obj.app.trigger('foo');
-    return assert.ok(worked);
-  };
-
   describe('Test helper utils', function() {
     it('should get a new element', function() {
       var $el1, $el2;
@@ -168,8 +134,3 @@
   });
 
 }).call(this);
-
-
-/*
-//@ sourceMappingURL=utilsTest.map
-*/

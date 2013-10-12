@@ -1,5 +1,16 @@
 ## Changelog
 
+
+### 0.2.0
+
+- ___BREAKING CHANGES:___
+
+  - Giraffe.App now emits `after:start` and 'before:start' events instead
+    of `app:initializing'` and `'app:initialized'`.
+    All configured objects (which includes all Giraffe objects) can now use
+    the `addInitializer` and `start` functionality if the `Startable` plugin
+    is included.
+
 ### 0.1.4
 
 

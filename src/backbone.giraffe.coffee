@@ -15,8 +15,8 @@ Backbone.Giraffe = window.Giraffe = Giraffe =
   views: {} # cache for all views by `cid`
 
 
-$window = $(window)
-$document = $(document)
+Giraffe.$window = $window = $(window)
+Giraffe.$document = $document = $(document)
 
 
 # A helper function for more helpful error messages.
@@ -897,8 +897,6 @@ class Giraffe.App extends Giraffe.View
 
   constructor: (options) ->
     @app = @
-    @_initializers = []
-    @started = false
     super
 
 
@@ -957,68 +955,6 @@ class Giraffe.App extends Giraffe.View
   *     myApp.router; // => instance of Giraffe.Router
   ###
   routes: null
-
-
-  ###
-  * Queues up the provided function to be run on `start`. The functions you
-  * provide are called with the same `options` object passed to `start`. If the
-  * provided function has two arguments, the options and a callback, the app's
-  * initialization will wait until you call the callback. If the callback is
-  * called with a truthy first argument, an error will be logged and
-  * initialization will halt. If the app has already started when you call
-  * `addInitializer`, the function is called immediately.
-  *
-  *     app.addInitializer(function(options) {
-  *         doSyncStuff();
-  *     });
-  *     app.addInitializer(function(options, cb) {
-  *         doAsyncStuff(cb);
-  *     });
-  *     app.start();
-  *
-  * @param {Function} fn `function(options)` or `function(options, cb)`
-  *     {Object} options - options passed from `start`
-  *     {Function} cb - optional async callback `function(err)`
-  ###
-  addInitializer: (fn) ->
-    if @started
-      fn.call @, @_startOptions
-      _.extend @, @_startOptions
-    else
-      @_initializers.push fn
-    @
-
-
-  ###
-  * Starts the app by executing each initializer in the order it was added,
-  * passing `options` through the initializer queue. Triggers the `appEvents`
-  * `'app:initializing'` and `'app:initialized'`.
-  *
-  * @param {Object} [options]
-  ###
-  start: (options = {}) ->
-    @_startOptions = options
-    @trigger 'app:initializing', options
-
-    # Runs all sync/async initializers.
-    next = (err) =>
-      return error(err) if err
-
-      fn = @_initializers.shift()
-      if fn
-        # Allows asynchronous calls
-        if fn.length is 2
-          fn.call @, options, next
-        else
-          fn.call @, options
-          next()
-      else
-        _.extend @, options
-        @started = true
-        @trigger 'app:initialized', options
-
-    next()
-    @
 
 
 
@@ -1291,8 +1227,7 @@ class Giraffe.Router extends Backbone.Router
 class Giraffe.Model extends Backbone.Model
 
 
-  @defaultOptions:
-    omittedOptions: 'parse'
+  @defaultOptions: {}
 
 
   constructor: (attributes, options) ->
@@ -1323,8 +1258,7 @@ class Giraffe.Model extends Backbone.Model
 class Giraffe.Collection extends Backbone.Collection
 
 
-  @defaultOptions:
-    omittedOptions: 'parse'
+  @defaultOptions: {}
 
 
   model: Giraffe.Model
@@ -1372,25 +1306,14 @@ class Giraffe.Collection extends Backbone.Collection
 ###
 Giraffe.configure = (obj, opts) ->
   if !obj
-    error "Cannot configure obj", obj
+    error 'Cannot configure obj', obj
     return false
 
-  options = _.extend {},
-    Giraffe.defaultOptions,
-    obj.constructor?.defaultOptions,
-    obj.defaultOptions,
-    opts
+  Giraffe.callFn obj, 'beforeConfigure', obj, opts
 
-  # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
-  omittedOptions = options.omittedOptions ? obj.omittedOptions
-  if omittedOptions isnt true
-    _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
+  obj.dispose ?= Giraffe.disposeThis # TODO bind?
 
-  obj.dispose ?= Giraffe.disposeThis
-
-  # Plug into `Giraffe.App` if one exists.
-  obj.app ?= Giraffe.app
-  Giraffe.bindAppEvents obj if obj.appEvents
+  Giraffe.callFn obj, 'afterConfigure', obj, opts
 
   # If the object has an `initialize` function, wrap it with `beforeInitialize`
   # and `afterInitialize` and perform the necessary post-initialization.
@@ -1464,12 +1387,11 @@ _afterInitialize = ->
 * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
 ###
 Giraffe.dispose = (obj, args...) ->
+  Giraffe.callFn obj, 'beforeDispose', args...
   obj.trigger? 'disposing', obj, args...
-  obj.beforeDispose? args...
-  obj.app = null
   obj.stopListening?()
   obj.trigger? 'disposed', obj, args...
-  obj.afterDispose? args...
+  Giraffe.callFn obj, 'afterDispose', args...
   obj
 
 
@@ -1485,8 +1407,8 @@ Giraffe.disposeThis = (args...) ->
 ###
 * Attempts to bind `appEvents` for an object. Called by `Giraffe.configure`.
 ###
-Giraffe.bindAppEvents = (obj) ->
-  Giraffe.bindEventMap obj, obj.app, obj.appEvents
+Giraffe.bindAppEvents = (obj, app = obj.app, appEvents = obj.appEvents) ->
+  Giraffe.bindEventMap obj, app, appEvents
 
 
 ###
@@ -1602,10 +1524,220 @@ Giraffe.wrapFn = (obj, fnName, beforeFn, afterFn) ->
   fn = obj[fnName]
   return unless typeof fn is 'function'
   capFnName = fnName[0].toUpperCase() + fnName.slice(1)
-  obj[fnName] = (args...) ->
+  beforeFnName = 'before' + capFnName
+  afterFnName = 'after' + capFnName
+  obj[fnName] = (args...) -> # TODO bind?
     beforeFn?.apply obj, args
-    obj['before' + capFnName]? args...
+    Giraffe.callFn obj, beforeFnName, args...
     result = fn.apply(obj, args)
-    obj['after' + capFnName]? args...
+    Giraffe.callFn obj, afterFnName, args...
     afterFn?.apply obj, args
     result
+
+
+###
+* Calls `fnName` on `obj` and all of its plugins.
+###
+Giraffe.callFn = (obj, fnName, args...) ->
+  obj[fnName]? args...
+  pluginFns = Giraffe.plugins.getFns(obj, fnName)
+  fn?.apply obj, args for fn in pluginFns
+
+
+
+Giraffe.plugins =
+
+
+  # TODO consider adding an init function that is called automatically and can be called again to manually bootstrap plugins
+
+  # also consider adding `init` to each plugin that's called each `Giraffe.plugins.init`
+  # and also when the plugin is first added
+  
+  plugins: []
+
+
+  defaults:
+    name: null
+    description: null
+    author: null
+    initialize: ->
+    sortOrder: 0.5
+    targetFns: [ # extend prototype?
+      Giraffe.View, Giraffe.App, Giraffe.Router,
+      Giraffe.Model, Giraffe.Collection
+    ]
+    copyToPrototype: null # extended to target function prototypes
+    copyToConstructor: null # extended to target function prototypes
+
+
+  ###
+  * Registers a plugin with Giraffe.
+  * Under the current design all Giraffe objects are affected.
+  * If a plugin with an identical name is added, the existing one is removed.
+  ###
+  add: (plugin) -> # TODO should it take a second param with the target classes?
+    existingPlugin = _.find(@plugins, (p) -> p.name is plugin.name)
+    @remove existingPlugin if existingPlugin
+    _.defaults plugin, @defaults
+    @plugins.push plugin
+    for fn in plugin.targetFns
+      _.extend fn::, plugin.extendPrototype
+    plugin.initialize()
+    plugin
+
+
+  ###
+  * Deregisters a plugin with Giraffe.
+  ###
+  remove: (plugin) ->
+    @plugins = _.without(@plugins, plugin)
+    plugin
+
+
+  ###
+  * Gets `fnName` on `obj` for all plugins, optionally sorted.
+  ###
+  getFns: (obj, fnName, sort = true) ->
+    fns = _.compact _.map @plugins, (plugin) ->
+      (pluginFn = plugin[fnName]) and pluginFn.pluginFn or pluginFn
+    if sort
+      fns = _.sortBy(fns, (f) => f.sortOrder ? @defaults.sortOrder)
+    fns
+
+
+# TODO delete
+Giraffe.plugins.add
+
+
+  name: 'App'
+  description: 'Adds the `app` object to `obj` and listens for `appEvents`.'
+  author: 'github.com/ryanatkn'
+
+
+  afterConfigure:
+    # sortOrder: 0.5
+    pluginFn: ->
+      @app ?= Giraffe.app
+      Giraffe.bindAppEvents @ if @appEvents
+
+
+  beforeDispose: ->
+    @app = null
+
+
+Giraffe.plugins.add
+
+
+  name: 'Startable'
+  description: """
+    Adds the `addInitializer` and `start` to (a)synchronously get to a
+    state where `this.started = true`.
+  """
+  author: 'github.com/ryanatkn'
+  targetFns: [Giraffe.App] # TODO how can a plugin be easily customized?
+
+
+  beforeInitialize: ->
+    @started = false
+
+
+  beforeDispose: ->
+    @_initializers = null
+
+
+  # Functions copied to the prototype
+  extendPrototype:
+
+    ###
+    * Queues up the provided function to be run on `start`. The functions you
+    * provide are called with the same `options` object passed to `start`. If the
+    * provided function has two arguments, the options and a callback, the app's
+    * initialization will wait until you call the callback. If the callback is
+    * called with a truthy first argument, an error will be logged and
+    * initialization will halt. If the app has already started when you call
+    * `addInitializer`, the function is called immediately.
+    *
+    *     app.addInitializer(function(options) {
+    *         doSyncStuff();
+    *     });
+    *     app.addInitializer(function(options, cb) {
+    *         doAsyncStuff(cb);
+    *     });
+    *     app.start();
+    *
+    * @param {Function} fn `function(options)` or `function(options, cb)`
+    *     {Object} options - options passed from `start`
+    *     {Function} cb - optional async callback `function(err)`
+    ###
+    addInitializer: (fn) ->
+      if @started
+        fn.call @, @_startOptions
+        _.extend @, @_startOptions
+      else
+        @_initializers ?= []
+        @_initializers.push fn
+      @
+
+
+    ###
+    * Starts the object by executing each initializer in the order it was added,
+    * passing `options` through the initializer queue.
+    *
+    * @param {Object} [options]
+    ###
+    start: (options = {}) ->
+      @_startOptions = options
+      Giraffe.callFn @, 'beforeStart', arguments...
+
+      # Runs all sync/async initializers.
+      next = (err) =>
+        return error(err) if err
+
+        fn = @_initializers?.shift()
+        if fn
+          # Allows asynchronous calls
+          if fn.length is 2
+            fn.call @, options, next
+          else
+            fn.call @, options
+            next()
+        else
+          _.extend @, options
+          @started = true
+          Giraffe.callFn @, 'afterStart', arguments...
+
+      next()
+      @
+
+
+Giraffe.plugins.add
+
+
+  name: 'Extendable'
+  description: """
+    Extends `obj` with `options` during `Giraffe.configure`.
+    Omits `omittedOptions` from the extended properties.
+    If `omittedOptions` is `true`, no options are extended.
+  """
+  author: 'github.com/ryanatkn'
+
+
+  initialize: ->
+    console.log "ADD PARSE"
+    Giraffe.Model.defaultOptions.omittedOptions ?= [] # TODO super hacky
+    Giraffe.Model.defaultOptions.omittedOptions.push 'parse'
+    Giraffe.Collection.defaultOptions.omittedOptions ?= []
+    Giraffe.Collection.defaultOptions.omittedOptions.push 'parse'
+
+  
+  beforeConfigure: (obj, opts) ->
+    options = _.extend {},
+      Giraffe.defaultOptions,
+      obj.constructor?.defaultOptions,
+      obj.defaultOptions,
+      opts
+
+    # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
+    omittedOptions = options.omittedOptions ? obj.omittedOptions
+    if omittedOptions isnt true
+      _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?

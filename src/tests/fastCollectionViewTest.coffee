@@ -177,9 +177,6 @@ describe 'Giraffe.Contrib.FastCollectionView', ->
     a.addOne foo: 'bar'
     ut.assert.hasText a, 'bar', className
 
-  it 'should accept `appEvents` as an option', ->
-    ut.assert.appEventsOption FastCollectionView, 0, fcvDefaults
-
   it 'should re-render when a model changes by default', ->
     model = new Giraffe.Model(foo: 'bar')
     a = new FastCollectionView

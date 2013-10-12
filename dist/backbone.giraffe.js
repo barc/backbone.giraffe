@@ -14,9 +14,9 @@
     views: {}
   };
 
-  $window = $(window);
+  Giraffe.$window = $window = $(window);
 
-  $document = $(document);
+  Giraffe.$document = $document = $(document);
 
   error = function() {
     var _ref, _ref1;
@@ -1068,8 +1068,6 @@
     function App(options) {
       this._onUnload = __bind(this._onUnload, this);
       this.app = this;
-      this._initializers = [];
-      this.started = false;
       App.__super__.constructor.apply(this, arguments);
     }
 
@@ -1143,79 +1141,6 @@
 
 
     App.prototype.routes = null;
-
-    /*
-    * Queues up the provided function to be run on `start`. The functions you
-    * provide are called with the same `options` object passed to `start`. If the
-    * provided function has two arguments, the options and a callback, the app's
-    * initialization will wait until you call the callback. If the callback is
-    * called with a truthy first argument, an error will be logged and
-    * initialization will halt. If the app has already started when you call
-    * `addInitializer`, the function is called immediately.
-    *
-    *     app.addInitializer(function(options) {
-    *         doSyncStuff();
-    *     });
-    *     app.addInitializer(function(options, cb) {
-    *         doAsyncStuff(cb);
-    *     });
-    *     app.start();
-    *
-    * @param {Function} fn `function(options)` or `function(options, cb)`
-    *     {Object} options - options passed from `start`
-    *     {Function} cb - optional async callback `function(err)`
-    */
-
-
-    App.prototype.addInitializer = function(fn) {
-      if (this.started) {
-        fn.call(this, this._startOptions);
-        _.extend(this, this._startOptions);
-      } else {
-        this._initializers.push(fn);
-      }
-      return this;
-    };
-
-    /*
-    * Starts the app by executing each initializer in the order it was added,
-    * passing `options` through the initializer queue. Triggers the `appEvents`
-    * `'app:initializing'` and `'app:initialized'`.
-    *
-    * @param {Object} [options]
-    */
-
-
-    App.prototype.start = function(options) {
-      var next,
-        _this = this;
-      if (options == null) {
-        options = {};
-      }
-      this._startOptions = options;
-      this.trigger('app:initializing', options);
-      next = function(err) {
-        var fn;
-        if (err) {
-          return error(err);
-        }
-        fn = _this._initializers.shift();
-        if (fn) {
-          if (fn.length === 2) {
-            return fn.call(_this, options, next);
-          } else {
-            fn.call(_this, options);
-            return next();
-          }
-        } else {
-          _.extend(_this, options);
-          _this.started = true;
-          return _this.trigger('app:initialized', options);
-        }
-      };
-      next();
-      return this;
-    };
 
     return App;
 
@@ -1529,9 +1454,7 @@
   Giraffe.Model = (function(_super) {
     __extends(Model, _super);
 
-    Model.defaultOptions = {
-      omittedOptions: 'parse'
-    };
+    Model.defaultOptions = {};
 
     function Model(attributes, options) {
       Giraffe.configure(this, options);
@@ -1570,9 +1493,7 @@
   Giraffe.Collection = (function(_super) {
     __extends(Collection, _super);
 
-    Collection.defaultOptions = {
-      omittedOptions: 'parse'
-    };
+    Collection.defaultOptions = {};
 
     Collection.prototype.model = Giraffe.Model;
 
@@ -1630,25 +1551,15 @@
 
 
   Giraffe.configure = function(obj, opts) {
-    var omittedOptions, options, _ref, _ref1;
     if (!obj) {
-      error("Cannot configure obj", obj);
+      error('Cannot configure obj', obj);
       return false;
     }
-    options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
-    omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
-    if (omittedOptions !== true) {
-      _.extend(obj, _.omit(options, omittedOptions));
-    }
+    Giraffe.callFn(obj, 'beforeConfigure', obj, opts);
     if (obj.dispose == null) {
       obj.dispose = Giraffe.disposeThis;
     }
-    if (obj.app == null) {
-      obj.app = Giraffe.app;
-    }
-    if (obj.appEvents) {
-      Giraffe.bindAppEvents(obj);
-    }
+    Giraffe.callFn(obj, 'afterConfigure', obj, opts);
     if (obj.initialize) {
       Giraffe.wrapFn(obj, 'initialize', null, _afterInitialize);
     } else {
@@ -1722,22 +1633,17 @@
   Giraffe.dispose = function() {
     var args, obj;
     obj = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    Giraffe.callFn.apply(Giraffe, [obj, 'beforeDispose'].concat(__slice.call(args)));
     if (typeof obj.trigger === "function") {
       obj.trigger.apply(obj, ['disposing', obj].concat(__slice.call(args)));
     }
-    if (typeof obj.beforeDispose === "function") {
-      obj.beforeDispose.apply(obj, args);
-    }
-    obj.app = null;
     if (typeof obj.stopListening === "function") {
       obj.stopListening();
     }
     if (typeof obj.trigger === "function") {
       obj.trigger.apply(obj, ['disposed', obj].concat(__slice.call(args)));
     }
-    if (typeof obj.afterDispose === "function") {
-      obj.afterDispose.apply(obj, args);
-    }
+    Giraffe.callFn.apply(Giraffe, [obj, 'afterDispose'].concat(__slice.call(args)));
     return obj;
   };
 
@@ -1759,8 +1665,14 @@
   */
 
 
-  Giraffe.bindAppEvents = function(obj) {
-    return Giraffe.bindEventMap(obj, obj.app, obj.appEvents);
+  Giraffe.bindAppEvents = function(obj, app, appEvents) {
+    if (app == null) {
+      app = obj.app;
+    }
+    if (appEvents == null) {
+      appEvents = obj.appEvents;
+    }
+    return Giraffe.bindEventMap(obj, app, appEvents);
   };
 
   /*
@@ -1908,30 +1820,247 @@
 
 
   Giraffe.wrapFn = function(obj, fnName, beforeFn, afterFn) {
-    var capFnName, fn;
+    var afterFnName, beforeFnName, capFnName, fn;
     fn = obj[fnName];
     if (typeof fn !== 'function') {
       return;
     }
     capFnName = fnName[0].toUpperCase() + fnName.slice(1);
+    beforeFnName = 'before' + capFnName;
+    afterFnName = 'after' + capFnName;
     return obj[fnName] = function() {
-      var args, result, _name, _name1;
+      var args, result;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       if (beforeFn != null) {
         beforeFn.apply(obj, args);
       }
-      if (typeof obj[_name = 'before' + capFnName] === "function") {
-        obj[_name].apply(obj, args);
-      }
+      Giraffe.callFn.apply(Giraffe, [obj, beforeFnName].concat(__slice.call(args)));
       result = fn.apply(obj, args);
-      if (typeof obj[_name1 = 'after' + capFnName] === "function") {
-        obj[_name1].apply(obj, args);
-      }
+      Giraffe.callFn.apply(Giraffe, [obj, afterFnName].concat(__slice.call(args)));
       if (afterFn != null) {
         afterFn.apply(obj, args);
       }
       return result;
     };
   };
+
+  /*
+  * Calls `fnName` on `obj` and all of its plugins.
+  */
+
+
+  Giraffe.callFn = function() {
+    var args, fn, fnName, obj, pluginFns, _i, _len, _results;
+    obj = arguments[0], fnName = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+    if (typeof obj[fnName] === "function") {
+      obj[fnName].apply(obj, args);
+    }
+    pluginFns = Giraffe.plugins.getFns(obj, fnName);
+    _results = [];
+    for (_i = 0, _len = pluginFns.length; _i < _len; _i++) {
+      fn = pluginFns[_i];
+      _results.push(fn != null ? fn.apply(obj, args) : void 0);
+    }
+    return _results;
+  };
+
+  Giraffe.plugins = {
+    plugins: [],
+    defaults: {
+      name: null,
+      description: null,
+      author: null,
+      initialize: function() {},
+      sortOrder: 0.5,
+      targetFns: [Giraffe.View, Giraffe.App, Giraffe.Router, Giraffe.Model, Giraffe.Collection],
+      copyToPrototype: null,
+      copyToConstructor: null
+    },
+    /*
+    * Registers a plugin with Giraffe.
+    * Under the current design all Giraffe objects are affected.
+    * If a plugin with an identical name is added, the existing one is removed.
+    */
+
+    add: function(plugin) {
+      var existingPlugin, fn, _i, _len, _ref;
+      existingPlugin = _.find(this.plugins, function(p) {
+        return p.name === plugin.name;
+      });
+      if (existingPlugin) {
+        this.remove(existingPlugin);
+      }
+      _.defaults(plugin, this.defaults);
+      this.plugins.push(plugin);
+      _ref = plugin.targetFns;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        fn = _ref[_i];
+        _.extend(fn.prototype, plugin.extendPrototype);
+      }
+      plugin.initialize();
+      return plugin;
+    },
+    /*
+    * Deregisters a plugin with Giraffe.
+    */
+
+    remove: function(plugin) {
+      this.plugins = _.without(this.plugins, plugin);
+      return plugin;
+    },
+    /*
+    * Gets `fnName` on `obj` for all plugins, optionally sorted.
+    */
+
+    getFns: function(obj, fnName, sort) {
+      var fns,
+        _this = this;
+      if (sort == null) {
+        sort = true;
+      }
+      fns = _.compact(_.map(this.plugins, function(plugin) {
+        var pluginFn;
+        return (pluginFn = plugin[fnName]) && pluginFn.pluginFn || pluginFn;
+      }));
+      if (sort) {
+        fns = _.sortBy(fns, function(f) {
+          var _ref;
+          return (_ref = f.sortOrder) != null ? _ref : _this.defaults.sortOrder;
+        });
+      }
+      return fns;
+    }
+  };
+
+  Giraffe.plugins.add({
+    name: 'App',
+    description: 'Adds the `app` object to `obj` and listens for `appEvents`.',
+    author: 'github.com/ryanatkn',
+    afterConfigure: {
+      pluginFn: function() {
+        if (this.app == null) {
+          this.app = Giraffe.app;
+        }
+        if (this.appEvents) {
+          return Giraffe.bindAppEvents(this);
+        }
+      }
+    },
+    beforeDispose: function() {
+      return this.app = null;
+    }
+  });
+
+  Giraffe.plugins.add({
+    name: 'Startable',
+    description: "Adds the `addInitializer` and `start` to (a)synchronously get to a\nstate where `this.started = true`.",
+    author: 'github.com/ryanatkn',
+    targetFns: [Giraffe.App],
+    beforeInitialize: function() {
+      return this.started = false;
+    },
+    beforeDispose: function() {
+      return this._initializers = null;
+    },
+    extendPrototype: {
+      /*
+      * Queues up the provided function to be run on `start`. The functions you
+      * provide are called with the same `options` object passed to `start`. If the
+      * provided function has two arguments, the options and a callback, the app's
+      * initialization will wait until you call the callback. If the callback is
+      * called with a truthy first argument, an error will be logged and
+      * initialization will halt. If the app has already started when you call
+      * `addInitializer`, the function is called immediately.
+      *
+      *     app.addInitializer(function(options) {
+      *         doSyncStuff();
+      *     });
+      *     app.addInitializer(function(options, cb) {
+      *         doAsyncStuff(cb);
+      *     });
+      *     app.start();
+      *
+      * @param {Function} fn `function(options)` or `function(options, cb)`
+      *     {Object} options - options passed from `start`
+      *     {Function} cb - optional async callback `function(err)`
+      */
+
+      addInitializer: function(fn) {
+        if (this.started) {
+          fn.call(this, this._startOptions);
+          _.extend(this, this._startOptions);
+        } else {
+          if (this._initializers == null) {
+            this._initializers = [];
+          }
+          this._initializers.push(fn);
+        }
+        return this;
+      },
+      /*
+      * Starts the object by executing each initializer in the order it was added,
+      * passing `options` through the initializer queue.
+      *
+      * @param {Object} [options]
+      */
+
+      start: function(options) {
+        var next,
+          _this = this;
+        if (options == null) {
+          options = {};
+        }
+        this._startOptions = options;
+        Giraffe.callFn.apply(Giraffe, [this, 'beforeStart'].concat(__slice.call(arguments)));
+        next = function(err) {
+          var fn, _ref;
+          if (err) {
+            return error(err);
+          }
+          fn = (_ref = _this._initializers) != null ? _ref.shift() : void 0;
+          if (fn) {
+            if (fn.length === 2) {
+              return fn.call(_this, options, next);
+            } else {
+              fn.call(_this, options);
+              return next();
+            }
+          } else {
+            _.extend(_this, options);
+            _this.started = true;
+            return Giraffe.callFn.apply(Giraffe, [_this, 'afterStart'].concat(__slice.call(arguments)));
+          }
+        };
+        next();
+        return this;
+      }
+    }
+  });
+
+  Giraffe.plugins.add({
+    name: 'Extendable',
+    description: "Extends `obj` with `options` during `Giraffe.configure`.\nOmits `omittedOptions` from the extended properties.\nIf `omittedOptions` is `true`, no options are extended.",
+    author: 'github.com/ryanatkn',
+    initialize: function() {
+      var _base, _base1;
+      console.log("ADD PARSE");
+      if ((_base = Giraffe.Model.defaultOptions).omittedOptions == null) {
+        _base.omittedOptions = [];
+      }
+      Giraffe.Model.defaultOptions.omittedOptions.push('parse');
+      if ((_base1 = Giraffe.Collection.defaultOptions).omittedOptions == null) {
+        _base1.omittedOptions = [];
+      }
+      return Giraffe.Collection.defaultOptions.omittedOptions.push('parse');
+    },
+    beforeConfigure: function(obj, opts) {
+      var omittedOptions, options, _ref, _ref1;
+      options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
+      omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
+      if (omittedOptions !== true) {
+        return _.extend(obj, _.omit(options, omittedOptions));
+      }
+    }
+  });
 
 }).call(this);

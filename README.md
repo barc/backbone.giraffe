@@ -92,9 +92,9 @@ __AngularJS__)
 
 __Version 0.1.4__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _64.6k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _69.1k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.1k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _19.4k_
 
 [backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _16.1k_
 
@@ -108,6 +108,17 @@ __Version 0.1.4__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## Changelog
+
+
+### 0.2.0
+
+- ___BREAKING CHANGES:___
+
+  - Giraffe.App now emits `after:start` and 'before:start' events instead
+    of `app:initializing'` and `'app:initialized'`.
+    All configured objects (which includes all Giraffe objects) can now use
+    the `addInitializer` and `start` functionality if the `Startable` plugin
+    is included.
 
 ### 0.1.4
 

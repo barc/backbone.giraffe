@@ -61,19 +61,6 @@ ut.assert.hasText = (view, text, className) ->
   assert.ok $el.length
   assert.ok ut.hasText($el, text)
 
-ut.assert.appEventsOption = (ctor, optionsArgIndex, args) ->
-  worked = false
-  optionsArgIndex ?= 0
-  args ?= undefined for i in [0..optionsArgIndex]
-  args = [args] if !_.isArray(args)
-  arg = args[optionsArgIndex] ?= {}
-  arg.app ?= new Giraffe.App
-  arg.appEvents ?= 'foo': -> worked = true
-  obj = new ctor(args...)
-  obj.app.trigger 'foo'
-  assert.ok worked
-
-
 describe 'Test helper utils', ->
 
   it 'should get a new element', ->

@@ -132,10 +132,10 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 <h2 id='h-download'>Download</h2>
 <p><strong>Version 0.1.4</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">64.6k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">69.1k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.1k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">19.4k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">16.1k</em>
@@ -146,6 +146,18 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 
 <p><a href="https://github.com/barc/backbone.giraffe">Giraffe on Github</a></p>
 <h2 id='h-changelog'>Changelog</h2>
+<h3 id='h-020'>0.2.0</h3>
+<ul>
+<li><p><strong><em>BREAKING CHANGES:</em></strong></p>
+<ul>
+<li>Giraffe.App now emits <code>after:start</code> and &#39;before:start&#39; events instead
+of <code>app:initializing&#39;</code> and <code>&#39;app:initialized&#39;</code>.
+All configured objects (which includes all Giraffe objects) can now use
+the <code>addInitializer</code> and <code>start</code> functionality if the <code>Startable</code> plugin
+is included.</li>
+</ul>
+</li>
+</ul>
 <h3 id='h-014'>0.1.4</h3>
 <ul>
 <li><p>Added the function <code>Giraffe.configure</code> which 

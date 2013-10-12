@@ -245,9 +245,6 @@
       child = a.children[0];
       return ut.assert.attached(child, a.$myModelViewEl);
     });
-    it('should accept `appEvents` as an option', function() {
-      return ut.assert.appEventsOption(CollectionView);
-    });
     it('should not re-render when a model changes by default', function() {
       var a, model;
       model = new Giraffe.Model({
@@ -292,8 +289,3 @@
   });
 
 }).call(this);
-
-
-/*
-//@ sourceMappingURL=collectionViewTest.map
-*/

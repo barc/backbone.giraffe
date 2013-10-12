@@ -249,9 +249,6 @@
       });
       return ut.assert.hasText(a, 'bar', className);
     });
-    it('should accept `appEvents` as an option', function() {
-      return ut.assert.appEventsOption(FastCollectionView, 0, fcvDefaults);
-    });
     it('should re-render when a model changes by default', function() {
       var a, model;
       model = new Giraffe.Model({
@@ -288,8 +285,3 @@
   });
 
 }).call(this);
-
-
-/*
-//@ sourceMappingURL=fastCollectionViewTest.map
-*/

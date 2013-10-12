@@ -181,9 +181,6 @@ describe 'Giraffe.Contrib.CollectionView', ->
     child = a.children[0]
     ut.assert.attached child, a.$myModelViewEl
 
-  it 'should accept `appEvents` as an option', ->
-    ut.assert.appEventsOption CollectionView
-
   it 'should not re-render when a model changes by default', ->
     model = new Giraffe.Model(foo: 'bar')
     a = new CollectionView
