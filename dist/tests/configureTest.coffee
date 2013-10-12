@@ -14,6 +14,14 @@ describe 'Giraffe.configure', ->
     assert.ok Giraffe.configure
 
   it 'should give proper precedence to the instance\'s `defaultOptions`', ->
+    debugger # how can a new class/obj be configured? Giraffe.configureClass? are all targetted?
+      # can it specifically include plugins if they're otherwise locked out by the `target` prop?
+      # fundamental tension between wanting to make the plugins "plug and play" for everything
+      # and not wanting to apply every plugin to every configured object
+      # one possible solution is to let plugins specify a whitelist and blacklist
+      # Giraffe.configureClass could also take the plugins you want to attach
+        # but then new plugins wouldn't be able to be added to this call list ...
+      # the API should expose the ability to directly add a plugin to a class
     Giraffe.defaultOptions.option = 1
     Foo.defaultOptions = option: 2
     foo = new Foo

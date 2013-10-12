@@ -20,12 +20,14 @@ Giraffe.plugins.add
   author: 'github.com/ryanatkn'
 
 
-  afterConfigure:
-    # sortOrder: 0.5
-    pluginFn: -> # TODO rename?
-      @app ?= Giraffe.app
-      Giraffe.bindAppEvents @ if @appEvents
+  hooks:
+    
+    afterConfigure:
+      # sortOrder: 0.5
+      hook: ->
+        @app ?= Giraffe.app
+        Giraffe.bindAppEvents @ if @appEvents
 
 
-  beforeDispose: ->
-    @app = null
+    beforeDispose: ->
+      @app = null

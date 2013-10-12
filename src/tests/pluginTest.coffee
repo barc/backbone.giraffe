@@ -14,6 +14,6 @@ describe 'Giraffe.plugins', ->
 
   it 'should copy properties to the target functions\' prototypes', ->
     class Foo
-    Giraffe.plugins.add targetFns: [Foo], extendPrototype: {bar: 'baz'}
+    Giraffe.plugins.add targets: [Foo], extendPrototype: {bar: 'baz'}
     assert.equal 'baz', Foo::bar
     assert.notEqual 'baz', Giraffe.View::bar

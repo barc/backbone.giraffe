@@ -1850,31 +1850,49 @@
 
 
   Giraffe.callFn = function() {
-    var args, fn, fnName, obj, pluginFns, _i, _len, _results;
+    var args, fnName, obj, _ref;
     obj = arguments[0], fnName = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
     if (typeof obj[fnName] === "function") {
       obj[fnName].apply(obj, args);
     }
-    pluginFns = Giraffe.plugins.getFns(obj, fnName);
-    _results = [];
-    for (_i = 0, _len = pluginFns.length; _i < _len; _i++) {
-      fn = pluginFns[_i];
-      _results.push(fn != null ? fn.apply(obj, args) : void 0);
-    }
-    return _results;
+    return (_ref = Giraffe.plugins).callFn.apply(_ref, [obj, fnName].concat(__slice.call(args)));
   };
 
   Giraffe.plugins = {
     plugins: [],
+    DEFAULT_SORT_ORDER: 0.5,
     defaults: {
       name: null,
       description: null,
       author: null,
       initialize: function() {},
-      sortOrder: 0.5,
-      targetFns: [Giraffe.View, Giraffe.App, Giraffe.Router, Giraffe.Model, Giraffe.Collection],
-      copyToPrototype: null,
-      copyToConstructor: null
+      targets: [Giraffe.View, Giraffe.App, Giraffe.Router, Giraffe.Model, Giraffe.Collection],
+      copyToPrototype: null
+    },
+    hooksNames: {},
+    getHooksName: function(hookName) {
+      var hooksName, name;
+      hooksName = this.hooksNames[hookName];
+      if (hooksName) {
+        return hooksName;
+      } else {
+        name = 'on' + hookName[0].toUpperCase() + hookName.slice(1);
+        this.hooksNames[hookName] = name;
+        return name;
+      }
+    },
+    callFn: function() {
+      var args, fnName, hook, hooks, hooksName, obj, _i, _len;
+      obj = arguments[0], fnName = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+      hooksName = this.getHooksName(fnName);
+      hooks = obj[hooksName];
+      if (hooks) {
+        for (_i = 0, _len = hooks.length; _i < _len; _i++) {
+          hook = hooks[_i];
+          hook.hook.apply(obj, args);
+        }
+      }
+      return this;
     },
     /*
     * Registers a plugin with Giraffe.
@@ -1883,22 +1901,45 @@
     */
 
     add: function(plugin) {
-      var existingPlugin, fn, _i, _len, _ref;
-      existingPlugin = _.find(this.plugins, function(p) {
-        return p.name === plugin.name;
+      var existingPlugin, obj, target, _i, _len, _ref;
+      existingPlugin = _.findWhere(this.plugins, {
+        name: plugin.name
       });
       if (existingPlugin) {
         this.remove(existingPlugin);
       }
       _.defaults(plugin, this.defaults);
       this.plugins.push(plugin);
-      _ref = plugin.targetFns;
+      _ref = plugin.targets;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        fn = _ref[_i];
-        _.extend(fn.prototype, plugin.extendPrototype);
+        target = _ref[_i];
+        obj = target.prototype || target;
+        _.extend(obj, plugin.extendPrototype);
+        this.addHooks(obj, plugin);
       }
       plugin.initialize();
       return plugin;
+    },
+    addHooks: function(obj, plugin) {
+      var hook, hookName, hooks, hooksName, _ref;
+      if (!plugin.hooks) {
+        return;
+      }
+      _ref = plugin.hooks;
+      for (hookName in _ref) {
+        hook = _ref[hookName];
+        if (typeof hook === 'function') {
+          hook = {
+            hook: hook,
+            sortOrder: this.DEFAULT_SORT_ORDER
+          };
+        }
+        hooksName = this.getHooksName(hookName);
+        hooks = obj[hooksName] != null ? obj[hooksName] : obj[hooksName] = [];
+        hooks.push(hook);
+        hooks = _.sortBy(hooks, 'sortOrder');
+      }
+      return plugin.hooks;
     },
     /*
     * Deregisters a plugin with Giraffe.
@@ -1907,28 +1948,6 @@
     remove: function(plugin) {
       this.plugins = _.without(this.plugins, plugin);
       return plugin;
-    },
-    /*
-    * Gets `fnName` on `obj` for all plugins, optionally sorted.
-    */
-
-    getFns: function(obj, fnName, sort) {
-      var fns,
-        _this = this;
-      if (sort == null) {
-        sort = true;
-      }
-      fns = _.compact(_.map(this.plugins, function(plugin) {
-        var pluginFn;
-        return (pluginFn = plugin[fnName]) && pluginFn.pluginFn || pluginFn;
-      }));
-      if (sort) {
-        fns = _.sortBy(fns, function(f) {
-          var _ref;
-          return (_ref = f.sortOrder) != null ? _ref : _this.defaults.sortOrder;
-        });
-      }
-      return fns;
     }
   };
 
@@ -1936,18 +1955,47 @@
     name: 'App',
     description: 'Adds the `app` object to `obj` and listens for `appEvents`.',
     author: 'github.com/ryanatkn',
-    afterConfigure: {
-      pluginFn: function() {
-        if (this.app == null) {
-          this.app = Giraffe.app;
+    hooks: {
+      afterConfigure: {
+        hook: function() {
+          if (this.app == null) {
+            this.app = Giraffe.app;
+          }
+          if (this.appEvents) {
+            return Giraffe.bindAppEvents(this);
+          }
         }
-        if (this.appEvents) {
-          return Giraffe.bindAppEvents(this);
+      },
+      beforeDispose: function() {
+        return this.app = null;
+      }
+    }
+  });
+
+  Giraffe.plugins.add({
+    name: 'Extendable',
+    description: "Extends `obj` with `options` during `Giraffe.configure`.\nOmits `omittedOptions` from the extended properties.\nIf `omittedOptions` is `true`, no options are extended.",
+    author: 'github.com/ryanatkn',
+    initialize: function() {
+      var _base, _base1;
+      if ((_base = Giraffe.Model.defaultOptions).omittedOptions == null) {
+        _base.omittedOptions = [];
+      }
+      Giraffe.Model.defaultOptions.omittedOptions.push('parse');
+      if ((_base1 = Giraffe.Collection.defaultOptions).omittedOptions == null) {
+        _base1.omittedOptions = [];
+      }
+      return Giraffe.Collection.defaultOptions.omittedOptions.push('parse');
+    },
+    hooks: {
+      beforeConfigure: function(obj, opts) {
+        var omittedOptions, options, _ref, _ref1;
+        options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
+        omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
+        if (omittedOptions !== true) {
+          return _.extend(obj, _.omit(options, omittedOptions));
         }
       }
-    },
-    beforeDispose: function() {
-      return this.app = null;
     }
   });
 
@@ -1955,12 +2003,14 @@
     name: 'Startable',
     description: "Adds the `addInitializer` and `start` to (a)synchronously get to a\nstate where `this.started = true`.",
     author: 'github.com/ryanatkn',
-    targetFns: [Giraffe.App],
-    beforeInitialize: function() {
-      return this.started = false;
-    },
-    beforeDispose: function() {
-      return this._initializers = null;
+    targets: [Giraffe.App],
+    hooks: {
+      beforeInitialize: function() {
+        return this.started = false;
+      },
+      beforeDispose: function() {
+        return this._initializers = null;
+      }
     },
     extendPrototype: {
       /*
@@ -2033,32 +2083,6 @@
         };
         next();
         return this;
-      }
-    }
-  });
-
-  Giraffe.plugins.add({
-    name: 'Extendable',
-    description: "Extends `obj` with `options` during `Giraffe.configure`.\nOmits `omittedOptions` from the extended properties.\nIf `omittedOptions` is `true`, no options are extended.",
-    author: 'github.com/ryanatkn',
-    initialize: function() {
-      var _base, _base1;
-      console.log("ADD PARSE");
-      if ((_base = Giraffe.Model.defaultOptions).omittedOptions == null) {
-        _base.omittedOptions = [];
-      }
-      Giraffe.Model.defaultOptions.omittedOptions.push('parse');
-      if ((_base1 = Giraffe.Collection.defaultOptions).omittedOptions == null) {
-        _base1.omittedOptions = [];
-      }
-      return Giraffe.Collection.defaultOptions.omittedOptions.push('parse');
-    },
-    beforeConfigure: function(obj, opts) {
-      var omittedOptions, options, _ref, _ref1;
-      options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
-      omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
-      if (omittedOptions !== true) {
-        return _.extend(obj, _.omit(options, omittedOptions));
       }
     }
   });

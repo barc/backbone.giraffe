@@ -15,6 +15,7 @@
       return assert.ok(Giraffe.configure);
     });
     it('should give proper precedence to the instance\'s `defaultOptions`', function() {
+      debugger;
       var foo;
       Giraffe.defaultOptions.option = 1;
       Foo.defaultOptions = {

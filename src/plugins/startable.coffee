@@ -9,19 +9,19 @@ Giraffe.plugins.add
     state where `this.started = true`.
   """
   author: 'github.com/ryanatkn'
-  targetFns: [Giraffe.App] # TODO how can a plugin be easily customized?
+  targets: [Giraffe.App] # TODO how can a plugin be easily customized?
 
 
-  beforeInitialize: ->
-    @started = false
+  hooks:
 
 
-  beforeDispose: ->
-    @_initializers = null
+    beforeDispose: ->
+      @_initializers = null if @_initializers
 
 
   # Functions copied to the prototype
   extendPrototype:
+
 
     ###
     * Queues up the provided function to be run on `start`. The functions you

@@ -1540,8 +1540,7 @@ Giraffe.wrapFn = (obj, fnName, beforeFn, afterFn) ->
 ###
 Giraffe.callFn = (obj, fnName, args...) ->
   obj[fnName]? args...
-  pluginFns = Giraffe.plugins.getFns(obj, fnName)
-  fn?.apply obj, args for fn in pluginFns
+  Giraffe.plugins.callFn obj, fnName, args...
 
 
 
@@ -1556,18 +1555,39 @@ Giraffe.plugins =
   plugins: []
 
 
+  DEFAULT_SORT_ORDER: 0.5
+
+
   defaults:
     name: null
     description: null
     author: null
     initialize: ->
-    sortOrder: 0.5
-    targetFns: [ # extend prototype?
+    targets: [ # if no prototype is found, the obj itself is used
       Giraffe.View, Giraffe.App, Giraffe.Router,
       Giraffe.Model, Giraffe.Collection
     ]
     copyToPrototype: null # extended to target function prototypes
-    copyToConstructor: null # extended to target function prototypes
+
+
+  hooksNames: {}
+  getHooksName: (hookName) ->
+    hooksName = @hooksNames[hookName]
+    if hooksName
+      hooksName
+    else
+      name = 'on' + hookName[0].toUpperCase() + hookName.slice(1)
+      @hooksNames[hookName] = name
+      name
+
+
+  callFn: (obj, fnName, args...) ->
+    hooksName = @getHooksName(fnName)
+    hooks = obj[hooksName]
+    if hooks
+      for hook in hooks
+        hook.hook.apply obj, args
+    @
 
 
   ###
@@ -1576,14 +1596,28 @@ Giraffe.plugins =
   * If a plugin with an identical name is added, the existing one is removed.
   ###
   add: (plugin) -> # TODO should it take a second param with the target classes?
-    existingPlugin = _.find(@plugins, (p) -> p.name is plugin.name)
+    existingPlugin = _.findWhere(@plugins, name: plugin.name)
     @remove existingPlugin if existingPlugin
     _.defaults plugin, @defaults
     @plugins.push plugin
-    for fn in plugin.targetFns
-      _.extend fn::, plugin.extendPrototype
+    for target in plugin.targets
+      obj = target.prototype or target
+      _.extend obj, plugin.extendPrototype
+      @addHooks obj, plugin
     plugin.initialize()
     plugin
+
+
+  addHooks: (obj, plugin) ->
+    return if !plugin.hooks
+    for hookName, hook of plugin.hooks
+      if typeof hook is 'function'
+        hook = {hook, sortOrder: @DEFAULT_SORT_ORDER}
+      hooksName = @getHooksName(hookName)
+      hooks = obj[hooksName] ?= []
+      hooks.push hook
+      hooks = _.sortBy(hooks, 'sortOrder')
+    plugin.hooks
 
 
   ###
@@ -1593,16 +1627,6 @@ Giraffe.plugins =
     @plugins = _.without(@plugins, plugin)
     plugin
 
-
-  ###
-  * Gets `fnName` on `obj` for all plugins, optionally sorted.
-  ###
-  getFns: (obj, fnName, sort = true) ->
-    fns = _.compact _.map @plugins, (plugin) ->
-      (pluginFn = plugin[fnName]) and pluginFn.pluginFn or pluginFn
-    if sort
-      fns = _.sortBy(fns, (f) => f.sortOrder ? @defaults.sortOrder)
-    fns
 
 
 # TODO delete
@@ -1614,15 +1638,52 @@ Giraffe.plugins.add
   author: 'github.com/ryanatkn'
 
 
-  afterConfigure:
-    # sortOrder: 0.5
-    pluginFn: ->
-      @app ?= Giraffe.app
-      Giraffe.bindAppEvents @ if @appEvents
+  hooks:
+
+    afterConfigure:
+      # sortOrder: 0.5
+      hook: ->
+        @app ?= Giraffe.app
+        Giraffe.bindAppEvents @ if @appEvents
 
 
-  beforeDispose: ->
-    @app = null
+    beforeDispose: ->
+      @app = null
+
+
+
+Giraffe.plugins.add
+
+
+  name: 'Extendable'
+  description: """
+    Extends `obj` with `options` during `Giraffe.configure`.
+    Omits `omittedOptions` from the extended properties.
+    If `omittedOptions` is `true`, no options are extended.
+  """
+  author: 'github.com/ryanatkn'
+
+
+  initialize: ->
+    Giraffe.Model.defaultOptions.omittedOptions ?= [] # TODO super hacky
+    Giraffe.Model.defaultOptions.omittedOptions.push 'parse'
+    Giraffe.Collection.defaultOptions.omittedOptions ?= []
+    Giraffe.Collection.defaultOptions.omittedOptions.push 'parse'
+
+  
+  hooks:
+
+    beforeConfigure: (obj, opts) ->
+      options = _.extend {},
+        Giraffe.defaultOptions,
+        obj.constructor?.defaultOptions,
+        obj.defaultOptions,
+        opts
+
+      # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
+      omittedOptions = options.omittedOptions ? obj.omittedOptions
+      if omittedOptions isnt true
+        _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
 
 
 Giraffe.plugins.add
@@ -1634,15 +1695,17 @@ Giraffe.plugins.add
     state where `this.started = true`.
   """
   author: 'github.com/ryanatkn'
-  targetFns: [Giraffe.App] # TODO how can a plugin be easily customized?
+  targets: [Giraffe.App] # TODO how can a plugin be easily customized?
 
 
-  beforeInitialize: ->
-    @started = false
+  hooks:
+
+    beforeInitialize: ->
+      @started = false
 
 
-  beforeDispose: ->
-    @_initializers = null
+    beforeDispose: ->
+      @_initializers = null
 
 
   # Functions copied to the prototype
@@ -1708,36 +1771,3 @@ Giraffe.plugins.add
 
       next()
       @
-
-
-Giraffe.plugins.add
-
-
-  name: 'Extendable'
-  description: """
-    Extends `obj` with `options` during `Giraffe.configure`.
-    Omits `omittedOptions` from the extended properties.
-    If `omittedOptions` is `true`, no options are extended.
-  """
-  author: 'github.com/ryanatkn'
-
-
-  initialize: ->
-    console.log "ADD PARSE"
-    Giraffe.Model.defaultOptions.omittedOptions ?= [] # TODO super hacky
-    Giraffe.Model.defaultOptions.omittedOptions.push 'parse'
-    Giraffe.Collection.defaultOptions.omittedOptions ?= []
-    Giraffe.Collection.defaultOptions.omittedOptions.push 'parse'
-
-  
-  beforeConfigure: (obj, opts) ->
-    options = _.extend {},
-      Giraffe.defaultOptions,
-      obj.constructor?.defaultOptions,
-      obj.defaultOptions,
-      opts
-
-    # Extend the object with `options` minus `omittedProperties` unless `omittedOptions` is `true`.
-    omittedOptions = options.omittedOptions ? obj.omittedOptions
-    if omittedOptions isnt true
-      _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?

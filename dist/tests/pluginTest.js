@@ -24,7 +24,7 @@
 
       })();
       Giraffe.plugins.add({
-        targetFns: [Foo],
+        targets: [Foo],
         extendPrototype: {
           bar: 'baz'
         }
