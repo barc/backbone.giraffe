@@ -1320,7 +1320,7 @@
       _ref = this.triggers;
       _fn = function(route, appEvent, fullNs) {
         var callback;
-        if (_.indexOf(appEvent, '-> ') === 0) {
+        if (appEvent.indexOf('-> ') === 0) {
           callback = function() {
             var redirect;
             redirect = appEvent.slice(3);
@@ -1328,7 +1328,7 @@
               trigger: true
             });
           };
-        } else if (_.indexOf(appEvent, '=> ') === 0) {
+        } else if (appEvent.indexOf('=> ') === 0) {
           callback = function() {
             var redirect;
             redirect = appEvent.slice(3);

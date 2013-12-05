@@ -1125,14 +1125,14 @@ class Giraffe.Router extends Backbone.Router
 
       do (route, appEvent, fullNs) =>
         # Redirects to an absolute route
-        if _.indexOf(appEvent, '-> ') is 0
+        if appEvent.indexOf('-> ') is 0
           callback = =>
             redirect = appEvent.slice(3)
             # console.log 'REDIRECTING ', appEvent, ' -> ', redirect
             @navigate redirect, trigger: true
 
         # Redirects to a route within this router
-        else if _.indexOf(appEvent, '=> ') is 0
+        else if appEvent.indexOf('=> ') is 0
           callback = =>
             redirect = appEvent.slice(3)
             # console.log 'REDIRECTING ', appEvent, ' => ', redirect
