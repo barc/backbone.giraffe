@@ -17,6 +17,36 @@
       });
       return assert.ok(router);
     });
+    it('should call Giraffe.configure on itself on startup', function() {
+      var configure, e, router;
+      configure = sinon.stub(Giraffe, 'configure');
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+      } catch (_error) {
+        e = _error;
+        Giraffe.configure.restore();
+        throw e;
+      }
+      Giraffe.configure.restore();
+      assert(configure.calledOnce, "Giraffe.configure was not called");
+      return assert(configure.calledWith(router), "Giraffe.configure was not called with the router");
+    });
+    it('should add itself as a child to the app on startup', function() {
+      var router;
+      router = new Giraffe.Router({
+        app: {
+          addChild: sinon.spy(function() {})
+        },
+        triggers: {}
+      });
+      assert(router.app.addChild.calledOnce, "app.addChild was not called");
+      return assert(router.app.addChild.calledWith(router), "app.addChild was not called with the router");
+    });
     it('should register routes on startup', function() {
       var e, route, router;
       route = sinon.stub(Giraffe.Router.prototype, 'route', function(rt, appEvent, callback) {
@@ -44,20 +74,21 @@
       var e, router;
       sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
         return _.delay(function() {
-          return callback();
+          callback();
+          return assert(router.app.trigger.calledOnce, "expected app event to be triggered");
         });
       });
       try {
         router = new Giraffe.Router({
           app: {
             addChild: function() {},
-            trigger: function() {
+            trigger: sinon.spy(function() {
               var appEvent, args, route, _i;
               appEvent = arguments[0], args = 3 <= arguments.length ? __slice.call(arguments, 1, _i = arguments.length - 1) : (_i = 1, []), route = arguments[_i++];
               assert(appEvent === 'app:event', "expected appEvent to be 'app:event', got '" + appEvent + "'");
               assert(route === 'route', "expected route to be 'route', got '" + route + "'");
               return done();
-            }
+            })
           },
           triggers: {
             'route': 'app:event'
@@ -74,19 +105,20 @@
       var e, router;
       sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
         return _.delay(function() {
-          return callback(1, 2, 3, 4);
+          callback(1, 2, 3, 4);
+          return assert(router.app.trigger.calledOnce, "expected app event to be triggered");
         });
       });
       try {
         router = new Giraffe.Router({
           app: {
             addChild: function() {},
-            trigger: function() {
+            trigger: sinon.spy(function() {
               var appEvent, args, route, _i;
               appEvent = arguments[0], args = 3 <= arguments.length ? __slice.call(arguments, 1, _i = arguments.length - 1) : (_i = 1, []), route = arguments[_i++];
               assert(_.isEqual(args, [1, 2, 3, 4]), "expected args to be [1,2,3,4] , got '" + (args.toString()) + "'");
               return done();
-            }
+            })
           },
           triggers: {
             'route': 'app:event'
@@ -100,10 +132,11 @@
       return Giraffe.Router.prototype.route.restore();
     });
     it('should redirect on absolute redirect routes', function(done) {
-      var e, router;
+      var e, navigate, router;
       sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
         return _.delay(function() {
-          return callback();
+          callback();
+          return assert(navigate.calledOnce, "expected route.navigate to be called");
         });
       });
       try {
@@ -120,9 +153,9 @@
         Giraffe.Router.prototype.route.restore();
         throw e;
       }
-      sinon.stub(router, 'navigate', function(route, trigger) {
+      navigate = sinon.stub(router, 'navigate', function(route, trigger) {
         assert(route === 'redirect', "expected route to be 'route', got '" + route + "'");
-        assert(trigger);
+        assert(trigger, "expected trigger to be true");
         return done();
       });
       return Giraffe.Router.prototype.route.restore();

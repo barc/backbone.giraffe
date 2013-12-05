@@ -10,6 +10,29 @@ describe 'Giraffe.Router', ->
         addChild: ->
       triggers: {}
     assert.ok router
+  
+  it 'should call Giraffe.configure on itself on startup', ->
+    configure = sinon.stub Giraffe, 'configure'
+    try
+      router = new Giraffe.Router
+        app:
+          addChild: ->
+        triggers : {}
+    catch e
+      Giraffe.configure.restore()
+      throw e
+    Giraffe.configure.restore()
+    assert configure.calledOnce, "Giraffe.configure was not called"
+    assert configure.calledWith(router), "Giraffe.configure was not called with the router"
+
+  it 'should add itself as a child to the app on startup', ->
+    router = new Giraffe.Router
+      app:
+        addChild: sinon.spy ->
+      triggers : {}
+    assert router.app.addChild.calledOnce, "app.addChild was not called"
+    assert router.app.addChild.calledWith(router), "app.addChild was not called with the router"
+
 
   it 'should register routes on startup', ->
     route = sinon.stub Giraffe.Router::, 'route', (rt, appEvent, callback) ->
@@ -31,11 +54,12 @@ describe 'Giraffe.Router', ->
     sinon.stub Giraffe.Router::, 'route', (route, appEvent, callback) ->
       _.delay ->
         callback()
+        assert router.app.trigger.calledOnce, "expected app event to be triggered"
     try
       router = new Giraffe.Router
         app: 
           addChild: ->
-          trigger: (appEvent, args..., route) ->
+          trigger: sinon.spy (appEvent, args..., route) ->
             assert appEvent is 'app:event', "expected appEvent to be 'app:event', got '#{appEvent}'"
             assert route is 'route', "expected route to be 'route', got '#{route}'"
             done()
@@ -49,12 +73,13 @@ describe 'Giraffe.Router', ->
   it 'should pass route arguments on successful routes', (done) ->
     sinon.stub Giraffe.Router::, 'route', (route, appEvent, callback) ->
       _.delay ->
-        callback(1, 2, 3, 4)
+        callback 1, 2, 3, 4
+        assert router.app.trigger.calledOnce, "expected app event to be triggered"
     try
       router = new Giraffe.Router
         app: 
           addChild: ->
-          trigger: (appEvent, args..., route) ->
+          trigger: sinon.spy (appEvent, args..., route) ->
             assert _.isEqual(args, [1,2,3,4]), "expected args to be [1,2,3,4] , got '#{args.toString()}'"
             done()
         triggers:
@@ -63,11 +88,12 @@ describe 'Giraffe.Router', ->
        Giraffe.Router.route.restore()
        throw e
     Giraffe.Router::route.restore()
-
+    
   it 'should redirect on absolute redirect routes', (done) ->
     sinon.stub Giraffe.Router::, 'route', (route, appEvent, callback) ->
       _.delay ->
         callback()
+        assert navigate.calledOnce, "expected route.navigate to be called"
     try
       router = new Giraffe.Router
         app: 
@@ -77,9 +103,9 @@ describe 'Giraffe.Router', ->
     catch e
       Giraffe.Router::route.restore()
       throw e
-    sinon.stub router, 'navigate', (route, trigger) ->
+    navigate = sinon.stub router, 'navigate', (route, trigger) ->
       assert route is 'redirect', "expected route to be 'route', got '#{route}'"
-      assert trigger
+      assert trigger, "expected trigger to be true"
       done()
     Giraffe.Router::route.restore()
 
