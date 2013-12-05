@@ -113,6 +113,7 @@ describe 'Giraffe.Router', ->
     sinon.stub Giraffe.Router::, 'route', (route, appEvent, callback) ->
       _.delay ->
         callback()
+        assert navigate.calledOnce, "expected route.navigate to be called"
     try
       router = new Giraffe.Router
         app: 
@@ -123,7 +124,7 @@ describe 'Giraffe.Router', ->
     catch e
       Giraffe.Router::route.restore()
       throw e
-    sinon.stub router, 'navigate', (route, trigger) ->
+    navigate = sinon.stub router, 'navigate', (route, trigger) ->
       assert route is 'namespace/redirect', "expected route to be 'namespace/redirect', got '#{route}'"
       assert trigger, trigger, "expected trigger to be true"
       done()
