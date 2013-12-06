@@ -191,22 +191,22 @@
       });
       return Giraffe.Router.prototype.route.restore();
     });
-    it('should cause a history naviagation on matched routes', function() {
+    it('should cause a history navigation on matched routes with method "cause"', function() {
       var e, navigate, router;
       navigate = sinon.stub(Backbone.history, 'navigate', function(route, trigger) {
         assert(route === 'route', "expected route to be 'route', got '" + route + "'");
         return assert(trigger, "expected trigger to be true");
       });
-      router = new Giraffe.Router({
-        app: {
-          addChild: function() {}
-        },
-        triggers: {}
-      });
-      sinon.stub(router, 'getRoute', function() {
-        return 'route';
-      });
       try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+        sinon.stub(router, 'getRoute', function() {
+          return 'route';
+        });
         router.cause('app:event');
       } catch (_error) {
         e = _error;
@@ -216,7 +216,7 @@
       Backbone.history.navigate.restore();
       return assert(navigate.calledOnce, "expected Backbone.history.navigate to be called");
     });
-    it('should trigger app events on unmatched routes', function() {
+    it('should trigger app events on unmatched routes with method "cause"', function() {
       var router;
       router = new Giraffe.Router({
         app: {
@@ -235,7 +235,7 @@
       router.cause('app:event');
       return assert(router.app.trigger.calledOnce, "expected app event to be triggered");
     });
-    it('should return matched routes', function() {
+    it('should return matched routes with method "getRoute"', function() {
       var route, router;
       router = new Giraffe.Router({
         app: {
@@ -248,7 +248,7 @@
       route = router.getRoute('app:event');
       return assert(route === '#route', "expected returned route to be '#route', got '" + route + "'");
     });
-    it('should return null for unmatched routes', function() {
+    it('should return null for unmatched routes with method "getRoute"', function() {
       var route, router;
       router = new Giraffe.Router({
         app: {
@@ -259,7 +259,7 @@
       route = router.getRoute('app:event');
       return assert(route === null, "expected route to be null, got '" + route + "'");
     });
-    it('should replace parameters in routes with passed arguments', function() {
+    it('should replace parameters in routes with passed arguments with method "getRoute"', function() {
       var route, router;
       router = new Giraffe.Router({
         app: {
@@ -272,7 +272,7 @@
       route = router.getRoute('app:event', 1, 'string');
       return assert(route === '#route/1/string', "expected route to be '#route/1/string', got '" + route + "'");
     });
-    it('should return true if route is caused', function() {
+    it('should return true if route is caused with method "isCaused"', function() {
       var isCaused, router;
       router = new Giraffe.Router({
         app: {
@@ -291,7 +291,7 @@
       assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
       return assert(isCaused, "expected router.isCaused to return true");
     });
-    it('should return false if route is not caused', function() {
+    it('should return false if route is not caused with method "isCaused"', function() {
       var isCaused, router;
       router = new Giraffe.Router({
         app: {
@@ -310,7 +310,7 @@
       assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
       return assert(!isCaused, "expected router.isCaused to return false");
     });
-    return it('should return false if route is null', function() {
+    return it('should return false if route is null with method "isCaused"', function() {
       var isCaused, router;
       router = new Giraffe.Router({
         app: {
