@@ -7,6 +7,7 @@ exports.project = (pm) ->
     $.cp 'node_modules/mocha/mocha.css', testsDir
     $.cp_rf 'node_modules/mocha/images', testsDir
     $.cp 'node_modules/chai/chai.js', testsDir
+    $.cp 'node_modules/sinon/pkg/sinon.js', testsDir
 
   scripts:
     description: 'Compiles test Coffee scripts'
