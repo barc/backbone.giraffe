@@ -71,16 +71,17 @@ describe 'Giraffe.Router', ->
     Giraffe.Router::route.restore()
 
   it 'should pass route arguments on successful routes', (done) ->
+    testArgs = [1, 'string']
     sinon.stub Giraffe.Router::, 'route', (route, appEvent, callback) ->
       _.delay ->
-        callback 1, 2, 3, 4
+        callback testArgs...
         assert router.app.trigger.calledOnce, "expected app event to be triggered"
     try
       router = new Giraffe.Router
         app: 
           addChild: ->
           trigger: sinon.spy (appEvent, args..., route) ->
-            assert _.isEqual(args, [1,2,3,4]), "expected args to be [1,2,3,4] , got '#{args.toString()}'"
+            assert _.isEqual(args, testArgs), "expected args to be #{testArgs.toString()} , got '#{args.toString()}'"
             done()
         triggers:
           'route': 'app:event'
@@ -130,17 +131,17 @@ describe 'Giraffe.Router', ->
       done()
     Giraffe.Router::route.restore()
 
-  it 'should cause a history naviagation on matched routes', ->
+  it 'should cause a history navigation on matched routes with method "cause"', ->
     navigate = sinon.stub Backbone.history, 'navigate', (route, trigger) ->
       assert route is 'route', "expected route to be 'route', got '#{route}'"
       assert trigger, "expected trigger to be true"
-    router = new Giraffe.Router
-      app:
-        addChild: ->
-      triggers: {}
-    sinon.stub router, 'getRoute', ->
-      'route'
     try
+      router = new Giraffe.Router
+        app:
+          addChild: ->
+        triggers: {}
+      sinon.stub router, 'getRoute', ->
+        'route'
       router.cause 'app:event'
     catch e
       Backbone.history.navigate.restore()
@@ -148,7 +149,7 @@ describe 'Giraffe.Router', ->
     Backbone.history.navigate.restore()
     assert navigate.calledOnce, "expected Backbone.history.navigate to be called"
 
-  it 'should trigger app events on unmatched routes', ->
+  it 'should trigger app events on unmatched routes with method "cause"', ->
     router = new Giraffe.Router
       app: 
         addChild: ->
@@ -159,3 +160,66 @@ describe 'Giraffe.Router', ->
       undefined
     router.cause('app:event')
     assert router.app.trigger.calledOnce, "expected app event to be triggered"
+
+  it 'should return matched routes with method "getRoute"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers : 
+        'route' : 'app:event'
+    route = router.getRoute 'app:event'
+    assert route is '#route', "expected returned route to be '#route', got '#{route}'"
+
+  it 'should return null for unmatched routes with method "getRoute"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers : {}
+    route = router.getRoute 'app:event'
+    assert route is null, "expected route to be null, got '#{route}'"
+
+  it 'should replace parameters in routes with passed arguments with method "getRoute"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers: 
+        'route/:a/*b' : 'app:event'
+    route = router.getRoute 'app:event', 1, 'string'
+    assert route is '#route/1/string', "expected route to be '#route/1/string', got '#{route}'"
+  
+  it 'should return true if route is caused with method "isCaused"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers: {}
+    sinon.stub router, 'getRoute', -> 'route'
+    sinon.stub router, '_getLocation', -> 'route'
+    isCaused = router.isCaused 'app:event'
+    assert router.getRoute.calledOnce, "expected router.getRoute to be called"
+    assert router._getLocation.calledOnce, "expected router._getLocation to be called"
+    assert isCaused, "expected router.isCaused to return true"
+
+  it 'should return false if route is not caused with method "isCaused"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers: {}
+    sinon.stub router, 'getRoute', -> 'route1'
+    sinon.stub router, '_getLocation', -> 'route2'
+    isCaused = router.isCaused 'app:event'
+    assert router.getRoute.calledOnce, "expected router.getRoute to be called"
+    assert router._getLocation.calledOnce, "expected router._getLocation to be called"
+    assert not isCaused, "expected router.isCaused to return false"
+
+  it 'should return false if route is null with method "isCaused"', ->
+    router = new Giraffe.Router
+      app:
+        addChild: ->
+      triggers: {}
+    sinon.stub router, 'getRoute', -> null
+    sinon.stub router, '_getLocation', -> 'route'
+    isCaused = router.isCaused 'app:event'
+    assert router.getRoute.calledOnce, "expected router.getRoute to be called"
+    assert not isCaused, "expected router.isCaused to return false"
+
+ 
