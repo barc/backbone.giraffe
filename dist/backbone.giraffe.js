@@ -1405,13 +1405,17 @@
       appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
-        if (Backbone.history._hasPushState) {
-          return window.location.pathname.slice(1) === route;
-        } else {
-          return window.location.hash === route;
-        }
+        return this._getLocation() === route;
       } else {
         return false;
+      }
+    };
+
+    Router.prototype._getLocation = function() {
+      if (Backbone.history._hasPushState) {
+        return window.location.pathname.slice(1);
+      } else {
+        return window.location.hash;
       }
     };
 

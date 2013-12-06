@@ -1191,13 +1191,16 @@ class Giraffe.Router extends Backbone.Router
   isCaused: (appEvent, any...) ->
     route = @getRoute(appEvent, any...)
     if route?
-      if Backbone.history._hasPushState
-        window.location.pathname.slice(1) is route
-      else
-        window.location.hash is route
+      @_getLocation() is route
     else
       false
-
+  
+  # Returns the current location
+  _getLocation : ->
+    if Backbone.history._hasPushState
+      window.location.pathname.slice(1)
+    else
+      window.location.hash
 
   ###
   * Converts an app event and optional arguments into a url mapped in
