@@ -1322,16 +1322,26 @@
         var callback;
         if (appEvent.indexOf('-> ') === 0) {
           callback = function() {
-            var redirect;
+            var args, lastArg, redirect;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
             redirect = appEvent.slice(3);
+            lastArg = _.last(args);
+            if (lastArg && lastArg.indexOf('?') === 0) {
+              redirect += lastArg;
+            }
             return _this.navigate(redirect, {
               trigger: true
             });
           };
         } else if (appEvent.indexOf('=> ') === 0) {
           callback = function() {
-            var redirect;
+            var args, lastArg, redirect;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
             redirect = appEvent.slice(3);
+            lastArg = _.last(args);
+            if ((lastArg != null) && lastArg.indexOf('?') === 0) {
+              redirect += lastArg;
+            }
             return _this.navigate(fullNs + redirect, {
               trigger: true
             });
@@ -1341,6 +1351,7 @@
           callback = function() {
             var args, _ref1;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            args = _this._extractQueryParams(args);
             return (_ref1 = _this.app).trigger.apply(_ref1, [appEvent].concat(__slice.call(args), [route]));
           };
           _this._registerRoute(appEvent, route);
@@ -1354,6 +1365,70 @@
       return this;
     };
 
+    Router.prototype._extractQueryParams = function(args) {
+      var argsLast, lastArg;
+      argsLast = args.length - 1;
+      lastArg = args[argsLast];
+      if ((lastArg != null) && lastArg.indexOf('?') === 0) {
+        args[argsLast] = this._deparam(lastArg.slice(1));
+      }
+      return args;
+    };
+
+    Router.prototype._deparam = function(str, coerce) {
+      var coerceTypes, i, key, keys, keysLast, param, ret, target, token, tokens, val, _i, _j, _len;
+      if (coerce == null) {
+        coerce = true;
+      }
+      coerceTypes = {
+        'true': true,
+        'false': false,
+        'null': null
+      };
+      ret = {};
+      if (str !== '') {
+        tokens = str.replace('+', ' ').split('&');
+        for (_i = 0, _len = tokens.length; _i < _len; _i++) {
+          token = tokens[_i];
+          param = token.split('=');
+          key = decodeURIComponent(param[0]);
+          keys = key.split('][');
+          keysLast = keys.length - 1;
+          if (/\[/.test(keys[0]) && /\]$/.test(keys[keysLast])) {
+            keys[keysLast] = keys[keysLast].replace(/\]$/, '');
+            keys = keys.shift().split('[').concat(keys);
+            keysLast = keys.length - 1;
+          } else {
+            keysLast = 0;
+          }
+          if (param.length === 2) {
+            val = decodeURIComponent(param[1]);
+            if (coerce) {
+              val = !isNaN(val) ? +val : val === 'undefined' ? val : coerceTypes[val] !== void 0 ? coerceTypes[val] : val;
+            }
+            if (keysLast) {
+              target = ret;
+              for (i = _j = 0; 0 <= keysLast ? _j <= keysLast : _j >= keysLast; i = 0 <= keysLast ? ++_j : --_j) {
+                key = keys[i] === '' ? target.length : keys[i];
+                target = target[key] = i < keysLast ? target[key] ? target[key] : !isNaN(keys[i + 1]) ? {} : [] : val;
+              }
+            } else {
+              if (_.isArray(ret[key])) {
+                ret[key].push(val);
+              } else if (ret[key] !== void 0) {
+                ret[key] = [ret[key], val];
+              } else {
+                ret[key] = val;
+              }
+            }
+          } else {
+            ret[key] = coerce ? void 0 : '';
+          }
+        }
+      }
+      return ret;
+    };
+
     Router.prototype._unbindTriggers = function() {
       var triggers;
       triggers = this._getTriggerRegExpStrings();
@@ -1364,8 +1439,22 @@
 
     Router.prototype._getTriggerRegExpStrings = function() {
       return _.map(_.keys(this.triggers), function(route) {
-        return Backbone.Router.prototype._routeToRegExp(route).toString();
+        return this._routeToRegExp(route).toString();
       });
+    };
+
+    Router.prototype._routeToRegExp = function(route) {
+      var escapeRegExp, namedParam, optionalParam, splatParam;
+      optionalParam = /\((.*?)\)/g;
+      namedParam = /(\(\?)?:\w+/g;
+      splatParam = /\*\w+/g;
+      escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+      route = route.replace(escapeRegExp, '\\$&').replace(optionalParam, '(?:$1)?').replace(namedParam, function(match, optional) {
+        return optional != null ? optional : {
+          match: '([^\/\\?]+)'
+        };
+      }).replace(splatParam, '([^\\?]*?)');
+      return new RegExp("^" + route + "([\\?]{1}.*)?$");
     };
 
     /*
@@ -1401,11 +1490,29 @@
 
 
     Router.prototype.isCaused = function() {
-      var any, appEvent, route;
+      var any, appEvent, currentParams, currentRoute, key, route, routeParams, val;
       appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
-        return this._getLocation() === route;
+        currentRoute = this._getLocation();
+        if (route.indexOf('?') !== -1) {
+          currentRoute = route.split('?');
+          route = route.split('?');
+          currentParams = this._deparam(currentRoute[1]);
+          routeParams = this._deparam(route[1]);
+          return currentRoute[0] === route[0] && (function() {
+            var _results;
+            _results = [];
+            for (key in routeParams) {
+              if (!__hasProp.call(routeParams, key)) continue;
+              val = routeParams[key];
+              _results.push(_.isEqual(val, currentParams[key]));
+            }
+            return _results;
+          })();
+        } else {
+          return currentRoute.replace(/\?.*$/, '') === route;
+        }
       } else {
         return false;
       }
@@ -1464,17 +1571,31 @@
       }
       wildcards = /:\w+|\*\w+/g;
       if (_.isObject(first)) {
+        first = _.clone(first);
         result = route.replace(wildcards, function(token, index) {
-          var key;
+          var key, val;
           key = token.slice(1);
-          return first[key] || '';
+          val = first[key];
+          delete first[key];
+          return val || '';
         });
       } else {
         result = route.replace(wildcards, function(token, index) {
-          return args.shift() || '';
+          if (args[0] != null) {
+            first = args.shift();
+          }
+          if ((first != null) && !_.isObject(first)) {
+            return first;
+          } else {
+            return '';
+          }
         });
       }
-      return result;
+      if ((first != null) && _.isObject(first) && !_.isEmpty(first)) {
+        return "" + result + "?" + ($.param(first));
+      } else {
+        return result;
+      }
     };
 
     /*
