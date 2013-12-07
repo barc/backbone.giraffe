@@ -1150,33 +1150,27 @@ class Giraffe.Router extends Backbone.Router
         else
           route = fullNs + route
           callback = (args...) =>
-            args = @_extractQueryParams args
+            lastArg = _.last args
             # console.log 'TRIGGERING ', appEvent
-            @app.trigger appEvent, args..., route
-
+            if _.isString(lastArg) and lastArg.indexOf('?') isnt -1
+              params = @_deparam(args.pop()) 
+              @app.trigger appEvent, args..., route, params
+            else
+              @app.trigger appEvent, args..., route
           # register the route so we can do a reverse map
           @_registerRoute appEvent, route
 
         @route route, appEvent, callback
     @
 
-  # Extracts query parameters from route arguments
-  _extractQueryParams : (args) ->
-    argsLast = args.length - 1
-    lastArg = args[argsLast]
-    if lastArg? and lastArg.indexOf('?') is 0
-      args[argsLast] = @_deparam lastArg.slice(1)
-    args
-
   # An inverse of $.param, ported from jquery-bbq
   _deparam : (str, coerce = true) ->
-    coerceTypes = 
-      'true' : true
-      'false' : false
-      'null': null
+    bools = 
+      'true': true
+      'false': false
     ret = {}
     if str isnt ''
-      tokens = str.replace('+', ' ').split '&'
+      tokens = str.slice(1).replace('+', ' ').split '&'
       for token in tokens
         param = token.split '='
         key = decodeURIComponent param[0]
@@ -1195,9 +1189,8 @@ class Giraffe.Router extends Backbone.Router
           val = decodeURIComponent param[1]
           if coerce
             val = 
-              if !isNaN(val) then +val
-              else if val is 'undefined' then val
-              else if coerceTypes[val] isnt undefined then coerceTypes[val]
+              if not isNaN(val) then +val
+              else if bools[val] isnt undefined then bools[val]
               else val
           # if this is a nested object
           if keysLast
@@ -1209,7 +1202,7 @@ class Giraffe.Router extends Backbone.Router
                   if target[key]
                     target[key]
                   else
-                    if not isNaN(keys[i+1])
+                    if isNaN(keys[i+1])
                       {}
                     else
                       []
@@ -1239,22 +1232,22 @@ class Giraffe.Router extends Backbone.Router
   _getTriggerRegExpStrings: ->
     _.map _.keys(@triggers), (route) ->
       @_routeToRegExp(route).toString()
+  
+  # Route matching expressions
+  _optionalParam : /\((.*?)\)/g
+  _namedParam : /(\(\?)?:\w+/g
+  _splatParam : /\*\w+/g
+  _escapeRegExp : /[\-{}\[\]+?.,\\\^$|#\s]/g
 
   # Converts routes to RegExps. Copies Backbone.Router::_routeToRegExp, adds query param support
   _routeToRegExp: (route) ->
-    optionalParam = /\((.*?)\)/g
-    namedParam = /(\(\?)?:\w+/g
-    splatParam = /\*\w+/g
-    escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g
-
     route = route
-      .replace(escapeRegExp, '\\$&')
-      .replace(optionalParam, '(?:$1)?')
-      .replace(namedParam, (match, optional) ->
-        return optional ? match : '([^\/\\?]+)';
+      .replace(@_escapeRegExp, '\\$&')
+      .replace(@_optionalParam, '(?:$1)?')
+      .replace(@_namedParam, (match, optional) ->
+        if optional then match else '([^\/\\?]+)'
       )
-      .replace(splatParam, '([^\\?]*?)');
-
+      .replace(@_splatParam, '([^\\?]*?)');
     new RegExp "^#{route}([\\?]{1}.*)?$"
 
   ###
@@ -1347,12 +1340,12 @@ class Giraffe.Router extends Backbone.Router
         key = token.slice(1)
         val = first[key]
         delete first[key]
-        val || ''
+        encodeURIComponent(val) || ''
     else
       result = route.replace wildcards, (token, index) ->
         if args[0]?
           first = args.shift()
-        if first? and not _.isObject(first) then first else ''
+        if first? and not _.isObject(first) then encodeURIComponent(first) else ''
     if first? and _.isObject(first) and not _.isEmpty(first)
       "#{result}?#{$.param first}"
     else

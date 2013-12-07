@@ -1349,10 +1349,15 @@
         } else {
           route = fullNs + route;
           callback = function() {
-            var args, _ref1;
+            var args, lastArg, params, _ref1, _ref2;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            args = _this._extractQueryParams(args);
-            return (_ref1 = _this.app).trigger.apply(_ref1, [appEvent].concat(__slice.call(args), [route]));
+            lastArg = _.last(args);
+            if (_.isString(lastArg) && lastArg.indexOf('?') !== -1) {
+              params = _this._deparam(args.pop());
+              return (_ref1 = _this.app).trigger.apply(_ref1, [appEvent].concat(__slice.call(args), [route], [params]));
+            } else {
+              return (_ref2 = _this.app).trigger.apply(_ref2, [appEvent].concat(__slice.call(args), [route]));
+            }
           };
           _this._registerRoute(appEvent, route);
         }
@@ -1365,29 +1370,18 @@
       return this;
     };
 
-    Router.prototype._extractQueryParams = function(args) {
-      var argsLast, lastArg;
-      argsLast = args.length - 1;
-      lastArg = args[argsLast];
-      if ((lastArg != null) && lastArg.indexOf('?') === 0) {
-        args[argsLast] = this._deparam(lastArg.slice(1));
-      }
-      return args;
-    };
-
     Router.prototype._deparam = function(str, coerce) {
-      var coerceTypes, i, key, keys, keysLast, param, ret, target, token, tokens, val, _i, _j, _len;
+      var bools, i, key, keys, keysLast, param, ret, target, token, tokens, val, _i, _j, _len;
       if (coerce == null) {
         coerce = true;
       }
-      coerceTypes = {
+      bools = {
         'true': true,
-        'false': false,
-        'null': null
+        'false': false
       };
       ret = {};
       if (str !== '') {
-        tokens = str.replace('+', ' ').split('&');
+        tokens = str.slice(1).replace('+', ' ').split('&');
         for (_i = 0, _len = tokens.length; _i < _len; _i++) {
           token = tokens[_i];
           param = token.split('=');
@@ -1404,13 +1398,13 @@
           if (param.length === 2) {
             val = decodeURIComponent(param[1]);
             if (coerce) {
-              val = !isNaN(val) ? +val : val === 'undefined' ? val : coerceTypes[val] !== void 0 ? coerceTypes[val] : val;
+              val = !isNaN(val) ? +val : bools[val] !== void 0 ? bools[val] : val;
             }
             if (keysLast) {
               target = ret;
               for (i = _j = 0; 0 <= keysLast ? _j <= keysLast : _j >= keysLast; i = 0 <= keysLast ? ++_j : --_j) {
                 key = keys[i] === '' ? target.length : keys[i];
-                target = target[key] = i < keysLast ? target[key] ? target[key] : !isNaN(keys[i + 1]) ? {} : [] : val;
+                target = target[key] = i < keysLast ? target[key] ? target[key] : isNaN(keys[i + 1]) ? {} : [] : val;
               }
             } else {
               if (_.isArray(ret[key])) {
@@ -1443,17 +1437,22 @@
       });
     };
 
+    Router.prototype._optionalParam = /\((.*?)\)/g;
+
+    Router.prototype._namedParam = /(\(\?)?:\w+/g;
+
+    Router.prototype._splatParam = /\*\w+/g;
+
+    Router.prototype._escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+
     Router.prototype._routeToRegExp = function(route) {
-      var escapeRegExp, namedParam, optionalParam, splatParam;
-      optionalParam = /\((.*?)\)/g;
-      namedParam = /(\(\?)?:\w+/g;
-      splatParam = /\*\w+/g;
-      escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
-      route = route.replace(escapeRegExp, '\\$&').replace(optionalParam, '(?:$1)?').replace(namedParam, function(match, optional) {
-        return optional != null ? optional : {
-          match: '([^\/\\?]+)'
-        };
-      }).replace(splatParam, '([^\\?]*?)');
+      route = route.replace(this._escapeRegExp, '\\$&').replace(this._optionalParam, '(?:$1)?').replace(this._namedParam, function(match, optional) {
+        if (optional) {
+          return match;
+        } else {
+          return '([^\/\\?]+)';
+        }
+      }).replace(this._splatParam, '([^\\?]*?)');
       return new RegExp("^" + route + "([\\?]{1}.*)?$");
     };
 
@@ -1577,7 +1576,7 @@
           key = token.slice(1);
           val = first[key];
           delete first[key];
-          return val || '';
+          return encodeURIComponent(val) || '';
         });
       } else {
         result = route.replace(wildcards, function(token, index) {
@@ -1585,7 +1584,7 @@
             first = args.shift();
           }
           if ((first != null) && !_.isObject(first)) {
-            return first;
+            return encodeURIComponent(first);
           } else {
             return '';
           }

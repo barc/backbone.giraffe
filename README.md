@@ -94,7 +94,7 @@ __Version 0.1.4__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _69.2k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _18.8k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _18.9k_
 
 [backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _16.1k_
 
