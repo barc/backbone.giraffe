@@ -1,10 +1,10 @@
 (function() {
-  var assert, sinon, ut, _,
+  var $, assert, sinon, ut, _,
     __slice = [].slice;
 
   assert = chai.assert;
 
-  ut = window.ut, sinon = window.sinon, _ = window._;
+  ut = window.ut, sinon = window.sinon, _ = window._, $ = window.$;
 
   describe('Giraffe.Router', function() {
     it('should be OK', function() {
@@ -132,6 +132,53 @@
       }
       return Giraffe.Router.prototype.route.restore();
     });
+    it('should pass query parameters on successful routes with query parameters', function(done) {
+      var e, router, testArgs, testParams;
+      testParams = {
+        num: 2,
+        string: 'foo',
+        bool: true,
+        obj: {
+          num: 3,
+          string: 'bar',
+          arr: ['baz', 4]
+        },
+        arr: [
+          'qux', 5, {
+            string: 'quux',
+            num: 6
+          }
+        ]
+      };
+      testArgs = [1, 'string', "?" + ($.param(testParams))];
+      sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
+        return _.delay(function() {
+          callback.apply(null, testArgs);
+          return assert(router.app.trigger.calledOnce, "expected app event to be triggered");
+        });
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {},
+            trigger: sinon.spy(function() {
+              var appEvent, args, params, route, _i;
+              appEvent = arguments[0], args = 4 <= arguments.length ? __slice.call(arguments, 1, _i = arguments.length - 2) : (_i = 1, []), route = arguments[_i++], params = arguments[_i++];
+              assert(_.isEqual(params, testParams), "expected args to be " + (JSON.stringify(testParams)) + "\ngot '" + (JSON.stringify(params)) + "'");
+              return done();
+            })
+          },
+          triggers: {
+            'route': 'app:event'
+          }
+        });
+      } catch (_error) {
+        e = _error;
+        Giraffe.Router.route.restore();
+        throw e;
+      }
+      return Giraffe.Router.prototype.route.restore();
+    });
     it('should redirect on absolute redirect routes', function(done) {
       var e, navigate, router;
       sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
@@ -156,6 +203,35 @@
       }
       navigate = sinon.stub(router, 'navigate', function(route, trigger) {
         assert(route === 'redirect', "expected route to be 'route', got '" + route + "'");
+        assert(trigger, "expected trigger to be true");
+        return done();
+      });
+      return Giraffe.Router.prototype.route.restore();
+    });
+    it('should redirect and pass query parameters on absolute redirect routes', function(done) {
+      var e, navigate, router;
+      sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
+        return _.delay(function() {
+          callback('?param=value');
+          return assert(navigate.calledOnce, "expected route.navigate to be called");
+        });
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {
+            'route': '-> redirect'
+          }
+        });
+      } catch (_error) {
+        e = _error;
+        Giraffe.Router.prototype.route.restore();
+        throw e;
+      }
+      navigate = sinon.stub(router, 'navigate', function(route, trigger) {
+        assert(route === 'redirect?param=value', "expected route to be 'route?param=value', got '" + route + "'");
         assert(trigger, "expected trigger to be true");
         return done();
       });
@@ -190,6 +266,134 @@
         return done();
       });
       return Giraffe.Router.prototype.route.restore();
+    });
+    it('should redirect and pass query parameters on relative redirect routes', function(done) {
+      var e, navigate, router;
+      sinon.stub(Giraffe.Router.prototype, 'route', function(route, appEvent, callback) {
+        return _.delay(function() {
+          callback('?param=value');
+          return assert(navigate.calledOnce, "expected route.navigate to be called");
+        });
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {
+            'route': '=> redirect'
+          },
+          namespace: 'namespace'
+        });
+      } catch (_error) {
+        e = _error;
+        Giraffe.Router.prototype.route.restore();
+        throw e;
+      }
+      navigate = sinon.stub(router, 'navigate', function(route, trigger) {
+        assert(route === 'namespace/redirect?param=value', "expected route to be 'namespace/redirect?param=value', got '" + route + "'");
+        assert(trigger, trigger, "expected trigger to be true");
+        return done();
+      });
+      return Giraffe.Router.prototype.route.restore();
+    });
+    it('should register a regex that matches routes with method "route"', function() {
+      var e, route, router;
+      route = sinon.stub(Backbone.history, 'route', function(regex) {
+        return assert(regex.test('route'), "expected route for 'route' to match 'route', regex is " + regex);
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+        router.route('route', 'app:event', function() {});
+      } catch (_error) {
+        e = _error;
+        Backbone.history.route.restore();
+        throw e;
+      }
+      Backbone.history.route.restore();
+      return assert(route.calledOnce, "expected Backbone.history.route to be called");
+    });
+    it('should register a regex that matches routes with arguments with method "route"', function() {
+      var e, route, router;
+      route = sinon.stub(Backbone.history, 'route', function(regex) {
+        var matches;
+        matches = 'route/1/string/2'.match(regex);
+        assert(matches != null, "expected route for 'route/:foo/:bar/*baz' to match 'route/1/string/2', regex is " + regex);
+        assert(matches[1] === '1', "expected first subexpression match to be 1, got " + matches[1]);
+        assert(matches[2] === 'string', "expected second subexpression match to be 'string', got " + matches[2]);
+        return assert(matches[3] === '2', "expected third subexpression match to be 2, got " + matches[3]);
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+        router.route('route/:foo/:bar/*baz', 'app:event', function() {});
+      } catch (_error) {
+        e = _error;
+        Backbone.history.route.restore();
+        throw e;
+      }
+      Backbone.history.route.restore();
+      return assert(route.calledOnce, "expected Backbone.history.route to be called");
+    });
+    it('should register a regex that matches routes with query parameters with method "route"', function() {
+      var e, route, router;
+      route = sinon.stub(Backbone.history, 'route', function(regex) {
+        var matches;
+        matches = 'route?param1=value&param2=3'.match(regex);
+        assert(matches != null, "expected route for 'route/:foo/:bar/*baz' to match 'route?param1=value&param2=3', regex is " + regex);
+        return assert(matches[1] === '?param1=value&param2=3', "expected first subexpression match to be '?param1=value&param2=3', got " + matches[1]);
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+        router.route('route', 'app:event', function() {});
+      } catch (_error) {
+        e = _error;
+        Backbone.history.route.restore();
+        throw e;
+      }
+      Backbone.history.route.restore();
+      return assert(route.calledOnce, "expected Backbone.history.route to be called");
+    });
+    it('should register a regex that matches routes with arguments and query parameters with method "route"', function() {
+      var e, route, router;
+      route = sinon.stub(Backbone.history, 'route', function(regex) {
+        var matches;
+        matches = 'route/1/string/2?param1=value&param2=3'.match(regex);
+        assert(matches != null, "expected route for 'route/:foo/:bar/*baz' to match 'route/1/string/2?param1=value&param2=3', regex is " + regex);
+        assert(matches[1] === '1', "expected first subexpression match to be 1, got " + matches[1]);
+        assert(matches[2] === 'string', "expected second subexpression match to be 'string', got " + matches[2]);
+        assert(matches[3] === '2', "expected third subexpression match to be 2, got " + matches[3]);
+        return assert(matches[4] === '?param1=value&param2=3', "expected fourth subexpression match to be '?param1=value&param2=3', got " + matches[4]);
+      });
+      try {
+        router = new Giraffe.Router({
+          app: {
+            addChild: function() {}
+          },
+          triggers: {}
+        });
+        router.route('route/:foo/:bar/*baz', 'app:event', function() {});
+      } catch (_error) {
+        e = _error;
+        Backbone.history.route.restore();
+        throw e;
+      }
+      Backbone.history.route.restore();
+      return assert(route.calledOnce, "expected Backbone.history.route to be called");
     });
     it('should cause a history navigation on matched routes with method "cause"', function() {
       var e, navigate, router;
@@ -289,7 +493,45 @@
       isCaused = router.isCaused('app:event');
       assert(router.getRoute.calledOnce, "expected router.getRoute to be called");
       assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
-      return assert(isCaused, "expected router.isCaused to return true");
+      return assert(isCaused, "expected router.isCaused to return true with route 'route' and location 'route'");
+    });
+    it('should return true if route is caused and location has query parameters with method "isCaused"', function() {
+      var isCaused, router;
+      router = new Giraffe.Router({
+        app: {
+          addChild: function() {}
+        },
+        triggers: {}
+      });
+      sinon.stub(router, 'getRoute', function() {
+        return 'route';
+      });
+      sinon.stub(router, '_getLocation', function() {
+        return 'route?param1=value&param2=1';
+      });
+      isCaused = router.isCaused('app:event');
+      assert(router.getRoute.calledOnce, "expected router.getRoute to be called");
+      assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
+      return assert(isCaused, "expected router.isCaused to return true with route 'route' and location 'route?param1=value&param2=1'");
+    });
+    it('should return true if route is caused with query parameters and location has same query parameters with method "isCaused"', function() {
+      var isCaused, router;
+      router = new Giraffe.Router({
+        app: {
+          addChild: function() {}
+        },
+        triggers: {}
+      });
+      sinon.stub(router, 'getRoute', function() {
+        return 'route?param1=value&param2=1';
+      });
+      sinon.stub(router, '_getLocation', function() {
+        return 'route?param2=1&param1=value';
+      });
+      isCaused = router.isCaused('app:event');
+      assert(router.getRoute.calledOnce, "expected router.getRoute to be called");
+      assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
+      return assert(isCaused, "expected router.isCaused to return true with route 'route?param1=value&param2=1' and location 'route?param2=1&param1=value'");
     });
     it('should return false if route is not caused with method "isCaused"', function() {
       var isCaused, router;
@@ -308,7 +550,26 @@
       isCaused = router.isCaused('app:event');
       assert(router.getRoute.calledOnce, "expected router.getRoute to be called");
       assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
-      return assert(!isCaused, "expected router.isCaused to return false");
+      return assert(!isCaused, "expected router.isCaused to return false with route 'route1' and location 'route2'");
+    });
+    it('should return false if route is caused with query parameters and location has different query parameters with method "isCaused"', function() {
+      var isCaused, router;
+      router = new Giraffe.Router({
+        app: {
+          addChild: function() {}
+        },
+        triggers: {}
+      });
+      sinon.stub(router, 'getRoute', function() {
+        return 'route?param1=value&param2=1';
+      });
+      sinon.stub(router, '_getLocation', function() {
+        return 'route?param1=othervalue&param2=2';
+      });
+      isCaused = router.isCaused('app:event');
+      assert(router.getRoute.calledOnce, "expected router.getRoute to be called");
+      assert(router._getLocation.calledOnce, "expected router._getLocation to be called");
+      return assert(isCaused, "expected router.isCaused to return true");
     });
     return it('should return false if route is null with method "isCaused"', function() {
       var isCaused, router;

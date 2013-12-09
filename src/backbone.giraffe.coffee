@@ -1126,15 +1126,23 @@ class Giraffe.Router extends Backbone.Router
       do (route, appEvent, fullNs) =>
         # Redirects to an absolute route
         if appEvent.indexOf('-> ') is 0
-          callback = =>
+          callback = (args...) =>
             redirect = appEvent.slice(3)
+            lastArg = _.last args
+            # Pass through query params
+            if lastArg and lastArg.indexOf('?') is 0
+              redirect += lastArg
             # console.log 'REDIRECTING ', appEvent, ' -> ', redirect
             @navigate redirect, trigger: true
 
         # Redirects to a route within this router
         else if appEvent.indexOf('=> ') is 0
-          callback = =>
+          callback = (args...) =>
             redirect = appEvent.slice(3)
+            lastArg = _.last args
+            # Pass through query params
+            if lastArg? and lastArg.indexOf('?') is 0
+              redirect += lastArg
             # console.log 'REDIRECTING ', appEvent, ' => ', redirect
             @navigate fullNs + redirect, trigger: true
 
@@ -1142,14 +1150,75 @@ class Giraffe.Router extends Backbone.Router
         else
           route = fullNs + route
           callback = (args...) =>
+            lastArg = _.last args
             # console.log 'TRIGGERING ', appEvent
-            @app.trigger appEvent, args..., route
-
+            if _.isString(lastArg) and lastArg.indexOf('?') isnt -1
+              params = @_deparam(args.pop()) 
+              @app.trigger appEvent, args..., route, params
+            else
+              @app.trigger appEvent, args..., route
           # register the route so we can do a reverse map
           @_registerRoute appEvent, route
 
         @route route, appEvent, callback
     @
+
+  # An inverse of $.param, ported from jquery-bbq
+  _deparam : (str, coerce = true) ->
+    bools = 
+      'true': true
+      'false': false
+    ret = {}
+    if str isnt ''
+      tokens = str.slice(1).replace('+', ' ').split '&'
+      for token in tokens
+        param = token.split '='
+        key = decodeURIComponent param[0]
+        keys = key.split ']['
+        keysLast = keys.length - 1
+        # if this is a balanced property chain
+        if /\[/.test(keys[0]) and /\]$/.test(keys[keysLast])
+          # clean up the strings and fully extract keys
+          keys[keysLast] = keys[keysLast].replace /\]$/, ''
+          keys = keys.shift().split('[').concat( keys )
+          keysLast = keys.length - 1
+        else
+          keysLast = 0
+        # if there is a value
+        if param.length is 2
+          val = decodeURIComponent param[1]
+          if coerce
+            val = 
+              if not isNaN(val) then +val
+              else if bools[val] isnt undefined then bools[val]
+              else val
+          # if this is a nested object
+          if keysLast
+            target = ret
+            for i in [0..keysLast]
+              key = if keys[i] is '' then target.length else keys[i]
+              target = target[key] =
+                if i < keysLast
+                  if target[key]
+                    target[key]
+                  else
+                    if isNaN(keys[i+1])
+                      {}
+                    else
+                      []
+                else
+                  val
+          else
+            if _.isArray(ret[key])
+              ret[key].push val
+            else if ret[key] isnt undefined
+              ret[key] = [ret[key], val]
+            else
+              ret[key] = val
+        # if there isn't a value, set key to something reasonable
+        else
+          ret[key] = if coerce then undefined else ''
+    ret
 
 
   # Unbinds all triggers registered to Backbone.history
@@ -1161,9 +1230,25 @@ class Giraffe.Router extends Backbone.Router
 
   # Gets the routes of `triggers` as RegExps turned to strings, the `route` of Backbone.history
   _getTriggerRegExpStrings: ->
-    _.map _.keys(@triggers), (route) ->
-      Backbone.Router::_routeToRegExp(route).toString()
+    _.map _.keys(@triggers), (route) =>
+      @_routeToRegExp(route).toString()
+  
+  # Route matching expressions
+  _optionalParam : /\((.*?)\)/g
+  _namedParam : /(\(\?)?:\w+/g
+  _splatParam : /\*\w+/g
+  _escapeRegExp : /[\-{}\[\]+?.,\\\^$|#\s]/g
 
+  # Converts routes to RegExps. Copies Backbone.Router::_routeToRegExp, adds query param support
+  _routeToRegExp: (route) ->
+    route = route
+      .replace(@_escapeRegExp, '\\$&')
+      .replace(@_optionalParam, '(?:$1)?')
+      .replace(@_namedParam, (match, optional) ->
+        if optional then match else '([^\/\\?]+)'
+      )
+      .replace(@_splatParam, '([^\\?]*?)');
+    new RegExp "^#{route}([\\?]{1}.*)?$"
 
   ###
   * If `this.triggers` has a route that maps to `appEvent`, the router navigates
@@ -1191,7 +1276,18 @@ class Giraffe.Router extends Backbone.Router
   isCaused: (appEvent, any...) ->
     route = @getRoute(appEvent, any...)
     if route?
-      @_getLocation() is route
+      currentRoute = @_getLocation()
+      if route.indexOf('?') isnt -1
+        currentRoute = route.split '?'
+        route = route.split '?'
+        currentParams = @_deparam currentRoute[1]
+        routeParams = @_deparam route[1]
+        currentRoute[0] is route[0] and 
+          for own key, val of routeParams
+            # Just do deep equality for nested params
+            _.isEqual val, currentParams[key]
+      else
+        currentRoute.replace(/\?.*$/, '') is route
     else
       false
   
@@ -1239,15 +1335,21 @@ class Giraffe.Router extends Backbone.Router
 
     wildcards = /:\w+|\*\w+/g
     if _.isObject(first)
+      first = _.clone first
       result = route.replace wildcards, (token, index) ->
         key = token.slice(1)
-        first[key] || ''
+        val = first[key]
+        delete first[key]
+        encodeURIComponent(val) || ''
     else
       result = route.replace wildcards, (token, index) ->
-        args.shift() || ''
-
-    result
-
+        if args[0]?
+          first = args.shift()
+        if first? and not _.isObject(first) then encodeURIComponent(first) else ''
+    if first? and _.isObject(first) and not _.isEmpty(first)
+      "#{result}?#{$.param first}"
+    else
+      result
 
   ###
   * Performs a page refresh. If `url` is defined, the router first silently
