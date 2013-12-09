@@ -1230,7 +1230,7 @@ class Giraffe.Router extends Backbone.Router
 
   # Gets the routes of `triggers` as RegExps turned to strings, the `route` of Backbone.history
   _getTriggerRegExpStrings: ->
-    _.map _.keys(@triggers), (route) ->
+    _.map _.keys(@triggers), (route) =>
       @_routeToRegExp(route).toString()
   
   # Route matching expressions

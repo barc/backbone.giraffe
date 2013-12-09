@@ -1432,8 +1432,9 @@
     };
 
     Router.prototype._getTriggerRegExpStrings = function() {
+      var _this = this;
       return _.map(_.keys(this.triggers), function(route) {
-        return this._routeToRegExp(route).toString();
+        return _this._routeToRegExp(route).toString();
       });
     };
 
