@@ -1320,7 +1320,7 @@
       _ref = this.triggers;
       _fn = function(route, appEvent, fullNs) {
         var callback;
-        if (_.indexOf(appEvent, '-> ') === 0) {
+        if (appEvent.indexOf('-> ') === 0) {
           callback = function() {
             var redirect;
             redirect = appEvent.slice(3);
@@ -1328,7 +1328,7 @@
               trigger: true
             });
           };
-        } else if (_.indexOf(appEvent, '=> ') === 0) {
+        } else if (appEvent.indexOf('=> ') === 0) {
           callback = function() {
             var redirect;
             redirect = appEvent.slice(3);
@@ -1405,13 +1405,17 @@
       appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
-        if (Backbone.history._hasPushState) {
-          return window.location.pathname.slice(1) === route;
-        } else {
-          return window.location.hash === route;
-        }
+        return this._getLocation() === route;
       } else {
         return false;
+      }
+    };
+
+    Router.prototype._getLocation = function() {
+      if (Backbone.history._hasPushState) {
+        return window.location.pathname.slice(1);
+      } else {
+        return window.location.hash;
       }
     };
 
@@ -1552,6 +1556,7 @@
 
     Model.prototype.beforeDispose = function() {
       var _ref;
+      this._disposed = true;
       return (_ref = this.collection) != null ? _ref.remove(this) : void 0;
     };
 
@@ -1602,6 +1607,13 @@
         model.dispose();
       }
       return this;
+    };
+
+    Collection.prototype._removeReference = function(model) {
+      Collection.__super__._removeReference.apply(this, arguments);
+      if (!model._disposed) {
+        return typeof model.dispose === "function" ? model.dispose() : void 0;
+      }
     };
 
     return Collection;
