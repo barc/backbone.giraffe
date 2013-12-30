@@ -1556,6 +1556,7 @@
 
     Model.prototype.beforeDispose = function() {
       var _ref;
+      this._disposed = true;
       return (_ref = this.collection) != null ? _ref.remove(this) : void 0;
     };
 
@@ -1606,6 +1607,13 @@
         model.dispose();
       }
       return this;
+    };
+
+    Collection.prototype._removeReference = function(model) {
+      Collection.__super__._removeReference.apply(this, arguments);
+      if (!model._disposed) {
+        return typeof model.dispose === "function" ? model.dispose() : void 0;
+      }
     };
 
     return Collection;

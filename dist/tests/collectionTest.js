@@ -32,7 +32,7 @@
       collection.dispose();
       return assert.equal(3, disposeCount);
     });
-    return it('should omit the \'parse\' option by default', function() {
+    it('should omit the \'parse\' option by default', function() {
       var collection;
       collection = new Giraffe.Collection([], {
         parse: 'foo',
@@ -40,6 +40,13 @@
       });
       assert.notEqual('foo', collection.parse);
       return assert.equal('baz', collection.bar);
+    });
+    return it('should dispose of models when the collection is reset', function(done) {
+      var collection, model;
+      model = new Giraffe.Model;
+      model.dispose = done;
+      collection = new Giraffe.Collection([model]);
+      return collection.reset();
     });
   });
 

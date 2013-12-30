@@ -1313,6 +1313,7 @@ class Giraffe.Model extends Backbone.Model
   * Removes event listeners and removes this model from its collection.
   ###
   beforeDispose: ->
+    @_disposed = true
     @collection?.remove @
 
 
@@ -1351,6 +1352,12 @@ class Giraffe.Collection extends Backbone.Collection
   beforeDispose: ->
     model.dispose() for model in @models.slice() # slice because `@models` is modified
     @
+
+
+  # Fixes disposal problem detailed here: https://github.com/barc/backbone.giraffe/issues/20
+  _removeReference: (model) ->
+    super
+    model.dispose?() if !model._disposed
 
 
 

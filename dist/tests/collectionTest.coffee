@@ -28,3 +28,9 @@ describe 'Giraffe.Collection', ->
     collection = new Giraffe.Collection([], parse: 'foo', bar: 'baz')
     assert.notEqual 'foo', collection.parse
     assert.equal 'baz', collection.bar
+
+  it 'should dispose of models when the collection is reset', (done) ->
+    model = new Giraffe.Model
+    model.dispose = done
+    collection = new Giraffe.Collection([model])
+    collection.reset()
