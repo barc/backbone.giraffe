@@ -118,6 +118,7 @@ __Version 0.1.5__
 - ___BREAKING CHANGE:___ `dispose` now acts on `this` instead of taking the
   target object as an argument. Removed `disposeThis` as it's now redundant.
 
+- Registered as a Bower package: `bower install backbone.giraffe`
 
 ### 0.1.4
 
