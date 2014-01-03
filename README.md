@@ -17,7 +17,7 @@ route handling, object lifecycles, event aggregation, and view management.
 
 - __Giraffe.View__ is a nestable and flexible class that provides lifecycle
 management and many other useful features. It defaults to __Underscore__
-templates and easily supports any form of string templating.
+templates and easily supports any form of templating.
 
 - __Giraffe.App__ is a special view that helps your views, models, collections,
 and routers communicate by acting as an event hub. Multiple apps can coexist and

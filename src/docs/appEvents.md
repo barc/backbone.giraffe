@@ -47,7 +47,7 @@ function passes the view to the template.
 
 <div class="note">
 These examples use __Giraffe__'s templating default, __Underscore__ templates,
-but __Giraffe__ supports any form of string templating. See the
+but __Giraffe__ supports any form of templating. See the
 [Template Strategies](templateStrategies.html) example for more.
 </div>
 

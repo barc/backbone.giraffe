@@ -3,7 +3,7 @@
 Creating HTML markup is a lot of what we do as front end developers. There are
 many solutions as evident by the ever increasing number of templating libraries
 found on the web, and __Giraffe__ aims to easily support the common cases and be
-flexible enough to support any form of string templating. __Giraffe__ provides
+flexible enough to support any form of templating. __Giraffe__ provides
 templating strategies based on the built-in dependecies of __Backbone__, namely
 the __Underscore__ `template` function. Selecting a strategy tells __Giraffe__
 how to utilize the `Giraffe.View#template` property when rendering a view. The
