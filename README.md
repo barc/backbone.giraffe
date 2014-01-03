@@ -90,11 +90,11 @@ __AngularJS__)
 
 ## Download
 
-__Version 0.1.4__
+__Version 0.1.5__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _64.9k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.3k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.4k_
 
 [backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _16.1k_
 
@@ -108,6 +108,16 @@ __Version 0.1.4__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## Changelog
+
+
+### 0.1.5
+
+- Added events around several view methods: `rendering`, `rendered`,
+  `attaching`, `attached`, `detaching`, `detached`
+
+- ___BREAKING CHANGE:___ `dispose` now acts on `this` instead of taking the
+  target object as an argument. Removed `disposeThis` as it's now redundant.
+
 
 ### 0.1.4
 
@@ -126,8 +136,7 @@ __Version 0.1.4__
 - ___BREAKING CHANGE:___ `dispose` is now mixed into configured objects
   with a default function, and is only copied if it doesn't exist.
   As a result, calls to super in `dispose` no longer make sense.
-  Use `Giraffe.dispose` instead. If memory consumption is a concern, copy the
-  default `Giraffe.disposeThis` to your prototypes (or write your own).
+  Use `Giraffe.dispose` instead.
 
 - `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
   are called if defined on all configured objects. Some are used by Giraffe

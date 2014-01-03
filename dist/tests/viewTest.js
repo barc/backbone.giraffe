@@ -447,7 +447,7 @@
       a.attachTo(ut.getEl());
       return a.$('div').click();
     });
-    return it('should allow a blank prefix', function(done) {
+    it('should allow a blank prefix', function(done) {
       var a;
       Giraffe.View.setDocumentEvents('click');
       Giraffe.View.setDocumentEventPrefix('');
@@ -461,6 +461,68 @@
       });
       a.attachTo(ut.getEl());
       return a.$('div').click();
+    });
+    it('should fire `rendering` and `rendered` events around `render`', function() {
+      var a, i, options;
+      i = 0;
+      a = new Giraffe.View;
+      options = {};
+      a.on('rendering', function(view, opts) {
+        i += 1;
+        assert(1 === i, 'expected `rendering` event to fire before `rendered`');
+        assert(!a._renderedOnce, 'expected `rendering` event to fire before `render`');
+        return assert(view === a && options === opts, 'unexpected args passed to `rendering`');
+      });
+      a.on('rendered', function(view, opts) {
+        i += 1;
+        assert(2 === i, 'expected `rendered` event to fire after `rendering`');
+        assert(a._renderedOnce, 'expected `rendered` event to fire after `render`');
+        return assert(view === a && options === opts, 'unexpected args passed to `rendered`');
+      });
+      a.render(options);
+      return assert(2 === i, 'expected both `rendering` and `rendered` events to fire');
+    });
+    it('should fire `attaching` and `attached` events around `attachTo`', function() {
+      var a, b, i, options;
+      i = 0;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      options = {};
+      a.on('attaching', function(view, $el, opts) {
+        i += 1;
+        assert(1 === i, 'expected `attaching` event to fire before `attached`');
+        assert(view === a && $el === b.$el && options === opts, 'unexpected args passed to `attaching`');
+        return ut.assert.notAttached(a, b);
+      });
+      a.on('attached', function(view, $el, opts) {
+        i += 1;
+        assert(2 === i, 'expected `attached` event to fire after `attaching`');
+        assert(view === a && $el === b.$el && options === opts, 'unexpected args passed to `attached`');
+        return ut.assert.attached(a, b);
+      });
+      a.attachTo(b, options);
+      return assert(2 === i, 'expected both `attaching` and `attached` events to fire');
+    });
+    return it('should fire `detaching` and `detached` events around `detach`', function() {
+      var a, b, i;
+      i = 0;
+      a = new Giraffe.View;
+      b = new Giraffe.View;
+      a.attachTo(b);
+      a.on('detaching', function(view, preserve) {
+        i += 1;
+        assert(1 === i, 'expected `detaching` event to fire before `detached`');
+        assert(view === a && preserve, 'unexpected args passed to `detaching`');
+        return ut.assert.attached(a, b);
+      });
+      a.on('detached', function(view, preserve) {
+        i += 1;
+        assert(2 === i, 'expected `detached` event to fire after `detaching`');
+        assert(view === a && preserve, 'unexpected args passed to `detached`');
+        return ut.assert.notAttached(a, b);
+      });
+      a.detach(true);
+      return assert(2 === i, 'expected both `detaching` and `detached` events to fire');
     });
   });
 

@@ -193,7 +193,7 @@ Let's use the console to see when views get disposed.
 
 ```js
   dispose: function() {
-    Giraffe.dispose(this);
+    Giraffe.dispose.call(this);
     console.log('Disposing of ' + this.cid);
   },
 ```

@@ -29,8 +29,9 @@ describe 'Giraffe.Collection', ->
     assert.notEqual 'foo', collection.parse
     assert.equal 'baz', collection.bar
 
-  it 'should dispose of models when the collection is reset', (done) ->
+  it 'should dispose of models when the collection is reset', ->
     model = new Giraffe.Model
-    model.dispose = done
+    sinon.stub model, 'dispose', -> null
     collection = new Giraffe.Collection([model])
     collection.reset()
+    assert model.dispose.calledOnce

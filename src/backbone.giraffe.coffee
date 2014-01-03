@@ -146,6 +146,7 @@ class Giraffe.View extends Backbone.View
   * is called. This `render` behavior can be overridden via
   * `options.forceRender` and `options.suppressRender`. See the
   * [_View Basics_ example](viewBasics.html) for more.
+  * Triggers `attaching` and `attached` events.
   *
   * @param {String/Element/$/Giraffe.View} el A view, selector, or DOM element to attach `view.$el` to.
   * @param {Object} [options]
@@ -172,6 +173,8 @@ class Giraffe.View extends Backbone.View
     if $el.length isnt 1
       error('Expected to render to a single element but found ' + $el.length, el)
       return @
+
+    @trigger 'attaching', @, $el, options
 
     # $el and $container differ for jQuery methods that operate on siblings
     $container = if _.contains(@_siblingAttachMethods, method) then $el.parent() else $el
@@ -202,6 +205,7 @@ class Giraffe.View extends Backbone.View
 
     @_loadScrollPosition() if @saveScrollPosition
     document.title = @documentTitle if @documentTitle?
+    @trigger 'attached', @, $el, options
     @
 
 
@@ -242,6 +246,7 @@ class Giraffe.View extends Backbone.View
   * @caption Do not override unless you know what you're doing!
   ###
   render: (options) =>
+    @trigger 'rendering', @, options
     @beforeRender.apply @, arguments
     @_renderedOnce = true
     @detachChildren options?.preserve
@@ -249,6 +254,7 @@ class Giraffe.View extends Backbone.View
     @$el.empty()[0].innerHTML = html
     @_cacheUiElements()
     @afterRender.apply @, arguments
+    @trigger 'rendered', @, options
     @
 
 
@@ -328,12 +334,13 @@ class Giraffe.View extends Backbone.View
 
     @_saveScrollPosition() if @saveScrollPosition
 
-    # Deatch the view from the DOM to preserve its events.
+    # Detaches the view from the DOM, keeping its DOM event bindings intact.
+    @trigger 'detaching', @, preserve
     @$el.detach()
+    @trigger 'detached', @, preserve
 
     # Disposes the view unless the view's options or function caller preserve it.
-    if @disposeOnDetach and !preserve
-      @dispose()
+    @dispose() if @disposeOnDetach and !preserve
     @
 
 
@@ -411,7 +418,7 @@ class Giraffe.View extends Backbone.View
   ###
   removeChild: (child, preserve = false) ->
     index = _.indexOf(@children, child)
-    if index > -1
+    if index isnt -1
       @children.splice index, 1
       child.parent = null
       if preserve
@@ -448,8 +455,8 @@ class Giraffe.View extends Backbone.View
 
   ###
   * If `el` is `null` or `undefined`, tests if the view is somewhere on the DOM
-  * by calling `$document.find(view.$el)`. If `el` is defined, tests if `el`
-  * is the immediate parent of `view.$el`.
+  * by calling `$document.find(view.$el)`. If `el` is a view, tests if `el` contains
+  * this view. Otherwise, tests if `el` is the immediate parent of `view.$el`.
   *
   * @param {String} [el] Optional selector, DOM element, or view to test against the view's immediate parent.
   * @returns {Boolean}
@@ -457,11 +464,11 @@ class Giraffe.View extends Backbone.View
   isAttached: (el) ->
     if el?
       if el.$el
-        @parent is el
+        !!el.$el.find(@$el).length
       else
         @$el.parent().is(el)
     else
-      $document.find(@$el).length > 0
+      !!$document.find(@$el).length
 
 
   ###
@@ -1371,7 +1378,7 @@ class Giraffe.Collection extends Backbone.Collection
 *
 * - -pulls option defaults from the global `Giraffe.defaultOptions`, the static `obj.constructor.defaultOptions`, and the instance/prototype `obj.defaultOptions`
 * - -extends the object with all options minus `omittedOptions` (omits all if `true`)
-* - -defaults `obj.dispose` to `Giraffe.disposeThis`
+* - -defaults `obj.dispose` to `Giraffe.dispose`
 * - -defaults `obj.app` to `Giraffe.app`
 * - -binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
 * - -binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
@@ -1396,7 +1403,7 @@ Giraffe.configure = (obj, opts) ->
   if omittedOptions isnt true
     _.extend obj, _.omit(options, omittedOptions) # TODO allow a `extendTargetObj` option, e.g. the prototype?
 
-  obj.dispose ?= Giraffe.disposeThis
+  obj.dispose ?= Giraffe.dispose
 
   # Plug into `Giraffe.App` if one exists.
   obj.app ?= Giraffe.app
@@ -1470,26 +1477,16 @@ _afterInitialize = ->
 * after the disposal. Takes optional `args` that are passed through to the
 * events and the function calls.
 *
-* @param {Object} obj The object to dispose.
 * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
 ###
-Giraffe.dispose = (obj, args...) ->
-  obj.trigger? 'disposing', obj, args...
-  obj.beforeDispose? args...
-  obj.app = null
-  obj.stopListening?()
-  obj.trigger? 'disposed', obj, args...
-  obj.afterDispose? args...
-  obj
-
-
-###
-* Calls `Giraffe.dispose` on `this`.
-* Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure` was added in v0.1.4.
-* Perhaps this function should be removed and `Giraffe.dispose` changed to operate on `this`.
-###
-Giraffe.disposeThis = (args...) ->
-  Giraffe.dispose @, args...
+Giraffe.dispose = (args...) ->
+  @trigger? 'disposing', @, args...
+  @beforeDispose? args...
+  @app = null
+  @stopListening?()
+  @trigger? 'disposed', @, args...
+  @afterDispose? args...
+  @
 
 
 ###

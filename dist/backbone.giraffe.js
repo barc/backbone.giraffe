@@ -8,7 +8,7 @@
   $ = window.$, _ = window._, Backbone = window.Backbone;
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.1.4',
+    version: '0.1.5',
     app: null,
     apps: {},
     views: {}
@@ -134,6 +134,7 @@
     * is called. This `render` behavior can be overridden via
     * `options.forceRender` and `options.suppressRender`. See the
     * [_View Basics_ example](viewBasics.html) for more.
+    * Triggers `attaching` and `attached` events.
     *
     * @param {String/Element/$/Giraffe.View} el A view, selector, or DOM element to attach `view.$el` to.
     * @param {Object} [options]
@@ -161,6 +162,7 @@
         error('Expected to render to a single element but found ' + $el.length, el);
         return this;
       }
+      this.trigger('attaching', this, $el, options);
       $container = _.contains(this._siblingAttachMethods, method) ? $el.parent() : $el;
       if (method === 'insertAfter') {
         method = 'after';
@@ -186,6 +188,7 @@
       if (this.documentTitle != null) {
         document.title = this.documentTitle;
       }
+      this.trigger('attached', this, $el, options);
       return this;
     };
 
@@ -234,6 +237,7 @@
 
     View.prototype.render = function(options) {
       var html;
+      this.trigger('rendering', this, options);
       this.beforeRender.apply(this, arguments);
       this._renderedOnce = true;
       this.detachChildren(options != null ? options.preserve : void 0);
@@ -241,6 +245,7 @@
       this.$el.empty()[0].innerHTML = html;
       this._cacheUiElements();
       this.afterRender.apply(this, arguments);
+      this.trigger('rendered', this, options);
       return this;
     };
 
@@ -336,7 +341,9 @@
       if (this.saveScrollPosition) {
         this._saveScrollPosition();
       }
+      this.trigger('detaching', this, preserve);
       this.$el.detach();
+      this.trigger('detached', this, preserve);
       if (this.disposeOnDetach && !preserve) {
         this.dispose();
       }
@@ -451,7 +458,7 @@
         preserve = false;
       }
       index = _.indexOf(this.children, child);
-      if (index > -1) {
+      if (index !== -1) {
         this.children.splice(index, 1);
         child.parent = null;
         if (preserve) {
@@ -507,8 +514,8 @@
 
     /*
     * If `el` is `null` or `undefined`, tests if the view is somewhere on the DOM
-    * by calling `$document.find(view.$el)`. If `el` is defined, tests if `el`
-    * is the immediate parent of `view.$el`.
+    * by calling `$document.find(view.$el)`. If `el` is a view, tests if `el` contains
+    * this view. Otherwise, tests if `el` is the immediate parent of `view.$el`.
     *
     * @param {String} [el] Optional selector, DOM element, or view to test against the view's immediate parent.
     * @returns {Boolean}
@@ -518,12 +525,12 @@
     View.prototype.isAttached = function(el) {
       if (el != null) {
         if (el.$el) {
-          return this.parent === el;
+          return !!el.$el.find(this.$el).length;
         } else {
           return this.$el.parent().is(el);
         }
       } else {
-        return $document.find(this.$el).length > 0;
+        return !!$document.find(this.$el).length;
       }
     };
 
@@ -1630,7 +1637,7 @@
   *
   * - -pulls option defaults from the global `Giraffe.defaultOptions`, the static `obj.constructor.defaultOptions`, and the instance/prototype `obj.defaultOptions`
   * - -extends the object with all options minus `omittedOptions` (omits all if `true`)
-  * - -defaults `obj.dispose` to `Giraffe.disposeThis`
+  * - -defaults `obj.dispose` to `Giraffe.dispose`
   * - -defaults `obj.app` to `Giraffe.app`
   * - -binds `appEvents` if `appEvents` and `app` are defined and `obj` extends `Backbone.Events`
   * - -binds `dataEvents` if `dataEvents` is defined and `obj` extends `Backbone.Events`
@@ -1653,7 +1660,7 @@
       _.extend(obj, _.omit(options, omittedOptions));
     }
     if (obj.dispose == null) {
-      obj.dispose = Giraffe.disposeThis;
+      obj.dispose = Giraffe.dispose;
     }
     if (obj.app == null) {
       obj.app = Giraffe.app;
@@ -1726,44 +1733,30 @@
   * after the disposal. Takes optional `args` that are passed through to the
   * events and the function calls.
   *
-  * @param {Object} obj The object to dispose.
   * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
   */
 
 
   Giraffe.dispose = function() {
-    var args, obj;
-    obj = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    if (typeof obj.trigger === "function") {
-      obj.trigger.apply(obj, ['disposing', obj].concat(__slice.call(args)));
-    }
-    if (typeof obj.beforeDispose === "function") {
-      obj.beforeDispose.apply(obj, args);
-    }
-    obj.app = null;
-    if (typeof obj.stopListening === "function") {
-      obj.stopListening();
-    }
-    if (typeof obj.trigger === "function") {
-      obj.trigger.apply(obj, ['disposed', obj].concat(__slice.call(args)));
-    }
-    if (typeof obj.afterDispose === "function") {
-      obj.afterDispose.apply(obj, args);
-    }
-    return obj;
-  };
-
-  /*
-  * Calls `Giraffe.dispose` on `this`.
-  * Added to avoid breaking changes to `Giraffe.dispose` when `Giraffe.configure` was added in v0.1.4.
-  * Perhaps this function should be removed and `Giraffe.dispose` changed to operate on `this`.
-  */
-
-
-  Giraffe.disposeThis = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return Giraffe.dispose.apply(Giraffe, [this].concat(__slice.call(args)));
+    if (typeof this.trigger === "function") {
+      this.trigger.apply(this, ['disposing', this].concat(__slice.call(args)));
+    }
+    if (typeof this.beforeDispose === "function") {
+      this.beforeDispose.apply(this, args);
+    }
+    this.app = null;
+    if (typeof this.stopListening === "function") {
+      this.stopListening();
+    }
+    if (typeof this.trigger === "function") {
+      this.trigger.apply(this, ['disposed', this].concat(__slice.call(args)));
+    }
+    if (typeof this.afterDispose === "function") {
+      this.afterDispose.apply(this, args);
+    }
+    return this;
   };
 
   /*

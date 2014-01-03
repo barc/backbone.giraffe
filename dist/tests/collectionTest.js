@@ -41,12 +41,15 @@
       assert.notEqual('foo', collection.parse);
       return assert.equal('baz', collection.bar);
     });
-    return it('should dispose of models when the collection is reset', function(done) {
+    return it('should dispose of models when the collection is reset', function() {
       var collection, model;
       model = new Giraffe.Model;
-      model.dispose = done;
+      sinon.stub(model, 'dispose', function() {
+        return null;
+      });
       collection = new Giraffe.Collection([model]);
-      return collection.reset();
+      collection.reset();
+      return assert(model.dispose.calledOnce);
     });
   });
 

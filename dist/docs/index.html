@@ -130,12 +130,12 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 </li>
 </ul>
 <h2 id='h-download'>Download</h2>
-<p><strong>Version 0.1.4</strong></p>
+<p><strong>Version 0.1.5</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">65k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">64.9k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.3k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.4k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">16.1k</em>
@@ -146,6 +146,15 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 
 <p><a href="https://github.com/barc/backbone.giraffe">Giraffe on Github</a></p>
 <h2 id='h-changelog'>Changelog</h2>
+<h3 id='h-015'>0.1.5</h3>
+<ul>
+<li><p>Added events around several view methods: <code>rendering</code>, <code>rendered</code>,
+<code>attaching</code>, <code>attached</code>, <code>detaching</code>, <code>detached</code></p>
+</li>
+<li><p><strong><em>BREAKING CHANGE:</em></strong> <code>dispose</code> now acts on <code>this</code> instead of taking the
+target object as an argument. Removed <code>disposeThis</code> as it&#39;s now redundant.</p>
+</li>
+</ul>
 <h3 id='h-014'>0.1.4</h3>
 <ul>
 <li><p>Added the function <code>Giraffe.configure</code> which 
@@ -162,8 +171,7 @@ particular properties. If the value is <code>true</code>, all properties are omi
 <li><p><strong><em>BREAKING CHANGE:</em></strong> <code>dispose</code> is now mixed into configured objects
 with a default function, and is only copied if it doesn&#39;t exist.
 As a result, calls to super in <code>dispose</code> no longer make sense.
-Use <code>Giraffe.dispose</code> instead. If memory consumption is a concern, copy the
-default <code>Giraffe.disposeThis</code> to your prototypes (or write your own).</p>
+Use <code>Giraffe.dispose</code> instead.</p>
 </li>
 <li><p><code>beforeDispose</code>, <code>afterDispose</code>, <code>beforeInitialize</code>, and <code>afterInitialize</code>
 are called if defined on all configured objects. Some are used by Giraffe

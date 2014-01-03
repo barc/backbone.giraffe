@@ -376,3 +376,56 @@ describe 'Giraffe.View', ->
       onClick: -> done()
     a.attachTo ut.getEl()
     a.$('div').click()
+
+  it 'should fire `rendering` and `rendered` events around `render`', ->
+    i = 0
+    a = new Giraffe.View
+    options = {}
+    a.on 'rendering', (view, opts) ->
+      i += 1
+      assert 1 is i, 'expected `rendering` event to fire before `rendered`'
+      assert !a._renderedOnce, 'expected `rendering` event to fire before `render`'
+      assert view is a and options is opts, 'unexpected args passed to `rendering`'
+    a.on 'rendered', (view, opts) ->
+      i += 1
+      assert 2 is i, 'expected `rendered` event to fire after `rendering`'
+      assert a._renderedOnce, 'expected `rendered` event to fire after `render`'
+      assert view is a and options is opts, 'unexpected args passed to `rendered`'
+    a.render options
+    assert 2 is i, 'expected both `rendering` and `rendered` events to fire'
+
+  it 'should fire `attaching` and `attached` events around `attachTo`', ->
+    i = 0
+    a = new Giraffe.View
+    b = new Giraffe.View
+    options = {}
+    a.on 'attaching', (view, $el, opts) ->
+      i += 1
+      assert 1 is i, 'expected `attaching` event to fire before `attached`'
+      assert view is a and $el is b.$el and options is opts, 'unexpected args passed to `attaching`'
+      ut.assert.notAttached a, b
+    a.on 'attached', (view, $el, opts) ->
+      i += 1
+      assert 2 is i, 'expected `attached` event to fire after `attaching`'
+      assert view is a and $el is b.$el and options is opts, 'unexpected args passed to `attached`'
+      ut.assert.attached a, b
+    a.attachTo b, options
+    assert 2 is i, 'expected both `attaching` and `attached` events to fire'
+
+  it 'should fire `detaching` and `detached` events around `detach`', ->
+    i = 0
+    a = new Giraffe.View
+    b = new Giraffe.View
+    a.attachTo b
+    a.on 'detaching', (view, preserve) ->
+      i += 1
+      assert 1 is i, 'expected `detaching` event to fire before `detached`'
+      assert view is a and preserve, 'unexpected args passed to `detaching`'
+      ut.assert.attached a, b
+    a.on 'detached', (view, preserve) ->
+      i += 1
+      assert 2 is i, 'expected `detached` event to fire after `detaching`'
+      assert view is a and preserve, 'unexpected args passed to `detached`'
+      ut.assert.notAttached a, b
+    a.detach true
+    assert 2 is i, 'expected both `detaching` and `detached` events to fire'

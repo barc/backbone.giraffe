@@ -1,5 +1,15 @@
 ## Changelog
 
+
+### 0.1.5
+
+- Added events around several view methods: `rendering`, `rendered`,
+  `attaching`, `attached`, `detaching`, `detached`
+
+- ___BREAKING CHANGE:___ `dispose` now acts on `this` instead of taking the
+  target object as an argument. Removed `disposeThis` as it's now redundant.
+
+
 ### 0.1.4
 
 
@@ -17,8 +27,7 @@
 - ___BREAKING CHANGE:___ `dispose` is now mixed into configured objects
   with a default function, and is only copied if it doesn't exist.
   As a result, calls to super in `dispose` no longer make sense.
-  Use `Giraffe.dispose` instead. If memory consumption is a concern, copy the
-  default `Giraffe.disposeThis` to your prototypes (or write your own).
+  Use `Giraffe.dispose` instead.
 
 - `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`
   are called if defined on all configured objects. Some are used by Giraffe
