@@ -176,7 +176,7 @@ with the result. If something doesn&#39;t make sense to you, read on!</p>
   },
 
   dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    Giraffe.dispose(<span class="keyword">this</span>);
+    Giraffe.dispose.call(<span class="keyword">this</span>);
     console.log(<span class="string">'Disposing of '</span> + <span class="keyword">this</span>.cid);
   },
 
@@ -411,7 +411,7 @@ attaches all child views.
 
 <p>Let&#39;s use the console to see when views get disposed.</p>
 <pre><code class="js">  dispose: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
-    Giraffe.dispose(<span class="keyword">this</span>);
+    Giraffe.dispose.call(<span class="keyword">this</span>);
     console.log(<span class="string">'Disposing of '</span> + <span class="keyword">this</span>.cid);
   },</code></pre>
 <p>Here&#39;s the child view&#39;s <code>serialize</code> function and <code>template</code>:</p>

@@ -83,7 +83,7 @@ var ChildView = Giraffe.View.extend({
   },
 
   dispose: function() {
-    Giraffe.dispose(this);
+    Giraffe.dispose.call(this);
     console.log('Disposing of ' + this.cid);
   },
 
