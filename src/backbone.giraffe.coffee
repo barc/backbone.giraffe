@@ -7,6 +7,13 @@
 
 {$, _, Backbone} = window
 
+if not _
+  _ = require('underscore') unless typeof require is 'undefined'
+  throw new Error('Can\'t find underscore') unless _
+
+if not Backbone
+  Backbone = require('backbone') unless typeof require is 'undefined'
+  throw new Error('Can\'t find Backbone') unless Backbone
 
 Backbone.Giraffe = window.Giraffe = Giraffe =
   version: '{{VERSION}}'
@@ -1201,7 +1208,7 @@ class Giraffe.Router extends Backbone.Router
       @_getLocation() is route
     else
       false
-  
+
   # Returns the current location
   _getLocation : ->
     if Backbone.history._hasPushState
@@ -1457,7 +1464,7 @@ Giraffe.configure = (obj, opts) ->
 Giraffe.defaultOptions = {}
   # omittedOptions: ["foo", "parse"]
 
-  
+
 # Is not a member of `Giraffe.defaultOptions` to make sure configured objects
 # can freely implement `afterInitialize` without calls to `super`.
 _afterInitialize = ->
@@ -1616,3 +1623,10 @@ Giraffe.wrapFn = (obj, fnName, beforeFn, afterFn) ->
     obj['after' + capFnName]? args...
     afterFn?.apply obj, args
     result
+
+if _.isObject(module?.exports)
+  # Expose Giraffe to module loaders which implement the Node module pattern, including browserify.
+  module.exports = Giraffe
+else if _.isFunction(define) and define.amd
+  # Register Giraffe as a named AMD module.
+  define 'backbone.giraffe', [], -> Giraffe
