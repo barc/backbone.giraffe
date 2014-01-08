@@ -1,5 +1,12 @@
 ## Changelog
 
+### 0.2.0
+
+- Added support for AMD and node-style loaders.
+
+- Put contributors in one place, the AUTHORS file.
+
+- Using accurate semantic versioning, starting...now.
 
 ### 0.1.5
 
@@ -12,7 +19,6 @@
 - Registered as a Bower package: `bower install backbone.giraffe`
 
 ### 0.1.4
-
 
 - Added the function `Giraffe.configure` which 
   [mixes several Giraffe features](http://barc.github.io/backbone.giraffe/backbone.giraffe.html#configure)

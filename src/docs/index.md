@@ -1,4 +1,4 @@
-%include __README.md
+%include _README_INTRO.md
 
 ## Download
 
@@ -21,8 +21,4 @@ __Version {{VERSION}}__
 
 %include CHANGELOG.md
 
-## License
-
-Copyright (c) 2013 Barc Inc.
-
-See the file [LICENSE](license.html) for copying permission.
+%include _README_FOOTER.md

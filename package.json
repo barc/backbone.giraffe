@@ -1,6 +1,6 @@
 {
   "name": "backbone.giraffe",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "A lightweight library that extends Backbone.js to new heights.",
   "main": "dist/backbone.giraffe.js",
   "scripts": {
@@ -15,12 +15,7 @@
     "type": "git",
     "url": "https://github.com/barc/backbone.giraffe.git"
   },
-  "author": "ryan@barc.com",
-  "contributors": [
-    "Mario Gutierrez <mario@mgutz.com>",
-    "Ryan Lynch <lynch.r.j@gmail.com>",
-    "Justin Hileman <justin@justinhileman.info>"
-  ],
+  "author": "Ryan Atkinson <ryanatkn@gmail.com>",
   "license": "MIT",
   "gitHead": "66b00448e9e26feea356d13f926624f1d904aaaf",
   "devDependencies": {

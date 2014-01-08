@@ -1,3 +1,6 @@
+if typeof Giraffe is 'undefined'
+  throw new Error('Can\'t find Giraffe')
+
 Contrib = Giraffe.Contrib =
   version: '{{VERSION}}'
 
@@ -385,3 +388,11 @@ class Contrib.FastCollectionView extends Giraffe.View
       else
         @$modelEl.prepend html
     @
+
+
+if _.isObject(module?.exports)
+  # Expose Giraffe.Contrib to module loaders which implement the Node module pattern, including browserify.
+  module.exports = Contrib
+else if _.isFunction(define) and define.amd
+  # Register Giraffe.Contrib as a named AMD module.
+  define 'backbone.giraffe.contrib', [], -> Contrib
