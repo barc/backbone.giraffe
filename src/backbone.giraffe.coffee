@@ -1627,6 +1627,6 @@ Giraffe.wrapFn = (obj, fnName, beforeFn, afterFn) ->
 if _.isObject(module?.exports)
   # Expose Giraffe to module loaders which implement the Node module pattern, including browserify.
   module.exports = Giraffe
-else if _.isFunction(define) and define.amd
+else if typeof define is 'function' and define.amd
   # Register Giraffe as a named AMD module.
   define 'backbone.giraffe', [], -> Giraffe

@@ -26,7 +26,7 @@
   }
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.2.0',
+    version: '0.2.1',
     app: null,
     apps: {},
     views: {}
@@ -1959,7 +1959,7 @@
 
   if (_.isObject(typeof module !== "undefined" && module !== null ? module.exports : void 0)) {
     module.exports = Giraffe;
-  } else if (_.isFunction(define) && define.amd) {
+  } else if (typeof define === 'function' && define.amd) {
     define('backbone.giraffe', [], function() {
       return Giraffe;
     });

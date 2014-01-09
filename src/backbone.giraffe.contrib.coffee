@@ -393,6 +393,6 @@ class Contrib.FastCollectionView extends Giraffe.View
 if _.isObject(module?.exports)
   # Expose Giraffe.Contrib to module loaders which implement the Node module pattern, including browserify.
   module.exports = Contrib
-else if _.isFunction(define) and define.amd
+else if typeof define is 'function' and define.amd
   # Register Giraffe.Contrib as a named AMD module.
   define 'backbone.giraffe.contrib', [], -> Contrib

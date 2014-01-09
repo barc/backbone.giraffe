@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.2.1
+
+- Fixed AMD loader check.
+
 ### 0.2.0
 
 - Added support for AMD and node-style loaders.
