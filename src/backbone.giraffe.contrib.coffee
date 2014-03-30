@@ -1,6 +1,10 @@
 if typeof Giraffe is 'undefined'
   throw new Error('Can\'t find Giraffe')
 
+if not _
+  _ = require('underscore') unless typeof require is 'undefined'
+  throw new Error('Can\'t find underscore') unless _
+
 Contrib = Giraffe.Contrib =
   version: '{{VERSION}}'
 
