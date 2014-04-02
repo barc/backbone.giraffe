@@ -89,7 +89,7 @@ __AngularJS__)
 
 ## Download
 
-__Version 0.2.1__
+__Version 0.2.2__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.5k_
 
