@@ -8,18 +8,14 @@
   $ = window.$, _ = window._, Backbone = window.Backbone;
 
   if (!_) {
-    if (typeof require !== 'undefined') {
-      _ = require('underscore');
-    }
+    _ = typeof require === "function" ? require('underscore') : void 0;
     if (!_) {
       throw new Error('Can\'t find underscore');
     }
   }
 
   if (!Backbone) {
-    if (typeof require !== 'undefined') {
-      Backbone = require('backbone');
-    }
+    Backbone = typeof require === "function" ? require('backbone') : void 0;
     if (!Backbone) {
       throw new Error('Can\'t find Backbone');
     }

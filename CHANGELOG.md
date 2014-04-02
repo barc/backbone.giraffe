@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.2.2
+
+- Added Backbone and Underscore CommonJS requires to Giraffe.Contrib.
+
 ### 0.2.1
 
 - Fixed AMD loader check.

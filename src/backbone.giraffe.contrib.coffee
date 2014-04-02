@@ -1,12 +1,14 @@
-if typeof Giraffe is 'undefined'
+{$, _, Backbone} = window
+
+if !Giraffe?
   throw new Error('Can\'t find Giraffe')
 
 if not _
-  _ = require('underscore') unless typeof require is 'undefined'
+  _ = require?('underscore')
   throw new Error('Can\'t find underscore') unless _
 
 if not Backbone
-  Backbone = require('backbone') unless typeof require is 'undefined'
+  Backbone = require?('backbone')
   throw new Error('Can\'t find Backbone') unless Backbone
 
 Contrib = Giraffe.Contrib =
