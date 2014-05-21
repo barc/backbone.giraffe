@@ -1255,10 +1255,11 @@ class Giraffe.Router extends Backbone.Router
     if _.isObject(first)
       result = route.replace wildcards, (token, index) ->
         key = token.slice(1)
-        first[key] || ''
+        first[key] ? ''
     else
       result = route.replace wildcards, (token, index) ->
-        args.shift() || ''
+        value = args.shift()
+        value ? ''
 
     result
 
