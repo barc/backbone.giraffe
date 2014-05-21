@@ -89,9 +89,9 @@ __AngularJS__)
 
 ## Download
 
-__Version 0.2.2__
+__Version 0.2.3__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.5k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.6k_
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.8k_
 
@@ -107,6 +107,10 @@ __Version 0.2.2__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## Changelog
+
+### 0.2.3
+
+- Fixed support for 0 as a path param.
 
 ### 0.2.2
 

@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.2.3
+
+- Fixed support for 0 as a path param.
+
 ### 0.2.2
 
 - Added Backbone and Underscore CommonJS requires to Giraffe.Contrib.

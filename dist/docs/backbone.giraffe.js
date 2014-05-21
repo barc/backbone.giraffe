@@ -22,7 +22,7 @@
   }
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.2.2',
+    version: '0.2.3',
     app: null,
     apps: {},
     views: {}
@@ -1486,13 +1486,15 @@
       wildcards = /:\w+|\*\w+/g;
       if (_.isObject(first)) {
         result = route.replace(wildcards, function(token, index) {
-          var key;
+          var key, _ref;
           key = token.slice(1);
-          return first[key] || '';
+          return (_ref = first[key]) != null ? _ref : '';
         });
       } else {
         result = route.replace(wildcards, function(token, index) {
-          return args.shift() || '';
+          var value;
+          value = args.shift();
+          return value != null ? value : '';
         });
       }
       return result;
