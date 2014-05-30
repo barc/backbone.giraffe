@@ -1190,7 +1190,8 @@ class Giraffe.Router extends Backbone.Router
   cause: (appEvent, any...) ->
     route = @getRoute(appEvent, any...)
     if route?
-      Backbone.history.navigate route, trigger: true
+      last = any[any.length - 1]
+      Backbone.history.navigate route, _.extend({trigger: true}, (if _.isObject(last) then last else {}))
     else
       @app.trigger appEvent, any...
 

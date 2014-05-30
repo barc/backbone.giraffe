@@ -1400,13 +1400,14 @@
 
 
     Router.prototype.cause = function() {
-      var any, appEvent, route, _ref;
+      var any, appEvent, last, route, _ref;
       appEvent = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       route = this.getRoute.apply(this, [appEvent].concat(__slice.call(any)));
       if (route != null) {
-        return Backbone.history.navigate(route, {
+        last = any[any.length - 1];
+        return Backbone.history.navigate(route, _.extend({
           trigger: true
-        });
+        }, (_.isObject(last) ? last : {})));
       } else {
         return (_ref = this.app).trigger.apply(_ref, [appEvent].concat(__slice.call(any)));
       }
