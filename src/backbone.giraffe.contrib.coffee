@@ -107,7 +107,6 @@ class Contrib.CollectionView extends Giraffe.View
     @collection = new Giraffe.Collection(@collection) if _.isArray(@collection) # accept a plain array as `collection`
 #ifdef DEBUG
     throw new Error('`modelView` is required') unless @modelView
-    throw new Error('`collection.model` is required') unless @collection?.model
 #endif
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'remove', @removeOne
