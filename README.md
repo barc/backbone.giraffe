@@ -89,7 +89,7 @@ __AngularJS__)
 
 ## Download
 
-__Version 0.2.3__
+__Version 0.2.4__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.7k_
 
@@ -107,6 +107,10 @@ __Version 0.2.3__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
 
 ## Changelog
+
+### 0.2.4
+
+- Allow passing routing options to Giraffe.Router#cause.
 
 ### 0.2.3
 

@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.2.4
+
+- Allow passing routing options to Giraffe.Router#cause.
+
 ### 0.2.3
 
 - Fixed support for 0 as a path param.

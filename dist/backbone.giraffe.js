@@ -22,7 +22,7 @@
   }
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.2.3',
+    version: '0.2.4',
     app: null,
     apps: {},
     views: {}
