@@ -24,7 +24,7 @@
   }
 
   Contrib = Giraffe.Contrib = {
-    version: '0.2.2'
+    version: '0.2.4'
   };
 
   /*
@@ -120,7 +120,7 @@
     };
 
     function CollectionView() {
-      var _ref, _ref1;
+      var _ref;
       CollectionView.__super__.constructor.apply(this, arguments);
       _.defaults(this, this.constructor.getDefaults(this));
       if (_.isArray(this.collection)) {
@@ -129,9 +129,6 @@
       if (!this.modelView) {
         throw new Error('`modelView` is required');
       }
-      if (!((_ref = this.collection) != null ? _ref.model : void 0)) {
-        throw new Error('`collection.model` is required');
-      }
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'remove', this.removeOne);
       this.listenTo(this.collection, 'reset sort', this.render);
@@ -139,7 +136,7 @@
         this.listenTo(this.collection, 'change', this._onChangeModel);
       }
       if (this.modelViewEl) {
-        this.modelViewEl = ((_ref1 = this.ui) != null ? _ref1[this.modelViewEl] : void 0) || this.modelViewEl;
+        this.modelViewEl = ((_ref = this.ui) != null ? _ref[this.modelViewEl] : void 0) || this.modelViewEl;
       }
     }
 
