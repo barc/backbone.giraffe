@@ -1468,26 +1468,33 @@
     };
 
     Router.prototype._reverseHash = function() {
-      var args, first, result, route, wildcards;
-      route = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      first = args[0];
+      var any, first, result, route, wildcards;
+      route = arguments[0], any = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      first = any[0];
       if (first == null) {
-        return route;
+        return route.replace(/\(.+?\)/g, '');
       }
-      wildcards = /:\w+|\*\w+/g;
+      wildcards = /[:|\*]\w+/g;
       if (_.isObject(first)) {
-        result = route.replace(wildcards, function(token, index) {
+        result = route.replace(wildcards, function(token) {
           var key, _ref;
           key = token.slice(1);
           return (_ref = first[key]) != null ? _ref : '';
         });
       } else {
-        result = route.replace(wildcards, function(token, index) {
+        result = route.replace(wildcards, function(token) {
           var value;
-          value = args.shift();
+          value = any.shift();
           return value != null ? value : '';
         });
       }
+      result = result.replace(/\(.+\)/g, function(token) {
+        if (token.match(/\w+/g)) {
+          return token.replace(/\(|\)/g, '');
+        } else {
+          return '';
+        }
+      });
       return result;
     };
 

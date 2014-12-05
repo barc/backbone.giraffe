@@ -221,3 +221,27 @@ describe 'Giraffe.Router', ->
     isCaused = router.isCaused 'app:event'
     assert router.getRoute.calledOnce, "expected router.getRoute to be called"
     assert not isCaused, "expected router.isCaused to return false"
+
+  it 'should reverse map a route', ->
+    reverseHash = Giraffe.Router::_reverseHash
+    
+    assert.equal 'search/foo/p2', reverseHash('search/:query/p:page', {query: 'foo', page: 2}), 'should map named params from an object'
+    assert.equal 'search/foo/p2', reverseHash('search/:query/p:page', 'foo', 2),                'should map named params from a list of args'
+    
+    assert.equal 'search/foo/bar/p2', reverseHash('search/*splat/p:page', {splat: 'foo/bar', page: 2}), 'should map named splats from an object'
+    assert.equal 'search/foo/bar/p2', reverseHash('search/*splat/p:page', 'foo/bar', 2),                'should map named splats from a list of args'
+
+    assert.equal 'search/foo/bar/p2', reverseHash('search/:query(/:optional)/p:page', {query: 'foo', optional: 'bar', page: 2}), 'should map an optional named param from an object'
+    assert.equal 'search/foo/p2',     reverseHash('search/:query(/:optional)/p:page', {query: 'foo', page: 2}),                  'should map a missing optional named param from an object'
+    assert.equal 'search/foo/bar/p2', reverseHash('search/:query(/:optional)/p:page', 'foo', 'bar', 2),                          'should map an optional named param from a list of args'
+    assert.equal 'search/foo/p2',     reverseHash('search/:query(/:optional)/p:page', 'foo', null, 2),                           'should map a missing optional named param from a list of args'
+    
+    assert.equal 'search/foo/bar/baz/p2', reverseHash('search/:query(/*optional)/p:page', {query: 'foo', optional: 'bar/baz', page: 2}), 'should map an optional named param from an object'
+    assert.equal 'search/foo/p2',         reverseHash('search/:query(/*optional)/p:page', {query: 'foo', page: 2}),                      'should map a missing optional named param from an object'
+    assert.equal 'search/foo/bar/baz/p2', reverseHash('search/:query(/*optional)/p:page', 'foo', 'bar/baz', 2),                          'should map an optional named param from a list of args'
+    assert.equal 'search/foo/p2',         reverseHash('search/:query(/*optional)/p:page', 'foo', null, 2),                               'should map a missing optional named param from a list of args'
+
+    assert.equal 'search/foo/barbaz/p2', reverseHash('search/:query(/:optional1)(:optional2)/p:page', {query: 'foo', optional1: 'bar', optional2: 'baz', page: 2}), 'should map an optional named param from an object'
+    assert.equal 'search/foo/bar/p2',    reverseHash('search/:query(/:optional1)(:optional2)/p:page', {query: 'foo', optional1: 'bar', page: 2}),                   'should map a missing optional named param from an object'
+    assert.equal 'search/foo/barbaz/p2', reverseHash('search/:query(/:optional1)(:optional2)/p:page', 'foo', 'bar', 'baz', 2),                                      'should map an optional named param from a list of args'
+    assert.equal 'search/foo/bar/p2',    reverseHash('search/:query(/:optional1)(:optional2)/p:page', 'foo', 'bar', null, 2),                                       'should map a missing optional named param from a list of args'

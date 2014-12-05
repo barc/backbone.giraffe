@@ -1200,12 +1200,14 @@ class Giraffe.Router extends Backbone.Router
     else
       false
 
+
   # Returns the current location
   _getLocation : ->
     if Backbone.history._hasPushState
       window.location.pathname.slice(1)
     else
       window.location.hash
+
 
   ###
   * Converts an app event and optional arguments into a url mapped in
@@ -1238,19 +1240,25 @@ class Giraffe.Router extends Backbone.Router
 
 
   # Reverse map a route using `any` value.
-  _reverseHash: (route, args...) ->
-    first = args[0]
-    return route unless first?
+  _reverseHash: (route, any...) ->
+    first = any[0]
+    return route.replace(/\(.+?\)/g, '') unless first?
 
-    wildcards = /:\w+|\*\w+/g
+    wildcards = /[:|\*]\w+/g
     if _.isObject(first)
-      result = route.replace wildcards, (token, index) ->
+      result = route.replace wildcards, (token) ->
         key = token.slice(1)
         first[key] ? ''
     else
-      result = route.replace wildcards, (token, index) ->
-        value = args.shift()
+      result = route.replace wildcards, (token) ->
+        value = any.shift()
         value ? ''
+
+    result = result.replace /\(.+\)/g, (token) ->
+      if token.match(/\w+/g)
+        token.replace /\(|\)/g, ''
+      else
+        ''
 
     result
 
