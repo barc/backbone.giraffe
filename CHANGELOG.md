@@ -1,5 +1,11 @@
 ## Changelog
 
+### 0.2.5
+
+- Support optional params for Router#isCaused and Router#cause. Optional static routes remain unsupported. See [issue 19](https://github.com/barc/backbone.giraffe/issues/19) for more.
+- Contrib can now be required from the root: `require('backbone.giraffe/contrib')`.
+- All invariants now throw errors instead of logging.
+
 ### 0.2.4
 
 - Allow passing routing options to Giraffe.Router#cause.
