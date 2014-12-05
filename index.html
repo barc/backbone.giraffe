@@ -130,12 +130,12 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 </li>
 </ul>
 <h2 id='h-download'>Download</h2>
-<p><strong>Version 0.2.4</strong></p>
+<p><strong>Version 0.2.5</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">65.7k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">65.5k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">17.9k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">18k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">16.8k</em>
@@ -146,6 +146,12 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 
 <p><a href="https://github.com/barc/backbone.giraffe">Giraffe on Github</a></p>
 <h2 id='h-changelog'>Changelog</h2>
+<h3 id='h-025'>0.2.5</h3>
+<ul>
+<li>Support optional params for Router#isCaused and Router#cause. Optional static routes remain unsupported. See <a href="https://github.com/barc/backbone.giraffe/issues/19">issue 19</a> for more.</li>
+<li>Contrib can now be required from the root: <code>require(&#39;backbone.giraffe/contrib&#39;)</code>.</li>
+<li>All invariants now throw errors instead of logging.</li>
+</ul>
 <h3 id='h-024'>0.2.4</h3>
 <ul>
 <li>Allow passing routing options to Giraffe.Router#cause.</li>
