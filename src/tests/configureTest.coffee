@@ -129,4 +129,3 @@ describe 'Giraffe.configure', ->
     foo = bar: 'boo'
     Giraffe.configure foo, bar: 'baz'
     assert.equal 'baz', foo.bar
-    console.log "FOO", foo

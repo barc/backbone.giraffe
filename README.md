@@ -91,7 +91,7 @@ __AngularJS__)
 
 __Version 0.2.4__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.7k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.3k_
 
 [backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _17.9k_
 

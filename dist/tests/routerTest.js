@@ -19,7 +19,7 @@
     });
     it('should call Giraffe.configure on itself on startup', function() {
       var configure, e, router;
-      configure = sinon.stub(Giraffe, 'configure');
+      configure = sinon.spy(Giraffe, 'configure');
       try {
         router = new Giraffe.Router({
           app: {

@@ -12,7 +12,7 @@ describe 'Giraffe.Router', ->
     assert.ok router
   
   it 'should call Giraffe.configure on itself on startup', ->
-    configure = sinon.stub Giraffe, 'configure'
+    configure = sinon.spy Giraffe, 'configure'
     try
       router = new Giraffe.Router
         app:
@@ -221,5 +221,3 @@ describe 'Giraffe.Router', ->
     isCaused = router.isCaused 'app:event'
     assert router.getRoute.calledOnce, "expected router.getRoute to be called"
     assert not isCaused, "expected router.isCaused to return false"
-
- 

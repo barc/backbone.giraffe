@@ -26,11 +26,6 @@ $window = $(window)
 $document = $(document)
 
 
-# A helper function for more helpful error messages.
-error = ->
-  console?.error?.apply console, ['Backbone.Giraffe error:'].concat(arguments...)
-
-
 ###
 * __Giraffe.View__ is optimized for simplicity and flexibility. Views can move
 * around the DOM safely and freely with the `attachTo` method, which accepts any
@@ -167,19 +162,16 @@ class Giraffe.View extends Backbone.View
     suppressRender = options?.suppressRender or false
 
     if !@$el
-      error 'Trying to attach a disposed view. Make a new one or create the view with the option `disposeOnDetach` set to false.', @
-      return @
+      throw new Error('Trying to attach a disposed view. Make a new one or create the view with the option `disposeOnDetach` set to false.')
 
     if !_.contains(@_attachMethods, method)
-      error "The attach method '#{method}' isn't supported. Defaulting to 'append'.", method, @_attachMethods
-      method = 'append'
+      throw new Error("The attach method '#{method}' isn't supported - must be one of [#{@_attachMethods}].")
 
     $el = Giraffe.View.to$El(el)
 
     # Make sure we're attaching to a single element
     if $el.length isnt 1
-      error('Expected to render to a single element but found ' + $el.length, el)
-      return @
+      throw new Error("Expected to attach to a single element but found #{$el.length} elements")
 
     @trigger 'attaching', @, $el, options
 
@@ -234,8 +226,7 @@ class Giraffe.View extends Backbone.View
       if childEl.length
         target = childEl
       else
-        error 'Attempting to attach to an element that doesn\'t exist inside this view!', options, view, @
-        return @
+        throw new Error('Attempting to attach to an element that doesn\'t exist inside this view!')
     else
       target = @$el
     view.attachTo target, options
@@ -607,11 +598,10 @@ class Giraffe.View extends Backbone.View
     view = @
     while view and !view[methodName]
       view = view.parent
-    if view?[methodName]
+    if typeof view?[methodName] is 'function'
       view[methodName].apply view, args
     else
-      error 'No such method name in view hierarchy', methodName, args, @
-      false
+      throw new Error("No such method name in view hierarchy '#{methodName}'")
 
 
   ###
@@ -634,7 +624,7 @@ class Giraffe.View extends Backbone.View
       @remove()
       @$el = null
     else
-      error 'Disposed of a view that has already been disposed', @
+      throw new Error('Disposed of a view that has already been disposed')
     @
 
 
@@ -803,7 +793,7 @@ class Giraffe.View extends Backbone.View
     if strategyType is 'function'
       templateStrategy = strategy
     else if strategyType isnt 'string'
-      return error('Unrecognized template strategy', strategy)
+      throw new Error("Unrecognized template strategy '#{strategy}'")
     else
       switch strategy.toLowerCase()
 
@@ -1016,7 +1006,7 @@ class Giraffe.App extends Giraffe.View
 
     # Runs all sync/async initializers.
     next = (err) =>
-      return error(err) if err
+      if err then throw new Error(err)
 
       fn = @_initializers.shift()
       if fn
@@ -1082,12 +1072,12 @@ class Giraffe.Router extends Backbone.Router
     Giraffe.configure @, options
 
     if !@app
-      return error 'Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.'
+      throw new Error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.')
     @app.addChild @ # disposes of the router when its app is removed
 
     @triggers = @triggers.call(@) if typeof @triggers is 'function'
     if !@triggers
-      return error 'Giraffe routers require a `triggers` map of routes to app events.'
+      throw new Error('Giraffe routers require a `triggers` map of routes to app events.')
 
     @_routes = {}
 
@@ -1129,7 +1119,7 @@ class Giraffe.Router extends Backbone.Router
   #   'relativeRedirect': '=> route/path'
   _bindTriggers: ->
     if !@triggers
-      error 'Expected router to implement `triggers` hash in the form {route: appEvent}'
+      throw new Error('Expected router to implement `triggers` hash in the form {route: appEvent}')
 
     fullNs = @_fullNamespace()
     if fullNs.length > 0
@@ -1397,9 +1387,8 @@ class Giraffe.Collection extends Backbone.Collection
 * @param {Obj} [opts] Extended along with `defaultOptions` onto `obj` minus `options.omittedOptions`. If `options.omittedOptions` is true, all are omitted.
 ###
 Giraffe.configure = (obj, opts) ->
-  if !obj
-    error "Cannot configure obj", obj
-    return false
+  if !_.isObject(obj)
+    throw new Error("Giraffe.configure requires an object as the first parameter")
 
   options = _.extend {},
     Giraffe.defaultOptions,
@@ -1517,13 +1506,11 @@ Giraffe.bindDataEvents = (obj) ->
   for eventKey, cb of dataEvents
     pieces = eventKey.split(' ')
     if pieces.length < 2
-      error 'Data event must specify target object, ex: {\'change collection\': \'handler\'}'
-      continue
+      throw new Error('Data event must specify target object, ex: {\'change collection\': \'handler\'}')
     targetObj = pieces.pop()
     targetObj = if targetObj is 'this' or targetObj is '@' then obj else obj[targetObj] # allow listening to self
     if !targetObj
-      error "Target object not found for data event '#{eventKey}'", obj
-      continue
+      throw new Error("Target object not found for data event '#{eventKey}'")
     eventName = pieces.join(' ')
     Giraffe.bindEvent obj, targetObj, eventName, cb
   obj
@@ -1592,8 +1579,7 @@ _setEventBindings = (contextObj, targetObj, eventName, cb, bindOrUnbindFnName) -
   if typeof cb is 'string'
     cb = contextObj[cb]
   if typeof cb isnt 'function'
-    error "callback for `'#{eventName}'` not found", contextObj, targetObj, cb
-    return
+    throw new Error("callback for `'#{eventName}'` not found")
   contextObj[bindOrUnbindFnName] targetObj, eventName, cb
 
 

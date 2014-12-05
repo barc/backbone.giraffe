@@ -1,5 +1,5 @@
 (function() {
-  var $, $document, $window, Backbone, Giraffe, error, _, _afterInitialize, _setEventBindings, _setEventMapBindings,
+  var $, $document, $window, Backbone, Giraffe, _, _afterInitialize, _setEventBindings, _setEventMapBindings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -31,11 +31,6 @@
   $window = $(window);
 
   $document = $(document);
-
-  error = function() {
-    var _ref, _ref1;
-    return typeof console !== "undefined" && console !== null ? (_ref = console.error) != null ? _ref.apply(console, (_ref1 = ['Backbone.Giraffe error:']).concat.apply(_ref1, arguments)) : void 0 : void 0;
-  };
 
   /*
   * __Giraffe.View__ is optimized for simplicity and flexibility. Views can move
@@ -164,17 +159,14 @@
       forceRender = (options != null ? options.forceRender : void 0) || false;
       suppressRender = (options != null ? options.suppressRender : void 0) || false;
       if (!this.$el) {
-        error('Trying to attach a disposed view. Make a new one or create the view with the option `disposeOnDetach` set to false.', this);
-        return this;
+        throw new Error('Trying to attach a disposed view. Make a new one or create the view with the option `disposeOnDetach` set to false.');
       }
       if (!_.contains(this._attachMethods, method)) {
-        error("The attach method '" + method + "' isn't supported. Defaulting to 'append'.", method, this._attachMethods);
-        method = 'append';
+        throw new Error("The attach method '" + method + "' isn't supported - must be one of [" + this._attachMethods + "].");
       }
       $el = Giraffe.View.to$El(el);
       if ($el.length !== 1) {
-        error('Expected to render to a single element but found ' + $el.length, el);
-        return this;
+        throw new Error("Expected to attach to a single element but found " + $el.length + " elements");
       }
       this.trigger('attaching', this, $el, options);
       $container = _.contains(this._siblingAttachMethods, method) ? $el.parent() : $el;
@@ -227,8 +219,7 @@
         if (childEl.length) {
           target = childEl;
         } else {
-          error('Attempting to attach to an element that doesn\'t exist inside this view!', options, view, this);
-          return this;
+          throw new Error('Attempting to attach to an element that doesn\'t exist inside this view!');
         }
       } else {
         target = this.$el;
@@ -704,11 +695,10 @@
       while (view && !view[methodName]) {
         view = view.parent;
       }
-      if (view != null ? view[methodName] : void 0) {
+      if (typeof (view != null ? view[methodName] : void 0) === 'function') {
         return view[methodName].apply(view, args);
       } else {
-        error('No such method name in view hierarchy', methodName, args, this);
-        return false;
+        throw new Error("No such method name in view hierarchy '" + methodName + "'");
       }
     };
 
@@ -735,7 +725,7 @@
         this.remove();
         this.$el = null;
       } else {
-        error('Disposed of a view that has already been disposed', this);
+        throw new Error('Disposed of a view that has already been disposed');
       }
       return this;
     };
@@ -955,7 +945,7 @@
       if (strategyType === 'function') {
         templateStrategy = strategy;
       } else if (strategyType !== 'string') {
-        return error('Unrecognized template strategy', strategy);
+        throw new Error("Unrecognized template strategy '" + strategy + "'");
       } else {
         switch (strategy.toLowerCase()) {
           case 'underscore-template-selector':
@@ -1218,7 +1208,7 @@
       next = function(err) {
         var fn;
         if (err) {
-          return error(err);
+          throw new Error(err);
         }
         fn = _this._initializers.shift();
         if (fn) {
@@ -1288,14 +1278,14 @@
     function Router(options) {
       Giraffe.configure(this, options);
       if (!this.app) {
-        return error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.');
+        throw new Error('Giraffe routers require an app! Please create an instance of Giraffe.App before creating a router.');
       }
       this.app.addChild(this);
       if (typeof this.triggers === 'function') {
         this.triggers = this.triggers.call(this);
       }
       if (!this.triggers) {
-        return error('Giraffe routers require a `triggers` map of routes to app events.');
+        throw new Error('Giraffe routers require a `triggers` map of routes to app events.');
       }
       this._routes = {};
       this._bindTriggers();
@@ -1332,7 +1322,7 @@
       var appEvent, fullNs, route, _fn, _ref,
         _this = this;
       if (!this.triggers) {
-        error('Expected router to implement `triggers` hash in the form {route: appEvent}');
+        throw new Error('Expected router to implement `triggers` hash in the form {route: appEvent}');
       }
       fullNs = this._fullNamespace();
       if (fullNs.length > 0) {
@@ -1667,9 +1657,8 @@
 
   Giraffe.configure = function(obj, opts) {
     var omittedOptions, options, _ref, _ref1;
-    if (!obj) {
-      error("Cannot configure obj", obj);
-      return false;
+    if (!_.isObject(obj)) {
+      throw new Error("Giraffe.configure requires an object as the first parameter");
     }
     options = _.extend({}, Giraffe.defaultOptions, (_ref = obj.constructor) != null ? _ref.defaultOptions : void 0, obj.defaultOptions, opts);
     omittedOptions = (_ref1 = options.omittedOptions) != null ? _ref1 : obj.omittedOptions;
@@ -1805,14 +1794,12 @@
       cb = dataEvents[eventKey];
       pieces = eventKey.split(' ');
       if (pieces.length < 2) {
-        error('Data event must specify target object, ex: {\'change collection\': \'handler\'}');
-        continue;
+        throw new Error('Data event must specify target object, ex: {\'change collection\': \'handler\'}');
       }
       targetObj = pieces.pop();
       targetObj = targetObj === 'this' || targetObj === '@' ? obj : obj[targetObj];
       if (!targetObj) {
-        error("Target object not found for data event '" + eventKey + "'", obj);
-        continue;
+        throw new Error("Target object not found for data event '" + eventKey + "'");
       }
       eventName = pieces.join(' ');
       Giraffe.bindEvent(obj, targetObj, eventName, cb);
@@ -1897,8 +1884,7 @@
       cb = contextObj[cb];
     }
     if (typeof cb !== 'function') {
-      error("callback for `'" + eventName + "'` not found", contextObj, targetObj, cb);
-      return;
+      throw new Error("callback for `'" + eventName + "'` not found");
     }
     return contextObj[bindOrUnbindFnName](targetObj, eventName, cb);
   };

@@ -214,8 +214,7 @@
       Giraffe.configure(foo, {
         bar: 'baz'
       });
-      assert.equal('baz', foo.bar);
-      return console.log("FOO", foo);
+      return assert.equal('baz', foo.bar);
     });
   });
 
