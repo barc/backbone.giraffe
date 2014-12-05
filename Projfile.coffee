@@ -2,9 +2,6 @@ fs = require('fs')
 async = require('async')
 pkg = require('./package.json')
 
-exports.server =
-  dirname: 'dist/'
-
 
 exports.project = (pm) ->
   {f, $, Utils} = pm
