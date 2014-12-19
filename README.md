@@ -91,9 +91,9 @@ __AngularJS__)
 
 __Version 0.2.5__
 
-[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _65.5k_
+[backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _66.6k_
 
-[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _18k_
+[backbone.giraffe.min.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js) _18.2k_
 
 [backbone.giraffe.contrib.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js) _16.8k_
 
@@ -104,7 +104,7 @@ __Version 0.2.5__
     npm install projmate-cli@0.1.0-dev -g
     npm install -d
     pm run all
-    pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080
+    pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080/dist/
 
 ## Changelog
 

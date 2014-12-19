@@ -121,7 +121,7 @@ class Giraffe.View extends Backbone.View
 
 
   # Pre-initialization to set `data-view-cid` is necessary to allow views to be attached in `initialize`.
-  beforeInitialize: ->
+  _beforeInitialize: ->
     # Add the view to the global cache now that the view has a cid.
     @_cache()
 
@@ -257,25 +257,25 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * This is an empty function for you to implement. Less commonly used than
+  * This is an empty function hook for you to implement. Less commonly used than
   * `afterRender`, but helpful in circumstances where the DOM has state that
   * needs to be preserved across renders. For example, if a view with a dropdown
   * menu is rendering, you may want to save its open state in `beforeRender`
   * and reapply it in `afterRender`.
   *
-  * @caption Implement this function in your views.
+  * @caption Implement this function as needed in your views.
   ###
   beforeRender: ->
 
 
   ###
-  * This is an empty function for you to implement. After a view renders,
-  * `afterRender` is called. Child views are normally attached to the DOM here.
-  * Views that are cached by setting `disposeOnDetach` to true will be
+  * This is an empty function hook for you to implement. After a view renders,
+  * `afterRender` is called. Child views are normally created and attached to the DOM here.
+  * Views that are cached by setting `disposeOnDetach` to `false` will be
   * in `view.children` in `afterRender`, but will not be attached to the
   * parent's `$el`.
   *
-  * @caption Implement this function in your views.
+  * @caption Implement this function as needed in your views.
   ###
   afterRender: ->
 
@@ -319,12 +319,12 @@ class Giraffe.View extends Backbone.View
 
 
   ###
-  * Detaches the view from the DOM. If `view.disposeOnDetach` is true,
+  * Detaches the view from the DOM. If `view.disposeOnDetach` is `true`,
   * which is the default, `dispose` will be called on the view and its
-  * `children` unless `preserve` is true. `preserve` defaults to false. When
-  * a view renders, it first calls `detach(false)` on the views inside its `$el`.
+  * `children` unless the argument `preserve` is `true`.
+  * When a view renders, it first calls `detach(false)` on the views inside its `$el`.
   *
-  * @param {Boolean} [preserve] If true, doesn't dispose of the view, even if `disposeOnDetach` is `true`.
+  * @param {Boolean} [preserve] If `true`, doesn't dispose of the view, even if `disposeOnDetach` is `true`. Defaults to `false`.
   ###
   detach: (preserve = false) ->
     return @ unless @_isAttached
@@ -614,7 +614,7 @@ class Giraffe.View extends Backbone.View
   * Destroys a view, unbinding its events and freeing its resources. Calls
   * `Backbone.View#remove` and calls `dispose` on all `children`.
   ###
-  beforeDispose: ->
+  _dispose: ->
     @setParent null
     @removeChildren()
     @_uncacheUiElements()
@@ -626,6 +626,38 @@ class Giraffe.View extends Backbone.View
     else
       throw new Error('Disposed of a view that has already been disposed')
     @
+
+
+  ###
+  * This is an empty function hook for you to implement.
+  *
+  * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+  ###
+  beforeDispose: ->
+
+
+  ###
+  * This is an empty function hook for you to implement.
+  *
+  * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+  ###
+  afterDispose: ->
+
+
+  ###
+  * This is an empty function hook for you to implement.
+  *
+  * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+  ###
+  beforeInitialize: ->
+
+
+  ###
+  * This is an empty function hook for you to implement.
+  *
+  * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+  ###
+  afterInitialize: ->
 
 
   ###
@@ -1286,7 +1318,7 @@ class Giraffe.Router extends Backbone.Router
   * Removes registered callbacks.
   *
   ###
-  beforeDispose: ->
+  _dispose: ->
     @_unbindTriggers()
 
 
@@ -1326,8 +1358,7 @@ class Giraffe.Model extends Backbone.Model
   ###
   * Removes event listeners and removes this model from its collection.
   ###
-  beforeDispose: ->
-    @_disposed = true
+  _dispose: ->
     @collection?.remove @
 
 
@@ -1363,7 +1394,7 @@ class Giraffe.Collection extends Backbone.Collection
   * Removes event listeners and disposes of all models, which removes them from
   * the collection.
   ###
-  beforeDispose: ->
+  _dispose: ->
     model.dispose() for model in @models.slice() # slice because `@models` is modified
     @
 
@@ -1418,7 +1449,7 @@ Giraffe.configure = (obj, opts) ->
   # If the object has an `initialize` function, wrap it with `beforeInitialize`
   # and `afterInitialize` and perform the necessary post-initialization.
   if obj.initialize
-    Giraffe.wrapFn obj, 'initialize', null, _afterInitialize
+    Giraffe.wrapFn obj, 'initialize', obj._beforeInitialize, _afterInitialize
   else
     _afterInitialize.call obj
 
@@ -1479,15 +1510,17 @@ _afterInitialize = ->
 *
 * Calls `Backbone.Events#stopListening` and sets
 * `obj.app` to null. Also triggers the `'disposing'` and `'disposed'` events
-* and calls the `beforeDispose` and `afterDispose` methods on `obj` before and
+* and calls the `beforeDispose` and `afterDispose` hooks on `obj` before and
 * after the disposal. Takes optional `args` that are passed through to the
 * events and the function calls.
 *
-* @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
+* @param {Any} [args...] Any arguments to be passed to the `fn` and disposal events.
 ###
 Giraffe.dispose = (args...) ->
   @trigger? 'disposing', @, args...
   @beforeDispose? args...
+  @_disposed = true
+  @_dispose? args...
   @app = null
   @stopListening?()
   @trigger? 'disposed', @, args...
