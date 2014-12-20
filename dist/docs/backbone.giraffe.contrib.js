@@ -24,7 +24,7 @@
   }
 
   Contrib = Giraffe.Contrib = {
-    version: '0.2.5'
+    version: '0.2.6'
   };
 
   /*

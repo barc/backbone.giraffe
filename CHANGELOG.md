@@ -1,5 +1,13 @@
 ## Changelog
 
+### 0.2.6
+
+- Configured objects (including all Giraffe objects) now have the following
+  no-op function hooks for you to implement:
+  `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`.
+
+- Disposed objects have a new property `_dispose` set to `true`.
+
 ### 0.2.5
 
 - Support optional params for Router#isCaused and Router#cause. Optional static routes remain unsupported. See [issue 19](https://github.com/barc/backbone.giraffe/issues/19) for more.

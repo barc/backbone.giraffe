@@ -89,7 +89,7 @@ __AngularJS__)
 
 ## Download
 
-__Version 0.2.5__
+__Version 0.2.6__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _66.6k_
 
@@ -107,6 +107,14 @@ __Version 0.2.5__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080/dist/
 
 ## Changelog
+
+### 0.2.6
+
+- Configured objects (including all Giraffe objects) now have the following
+  no-op function hooks for you to implement:
+  `beforeDispose`, `afterDispose`, `beforeInitialize`, and `afterInitialize`.
+
+- Disposed objects have a new property `_dispose` set to `true`.
 
 ### 0.2.5
 

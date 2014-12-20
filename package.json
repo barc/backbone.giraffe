@@ -1,6 +1,6 @@
 {
   "name": "backbone.giraffe",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A lightweight library that extends Backbone.js to new heights.",
   "main": "dist/backbone.giraffe.js",
   "scripts": {
