@@ -22,7 +22,7 @@
   }
 
   Backbone.Giraffe = window.Giraffe = Giraffe = {
-    version: '0.2.5',
+    version: '0.2.6',
     app: null,
     apps: {},
     views: {}
@@ -123,7 +123,7 @@
       View.__super__.constructor.apply(this, arguments);
     }
 
-    View.prototype.beforeInitialize = function() {
+    View.prototype._beforeInitialize = function() {
       this._cache();
       this.$el.attr('data-view-cid', this.cid);
       this.setParent(Giraffe.View.getClosestView(this.$el));
@@ -255,26 +255,26 @@
     };
 
     /*
-    * This is an empty function for you to implement. Less commonly used than
+    * This is an empty function hook for you to implement. Less commonly used than
     * `afterRender`, but helpful in circumstances where the DOM has state that
     * needs to be preserved across renders. For example, if a view with a dropdown
     * menu is rendering, you may want to save its open state in `beforeRender`
     * and reapply it in `afterRender`.
     *
-    * @caption Implement this function in your views.
+    * @caption Implement this function as needed in your views.
     */
 
 
     View.prototype.beforeRender = function() {};
 
     /*
-    * This is an empty function for you to implement. After a view renders,
-    * `afterRender` is called. Child views are normally attached to the DOM here.
-    * Views that are cached by setting `disposeOnDetach` to true will be
+    * This is an empty function hook for you to implement. After a view renders,
+    * `afterRender` is called. Child views are normally created and attached to the DOM here.
+    * Views that are cached by setting `disposeOnDetach` to `false` will be
     * in `view.children` in `afterRender`, but will not be attached to the
     * parent's `$el`.
     *
-    * @caption Implement this function in your views.
+    * @caption Implement this function as needed in your views.
     */
 
 
@@ -326,12 +326,12 @@
     };
 
     /*
-    * Detaches the view from the DOM. If `view.disposeOnDetach` is true,
+    * Detaches the view from the DOM. If `view.disposeOnDetach` is `true`,
     * which is the default, `dispose` will be called on the view and its
-    * `children` unless `preserve` is true. `preserve` defaults to false. When
-    * a view renders, it first calls `detach(false)` on the views inside its `$el`.
+    * `children` unless the argument `preserve` is `true`.
+    * When a view renders, it first calls `detach(false)` on the views inside its `$el`.
     *
-    * @param {Boolean} [preserve] If true, doesn't dispose of the view, even if `disposeOnDetach` is `true`.
+    * @param {Boolean} [preserve] If `true`, doesn't dispose of the view, even if `disposeOnDetach` is `true`. Defaults to `false`.
     */
 
 
@@ -715,7 +715,7 @@
     */
 
 
-    View.prototype.beforeDispose = function() {
+    View.prototype._dispose = function() {
       this.setParent(null);
       this.removeChildren();
       this._uncacheUiElements();
@@ -729,6 +729,42 @@
       }
       return this;
     };
+
+    /*
+    * This is an empty function hook for you to implement.
+    *
+    * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+    */
+
+
+    View.prototype.beforeDispose = function() {};
+
+    /*
+    * This is an empty function hook for you to implement.
+    *
+    * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+    */
+
+
+    View.prototype.afterDispose = function() {};
+
+    /*
+    * This is an empty function hook for you to implement.
+    *
+    * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+    */
+
+
+    View.prototype.beforeInitialize = function() {};
+
+    /*
+    * This is an empty function hook for you to implement.
+    *
+    * @caption Implement this function as needed in your Giraffe and `Giraffe.configure`d objects.
+    */
+
+
+    View.prototype.afterInitialize = function() {};
 
     /*
     * Detaches the top-level views inside `el`, which can be a selector, element,
@@ -1527,7 +1563,7 @@
     */
 
 
-    Router.prototype.beforeDispose = function() {
+    Router.prototype._dispose = function() {
       return this._unbindTriggers();
     };
 
@@ -1575,9 +1611,8 @@
     */
 
 
-    Model.prototype.beforeDispose = function() {
+    Model.prototype._dispose = function() {
       var _ref;
-      this._disposed = true;
       return (_ref = this.collection) != null ? _ref.remove(this) : void 0;
     };
 
@@ -1620,7 +1655,7 @@
     */
 
 
-    Collection.prototype.beforeDispose = function() {
+    Collection.prototype._dispose = function() {
       var model, _i, _len, _ref;
       _ref = this.models.slice();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1682,7 +1717,7 @@
       Giraffe.bindAppEvents(obj);
     }
     if (obj.initialize) {
-      Giraffe.wrapFn(obj, 'initialize', null, _afterInitialize);
+      Giraffe.wrapFn(obj, 'initialize', obj._beforeInitialize, _afterInitialize);
     } else {
       _afterInitialize.call(obj);
     }
@@ -1742,11 +1777,11 @@
   *
   * Calls `Backbone.Events#stopListening` and sets
   * `obj.app` to null. Also triggers the `'disposing'` and `'disposed'` events
-  * and calls the `beforeDispose` and `afterDispose` methods on `obj` before and
+  * and calls the `beforeDispose` and `afterDispose` hooks on `obj` before and
   * after the disposal. Takes optional `args` that are passed through to the
   * events and the function calls.
   *
-  * @param {Any} [args...] A list of arguments to by passed to the `fn` and disposal events.
+  * @param {Any} [args...] Any arguments to be passed to the `fn` and disposal events.
   */
 
 
@@ -1758,6 +1793,10 @@
     }
     if (typeof this.beforeDispose === "function") {
       this.beforeDispose.apply(this, args);
+    }
+    this._disposed = true;
+    if (typeof this._dispose === "function") {
+      this._dispose.apply(this, args);
     }
     this.app = null;
     if (typeof this.stopListening === "function") {

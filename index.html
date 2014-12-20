@@ -130,12 +130,12 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 </li>
 </ul>
 <h2 id='h-download'>Download</h2>
-<p><strong>Version 0.2.5</strong></p>
+<p><strong>Version 0.2.6</strong></p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">65.5k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js" class="big-button">backbone.giraffe.js</a><em class="button-size-label">66.6k</em>
 </p>
 <p>
-<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">18k</em>
+<a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.min.js" class="big-button">backbone.giraffe.min.js</a><em class="button-size-label">18.2k</em>
 </p>
 <p>
 <a href="https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.contrib.js" class="big-button big-green-button">backbone.giraffe.contrib.js</a><em class="button-size-label">16.8k</em>
@@ -146,6 +146,15 @@ in markup provides simple one-way binding. (does not try to be <strong>Knockout<
 
 <p><a href="https://github.com/barc/backbone.giraffe">Giraffe on Github</a></p>
 <h2 id='h-changelog'>Changelog</h2>
+<h3 id='h-026'>0.2.6</h3>
+<ul>
+<li><p>Configured objects (including all Giraffe objects) now have the following
+no-op function hooks for you to implement:
+<code>beforeDispose</code>, <code>afterDispose</code>, <code>beforeInitialize</code>, and <code>afterInitialize</code>.</p>
+</li>
+<li><p>Disposed objects have a new property <code>_dispose</code> set to <code>true</code>.</p>
+</li>
+</ul>
 <h3 id='h-025'>0.2.5</h3>
 <ul>
 <li>Support optional params for Router#isCaused and Router#cause. Optional static routes remain unsupported. See <a href="https://github.com/barc/backbone.giraffe/issues/19">issue 19</a> for more.</li>
