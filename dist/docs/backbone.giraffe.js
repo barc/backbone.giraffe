@@ -5,20 +5,24 @@
     __slice = [].slice;
 
   (function(root, factory) {
-    var Backbone, _;
+    var $, Backbone, _;
     if (typeof define !== "undefined" && define !== null ? define.amd : void 0) {
-      return define('backbone.giraffe', ['backbone', 'underscore'], function(Backbone, _) {
-        return root.Giraffe = factory(root, Backbone, _);
+      return define('backbone.giraffe', ['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+        return root.Giraffe = factory(root, $, Backbone, _);
       });
     } else if (typeof module !== "undefined" && module !== null ? module.exports : void 0) {
+      $ = require('jquery');
       Backbone = require('backbone');
       _ = require('underscore');
-      return module.exports = factory(root, Backbone, _);
+      return module.exports = factory(root, $, Backbone, _);
     } else {
-      return root.Giraffe = factory(root, root.Backbone, root._);
+      return root.Giraffe = factory(root, root.$, root.Backbone, root._);
     }
-  })(this, function(root, Backbone, _) {
+  })(this, function(root, $, Backbone, _) {
     var $document, $window, Giraffe, _afterInitialize, _setEventBindings, _setEventMapBindings;
+    if (!$) {
+      throw new Error('Giraffe can\'t find jQuery');
+    }
     if (!Backbone) {
       throw new Error('Giraffe can\'t find Backbone');
     }

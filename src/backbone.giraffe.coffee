@@ -8,19 +8,21 @@
 
   if define?.amd
     # Register Giraffe as a named AMD module.
-    define 'backbone.giraffe', ['backbone', 'underscore'], (Backbone, _) ->
-      root.Giraffe = factory(root, Backbone, _)
+    define 'backbone.giraffe', ['jquery', 'backbone', 'underscore'], ($, Backbone, _) ->
+      root.Giraffe = factory(root, $, Backbone, _)
   else if module?.exports
     # Expose Giraffe to module loaders which implement the Node module pattern, including browserify.
+    $ = require('jquery')
     Backbone = require('backbone')
     _ = require('underscore')
-    module.exports = factory(root, Backbone, _)
+    module.exports = factory(root, $, Backbone, _)
   else
     # Attach Giraffe global to the root.
-    root.Giraffe = factory(root, root.Backbone, root._)
+    root.Giraffe = factory(root, root.$, root.Backbone, root._)
 
-)(@, (root, Backbone, _) ->
+)(@, (root, $, Backbone, _) ->
 
+  if not $ then throw new Error('Giraffe can\'t find jQuery')
   if not Backbone then throw new Error('Giraffe can\'t find Backbone')
   if not _ then throw new Error('Giraffe can\'t find underscore')
 
