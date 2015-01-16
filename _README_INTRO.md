@@ -84,3 +84,10 @@ asynchronous bootstrap data or a websocket connection before starting.
 - [__Declarative event handling__](http://barc.github.io/backbone.giraffe/documentEvents.html)
 in markup provides simple one-way binding. (does not try to be __Knockout__ or
 __AngularJS__)
+
+- [__Optional Giraffe.Contrib__](https://github.com/barc/backbone.giraffe/blob/master/src/backbone.giraffe.contrib.coffee)
+extensions include a simple Controller class with __Giraffe__'s lifecycle and `appEvents` features,
+a [CollectionView](http://barc.github.io/backbone.giraffe/collectionView.html)
+that renders a collection with a view per model,
+and a [FastCollectionView](http://barc.github.io/backbone.giraffe/fastCollectionView.html)
+that renders a collection with a single view.
