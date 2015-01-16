@@ -90,4 +90,5 @@ extensions include a simple Controller class with __Giraffe__'s lifecycle and `a
 a [CollectionView](http://barc.github.io/backbone.giraffe/collectionView.html)
 that renders a collection with a view per model,
 and a [FastCollectionView](http://barc.github.io/backbone.giraffe/fastCollectionView.html)
-that renders a collection with a single view.
+that renders a collection with a single view
+[more efficiently than Giraffe.Contrib.CollectionView and Marionette.CollectionView](http://jsperf.com/collection-views-in-giraffe-and-marionette/5).
