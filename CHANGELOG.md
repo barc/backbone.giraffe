@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.2.7
+
+- Fixed module loader for r.js optimizer.
+
 ### 0.2.6
 
 - Configured objects (including all Giraffe objects) now have the following

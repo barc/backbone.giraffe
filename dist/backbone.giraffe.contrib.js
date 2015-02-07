@@ -32,7 +32,7 @@
       throw new Error('Giraffe.Contrib can\'t find Giraffe');
     }
     Contrib = Giraffe.Contrib = {
-      version: '0.2.6'
+      version: '0.2.7'
     };
     /*
     * A __Controller__ is a simple evented class that can participate in appEvents.

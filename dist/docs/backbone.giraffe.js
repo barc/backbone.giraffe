@@ -30,7 +30,7 @@
       throw new Error('Giraffe can\'t find underscore');
     }
     Giraffe = Backbone.Giraffe = {
-      version: '0.2.6',
+      version: '0.2.7',
       app: null,
       apps: {},
       views: {}

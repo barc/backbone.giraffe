@@ -97,7 +97,7 @@ that renders a collection with a single view
 
 ## Download
 
-__Version 0.2.6__
+__Version 0.2.7__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _70.3k_
 
@@ -115,6 +115,10 @@ __Version 0.2.6__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080/dist/
 
 ## Changelog
+
+### 0.2.7
+
+- Fixed module loader for r.js optimizer.
 
 ### 0.2.6
 
