@@ -8,23 +8,23 @@
 
   if define?.amd
     # Register Giraffe as a named AMD module.
-    define 'backbone.giraffe', ['jquery', 'backbone', 'underscore'], ($, Backbone, _) ->
-      root.Giraffe = factory(root, $, Backbone, _)
+    define 'backbone.giraffe', ['jquery', 'underscore', 'backbone'], ($, _, Backbone) ->
+      root.Giraffe = factory(root, $, _, Backbone)
   else if module?.exports
     # Expose Giraffe to module loaders which implement the Node module pattern, including browserify.
     $ = require('jquery')
-    Backbone = require('backbone')
     _ = require('underscore')
-    module.exports = factory(root, $, Backbone, _)
+    Backbone = require('backbone')
+    module.exports = factory(root, $, _, Backbone)
   else
     # Attach Giraffe global to the root.
-    root.Giraffe = factory(root, root.$, root.Backbone, root._)
+    root.Giraffe = factory(root, root.$, root._, root.Backbone)
 
-)(@, (root, $, Backbone, _) ->
+)(@, (root, $, _, Backbone) ->
 
-  if not $ then throw new Error('Giraffe can\'t find jQuery')
-  if not Backbone then throw new Error('Giraffe can\'t find Backbone')
-  if not _ then throw new Error('Giraffe can\'t find underscore')
+  if not $ then throw new Error('Giraffe cannot find jQuery')
+  if not _ then throw new Error('Giraffe cannot find Underscore')
+  if not Backbone then throw new Error('Giraffe cannot find Backbone')
 
   Giraffe = Backbone.Giraffe =
     version: '{{VERSION}}'
@@ -32,6 +32,11 @@
     apps: {} # cache for all app views by `cid`
     views: {} # cache for all views by `cid`
 
+  previousGiraffe = root.Giraffe
+
+  Giraffe.noConflict = ->
+    root.Giraffe = previousGiraffe
+    @
 
   $window = $(window)
   $document = $(document)

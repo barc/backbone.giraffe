@@ -2,29 +2,34 @@
 
   if define?.amd
     # Register Giraffe as a named AMD module.
-    define 'backbone.giraffe.contrib', ['jquery', 'backbone', 'underscore', 'backbone.giraffe'], ($, Backbone, _, Giraffe) ->
-      root.Giraffe.Contrib = factory(root, $, Backbone, _, Giraffe)
+    define 'backbone.giraffe.contrib', ['jquery', 'underscore', 'backbone', 'backbone.giraffe'], ($, _, Backbone, Giraffe) ->
+      root.GiraffeContrib = factory(root, $, _, Backbone, Giraffe)
   else if module?.exports
     # Expose Giraffe to module loaders which implement the Node module pattern, including browserify.
     $ = require('jquery')
-    Backbone = require('backbone')
     _ = require('underscore')
+    Backbone = require('backbone')
     Giraffe = require('./backbone.giraffe')
-    module.exports = factory(root, $, Backbone, _, Giraffe)
+    module.exports = factory(root, $, _, Backbone, Giraffe)
   else
     # Attach Giraffe.Contrib global to the root.
-    root.Giraffe.Contrib = factory(root, root.$, root.Backbone, root._, root.Giraffe)
+    root.GiraffeContrib = factory(root, root.$, root._, root.Backbone, root.Giraffe)
 
-)(@, (root, $, Backbone, _, Giraffe) ->
+)(@, (root, $, _, Backbone, Giraffe) ->
 
-  if not $ then throw new Error('Giraffe.Contrib can\'t find jQuery')
-  if not Backbone then throw new Error('Giraffe.Contrib can\'t find Backbone')
-  if not _ then throw new Error('Giraffe.Contrib can\'t find underscore')
-  if not Giraffe then throw new Error('Giraffe.Contrib can\'t find Giraffe')
+  if not $ then throw new Error('Giraffe.Contrib cannot find jQuery')
+  if not _ then throw new Error('Giraffe.Contrib cannot find Underscore')
+  if not Backbone then throw new Error('Giraffe.Contrib cannot find Backbone')
+  if not Giraffe then throw new Error('Giraffe.Contrib cannot find Giraffe')
 
   Contrib = Giraffe.Contrib =
     version: '{{VERSION}}'
 
+  previousGiraffeContrib = root.GiraffeContrib
+
+  Contrib.noConflict = ->
+    root.GiraffeContrib = previousGiraffeContrib
+    @
 
   ###
   * A __Controller__ is a simple evented class that can participate in appEvents.

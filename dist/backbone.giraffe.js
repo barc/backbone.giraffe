@@ -7,33 +7,38 @@
   (function(root, factory) {
     var $, Backbone, _;
     if (typeof define !== "undefined" && define !== null ? define.amd : void 0) {
-      return define('backbone.giraffe', ['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
-        return root.Giraffe = factory(root, $, Backbone, _);
+      return define('backbone.giraffe', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
+        return root.Giraffe = factory(root, $, _, Backbone);
       });
     } else if (typeof module !== "undefined" && module !== null ? module.exports : void 0) {
       $ = require('jquery');
-      Backbone = require('backbone');
       _ = require('underscore');
-      return module.exports = factory(root, $, Backbone, _);
+      Backbone = require('backbone');
+      return module.exports = factory(root, $, _, Backbone);
     } else {
-      return root.Giraffe = factory(root, root.$, root.Backbone, root._);
+      return root.Giraffe = factory(root, root.$, root._, root.Backbone);
     }
-  })(this, function(root, $, Backbone, _) {
-    var $document, $window, Giraffe, _afterInitialize, _setEventBindings, _setEventMapBindings;
+  })(this, function(root, $, _, Backbone) {
+    var $document, $window, Giraffe, previousGiraffe, _afterInitialize, _setEventBindings, _setEventMapBindings;
     if (!$) {
-      throw new Error('Giraffe can\'t find jQuery');
-    }
-    if (!Backbone) {
-      throw new Error('Giraffe can\'t find Backbone');
+      throw new Error('Giraffe cannot find jQuery');
     }
     if (!_) {
-      throw new Error('Giraffe can\'t find underscore');
+      throw new Error('Giraffe cannot find Underscore');
+    }
+    if (!Backbone) {
+      throw new Error('Giraffe cannot find Backbone');
     }
     Giraffe = Backbone.Giraffe = {
       version: '0.2.7',
       app: null,
       apps: {},
       views: {}
+    };
+    previousGiraffe = root.Giraffe;
+    Giraffe.noConflict = function() {
+      root.Giraffe = previousGiraffe;
+      return this;
     };
     $window = $(window);
     $document = $(document);

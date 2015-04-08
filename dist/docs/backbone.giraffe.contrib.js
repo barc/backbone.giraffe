@@ -5,34 +5,39 @@
   (function(root, factory) {
     var $, Backbone, Giraffe, _;
     if (typeof define !== "undefined" && define !== null ? define.amd : void 0) {
-      return define('backbone.giraffe.contrib', ['jquery', 'backbone', 'underscore', 'backbone.giraffe'], function($, Backbone, _, Giraffe) {
-        return root.Giraffe.Contrib = factory(root, $, Backbone, _, Giraffe);
+      return define('backbone.giraffe.contrib', ['jquery', 'underscore', 'backbone', 'backbone.giraffe'], function($, _, Backbone, Giraffe) {
+        return root.GiraffeContrib = factory(root, $, _, Backbone, Giraffe);
       });
     } else if (typeof module !== "undefined" && module !== null ? module.exports : void 0) {
       $ = require('jquery');
-      Backbone = require('backbone');
       _ = require('underscore');
+      Backbone = require('backbone');
       Giraffe = require('./backbone.giraffe');
-      return module.exports = factory(root, $, Backbone, _, Giraffe);
+      return module.exports = factory(root, $, _, Backbone, Giraffe);
     } else {
-      return root.Giraffe.Contrib = factory(root, root.$, root.Backbone, root._, root.Giraffe);
+      return root.GiraffeContrib = factory(root, root.$, root._, root.Backbone, root.Giraffe);
     }
-  })(this, function(root, $, Backbone, _, Giraffe) {
-    var Contrib;
+  })(this, function(root, $, _, Backbone, Giraffe) {
+    var Contrib, previousGiraffeContrib;
     if (!$) {
-      throw new Error('Giraffe.Contrib can\'t find jQuery');
-    }
-    if (!Backbone) {
-      throw new Error('Giraffe.Contrib can\'t find Backbone');
+      throw new Error('Giraffe.Contrib cannot find jQuery');
     }
     if (!_) {
-      throw new Error('Giraffe.Contrib can\'t find underscore');
+      throw new Error('Giraffe.Contrib cannot find Underscore');
+    }
+    if (!Backbone) {
+      throw new Error('Giraffe.Contrib cannot find Backbone');
     }
     if (!Giraffe) {
-      throw new Error('Giraffe.Contrib can\'t find Giraffe');
+      throw new Error('Giraffe.Contrib cannot find Giraffe');
     }
     Contrib = Giraffe.Contrib = {
       version: '0.2.7'
+    };
+    previousGiraffeContrib = root.GiraffeContrib;
+    Contrib.noConflict = function() {
+      root.GiraffeContrib = previousGiraffeContrib;
+      return this;
     };
     /*
     * A __Controller__ is a simple evented class that can participate in appEvents.
