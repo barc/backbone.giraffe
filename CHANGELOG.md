@@ -1,5 +1,11 @@
 ## Changelog
 
+### 0.2.8
+
+- Fixed AMD loader.
+- Added `Giraffe.noConflict` and `Giraffe.Contrib.noConflict`.
+- `Contrib` now attaches itself as `root.GiraffeContrib` in addition to the existing `Giraffe.Contrib`.
+
 ### 0.2.7
 
 - Fixed module loader for r.js optimizer.

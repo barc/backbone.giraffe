@@ -32,7 +32,7 @@
       throw new Error('Giraffe.Contrib cannot find Giraffe');
     }
     Contrib = Giraffe.Contrib = {
-      version: '0.2.7'
+      version: '0.2.8'
     };
     previousGiraffeContrib = root.GiraffeContrib;
     Contrib.noConflict = function() {

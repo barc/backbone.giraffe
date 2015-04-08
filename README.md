@@ -97,7 +97,7 @@ that renders a collection with a single view
 
 ## Download
 
-__Version 0.2.7__
+__Version 0.2.8__
 
 [backbone.giraffe.js](https://raw.github.com/barc/backbone.giraffe/master/dist/backbone.giraffe.js) _70.5k_
 
@@ -115,6 +115,12 @@ __Version 0.2.7__
     pm run all -ws # watches for file changes and runs local server at local.projmate.com:1080/dist/
 
 ## Changelog
+
+### 0.2.8
+
+- Fixed AMD loader.
+- Added `Giraffe.noConflict` and `Giraffe.Contrib.noConflict`.
+- `Contrib` now attaches itself as `root.GiraffeContrib` in addition to the existing `Giraffe.Contrib`.
 
 ### 0.2.7
 

@@ -30,7 +30,7 @@
       throw new Error('Giraffe cannot find Backbone');
     }
     Giraffe = Backbone.Giraffe = {
-      version: '0.2.7',
+      version: '0.2.8',
       app: null,
       apps: {},
       views: {}
